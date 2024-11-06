@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "aurlemon-intro",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,8 +10,17 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.7.0",
+    "dayjs": "^1.11.13",
+    "material-icons": "^1.13.12",
     "nuxt": "^3.13.0",
+    "pinia": "^2.2.6",
+    "sass": "^1.79.4",
+    "sass-loader": "^16.0.2",
     "vue": "latest",
     "vue-router": "latest"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }
