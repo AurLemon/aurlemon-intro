@@ -60,7 +60,7 @@ const calculateBirthdate = (): string => {
     </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
     .aurle-home {
         display: flex;
         justify-content: center;
@@ -101,7 +101,7 @@ const calculateBirthdate = (): string => {
 
                 .aurle-home-me__nick {
                     color: var(--color-text--subtle);
-                    font-size: 16px;
+                    font-size: 14px;
                     display: flex;
                     align-items: center;
                     flex-wrap: wrap;
