@@ -1,10 +1,10 @@
 <template>
-    <div class="aurle-page-sidebar">
+    <aside class="aurle-page-sidebar">
         <div class="aurle-page-sidebar-buttons"></div>
         <div class="aurle-page-sidebar-logo">
             <img src="../assets/images/AurLemon_Avatar.jpg">
         </div>
-    </div>
+    </aside>
 </template>
 
 <style scoped lang="scss">
@@ -13,11 +13,11 @@
     display: flex;
     flex-direction: column;
     position: fixed;
-    top: 15vh;
+    right: 18vw;
     padding: 12px 10px 12px 8px;
     border: 0.5px solid var(--background-dark-0);
     border-left: none;
-    border-radius: 0 $value-sidebar-border-radius $value-sidebar-border-radius 0;
+    border-radius: 0 0 $value-sidebar-border-radius $value-sidebar-border-radius;
     background: #fff;
     box-shadow: 0 0 48px var(--background-dark-0);
 

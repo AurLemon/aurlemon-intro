@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import dayjs from 'dayjs'
-import { birthdate, atbeeExamDate } from '../utils/time.ts'
+import { birthdate, atbeeExamDate } from '../utils/time'
 
 interface UserTag {
     id: number
@@ -10,11 +10,6 @@ interface UserTag {
 }
 
 const infoTags = ref<UserTag[]>()
-
-const calculateBirthdate = (): string => {
-    const birthday = dayjs(birthdate)
-    return dayjs().diff(birthday, 'year')
-}
 </script>
 
 <template>
@@ -24,21 +19,21 @@ const calculateBirthdate = (): string => {
                 <img src="../assets/images/AurLemon_Avatar.jpg" alt="">
             </div>
             <div class="aurle-home-me__name">
-                <div class="aurle-home-me__info">
+                <div class="aurle-home-me__info" translate="no">
                     <div class="aurle-home-me__username">AurLemon</div>
                     <div class="aurle-home-me__id">@AurLemon</div>
                 </div>
                 <div class="aurle-home-me__nick">
                     <div class="nick">柠檬</div>
-                    <div class="simply-tag">{{ calculateBirthdate() }}</div>
-                    <div class="simply-tag">{{ dayjs().isAfter(dayjs('2026-06-30')) ? '臭二本的' : '臭大专的' }}</div>
+                    <div class="simply-tag">{{ dayjs().diff(dayjs(birthdate), 'year') }}</div>
+                    <div class="simply-tag">{{ dayjs().isAfter(dayjs(atbeeExamDate)) ? '臭二本的' : '臭大专的' }}</div>
                     <div class="simply-tag">INFJ/TJ</div>
                     <div class="simply-tag">福州</div>
                 </div>
             </div>
         </div>
         <div class="aurle-home-basic">
-            <div class="aurle-home-desc">CS / Web 全栈 / 嵌入式入门ing</div>
+            <div class="aurle-home-desc">👏🥵 不觉得很酷吗？</div>
             <div class="aurle-home-contact-list">
                 <div class="aurle-home-contact github">
                     <a href="https://github.com/AurLemon" target="_blank">
@@ -92,11 +87,13 @@ const calculateBirthdate = (): string => {
                 }
 
                 .aurle-home-me__username {
-                    color: var(--color-text--emphasized);
+                    color: transparent;
                     font-size: 64px;
                     font-weight: 600;
                     font-family: 'Caveat';
                     line-height: 1;
+                    background: linear-gradient(60deg, var(--color-text) -15%, var(--color-primary) 225%);
+                    background-clip: text;
                 }
 
                 .aurle-home-me__nick {
@@ -145,7 +142,7 @@ const calculateBirthdate = (): string => {
             .aurle-home-contact-list {
                 display: flex;
                 align-items: center;
-                gap: 0.25rem;
+                gap: 0.75rem;
 
                 .aurle-home-contact {
                     padding: 0.25rem;

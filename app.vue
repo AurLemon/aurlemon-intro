@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import PageHeader from './components/PageHeader.vue';
 import PageSidebar from './components/PageSidebar.vue';
 import PageContainer from './components/PageContainer.vue';
 import PageFooter from './components/PageFooter.vue';
@@ -6,6 +7,7 @@ import PageFooter from './components/PageFooter.vue';
 
 <template>
   <div class="aurle-app">
+    <PageHeader />
     <PageSidebar />
     <PageContainer />
     <PageFooter />
