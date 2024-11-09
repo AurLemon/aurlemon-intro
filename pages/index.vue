@@ -63,10 +63,10 @@ const infoTags = ref<UserTag[]>()
 <style scoped lang="scss">
     .aurle-home {
         display: flex;
-        justify-content: center;
+        justify-content: flex-end;
         align-items: center;
         flex-direction: column;
-        margin-top: 15vh;
+        margin-bottom: 15vh;
 
         .aurle-home-me {
             display: flex;
