@@ -3,7 +3,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   ssr: true,
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   plugins: [
     '~/plugins/v-tippy.js',
     '~/plugins/v-clipboard.js'
@@ -15,7 +15,7 @@ export default defineNuxtConfig({
   fontawesome: {
     component: 'fa',
     icons: {
-      solid: ['faCode', 'faLaptopCode', 'faMicrochip', 'faNetworkWired', 'faRobot', 'faDatabase'],
+      solid: ['faCode', 'faLaptopCode', 'faMicrochip', 'faNetworkWired', 'faRobot', 'faDatabase', 'faPenNib'],
       brands: ['faGithub', 'faLinkedin', 'faNode', 'faVuejs'],
     },
   },
