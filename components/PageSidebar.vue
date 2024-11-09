@@ -14,9 +14,9 @@
     flex-direction: column;
     position: fixed;
     right: 18vw;
-    padding: 12px 10px 12px 8px;
+    padding: 12px 8px 10px 8px;
     border: 0.5px solid var(--background-dark-0);
-    border-left: none;
+    border-top: none;
     border-radius: 0 0 $value-sidebar-border-radius $value-sidebar-border-radius;
     background: #fff;
     box-shadow: 0 0 48px var(--background-dark-0);
