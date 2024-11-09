@@ -8,7 +8,7 @@
                 <NuxtLink to="/">初次见面</NuxtLink>
             </div>
             <div class="aurle-page-header-item">
-                <NuxtLink to="/experience">我的简历</NuxtLink>
+                <NuxtLink to="/experience">认识下我</NuxtLink>
             </div>
             <div class="aurle-page-header-item">
                 <NuxtLink to="/college">我的学业</NuxtLink>

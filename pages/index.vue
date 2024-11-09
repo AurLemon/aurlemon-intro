@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import dayjs from 'dayjs'
+
+import HomeTags from '~/components/homepage/HomeTags.vue';
+
 import { birthdate, atbeeExamDate } from '../utils/time'
 
 interface UserTag {
@@ -8,7 +11,6 @@ interface UserTag {
     label: string
     color?: string
 }
-
 const infoTags = ref<UserTag[]>()
 </script>
 
@@ -32,8 +34,11 @@ const infoTags = ref<UserTag[]>()
                 </div>
             </div>
         </div>
+        <div class="aurle-home-section">
+            <HomeTags />
+        </div>
         <div class="aurle-home-basic">
-            <div class="aurle-home-desc">👏🥵 不觉得很酷吗？</div>
+            <div class="aurle-home-desc">👏🥵 你好啊</div>
             <div class="aurle-home-contact-list">
                 <div class="aurle-home-contact github">
                     <a href="https://github.com/AurLemon" target="_blank">
@@ -61,11 +66,13 @@ const infoTags = ref<UserTag[]>()
         justify-content: center;
         align-items: center;
         flex-direction: column;
+        margin-top: 15vh;
 
         .aurle-home-me {
             display: flex;
             align-items: center;
             gap: 1rem;
+            margin-top: 5rem;
 
             .aurle-home-me__avatar img {
                 $value-image-length: 88px;
@@ -123,6 +130,10 @@ const infoTags = ref<UserTag[]>()
                 }
             }
         }
+        
+        .aurle-home-section {
+            margin-top: 6rem;
+        }
 
         .aurle-home-basic {
             display: flex;
@@ -130,7 +141,7 @@ const infoTags = ref<UserTag[]>()
             flex-direction: column;
             gap: 0.25rem;
             padding: 2px 16px;
-            margin-top: 4rem;
+            margin-top: 2rem;
 
             .aurle-home-desc {
                 color: var(--color-text);

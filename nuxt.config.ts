@@ -9,8 +9,16 @@ export default defineNuxtConfig({
     '~/plugins/v-clipboard.js'
   ],
   modules: [
-    '@pinia/nuxt'
+    '@pinia/nuxt',
+    '@vesp/nuxt-fontawesome'
   ],
+  fontawesome: {
+    component: 'fa',
+    icons: {
+      solid: ['faCode', 'faLaptopCode', 'faMicrochip', 'faNetworkWired', 'faRobot', 'faDatabase'],
+      brands: ['faGithub', 'faLinkedin', 'faNode', 'faVuejs'],
+    },
+  },
   css: [
     '~/assets/styles/global.scss',
     'material-icons/iconfont/material-icons.css'
