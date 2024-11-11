@@ -42,7 +42,10 @@ const todoList = ref<{
         name: '睡觉'
     },
     {
-        name: 'CET4'
+        name: 'CET 4'
+    },
+    {
+        name: 'JLPT'
     }
 ])
 
@@ -91,57 +94,23 @@ onMounted(() => {
 
 <template>
     <div class="aurle-home-tags">
-        <div class="aurle-home-tag small computer-science">
-            <div class="aurle-home-tag__background">
-                <div class="aurle-home-tag__icons">
-                    <fa class="aurle-home-tag__icon" :icon="['fas', 'code']" />                            
-                </div>
-            </div>
-            <div class="aurle-home-tag__foreground">
-                <div class="aurle-home-tag__title">
-                    计算机<br>
-                    <span class="emphasized">科学与技术</span>
-                </div>
-            </div>
+        <div class="aurle-home-tag frontend-dev">
+            前端
         </div>
-        <div class="aurle-home-tag small web-fullstack">
-            <div class="aurle-home-tag__background">
-                <div class="aurle-home-tag__icons">
-                    <fa class="aurle-home-tag__icon" :icon="['fab', 'node']" />                            
-                    <fa class="aurle-home-tag__icon" :icon="['fab', 'vuejs']" />                            
-                </div>
-            </div>
-            <div class="aurle-home-tag__foreground">
-                <div class="aurle-home-tag__title">
-                    Web<br>
-                    <span class="emphasized">全栈开发</span>
-                </div>
-            </div>
+        <div class="aurle-home-tag backend-dev">
+            后端
         </div>
-        <div class="aurle-home-tag small ui-design">
-            <div class="aurle-home-tag__background">
-                <div class="aurle-home-tag__icons">
-                    <fa class="aurle-home-tag__icon" :icon="['fas', 'pen-nib']" />
-                </div>
-            </div>
-            <div class="aurle-home-tag__foreground">
-                <div class="aurle-home-tag__title">
-                    <span class="emphasized">UI + 排版</span>
-                </div>
-            </div>
+        <div class="aurle-home-tag mi-fans">
+            #米粉
         </div>
-        <div class="aurle-home-tag small small-long embedded-development">
-            <div class="aurle-home-tag__background">
-                <div class="aurle-home-tag__icons">                         
-                    <fa class="aurle-home-tag__icon" :icon="['fas', 'microchip']" />                            
-                </div>
-            </div>
-            <div class="aurle-home-tag__foreground">
-                <div class="aurle-home-tag__title">
-                    运维与<br>
-                    <span class="emphasized">嵌入式</span>
-                </div>
-            </div>
+        <div class="aurle-home-tag embedded-dev">
+            嵌入式
+        </div>
+        <div class="aurle-home-tag computer-science">
+            计算机科学
+        </div>
+        <div class="aurle-home-tag dev-ops">
+            云开发与运维
         </div>
         <div class="aurle-home-tag project-show">
             <div class="aurle-home-tag__list">
@@ -175,6 +144,9 @@ onMounted(() => {
                 <div class="aurle-home-tag__nick">柠檬</div>
                 <div class="aurle-home-tag__id">Aurora_Lemon</div>
             </div>
+        </div>
+        <div class="aurle-home-tag anime">
+
         </div>
         <div class="aurle-home-tag transportation">
             <div class="aurle-home-tag__normal">
@@ -233,7 +205,7 @@ onMounted(() => {
 
     .aurle-home-tags {
         display: grid;
-        grid-template-rows: repeat(4, auto);
+        grid-template-rows: repeat(5, auto);
         grid-auto-flow: column;
         grid-gap: 0.5rem;
         font-size: 14px;
@@ -281,71 +253,36 @@ onMounted(() => {
                 }
             }
 
-            &.small {
-                min-height: 80px;
-
-                .aurle-home-tag__background {
-                    display: flex;
-                    justify-content: flex-end;
-                    
-                    .aurle-home-tag__icons {
-                        display: flex;
-                        gap: 0.125rem;
-                        color: hsl(var(--color-primary__h), var(--color-primary__s), 75%);
-                        width: fit-content;
-                        height: fit-content;
-                        filter: drop-shadow(0px 2px 24px rgba(11, 189, 159, 0.145));
-                        transform: perspective(40px) rotateX(25deg) rotateY(-20deg) translate(-5%, 35%) scale(1.25);
-                        transition: $value-transition-duration;
-
-                        svg {
-                            display: block;
-                            height: 24px;
-                        }
-                    }
-                }
+            &.frontend-dev {
+                grid-column: 1 / span 2;
+                grid-row: 1 / span 3;
+                min-width: 120px;
             }
 
-            &.ui-design {
-                grid-row: span 1;
-                min-height: unset;
-
-                .aurle-home-tag__background {
-                    .aurle-home-tag__icons {
-                        transform: scale(1.25) translate(-5px, 5px);
-
-                        svg {
-                            height: 14px;
-                        }
-                    }
-                }
-
-                &:hover {
-                    .aurle-home-tag__background {
-                        .aurle-home-tag__icons {
-                            transform: scale(1.25) translate(-8px, 6px);
-                        }
-                    }
-                }
+            &.backend-dev {
+                grid-column: 3 / span 2;
+                grid-row: 2 / span 3;
+                min-width: 120px;
             }
 
-            &.small-long {
-                height: unset;
-                grid-row: span 4;
-
-                .aurle-home-tag__icons {
-                    transform: perspective(50px) rotateX(25deg) rotateY(-20deg) translate(-45%, 45%) scale(1.75) !important;
-                }
-
-                &:hover {
-                    .aurle-home-tag__icons {
-                        transform: perspective(50px) rotateX(25deg) rotateY(-20deg) translate(-65%, 60%) scale(1.75) !important;
-                    }
-                }
+            &.mi-fans {
+                grid-column: 3 / span 2;
+                grid-row: 1;
             }
 
-            &.embedded-development {
-                grid-row: span 3;
+            &.embedded-dev {
+                grid-column: 3 / span 2;
+                grid-row: 5;
+            }
+
+            &.computer-science {
+                grid-column: 1 / span 2;
+                grid-row: 4 / span 2;
+            }
+
+            &.dev-ops {
+                grid-column: 5 / span 2;
+                grid-row: 5;
             }
 
             &.long-stick {
@@ -362,11 +299,11 @@ onMounted(() => {
             }
 
             &.project-show {
+                grid-column: 5 / span 5;
+                grid-row: 1 / span 3;
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-                grid-column: span 5;
-                grid-row: span 3;
                 padding: 0.5rem;
                 min-width: 300px;
             }
@@ -387,10 +324,10 @@ onMounted(() => {
             }
 
             &.transportation {
+                grid-column: 13 / span 2;
+                grid-row: 5;
                 display: flex;
                 flex-direction: column;
-                grid-column: span 1;
-                grid-row: span 1;
                 min-width: 32px;
                 min-height: 32px;
                 user-select: none;
@@ -433,11 +370,11 @@ onMounted(() => {
             }
 
             &.college {
+                grid-column: 11 / span 4;
+                grid-row: 3 / span 2;
                 display: flex;
                 flex-direction: column;
                 gap: 0.25rem;
-                grid-column: span 5;
-                grid-row: 3 / span 2;
                 padding: 0.5rem;
                 min-width: 220px;
 
@@ -491,8 +428,8 @@ onMounted(() => {
             }
 
             &.minecraft {
-                grid-column: span 2;
-                grid-row: span 1;
+                grid-column: 7 / span 3;
+                grid-row: 5;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -522,9 +459,15 @@ onMounted(() => {
                 }
             }
 
+            &.anime {
+                grid-column: 10 / span 3;
+                grid-row: 5;
+            }
+
             &.skin-show {
                 $value-skin-show-width: 110px;
-                grid-row: span 3;
+                grid-column: 10;
+                grid-row: 1 / span 4;
                 min-width: $value-skin-show-width;
                 height: 100%;
 
