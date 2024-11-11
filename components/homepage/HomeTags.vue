@@ -20,12 +20,12 @@ const collegeStageInfo = ref<{
         info: '老师好学校也好'
     },
     high: {
-        stage: '中专 (3+2)',
+        stage: '中职 (3+2)',
         name: "福建工贸学校",
         info: '给我爽了三年'
     },
     college: {
-        stage: '大专 (3+2)',
+        stage: '大职 (3+2)',
         name: "福建船政交通职业学院",
         info: '臭大专屁事还多'
     }
@@ -39,7 +39,10 @@ const todoList = ref<{
         name: '蓝桥杯'
     },
     {
-        name: 'Sleep'
+        name: '睡觉'
+    },
+    {
+        name: 'CET4'
     }
 ])
 
@@ -123,7 +126,7 @@ onMounted(() => {
             </div>
             <div class="aurle-home-tag__foreground">
                 <div class="aurle-home-tag__title">
-                    <span class="emphasized">UI / 排版</span>
+                    <span class="emphasized">UI + 排版</span>
                 </div>
             </div>
         </div>
@@ -151,13 +154,10 @@ onMounted(() => {
                 <span class="emphasized">个人项目</span>
             </div>
         </div>
-        <div class="aurle-home-tag long-stick my-blog">
-            <a href="https://cnblogs.com/AurLemon" target="_blank">
-                <span class="material-icons">call_missed_outgoing</span>
-                可以顺带来我博客看看🤤
-            </a>
+        <div class="aurle-home-tag long-stick">
+            👏🥵 你好啊
         </div>
-        <div class="aurle-home-tag follow-me">建议关注我🤤🤤</div>
+        <div class="aurle-home-tag follow-me">关注我🤤</div>
         <div class="aurle-home-tag minecraft">
             <div class="aurle-home-tag__title">
                 Build & BedWars<br>
@@ -349,29 +349,16 @@ onMounted(() => {
             }
 
             &.long-stick {
-                grid-column: span 3;
+                grid-column: span 4;
                 grid-row: span 1;
-                border-color: var(--background-color-primary--active);
-                outline: none;
-
-                a {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.25rem;
-                    color: var(--color-text--subtle);
-                    height: 100%;
-                    padding: 0.125rem 1rem;
-                    background: var(--background-color-primary--hover);
-                    transition: $value-transition-duration;
-
-                    .material-icons {
-                        font-size: 16px;
-                    }
-
-                    &:hover {
-                        background: var(--background-color-primary--active);
-                    }
-                }
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 0.25rem;
+                color: var(--color-text--subtle);
+                height: 100%;
+                padding: 0.125rem 1rem;
+                transition: $value-transition-duration;
             }
 
             &.project-show {
@@ -381,12 +368,14 @@ onMounted(() => {
                 grid-column: span 5;
                 grid-row: span 3;
                 padding: 0.5rem;
+                min-width: 300px;
             }
 
             &.follow-me {
-                grid-column: span 2;
+                grid-column: span 1;
                 grid-row: 4;
                 display: flex;
+                justify-content: center;
                 align-items: center;
                 gap: 0.25rem;
                 color: var(--color-surface-0);
@@ -527,6 +516,7 @@ onMounted(() => {
                     .aurle-home-tag__axe {
                         img {
                             filter: brightness(1.5) drop-shadow(0px 0px 6px rgba(191, 158, 92, 0.4));
+                            transform: scale(1.2) rotate(-25deg);
                         }
                     }
                 }
@@ -564,6 +554,14 @@ onMounted(() => {
                     .aurle-home-tag__id {
                         color: var(--color-text--subtle);
                         font-family: 'Minecraft';
+                    }
+                }
+
+                &:hover {
+                    .aurle-home-tag__background {
+                        canvas {
+                            transform: rotate(-20deg) translate(20px, 20px);
+                        }
                     }
                 }
             }
@@ -611,7 +609,7 @@ onMounted(() => {
                         .emoji {
                             opacity: 1;
                             filter: saturate(0.9) drop-shadow(0 0 8px var(--background-dark-0));
-                            transform: translate(18px, -18px) rotate(25deg);
+                            transform: translate(18px, -18px) rotate(25deg) scale(1.2);
                         }
                     }
                 }
@@ -683,8 +681,10 @@ onMounted(() => {
                 &:hover {
                     .aurle-home-tag__background {
                         .material-icons {
+                            color: var(--color-primary);
                             opacity: 1;
                             filter: saturate(0.9) drop-shadow(0 0 8px var(--background-dark-0));
+                            transform: translate(10px, -10px) rotate(0deg) scale(0.5);
                         }
                     }
                 }
