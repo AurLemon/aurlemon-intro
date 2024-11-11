@@ -38,7 +38,6 @@ const infoTags = ref<UserTag[]>()
             <HomeTags />
         </div>
         <div class="aurle-home-basic">
-            <div class="aurle-home-desc">👏🥵 你好啊</div>
             <div class="aurle-home-contact-list">
                 <div class="aurle-home-contact github">
                     <a href="https://github.com/AurLemon" target="_blank">
@@ -63,16 +62,15 @@ const infoTags = ref<UserTag[]>()
 <style scoped lang="scss">
     .aurle-home {
         display: flex;
-        justify-content: flex-end;
+        justify-content: center;
         align-items: center;
         flex-direction: column;
-        margin-bottom: 15vh;
 
         .aurle-home-me {
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-top: 5rem;
+            margin-top: 6rem;
 
             .aurle-home-me__avatar img {
                 $value-image-length: 88px;
@@ -142,13 +140,6 @@ const infoTags = ref<UserTag[]>()
             gap: 0.25rem;
             padding: 2px 16px;
             margin-top: 2rem;
-
-            .aurle-home-desc {
-                color: var(--color-text);
-                font-size: 12px;
-                font-weight: 600;
-                padding: 0 8px;
-            }
 
             .aurle-home-contact-list {
                 display: flex;
