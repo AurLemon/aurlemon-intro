@@ -41,17 +41,17 @@ const infoTags = ref<UserTag[]>()
             <div class="aurle-home-contact-list">
                 <div class="aurle-home-contact github">
                     <a href="https://github.com/AurLemon" target="_blank">
-                        <img src="../assets/images/GitHub_Logo.svg" alt="GitHub 账户">
+                        <img src="../assets/images/icons/GitHub_Logo.svg" alt="GitHub 账户">
                     </a>
                 </div>
                 <div class="aurle-home-contact bilibili">
                     <a href="https://space.bilibili.com/204271518" target="_blank">
-                        <img src="../assets/images/bilibili_Logo.svg" alt="B 站账户">
+                        <img src="../assets/images/icons/bilibili_Logo.svg" alt="B 站账户">
                     </a>
                 </div>
                 <div class="aurle-home-contact cnblogs">
                     <a href="https://cnblogs.com/AurLemon" target="_blank">
-                        <img src="../assets/images/cnblogs_Logo.svg" alt="博客园博客">
+                        <img src="../assets/images/icons/cnblogs_Logo.svg" alt="博客园博客">
                     </a>
                 </div>
             </div>

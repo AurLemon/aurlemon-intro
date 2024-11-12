@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     component: 'fa',
     icons: {
       solid: ['faCode', 'faLaptopCode', 'faMicrochip', 'faNetworkWired', 'faRobot', 'faDatabase', 'faPenNib'],
-      brands: ['faGithub', 'faLinkedin', 'faNode', 'faVuejs'],
+      brands: ['faGithub', 'faLinkedin', 'faNode', 'faVuejs', 'faFlutter'],
     },
   },
   css: [
