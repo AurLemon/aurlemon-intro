@@ -2,7 +2,7 @@
     <aside class="aurle-page-sidebar">
         <div class="aurle-page-sidebar-buttons"></div>
         <div class="aurle-page-sidebar-logo">
-            <img src="../assets/images/AurLemon_Avatar.jpg">
+            <img src="~/assets/images/icons/Nuxt_Logo.svg">
         </div>
     </aside>
 </template>
