@@ -27,7 +27,7 @@
     .aurle-page-header {
         position: fixed;
         top: 12px;
-        left: 18vw;
+        left: 15vw;
 
         .aurle-page-header-list {
             display: flex;

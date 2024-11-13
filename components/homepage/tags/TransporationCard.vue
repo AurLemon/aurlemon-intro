@@ -34,6 +34,7 @@
                 height: 100%;
                 filter: drop-shadow(0 8px 12px var(--background-dark-0));
                 transform: translate(62%, 0) scale(0.8);
+                user-select: none;
                 transition: tags.$value-transition-duration;
             }
         }
@@ -61,12 +62,13 @@
                 position: relative;
 
                 .aurle-home-tag__scroll {
-                    width: calc(100% / $value-total-child);
+                    // width: calc(100% / $value-total-child);
+                    width: 0%;
                     height: inherit;
                     background: $value-roadmap-color;
                     border-top-right-radius: 8px;
                     border-bottom-right-radius: 8px;
-                    transition: tags.$value-transition-duration;
+                    transition: tags.$value-transition-duration * 1.5;
                 }
 
                 .aurle-home-tag__circle {
@@ -77,7 +79,7 @@
                     top: 50%;
                     transform: translateY(-50%);
                     background: var(--color-surface-4);
-                    transition: tags.$value-transition-duration;
+                    transition: tags.$value-transition-duration * 1.5;
 
                     &::before {
                         content: '';
@@ -91,9 +93,9 @@
                         background: #fff;
                     }
 
-                    &:first-child {
-                        background: $value-roadmap-color;
-                    }
+                    // &:first-child {
+                    //     background: $value-roadmap-color;
+                    // }
 
                     @for $i from 1 through $value-total-child {
                         &:nth-last-child(#{$i}) {

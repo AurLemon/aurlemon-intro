@@ -1,5 +1,5 @@
 <template>
-    <div class="aurle-home-tag mi-fans" v-tooltip.top="{ content: '谢邀 K70 + 米环 9 Pro 🤝' }">
+    <div class="aurle-home-tag mi-fans" v-tooltip.top="{ content: '就买就买，怎么了，你们有没有这样的手机啊解 BL 要高考' }">
         <div class="aurle-home-tag__image">
             <img src="~/assets/images/icons/Xiaomi_Logo.svg" alt="">
         </div>
@@ -32,7 +32,7 @@
                 height: $value-mi-logo-width;
                 filter: saturate(0.85);
                 transform: scale(0.9) rotate(0deg);
-                transition: tags.$value-transition-duration;
+                transition: tags.$value-transition-duration, transform 600ms;
                 user-select: none;
             }
         }
@@ -48,7 +48,6 @@
                 img {
                     filter: saturate(1.5);
                     transform: scale(1) rotate(360deg);
-                    transition: transform 500ms;
                 }
             }
         }
