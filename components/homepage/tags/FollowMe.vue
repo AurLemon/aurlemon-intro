@@ -5,7 +5,7 @@
 <style scoped lang="scss">
     @use '~/assets/styles/module/tags_global' as tags;
 
-    .follow-me {
+    .aurle-home-tag.follow-me {
         display: flex;
         justify-content: center;
         align-items: center;

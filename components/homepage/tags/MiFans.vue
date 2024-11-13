@@ -1,5 +1,5 @@
 <template>
-    <div class="aurle-home-tag mi-fans">
+    <div class="aurle-home-tag mi-fans" v-tooltip.top="{ content: '谢邀 K70 + 米环 9 Pro 🤝' }">
         <div class="aurle-home-tag__image">
             <img src="~/assets/images/icons/Xiaomi_Logo.svg" alt="">
         </div>
@@ -12,7 +12,7 @@
 <style scoped lang="scss">
     @use '~/assets/styles/module/tags_global' as tags;
 
-    .mi-fans {
+    .aurle-home-tag.mi-fans {
         display: flex;
         align-items: center;
         gap: 0.325rem;

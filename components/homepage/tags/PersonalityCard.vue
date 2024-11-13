@@ -13,7 +13,7 @@
 <style scoped lang="scss">
     @use '~/assets/styles/module/tags_global' as tags;
 
-    .personality {
+    .aurle-home-tag.personality {
         .aurle-home-tag__background {
             display: flex;
             justify-content: flex-end;

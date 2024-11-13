@@ -7,7 +7,7 @@
 <style scoped lang="scss">
     @use '~/assets/styles/module/tags_global' as tags;
 
-    .long-stick {
+    .aurle-home-tag.long-stick {
         display: flex;
         justify-content: center;
         align-items: center;

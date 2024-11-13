@@ -45,7 +45,7 @@ onMounted(() => {
 <style scoped lang="scss">
     @use '~/assets/styles/module/tags_global' as tags;
 
-    .todo-list {
+    .aurle-home-tag.todo-list {
         min-width: 100px;
 
         .aurle-home-tag__background {
