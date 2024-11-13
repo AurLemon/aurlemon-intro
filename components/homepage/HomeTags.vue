@@ -100,6 +100,7 @@ import PersonalityCard from './tags/PersonalityCard.vue'
 
                     .aurle-home-tag__icons {
                         width: fit-content;
+                        user-select: none;
 
                         .aurle-home-tag__icon {
                             transform: translate(15%, -10%) rotate(4deg);

@@ -13,7 +13,7 @@
     display: flex;
     flex-direction: column;
     position: fixed;
-    right: 18vw;
+    right: 15vw;
     padding: 12px 8px 10px 8px;
     border: 0.5px solid var(--background-dark-0);
     border-top: none;
