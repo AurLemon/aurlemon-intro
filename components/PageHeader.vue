@@ -17,7 +17,7 @@
                 <NuxtLink to="/profile">个人画像</NuxtLink>
             </div>
             <div class="aurle-page-header-item">
-                <NuxtLink to="/about">关于</NuxtLink>
+                <NuxtLink to="/about">关于本站</NuxtLink>
             </div>
         </div>
     </header>
