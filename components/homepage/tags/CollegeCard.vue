@@ -77,7 +77,7 @@ const currentCollegeInfo = computed(() => {
 <style scoped lang="scss">
     @use '~/assets/styles/module/tags_global' as tags;
     
-    .college {
+    .aurle-home-tag.college {
         display: flex;
         justify-content: center;
         flex-direction: column;

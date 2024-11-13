@@ -37,7 +37,7 @@ onMounted(() => {
 <style scoped lang="scss">
     @use '~/assets/styles/module/tags_global' as tags;
 
-    .skin-show {
+    .aurle-home-tag.skin-show {
         $value-skin-show-width: 110px;
         min-width: $value-skin-show-width;
         height: 100%;
@@ -74,7 +74,7 @@ onMounted(() => {
         &:hover {
             .aurle-home-tag__background {
                 canvas {
-                    transform: rotate(-20deg) translate(20px, 20px);
+                    transform: rotate(-25deg) translate(20px, 20px);
                 }
             }
         }

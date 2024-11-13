@@ -1,5 +1,5 @@
 <template>
-    <div class="aurle-home-tag minecraft">
+    <div class="aurle-home-tag minecraft" v-tooltip.bottom="{ content: '吉吉岛玩的多' }">
         <div class="aurle-home-tag__title">
             Build & BedWars<br>
             <span class="emphasized">Minecraft</span>
@@ -13,7 +13,7 @@
 <style scoped lang="scss">
     @use '~/assets/styles/module/tags_global' as tags;
 
-    .minecraft {
+    .aurle-home-tag.minecraft {
         display: flex;
         justify-content: center;
         align-items: center;

@@ -34,7 +34,7 @@
     --color-surface-4__s: 10%;
     --color-surface-4__l: 74%;
     --color-primary: hsl(var(--color-primary__h), var(--color-primary__s), var(--color-primary__l));
-    --color-primary--hover: hsl(var(--color-primary__h),var(--color-primary__s),calc(var(--color-primary__l) * 1.2));
+    --color-primary--hover: hsl(var(--color-primary__h), var(--color-primary__s), calc(var(--color-primary__l) * 1.2));
     --color-primary--active: hsl(var(--color-primary__h), var(--color-primary__s), calc(var(--color-primary__l) * 0.8));
     --color-surface-0: hsl(var(--color-primary__h), var(--color-surface-0__s), var(--color-surface-0__l));
     --color-surface-1: hsl(var(--color-primary__h), var(--color-surface-1__s), var(--color-surface-1__l));
@@ -73,7 +73,9 @@
     background: hsla(var(--color-primary__h), 5%, 54%, 22%);
 }
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     scrollbar-color: var(--color-surface-3) transparent;
     scrollbar-width: thin;
     box-sizing: border-box;
@@ -100,4 +102,17 @@ a {
 
 .aurle-page {
     width: 100%;
+}
+
+.v-popper__inner {
+    color: var(--color-text) !important;
+    font-size: 14px !important;
+    padding: 3px 9px !important;
+    background: #fff !important;
+    border: 1px solid var(--border-color-base) !important;
+    box-shadow: 0 0 24px var(--border-color-base--darker) !important;
+}
+
+.v-popper__arrow-inner, .v-popper__arrow-outer {
+    display: none;
 }

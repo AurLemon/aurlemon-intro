@@ -15,7 +15,7 @@
 <style scoped lang="scss">
     @use '~/assets/styles/module/tags_global' as tags;
 
-    .project-show {
+    .aurle-home-tag.project-show {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
