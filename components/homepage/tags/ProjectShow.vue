@@ -1,3 +1,32 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+const projectInfo = ref([
+    {
+        id: 1,
+        name: '船政转轨考の刷题系统',
+        desc: '',
+        tags: [
+            {
+                badge: '',
+                name: 'Vue'
+            }
+        ],
+        url: [
+            {
+                platform: 'GitHub',
+                url: ''
+            },
+            {
+                platform: 'bilibili',
+                url: ''
+            }
+        ],
+        image: ''
+    }
+])
+</script>
+
 <template>
     <div class="aurle-home-tag project-show">
         <div class="aurle-home-tag__list">

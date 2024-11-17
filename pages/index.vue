@@ -3,8 +3,13 @@ import { ref } from 'vue'
 import dayjs from 'dayjs'
 
 import HomeTags from '~/components/homepage/HomeTags.vue';
-
 import { birthdate, atbeeExamDate } from '../utils/time'
+
+useHead({
+    meta: [
+        { name: 'description', content: 'AurLemon 的介绍网站！' }
+    ]
+})
 
 interface UserTag {
     id: number
