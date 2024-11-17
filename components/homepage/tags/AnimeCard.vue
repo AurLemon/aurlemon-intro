@@ -48,7 +48,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="aurle-home-tag anime" v-tooltip.bottom="{ content: animeInfo[animeInfoIndex].tooltip ?? '我喜欢你', trigger: 'hover' }"
+    <div class="aurle-home-tag anime" v-tooltip.bottom="{ content: animeInfo[animeInfoIndex].tooltip ?? '我喜欢你' }"
         :style="{ '--anime-card-offset': animeInfoIndex }" @mouseenter="stopAnimeInterval" @mouseleave="startAnimeInterval" @click="nextAnime">
         <div class="aurle-home-tag__wrapper" v-for="(anime, index) in animeInfo" :key="anime.id" :anime-id="anime.id"
             :style="{ '--anime-card-index': index }" :class="{ current: index === animeInfoIndex }">
