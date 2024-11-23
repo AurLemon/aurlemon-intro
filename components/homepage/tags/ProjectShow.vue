@@ -18,7 +18,7 @@ const projectInfo = ref<{
 </script>
 
 <template>
-    <div class="aurle-home-tag project-show" v-tooltip.top="{ content: '项目展示' }">
+    <div class="aurle-home-tag project-show" v-tooltip.top="{ content: '项目展示', trigger: 'click' }">
         <div class="aurle-home-tag__list">
             <div class="aurle-home-tag__item">
                 <div class="aurle-home-tag__background">
@@ -39,17 +39,17 @@ const projectInfo = ref<{
                     <div class="aurle-home-tag__title">船政转轨考の刷题系统</div>
                     <div class="aurle-home-tag__subtitle">5月那会给船政整的因为觉得原来那个太 SB 了。</div>
                     <div class="aurle-home-tag__links">
-                        <div class="aurle-home-tag__link" v-tooltip="{ content: 'B 站' }">
+                        <div class="aurle-home-tag__link" v-tooltip="{ content: 'B 站', trigger: 'click' }">
                             <a href="https://www.bilibili.com/video/BV1Fjm6Y3EJ2" target="_blank">
                                 <fa :icon="['fab', 'bilibili']" />
                             </a>
                         </div>
-                        <div class="aurle-home-tag__link" v-tooltip="{ content: 'GitHub' }">
+                        <div class="aurle-home-tag__link" v-tooltip="{ content: 'GitHub', trigger: 'click' }">
                             <a href="https://github.com/AurLemon/fjcpc-transfer-exam-practice-system" target="_blank">
                                 <fa :icon="['fab', 'github']" />
                             </a>
                         </div>
-                        <div class="aurle-home-tag__link" v-tooltip="{ content: '部署网站' }">
+                        <div class="aurle-home-tag__link" v-tooltip="{ content: '部署网站', trigger: 'click' }">
                             <a href="https://fjcpc-teps.aurlemon.top" target="_blank">
                                 <fa :icon="['fas', 'globe']" />
                             </a>
@@ -98,7 +98,7 @@ const projectInfo = ref<{
                 .aurle-home-tag__foreground {
                     justify-content: flex-end;
                     background: linear-gradient(35deg, var(--color-surface-0) 5%, transparent);
-                    backdrop-filter: blur(2px) brightness(0.9) saturate(1.5);
+                    backdrop-filter: blur(0.5px) saturate(1.5);
                     transition: 350ms;
                     
                     .aurle-home-tag__tags {
@@ -160,7 +160,7 @@ const projectInfo = ref<{
 
                 &:hover {
                     .aurle-home-tag__foreground {
-                        backdrop-filter: blur(0px) brightness(1) saturate(1);
+                        backdrop-filter: blur(0px) saturate(1);
                     }
                 }
             }

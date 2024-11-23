@@ -8,27 +8,39 @@
 </template>
 
 <style scoped lang="scss">
-.aurle-page-sidebar {
-    $value-sidebar-border-radius: 28px;
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    right: 15vw;
-    padding: 12px 8px 10px 8px;
-    border: 0.5px solid var(--background-dark-0);
-    border-top: none;
-    border-radius: 0 0 $value-sidebar-border-radius $value-sidebar-border-radius;
-    background: #fff;
-    box-shadow: 0 0 48px var(--background-dark-0);
+    @use '~/assets/styles/media_screen.scss' as media;
 
-    .aurle-page-sidebar-arrow {
-        user-select: none;
-        
-        .material-icons {
-            display: block;
-            color: var(--color-primary);
-            font-size: 28px;
+    .aurle-page-sidebar {
+        $value-sidebar-border-radius: 28px;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        right: 15vw;
+        z-index: 100001;
+        padding: 12px 8px 10px 8px;
+        border: 0.5px solid var(--background-dark-0);
+        border-top: none;
+        border-radius: 0 0 $value-sidebar-border-radius $value-sidebar-border-radius;
+        background: #fff;
+        box-shadow: 0 0 48px var(--background-dark-0);
+
+        .aurle-page-sidebar-arrow {
+            user-select: none;
+            
+            .material-icons {
+                display: block;
+                color: var(--color-primary);
+                font-size: 28px;
+            }
+        }
+
+        @include media.media-screen(mobile) {
+            right: 1.5rem;
+            bottom: 1.5rem;
+            padding: 8px;
+            transform: rotate(180deg);
+            border-top: unset;
+            border-radius: $value-sidebar-border-radius;
         }
     }
-}
 </style>

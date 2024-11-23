@@ -9,7 +9,7 @@ $media-screen-value-pad: 1080px;
     }
 
     @else if $device =='pad' {
-        @media screen and (min-width: ($media-screen-value-phone + 1)) and (max-width: $media-screen-value-pad) {
+        @media screen and (min-width: #{($media-screen-value-phone + 1)}) and (max-width: $media-screen-value-pad) {
             @content;
         }
     }

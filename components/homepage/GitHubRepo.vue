@@ -68,6 +68,8 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
+    @use '~/assets/styles/media_screen.scss' as media;
+
     .aurle-github-repo {
         display: flex;
         flex-direction: column;
@@ -77,8 +79,12 @@ onMounted(() => {
         .aurle-github-repo-list {
             display: flex;
             gap: 0.25rem;
-            width: 800px;
+            width: 670px;
             overflow-x: auto;
+
+            @include media.media-screen(phone) {
+                width: 100%;
+            }
 
             .aurle-github-repo-item {
                 flex: 0 0 220px;
