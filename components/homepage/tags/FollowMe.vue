@@ -1,5 +1,5 @@
 <template>
-    <div class="aurle-home-tag follow-me">关注我🤤</div>
+    <div class="aurle-home-tag follow-me" v-tooltip="{ content: 'B站 / GitHub / 博客园 求你了' }">请关注我🤤</div>
 </template>
 
 <style scoped lang="scss">

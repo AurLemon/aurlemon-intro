@@ -14,9 +14,6 @@ const todoList = ref<{
     },
     {
         name: 'CET 4'
-    },
-    {
-        name: 'JLPT'
     }
 ])
 
