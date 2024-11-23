@@ -36,6 +36,7 @@ onMounted(() => {
 
 <style scoped lang="scss">
     @use '~/assets/styles/module/tags_global' as tags;
+    @use '~/assets/styles/media_screen.scss' as media;
 
     .aurle-home-tag.skin-show {
         $value-skin-show-width: 110px;
@@ -43,6 +44,8 @@ onMounted(() => {
         height: 100%;
 
         .aurle-home-tag__background {
+            display: flex;
+            justify-content: flex-end;
             z-index: 2;
             pointer-events: none;
 

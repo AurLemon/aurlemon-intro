@@ -42,6 +42,7 @@ import PersonalityCard from './tags/PersonalityCard.vue'
 
 <style lang="scss">
     @use '~/assets/styles/module/tags_global' as tags;
+    @use '~/assets/styles/media_screen.scss' as media;
 
     .aurle-home-tags {
         display: grid;
@@ -49,6 +50,17 @@ import PersonalityCard from './tags/PersonalityCard.vue'
         grid-auto-flow: column;
         grid-gap: 0.325rem;
         font-size: 14px;
+
+        @include media.media-screen(mobile) {
+            grid-template-columns: repeat(4, auto);
+            grid-template-rows: auto;
+            grid-auto-flow: row;
+        }
+
+        @include media.media-screen(phone) {
+            width: 100%;
+            grid-template-columns: repeat(2, 1fr);
+        }
 
         .aurle-home-tag {
             font-size: 12px;
@@ -314,6 +326,173 @@ import PersonalityCard from './tags/PersonalityCard.vue'
             &.todo-list {
                 grid-column: span 2;
                 grid-row: span 2;
+            }
+
+            @include media.media-screen(mobile) {
+                &.frontend-dev {
+                    grid-column: 1;
+                    grid-row: 3;
+                }
+
+                &.backend-dev {
+                    grid-column: 2;
+                    grid-row: 3;
+                }
+
+                &.mi-fans {
+                    grid-column: auto;
+                    grid-row: auto;
+                }
+
+                &.embedded-dev {
+                    grid-column: auto;
+                    grid-row: auto;
+                }
+
+                &.computer-science {
+                    grid-column: 2;
+                    grid-row: 5;
+                }
+
+                &.dev-ops {
+                    grid-column: 4;
+                    grid-row: 4;
+                }
+
+                &.long-stick {
+                    grid-column: 4;
+                    grid-row: 5;
+                }
+
+                &.project-show {
+                    grid-column: 1 / span 4;
+                    grid-row: 1 / span 2;
+                    min-height: 300px;
+                }
+
+                &.follow-me {
+                    grid-column: auto;
+                    grid-row: auto;
+                }
+
+                &.transportation {
+                    grid-column: auto;
+                    grid-row: auto;
+                }
+
+                &.college {
+                    grid-column: 4;
+                    grid-row: 6;
+                }
+
+                &.minecraft {
+                    grid-column: auto;
+                    grid-row: auto;
+                }
+
+                &.anime {
+                    grid-column: 4;
+                    grid-row: 3;
+                }
+
+                &.skin-show {
+                    grid-column: 3;
+                    grid-row: 3 / span 2;
+                }
+
+                &.personality {
+                    grid-column: auto;
+                    grid-row: auto;
+                }
+
+                &.todo-list {
+                    grid-column: auto;
+                    grid-row: auto;
+                }
+            }
+
+            @include media.media-screen(phone) {
+                &.frontend-dev {
+                    grid-column: 1;
+                    grid-row: 3 / span 2;
+                }
+
+                &.backend-dev {
+                    grid-column: 1;
+                    grid-row: 5 / span 2;
+                }
+
+                &.mi-fans {
+                    grid-column: 1;
+                    grid-row: 7;
+                }
+
+                &.embedded-dev {
+                    grid-column: auto;
+                    grid-row: auto;
+                }
+
+                &.computer-science {
+                    grid-column: 2;
+                    grid-row: 6;
+                }
+
+                &.dev-ops {
+                    grid-column: auto;
+                    grid-row: 7;
+                }
+
+                &.long-stick {
+                    grid-column: 1 / span 2;
+                    grid-row: 14;
+                }
+
+                &.project-show {
+                    grid-column: 1 / span 2;
+                    grid-row: 1 / span 2;
+                    min-height: 300px;
+                }
+
+                &.follow-me {
+                    grid-column: auto;
+                    grid-row: auto;
+                }
+
+                &.transportation {
+                    grid-column: auto;
+                    grid-row: auto;
+                }
+
+                &.college {
+                    grid-column: 1 / span 2;
+                    grid-row: 10;
+                }
+
+                &.minecraft {
+                    grid-column: auto;
+                    grid-row: auto;
+                }
+
+                &.anime {
+                    grid-column: 1 / span 2;
+                    grid-row: 12 / span 2;
+                    min-height: 200px;
+                }
+
+                &.skin-show {
+                    grid-column: 2;
+                    grid-row: 3 / span 3;
+                }
+
+                &.personality {
+                    grid-column: auto;
+                    grid-row: 11;
+                }
+
+                &.todo-list {
+                    grid-column: auto;
+                    grid-row: 11;
+                }
             }
 
             &:hover {

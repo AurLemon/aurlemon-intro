@@ -14,6 +14,7 @@
 
     .aurle-home-tag.mi-fans {
         display: flex;
+        justify-content: center;
         align-items: center;
         gap: 0.325rem;
         padding: 0.5rem;

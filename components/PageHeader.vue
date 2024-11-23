@@ -21,18 +21,65 @@
                 <NuxtLink to="/about">关于本站</NuxtLink>
             </div>
         </div>
+        <div class="aurle-page-header-mask"></div>
     </header>
 </template>
 
 <style scoped lang="scss">
+    @use '~/assets/styles/media_screen.scss' as media;
+
     .aurle-page-header {
         position: fixed;
         top: 12px;
         left: 15vw;
+        z-index: 99999;
+
+        @include media.media-screen(mobile) {
+            width: 100%;
+            left: 0;
+            right: 0;
+            top: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5rem;
+
+            .aurle-page-header-list {
+                gap: 0.125rem;
+            }
+        }
+        
+        .aurle-page-header-mask {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 80%;
+            mask-image: linear-gradient(180deg, var(--color-surface-0) 10%, transparent 95%);
+            backdrop-filter: blur(24px) saturate(2);
+            pointer-events: none;
+
+            @include media.media-screen(mobile) {
+                position: absolute;
+                bottom: -200%;
+            }
+
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                right: 0;
+                left: 0;
+                bottom: 0;
+                background: var(--background-light-2);
+            }
+        }
 
         .aurle-page-header-list {
             display: flex;
             gap: 0.5rem;
+            position: relative;
+            z-index: 100000;
 
             .aurle-page-header-item {
                 a {
@@ -43,6 +90,10 @@
                     font-size: 14px;
                     font-weight: 600;
                     transition: 150ms;
+
+                    @include media.media-screen(mobile) {
+                        padding: 6px 4px;
+                    }
 
                     &.router-link-active {
                         color: var(--color-text--emphasized);

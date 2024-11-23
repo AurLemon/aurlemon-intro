@@ -67,6 +67,8 @@ const infoTags = ref<UserTag[]>()
 </template>
 
 <style scoped lang="scss">
+    @use '~/assets/styles/media_screen.scss' as media;
+
     .aurle-home {
         display: flex;
         justify-content: center;
@@ -78,7 +80,7 @@ const infoTags = ref<UserTag[]>()
             align-items: center;
             gap: 1rem;
             margin-top: 8rem;
-
+            
             .aurle-home-me__avatar {
                 border: 2px solid #ffca0c;
                 border-radius: 50%;
@@ -96,6 +98,13 @@ const infoTags = ref<UserTag[]>()
                     &:hover {
                         transform: rotate(360deg);
                         filter: brightness(1.75) saturate(1.5);
+                    }
+
+                    @include media.media-screen(mobile) {
+                        &:hover {
+                            transform: unset;
+                            filter: unset;
+                        }
                     }
                 }
             }
@@ -171,6 +180,7 @@ const infoTags = ref<UserTag[]>()
         
         .aurle-home-section {
             display: flex;
+            align-items: center;
             flex-direction: column;
             gap: 1.75rem;
             margin-top: 4rem;
@@ -213,6 +223,19 @@ const infoTags = ref<UserTag[]>()
                     &:active {
                         transform: scale(0.9);
                     }
+                }
+            }
+        }
+
+        @include media.media-screen(phone) {
+            align-items: unset;
+
+            .aurle-home-me {
+                flex-direction: column;
+                gap: 0.25rem;
+
+                .aurle-home-me__nick {
+                    justify-content: center;
                 }
             }
         }

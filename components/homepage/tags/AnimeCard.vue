@@ -63,61 +63,75 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
-@use '~/assets/styles/module/tags_global' as tags;
+    @use '~/assets/styles/module/tags_global' as tags;
+    @use '~/assets/styles/media_screen.scss' as media;
 
-.aurle-home-tag.anime {
-    --anime-card-index: 0;
-    --anime-card-offset: 0;
+    .aurle-home-tag.anime {
+        --anime-card-index: 0;
+        --anime-card-offset: 0;
 
-    .aurle-home-tag__wrapper {
-        position: absolute;
-        top: 0;
-        left: calc(var(--anime-card-index) * 100% + var(--anime-card-offset) * -100%);
-        right: calc(var(--anime-card-index) * -100% + var(--anime-card-offset) * -100%);
-        bottom: 0;
-        width: 100%;
-        height: 100%;
-        transition: 500ms;
-        overflow: hidden;
+        .aurle-home-tag__wrapper {
+            position: absolute;
+            top: 0;
+            left: calc(var(--anime-card-index) * 100% + var(--anime-card-offset) * -100%);
+            right: calc(var(--anime-card-index) * -100% + var(--anime-card-offset) * -100%);
+            bottom: 0;
+            width: 100%;
+            height: 100%;
+            transition: 500ms;
+            overflow: hidden;
 
-        &.current {
-            z-index: 10;
-        }
-
-        .aurle-home-tag__background {
-            img {
-                display: block;
-                width: 100%;
-                object-fit: cover;
-                object-position: top;
-                transform: translate(0, -10%);
-                transition: tags.$value-transition-duration;
+            &.current {
+                z-index: 10;
             }
-        }
 
-        .aurle-home-tag__foreground {
-            display: flex;
-            justify-content: flex-end;
-            flex-direction: column;
-            padding: 0.5rem;
-            background: linear-gradient(35deg, var(--background-dark-2) -50%, transparent 40%);
-
-            .aurle-home-tag__title {
-                color: var(--color-surface-0);
-                font-size: 14px;
-                font-weight: 600;
-                text-shadow: 0 0 3px var(--background-dark-2);
-            }
-        }
-
-        &:hover {
             .aurle-home-tag__background {
                 img {
-                    filter: saturate(1.5);
-                    transform: translate(20%, 5%) scale(1.5);
+                    display: block;
+                    width: 100%;
+                    object-fit: cover;
+                    object-position: top;
+                    transform: translate(0, -10%);
+                    transition: tags.$value-transition-duration;
+                }
+            }
+
+            .aurle-home-tag__foreground {
+                display: flex;
+                justify-content: flex-end;
+                flex-direction: column;
+                padding: 0.5rem;
+                background: linear-gradient(35deg, var(--background-dark-2) -50%, transparent 40%);
+
+                .aurle-home-tag__title {
+                    color: var(--color-surface-0);
+                    font-size: 14px;
+                    font-weight: 600;
+                    text-shadow: 0 0 3px var(--background-dark-2);
+
+                    @include media.media-screen(mobile) {
+                        font-size: 18px;
+                    }
+                }
+            }
+
+            &:hover {
+                .aurle-home-tag__background {
+                    img {
+                        filter: saturate(1.5);
+                        transform: translate(20%, 5%) scale(1.5);
+                    }
+                }
+            }
+
+            @include media.media-screen(mobile) {
+                .aurle-home-tag__background {
+                    img {
+                        height: 100%;
+                        transform: translate(0, 0);
+                    }
                 }
             }
         }
     }
-}
 </style>
