@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import dayjs from 'dayjs'
 
+import GitHubRepo from '~/components/homepage/GitHubRepo.vue';
 import HomeTags from '~/components/homepage/HomeTags.vue';
 import { birthdate, atbeeExamDate } from '../utils/time'
 
@@ -22,7 +23,7 @@ const infoTags = ref<UserTag[]>()
 <template>
     <div class="aurle-home aurle-page">
         <div class="aurle-home-me">
-            <div class="aurle-home-me__avatar">
+            <div class="aurle-home-me__avatar" v-tooltip="{ content: '喜欢我吗？' }">
                 <img src="../assets/images/AurLemon_Avatar.jpg" alt="">
             </div>
             <div class="aurle-home-me__name">
@@ -40,6 +41,7 @@ const infoTags = ref<UserTag[]>()
             </div>
         </div>
         <div class="aurle-home-section">
+            <GitHubRepo />
             <HomeTags />
         </div>
         <div class="aurle-home-basic">
@@ -75,14 +77,47 @@ const infoTags = ref<UserTag[]>()
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-top: 6rem;
+            margin-top: 8rem;
 
-            .aurle-home-me__avatar img {
-                $value-image-length: 88px;
-                width: $value-image-length;
-                height: $value-image-length;
-                border-radius: 50%;
+            .aurle-home-me__avatar {
                 border: 2px solid #ffca0c;
+                border-radius: 50%;
+                overflow: hidden;
+                user-select: none;
+
+                img {
+                    $value-image-length: 88px;
+                    display: block;
+                    width: $value-image-length;
+                    height: $value-image-length;
+                    transition: 750ms;
+                    transition-delay: 50ms;
+
+                    &:hover {
+                        transform: rotate(360deg);
+                        filter: brightness(1.75) saturate(1.5);
+                    }
+                }
+            }
+
+            .aurle-home-me__name {
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+
+                .aurle-home-me__info {
+                    display: flex;
+                    align-items: baseline;
+                    gap: 0.75rem;
+                }
+
+                .aurle-home-me__username {
+                    color: transparent;
+                    font-size: 64px;
+                    font-weight: 600;
+                    font-family: 'Caveat';
+                    line-height: 1;
+                }
             }
 
             .aurle-home-me__name {
@@ -135,7 +170,10 @@ const infoTags = ref<UserTag[]>()
         }
         
         .aurle-home-section {
-            margin-top: 6rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.75rem;
+            margin-top: 4rem;
         }
 
         .aurle-home-basic {

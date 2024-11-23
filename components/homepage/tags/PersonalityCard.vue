@@ -45,6 +45,7 @@
                 font-size: 18px;
                 font-weight: 600;
                 margin-top: 0;
+                height: 24px;
             }
         }
 

@@ -22,8 +22,9 @@ export default defineNuxtConfig({
         "faPenNib",
         "faCodeMerge",
         "faCloud",
+        "faGlobe"
       ],
-      brands: ["faGithub", "faLinkedin", "faNode", "faVuejs", "faFlutter"],
+      brands: ["faGithub", "faLinkedin", "faNode", "faVuejs", "faFlutter", "faBilibili"],
     },
   },
   css: [

@@ -22,6 +22,8 @@
     box-shadow: 0 0 48px var(--background-dark-0);
 
     .aurle-page-sidebar-arrow {
+        user-select: none;
+        
         .material-icons {
             display: block;
             color: var(--color-primary);
