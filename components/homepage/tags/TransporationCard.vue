@@ -34,7 +34,7 @@
                 height: 100%;
                 filter: drop-shadow(0 8px 12px var(--background-dark-0));
                 transform: translate(62%, 0) scale(0.8);
-                object-fit: cover;
+                object-fit: contain;
                 user-select: none;
                 transition: tags.$value-transition-duration;
             }

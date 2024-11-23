@@ -12,19 +12,19 @@ const animeInfo = ref<{
     {
         id: 1,
         title: '#GIRLS BAND CRY',
-        image: '/assets/images/homepage/anime-card/GBC.jpg',
+        image: '/assets/images/homepage/anime-card/GBC.webp',
         tooltip: '这就是我们gbc啊你们有没有这样的gbc，另外关注芸草冰谢谢'
     },
     {
         id: 2,
         title: '#IT\'S MY GO!!!',
-        image: '/assets/images/homepage/anime-card/MYGO.jpg',
+        image: '/assets/images/homepage/anime-card/MYGO.webp',
         tooltip: '我们go批是这样的。。。。'
     },
     {
         id: 3,
         title: '#败犬女主太多了',
-        image: '/assets/images/homepage/anime-card/Make.png',
+        image: '/assets/images/homepage/anime-card/Make.webp',
         tooltip: '我鞠伟大无需多言'
     }
 ])
