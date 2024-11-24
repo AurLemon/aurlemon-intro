@@ -6,6 +6,7 @@ const CACHE_EXPIRATION = 3600 * 1000 * 24 // 缓存有效期（1天）
 let cache: { data: any; timestamp: number } | null = null
 
 export default defineEventHandler(async (event) => {
+    const config = useRuntimeConfig()
     const { user = 'AurLemon' } = getQuery(event)
 
     // 检查缓存
@@ -18,7 +19,7 @@ export default defineEventHandler(async (event) => {
     try {
         const response = await fetch(`https://api.github.com/users/${user}/repos`, {
             headers: {
-                'Authorization': `token ${process.env.GITHUB_TOKEN}`
+                'Authorization': `token ${ config.githubToken }`
             }
         })
         if (!response.ok) {
