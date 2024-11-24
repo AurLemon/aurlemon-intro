@@ -90,7 +90,7 @@ useHead({
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin: 5rem auto;
+            margin: 6rem auto;
             
             .aurle-home-me__avatar {
                 border: 2px solid #ffca0c;
