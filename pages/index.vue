@@ -43,6 +43,19 @@ useHead({
             <HomeTags />
         </div>
         <div class="aurle-home-basic">
+            <div class="aurle-home-info">
+                <div class="aurle-home-friend-links">
+                    <div class="aurle-home-friend-links__title">友好链接</div>
+                    <div class="aurle-home-friend-links__list">
+                        <div class="aurle-home-friend-links__item" v-for="(link, index) in friendLinkStore.friendLink" :key="index" v-tooltip="{ content: `${ link.desc } (${ link.stationmaster.name } / ${ link.stationmaster.contact })` }">
+                            <a :href="link.url" target="_blank">
+                                <img :src="link.icon" v-if="link.icon !== ''">
+                                {{ link.name }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="aurle-home-contact-list">
                 <div class="aurle-home-contact github">
                     <a href="https://github.com/AurLemon" target="_blank">
@@ -58,19 +71,6 @@ useHead({
                     <a href="https://cnblogs.com/AurLemon" target="_blank">
                         <img src="../assets/images/icons/cnblogs_Logo.svg" alt="博客园博客">
                     </a>
-                </div>
-            </div>
-            <div class="aurle-home-info">
-                <div class="aurle-home-friend-links">
-                    <div class="aurle-home-friend-links__title">友好链接</div>
-                    <div class="aurle-home-friend-links__list">
-                        <div class="aurle-home-friend-links__item" v-for="(link, index) in friendLinkStore.friendLink" :key="index" v-tooltip="{ content: `${ link.desc } (${ link.stationmaster.name } / ${ link.stationmaster.contact })` }">
-                            <a :href="link.url" target="_blank">
-                                <img :src="link.icon" v-if="link.icon !== ''">
-                                {{ link.name }}
-                            </a>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -108,7 +108,7 @@ useHead({
 
                     &:hover {
                         transform: rotate(360deg);
-                        filter: brightness(1.75) saturate(1.5);
+                        filter: brightness(1.25) saturate(1.5);
                     }
 
                     @include media.media-screen(mobile) {
@@ -124,37 +124,13 @@ useHead({
                 display: flex;
                 flex-direction: column;
                 gap: 0.25rem;
+                transition: 350ms;
 
                 .aurle-home-me__info {
                     display: flex;
                     align-items: baseline;
                     gap: 0.75rem;
-                }
-
-                .aurle-home-me__username {
-                    color: transparent;
-                    font-size: 64px;
-                    font-weight: 600;
-                    font-family: 'Caveat';
-                    line-height: 1;
-                }
-            }
-
-            .aurle-home-me__name {
-                display: flex;
-                flex-direction: column;
-                gap: 0.25rem;
-
-                .aurle-home-me__info {
-                    display: flex;
-                    align-items: baseline;
-                    gap: 0.75rem;
-                    transition: 350ms;
                     user-select: none;
-
-                    &:hover {
-                        text-shadow: 0 0 64px var(--color-primary);
-                    }
                 }
 
                 .aurle-home-me__username {
@@ -192,6 +168,10 @@ useHead({
                     color: var(--color-surface-4);
                     font-size: 16px;
                 }
+
+                &:hover {
+                    text-shadow: 0 0 64px var(--color-primary);
+                }
             }
         }
         
@@ -206,10 +186,9 @@ useHead({
             display: flex;
             align-items: center;
             flex-direction: column;
-            gap: 0.75rem;
+            gap: 1rem;
             padding: 2px 16px;
-            margin-top: 2rem;
-            margin-bottom: 4rem;
+            margin: 2rem 0 4rem 0;
 
             .aurle-home-contact-list {
                 display: flex;
@@ -245,14 +224,19 @@ useHead({
 
             .aurle-home-info {
                 display: flex;
-                font-size: 14px;
+                font-size: 13px;
                 font-weight: 600;
 
                 .aurle-home-friend-links {
-                    color: var(--color-text--subtle);
                     display: flex;
                     align-items: center;
-                    gap: 0.5rem;
+                    flex-direction: column;
+                    gap: 0.125rem;
+
+                    .aurle-home-friend-links__title {
+                        font-size: 12px;
+                        color: var(--color-text--subtle);
+                    }
 
                     .aurle-home-friend-links__list {
                         display: flex;
@@ -262,7 +246,7 @@ useHead({
                         .aurle-home-friend-links__item {
                             a {
                                 display: block;
-                                padding: 0.125rem 0.5rem;
+                                padding: 0.125rem 0.35rem;
                                 border-radius: 4px;
                                 transition: 150ms;
                                 cursor: pointer;
