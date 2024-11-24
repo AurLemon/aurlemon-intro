@@ -3,12 +3,16 @@
 export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   ssr: true,
-  devtools: { enabled: false },
+  devtools: { enabled: true },
   plugins: [
     "~/plugins/floating-vue.ts",
     "~/plugins/v-clipboard.ts",
   ],
-  modules: ["@pinia/nuxt", "@vesp/nuxt-fontawesome"],
+  modules: [
+    "@pinia/nuxt",
+    'pinia-plugin-persistedstate/nuxt',
+    "@vesp/nuxt-fontawesome"
+  ],
   fontawesome: {
     component: "fa",
     icons: {

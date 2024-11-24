@@ -12,5 +12,6 @@
         flex: 1;
         display: flex;
         padding: 0 1.25rem;
+        padding-top: 3rem;
     }
 </style>
