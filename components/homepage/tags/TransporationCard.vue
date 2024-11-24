@@ -20,6 +20,7 @@
 
 <style scoped lang="scss">
     @use '~/assets/styles/module/tags_global' as tags;
+    @use '~/assets/styles/media_screen.scss' as media;
 
     .aurle-home-tag.transportation {
         $value-roadmap-color: var(--color-primary);
@@ -30,13 +31,16 @@
 
             img {
                 display: block;
-                width: 100%;
                 height: 100%;
                 filter: drop-shadow(0 8px 12px var(--background-dark-0));
                 transform: translate(62%, 0) scale(0.8);
                 object-fit: contain;
                 user-select: none;
                 transition: tags.$value-transition-duration;
+
+                @include media.media-screen(phone) {
+                    transform: translate(35%, 0);
+                }
             }
         }
 
@@ -111,6 +115,10 @@
             .aurle-home-tag__background {
                 img {
                     transform: translate(60%, 0) scale(0.9);
+
+                    @include media.media-screen(phone) {
+                        transform: translate(25%, 0);
+                    }
                 }
             }
 

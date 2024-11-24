@@ -34,21 +34,6 @@
         left: 15vw;
         z-index: 99999;
 
-        @include media.media-screen(mobile) {
-            width: 100%;
-            left: 0;
-            right: 0;
-            top: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0.5rem;
-
-            .aurle-page-header-list {
-                gap: 0.125rem;
-            }
-        }
-        
         .aurle-page-header-mask {
             position: fixed;
             top: 0;
@@ -71,7 +56,7 @@
                 right: 0;
                 left: 0;
                 bottom: 0;
-                background: var(--background-light-2);
+                background: var(--background-light-3);
             }
         }
 
@@ -92,7 +77,7 @@
                     transition: 150ms;
 
                     @include media.media-screen(mobile) {
-                        padding: 6px 4px;
+                        padding: 6px;
                     }
 
                     &.router-link-active {
@@ -108,6 +93,21 @@
                         transition-duration: 80ms;
                     }
                 }
+            }
+        }
+
+        @include media.media-screen(mobile) {
+            width: 100%;
+            left: 0;
+            right: 0;
+            top: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0.5rem;
+
+            .aurle-page-header-list {
+                gap: 0.125rem;
             }
         }
     }

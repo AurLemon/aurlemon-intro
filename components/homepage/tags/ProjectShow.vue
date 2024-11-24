@@ -97,6 +97,7 @@ const projectInfo = ref<{
 
                 .aurle-home-tag__foreground {
                     justify-content: flex-end;
+                    padding: 0.75rem;
                     background: linear-gradient(35deg, var(--color-surface-0) 5%, transparent);
                     backdrop-filter: blur(0.5px) saturate(1.5);
                     transition: 350ms;
