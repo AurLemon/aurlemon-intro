@@ -15,8 +15,8 @@ import SkinShow from './tags/SkinShow.vue'
 import AnimeCard from './tags/AnimeCard.vue'
 import TransporationCard from './tags/TransporationCard.vue'
 import CollegeCard from './tags/CollegeCard.vue'
-import TodoList from './tags/TodoList.vue'
 import PersonalityCard from './tags/PersonalityCard.vue'
+import TodoList from './tags/TodoList.vue'
 </script>
 
 <template>

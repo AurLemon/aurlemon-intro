@@ -1,0 +1,24 @@
+{
+    "friend_link": [
+        {
+            "name": "HydCraft Wiki",
+            "url": "https://wiki.hydcraft.cn/",
+            "desc": "氢气工艺服务器的知识库！",
+            "icon": "",
+            "stationmaster": {
+                "name": "AurLemon",
+                "contact": "aurlemoncn@gmail.com"
+            }
+        },
+        {
+            "name": "Frost-ZX Blog",
+            "url": "https://blog.frost-zx.top/",
+            "desc": "Frost-ZX 的博客，记录一些生活琐事和编程心得。",
+            "icon": "",
+            "stationmaster": {
+                "name": "Frost-ZX",
+                "contact": "frost-zx.github.io"
+            }
+        }
+    ]
+}

@@ -2,9 +2,14 @@
 import { ref } from 'vue'
 import dayjs from 'dayjs'
 
+import { useFriendLinkStore } from '~/stores/friendLink'
+
 import GitHubRepo from '~/components/homepage/GitHubRepo.vue';
 import HomeTags from '~/components/homepage/HomeTags.vue';
 import { birthdate, atbeeExamDate } from '../utils/time'
+
+const friendLinkStore = useFriendLinkStore()
+friendLinkStore.getSettingData()
 
 useHead({
     meta: [
@@ -55,6 +60,19 @@ useHead({
                     </a>
                 </div>
             </div>
+            <div class="aurle-home-info">
+                <div class="aurle-home-friend-links">
+                    <div class="aurle-home-friend-links__title">友好链接</div>
+                    <div class="aurle-home-friend-links__list">
+                        <div class="aurle-home-friend-links__item" v-for="(link, index) in friendLinkStore.friendLink" :key="index" v-tooltip="{ content: `${ link.desc } (${ link.stationmaster.name } / ${ link.stationmaster.contact })` }">
+                            <a :href="link.url" target="_blank">
+                                <img :src="link.icon" v-if="link.icon !== ''">
+                                {{ link.name }}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -64,7 +82,7 @@ useHead({
 
     .aurle-home {
         display: flex;
-        justify-content: center;
+        justify-content: flex-end;
         align-items: center;
         flex-direction: column;
 
@@ -72,7 +90,7 @@ useHead({
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-top: 8rem;
+            margin: 5rem auto;
             
             .aurle-home-me__avatar {
                 border: 2px solid #ffca0c;
@@ -182,16 +200,16 @@ useHead({
             align-items: center;
             flex-direction: column;
             gap: 1.75rem;
-            margin-top: 4rem;
         }
 
         .aurle-home-basic {
             display: flex;
             align-items: center;
             flex-direction: column;
-            gap: 0.25rem;
+            gap: 0.75rem;
             padding: 2px 16px;
             margin-top: 2rem;
+            margin-bottom: 4rem;
 
             .aurle-home-contact-list {
                 display: flex;
@@ -221,6 +239,45 @@ useHead({
 
                     &:active {
                         transform: scale(0.9);
+                    }
+                }
+            }
+
+            .aurle-home-info {
+                display: flex;
+                font-size: 14px;
+                font-weight: 600;
+
+                .aurle-home-friend-links {
+                    color: var(--color-text--subtle);
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+
+                    .aurle-home-friend-links__list {
+                        display: flex;
+                        flex-wrap: wrap;
+                        max-width: 600px;
+
+                        .aurle-home-friend-links__item {
+                            a {
+                                display: block;
+                                padding: 0.125rem 0.5rem;
+                                border-radius: 4px;
+                                transition: 150ms;
+                                cursor: pointer;
+                                user-select: none;
+
+                                &:hover {
+                                    background: var((--border-color-base));
+                                }
+
+                                &:active {
+                                    transform: scale(0.98);
+                                    transition-duration: 80ms;
+                                }
+                            }
+                        }
                     }
                 }
             }

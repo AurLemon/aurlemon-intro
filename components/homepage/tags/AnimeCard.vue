@@ -77,7 +77,7 @@ onMounted(() => {
             right: calc(var(--anime-card-index) * -100%);
             bottom: 0;
             transform: translate(calc(var(--anime-card-offset) * -100%), 0);
-            will-change: left, right;
+            will-change: left, right, transform;
             width: 100%;
             height: 100%;
             transition: 600ms;
