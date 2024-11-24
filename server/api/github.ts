@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
             }
         })
         if (!response.ok) {
-            throw new Error('🍋 server/api/github: Failed to fetch repositories from GitHub')
+            throw new Error('Failed to fetch repositories from GitHub')
         }
 
         const data = await response.json()

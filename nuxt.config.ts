@@ -58,5 +58,8 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' }
       ]
     }
+  },
+  runtimeConfig: {
+    githubToken: process.env.GITHUB_TOKEN ?? 'github_pat_114514',
   }
-});
+})
