@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import languageColorsMap from '~/assets/utils/language_color.json'
+import languageColorsData from '~/assets/utils/language_color.json'
+import type { Config } from '~/assets/utils/language_color.d'
 
-const languageColors: any = languageColorsMap // 懒得标类型了 谁有意见？
+const languageColors = languageColorsData as unknown as Config // 我觉得是可信的👍
+
 const GITHUB_USER_NAME = 'AurLemon'
 
 interface Repository {

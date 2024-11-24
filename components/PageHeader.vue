@@ -39,14 +39,14 @@
             top: 0;
             right: 0;
             left: 0;
-            bottom: 80%;
+            bottom: 90%;
             mask-image: linear-gradient(180deg, var(--color-surface-0) 10%, transparent 95%);
             backdrop-filter: blur(24px) saturate(2);
             pointer-events: none;
 
             @include media.media-screen(mobile) {
                 position: absolute;
-                bottom: -200%;
+                bottom: -220%;
             }
 
             &::before {
