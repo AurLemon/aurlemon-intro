@@ -11,13 +11,6 @@ useHead({
         { name: 'description', content: 'AurLemon 的介绍网站！' }
     ]
 })
-
-interface UserTag {
-    id: number
-    label: string
-    color?: string
-}
-const infoTags = ref<UserTag[]>()
 </script>
 
 <template>
@@ -138,6 +131,12 @@ const infoTags = ref<UserTag[]>()
                     display: flex;
                     align-items: baseline;
                     gap: 0.75rem;
+                    transition: 350ms;
+                    user-select: none;
+
+                    &:hover {
+                        text-shadow: 0 0 64px var(--color-primary);
+                    }
                 }
 
                 .aurle-home-me__username {
@@ -227,9 +226,11 @@ const infoTags = ref<UserTag[]>()
             }
         }
 
-        @include media.media-screen(phone) {
+        @include media.media-screen(mobile) {
             align-items: unset;
+        }
 
+        @include media.media-screen(phone) {
             .aurle-home-me {
                 flex-direction: column;
                 gap: 0.25rem;

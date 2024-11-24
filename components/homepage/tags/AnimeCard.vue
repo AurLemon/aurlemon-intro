@@ -73,12 +73,14 @@ onMounted(() => {
         .aurle-home-tag__wrapper {
             position: absolute;
             top: 0;
-            left: calc(var(--anime-card-index) * 100% + var(--anime-card-offset) * -100%);
-            right: calc(var(--anime-card-index) * -100% + var(--anime-card-offset) * -100%);
+            left: calc(var(--anime-card-index) * 100%);
+            right: calc(var(--anime-card-index) * -100%);
             bottom: 0;
+            transform: translate(calc(var(--anime-card-offset) * -100%), 0);
+            will-change: left, right;
             width: 100%;
             height: 100%;
-            transition: 500ms;
+            transition: 600ms;
             overflow: hidden;
 
             &.current {
