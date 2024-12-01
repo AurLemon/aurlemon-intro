@@ -196,7 +196,6 @@ useHead({
                 gap: 0.75rem;
 
                 .aurle-home-contact {
-                    padding: 0.25rem;
                     border-radius: 9999px;
                     transition: 150ms;
                     user-select: none;
@@ -204,6 +203,7 @@ useHead({
 
                     a {
                         display: flex;
+                        padding: 0.25rem;
                     }
 
                     img {

@@ -67,6 +67,8 @@
     --color-text--emphasized: hsl(var(--color-primary__h), 85%, 5%);
     --color-text--subtle: hsl(var(--color-primary__h), 30%, 35%);
     --color-text--weaken: hsl(var(--color-primary__h), 15%, 60%);
+    --success-color: #00ba68;
+    --failed-color: #c73413;
 }
 
 ::selection {

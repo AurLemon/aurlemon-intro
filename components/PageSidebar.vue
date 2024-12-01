@@ -1,46 +1,82 @@
+<script setup lang="ts">
+import InfoPanel from './InfoPanel.vue';
+import { useInfoPanel } from '~/stores/infoPanel'
+
+const infoPanel = useInfoPanel()
+</script>
+
 <template>
-    <aside class="aurle-page-sidebar">
-        <div class="aurle-page-sidebar-buttons"></div>
-        <div class="aurle-page-sidebar-arrow">
-            <span class="material-icons">keyboard_arrow_down</span>
+    <div class="aurle-page-sidebar">
+        <InfoPanel />
+        <div class="aurle-page-sidebar-arrow" @click="infoPanel.togglePanel" :class="{ active: infoPanel.panelStatus }">
+            <span class="material-icons" v-if="!infoPanel.panelStatus">keyboard_arrow_down</span>
+            <span class="material-icons" v-else>close</span>
         </div>
-    </aside>
+    </div>
 </template>
 
 <style scoped lang="scss">
     @use '~/assets/styles/media_screen.scss' as media;
 
     .aurle-page-sidebar {
-        $value-sidebar-border-radius: 28px;
-        display: flex;
-        flex-direction: column;
-        position: fixed;
-        right: 15vw;
-        z-index: 100001;
-        padding: 12px 8px 10px 8px;
-        border: 0.5px solid var(--background-dark-0);
-        border-top: none;
-        border-radius: 0 0 $value-sidebar-border-radius $value-sidebar-border-radius;
-        background: #fff;
-        box-shadow: 0 0 48px var(--background-dark-0);
-
         .aurle-page-sidebar-arrow {
-            user-select: none;
+            $value-sidebar-border-radius: 28px;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            right: 15vw;
+            z-index: 100001;
+            padding: 1rem 6px 6px 6px;
+            border: 0.5px solid var(--background-dark-0);
+            border-top: none;
+            border-radius: 0 0 $value-sidebar-border-radius $value-sidebar-border-radius;
+            background: #fff;
+            box-shadow: 0 0 48px var(--background-dark-0);
+            transition: 250ms;
+            transform: translateY(-10px);
+            cursor: pointer;
             
             .material-icons {
                 display: block;
                 color: var(--color-primary);
-                font-size: 28px;
+                font-size: 24px;
+                user-select: none;
             }
-        }
 
-        @include media.media-screen(mobile) {
-            right: 1.5rem;
-            bottom: 1.5rem;
-            padding: 8px;
-            transform: rotate(180deg);
-            border-top: unset;
-            border-radius: $value-sidebar-border-radius;
+            &:hover {
+                transform: translateY(0);
+            }
+
+            &:active {
+                transform: scale(0.95);
+                transition-duration: 80ms;
+            }
+
+            &.active {
+                right: 1.5rem;
+                bottom: 2.5rem;
+                padding: 8px;
+                transform: translateY(0);
+                border-top: unset;
+                border-radius: $value-sidebar-border-radius;
+
+                .material-icons {
+                    color: var(--failed-color);
+                }
+
+                &:hover {
+                    transform: translateY(2px);
+                }
+            }
+
+            @include media.media-screen(mobile) {
+                right: 1.5rem;
+                bottom: 1.5rem;
+                padding: 8px;
+                transform: rotate(180deg);
+                border-top: unset;
+                border-radius: $value-sidebar-border-radius;
+            }
         }
     }
 </style>
