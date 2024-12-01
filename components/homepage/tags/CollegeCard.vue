@@ -92,7 +92,7 @@ const currentCollegeInfo = computed(() => {
             .aurle-home-tag__badge {
                 opacity: 0.5;
                 filter: saturate(0.25);
-                transform: scale(0.75);
+                transform: scale(0.9);
                 transition: tags.$value-transition-duration;
                 margin: 0 0.125rem;
                 user-select: none;

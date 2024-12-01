@@ -71,7 +71,7 @@ const infoPanel = useInfoPanel()
 
             @include media.media-screen(mobile) {
                 right: 1.5rem;
-                bottom: 1.5rem;
+                bottom: 2.5rem;
                 padding: 8px;
                 transform: rotate(180deg);
                 border-top: unset;
