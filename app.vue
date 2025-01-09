@@ -6,19 +6,19 @@ import PageFooter from './components/PageFooter.vue';
 </script>
 
 <template>
-  <div class="aurle-app">
-    <PageHeader />
-    <PageSidebar />
-    <PageContainer />
-    <PageFooter />
-  </div>
+    <div class="aurle-app">
+        <PageHeader />
+        <PageSidebar />
+        <PageContainer />
+        <PageFooter />
+    </div>
 </template>
 
 <style lang="scss" scoped>
-  .aurle-app {
+.aurle-app {
     display: flex;
     flex-direction: column;
     width: 100%;
     min-height: 100vh;
-  }
+}
 </style>

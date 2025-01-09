@@ -7,18 +7,23 @@
         <div class="aurle-page-header-list">
             <div class="aurle-page-header-item">
                 <NuxtLink to="/">初次见面</NuxtLink>
+                <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-accent/0 via-accent/70 to-accent/0"></span>
             </div>
             <div class="aurle-page-header-item">
                 <NuxtLink to="/experience">认识下我</NuxtLink>
+                <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-accent/0 via-accent/70 to-accent/0"></span>
             </div>
             <div class="aurle-page-header-item">
                 <NuxtLink to="/college">我的学业</NuxtLink>
+                <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-accent/0 via-accent/70 to-accent/0"></span>
             </div>
             <div class="aurle-page-header-item">
                 <NuxtLink to="/profile">个人画像</NuxtLink>
+                <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-accent/0 via-accent/70 to-accent/0"></span>
             </div>
             <div class="aurle-page-header-item">
                 <NuxtLink to="/about">关于本站</NuxtLink>
+                <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-accent/0 via-accent/70 to-accent/0"></span>
             </div>
         </div>
         <div class="aurle-page-header-mask"></div>
@@ -75,6 +80,7 @@
                     font-size: 14px;
                     font-weight: 600;
                     transition: 150ms;
+                    position: relative;
 
                     @include media.media-screen(mobile) {
                         padding: 6px;
