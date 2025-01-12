@@ -2,9 +2,9 @@
 import { ref } from 'vue'
 
 useHead({
-    title: '个人画像 / AurLemon Intro',
+    title: '成分 / AurLemon Intro',
     meta: [
-        { name: 'description', content: 'AurLemon 的个人信息介绍' }
+        { name: 'description', content: '查查我的成分。' }
     ]
 })
 </script>

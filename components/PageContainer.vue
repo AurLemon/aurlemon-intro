@@ -12,9 +12,8 @@ import InfoAnnouncement from './common/InfoAnnouncement.vue';
 <style scoped lang="scss">
     .aurle-page-container {
         flex: 1;
+        min-height: 100vh;
         display: flex;
-        margin: 0 1.25rem;
-        margin-top: 3rem;
         position: relative;
     }
 </style>

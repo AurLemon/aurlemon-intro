@@ -1,120 +1,240 @@
 <script setup lang="ts">
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { useInfoPanel } from '~/stores/infoPanel'
 
+const infoPanel = useInfoPanel()
+const headerList = ref<HTMLElement | null>(null)
+
+const targetX = ref(0)
+const targetY = ref(0)
+
+const pointerX = ref(0)
+const pointerY = ref(0)
+
+const offsetX = ref(0)
+const offsetY = ref(12)
+
+const updateTargetPosition = (event: MouseEvent) => {
+    if (!headerList.value) return
+
+    const x = event.clientX
+    const y = event.clientY
+
+    targetX.value = x - offsetX.value
+    targetY.value = y - offsetY.value
+}
+
+const calculateOffset = () => {
+    if (headerList.value) {
+        const rect = headerList.value.getBoundingClientRect()
+        offsetX.value = rect.left
+    }
+}
+
+const smoothUpdate = () => {
+    const easeFactor = 0.2
+    pointerX.value += (targetX.value - pointerX.value) * easeFactor
+    pointerY.value += (targetY.value - pointerY.value) * easeFactor
+
+    requestAnimationFrame(smoothUpdate)
+}
+
+onMounted(() => {
+    nextTick(() => calculateOffset())
+    window.addEventListener('resize', calculateOffset)
+    document.addEventListener('mousemove', updateTargetPosition)
+    smoothUpdate()
+})
+
+onUnmounted(() => {
+    window.removeEventListener('resize', calculateOffset)
+    document.removeEventListener('mousemove', updateTargetPosition)
+})
 </script>
 
 <template>
     <header class="aurle-page-header">
-        <div class="aurle-page-header-list">
-            <div class="aurle-page-header-item">
-                <NuxtLink to="/">初次见面</NuxtLink>
-                <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-accent/0 via-accent/70 to-accent/0"></span>
+        <div class="aurle-page-header-list" ref="headerList">
+            <div class="aurle-page-header-pointer"
+                :style="{ background: `radial-gradient(100px circle at ${pointerX}px ${pointerY}px, var(--background-color-primary--active) 0%, transparent 65%)` }">
             </div>
-            <div class="aurle-page-header-item">
-                <NuxtLink to="/experience">认识下我</NuxtLink>
-                <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-accent/0 via-accent/70 to-accent/0"></span>
+            <div class="aurle-page-header-avatar">
+                <img src="~/assets/images/AurLemon_Avatar.jpg" />
             </div>
-            <div class="aurle-page-header-item">
-                <NuxtLink to="/college">我的学业</NuxtLink>
-                <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-accent/0 via-accent/70 to-accent/0"></span>
-            </div>
-            <div class="aurle-page-header-item">
-                <NuxtLink to="/profile">个人画像</NuxtLink>
-                <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-accent/0 via-accent/70 to-accent/0"></span>
-            </div>
-            <div class="aurle-page-header-item">
-                <NuxtLink to="/about">关于本站</NuxtLink>
-                <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-accent/0 via-accent/70 to-accent/0"></span>
+            <div class="aurle-page-header-link">
+                <div class="aurle-page-header-item">
+                    <NuxtLink to="/">首页</NuxtLink>
+                </div>
+                <div class="aurle-page-header-item">
+                    <NuxtLink to="/desc">自述</NuxtLink>
+                </div>
+                <div class="aurle-page-header-item">
+                    <NuxtLink to="/profile">成分</NuxtLink>
+                </div>
+                <div class="aurle-page-header-item">
+                    <NuxtLink to="/project">项目</NuxtLink>
+                </div>
+                <div class="aurle-page-header-item">
+                    <NuxtLink to="/more">更多</NuxtLink>
+                </div>
             </div>
         </div>
-        <div class="aurle-page-header-mask"></div>
+        <div class="aurle-page-header-panel" @click="infoPanel.togglePanel">
+            <div class="material-icons">keyboard_arrow_down</div>
+        </div>
     </header>
 </template>
 
 <style scoped lang="scss">
-    @use '~/assets/styles/media_screen.scss' as media;
+@use '~/assets/styles/media_screen.scss' as media;
 
-    .aurle-page-header {
-        position: fixed;
-        top: 12px;
-        left: 15vw;
-        z-index: 99999;
+.aurle-page-header {
+    position: fixed;
+    top: 0.75rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 99999;
 
-        .aurle-page-header-mask {
-            position: fixed;
+    .aurle-page-header-list {
+        display: flex;
+        align-items: center;
+        padding: 0 0.5rem;
+        background: #fff;
+        border: 1px solid var(--border-color-base);
+        border-radius: 32px;
+        backdrop-filter: blur(32px) saturate(1.5);
+        box-shadow: 0 32px 48px var(--border-color-base);
+        overflow: hidden;
+
+        .aurle-page-header-pointer {
+            position: absolute;
             top: 0;
-            right: 0;
             left: 0;
-            bottom: 90%;
-            mask-image: linear-gradient(180deg, var(--color-surface-0) 10%, transparent 95%);
-            backdrop-filter: blur(24px) saturate(2);
-            pointer-events: none;
+            right: 0;
+            bottom: 0;
+            opacity: 0.75;
+            filter: blur(16px);
+        }
 
-            @include media.media-screen(mobile) {
-                position: absolute;
-                bottom: -220%;
-            }
+        .aurle-page-header-avatar {
+            position: relative;
+            z-index: 100000;
+            margin: auto 0.375rem;
 
-            &::before {
-                content: '';
-                position: absolute;
-                top: 0;
-                right: 0;
-                left: 0;
-                bottom: 0;
-                background: var(--background-light-3);
+            img {
+                $image-length: 24px;
+                display: block;
+                width: $image-length;
+                height: $image-length;
+                border: 0.5px solid #B7D9EB;
+                border-radius: 50%;
             }
         }
 
-        .aurle-page-header-list {
+        .aurle-page-header-link {
             display: flex;
-            gap: 0.5rem;
+            align-items: center;
+            gap: 1.75rem;
+            margin: 0 1.25rem;
+        }
+
+        .aurle-page-header-item {
+            $item-transition-duration: 250ms ease-in-out;
             position: relative;
             z-index: 100000;
 
-            .aurle-page-header-item {
-                a {
-                    display: block;
-                    padding: 6px 16px;
-                    border-radius: 8px;
-                    color: var(--color-text--weaken);
-                    font-size: 14px;
+            a {
+                display: block;
+                padding: 0.5rem 0;
+                color: var(--color-text);
+                font-size: 14px;
+                line-height: normal;
+                transition: $item-transition-duration;
+
+                @include media.media-screen(mobile) {
+                    padding: 6px;
+                }
+
+                &::after {
+                    $offset-position: 0.125rem;
+                    content: '';
+                    position: absolute;
+                    left: 50%;
+                    bottom: -0.5px;
+                    background: linear-gradient(to right, transparent 5%, var(--color-primary) 50%, transparent 95%);
+                    width: 2.25rem;
+                    height: $offset-position;
+                    transform: translateX(-50%) translateY(4px);
+                    transition: $item-transition-duration;
+                }
+
+                &.router-link-active {
+                    color: var(--color-primary);
                     font-weight: 600;
-                    transition: 150ms;
-                    position: relative;
 
-                    @include media.media-screen(mobile) {
-                        padding: 6px;
+                    &::after {
+                        width: 2.75rem;
+                        transform: translateX(-50%) translateY(0);
                     }
+                }
 
-                    &.router-link-active {
-                        color: var(--color-text--emphasized);
-                    }
+                &:hover {
+                    color: var(--color-primary);
 
-                    &:hover {
-                        background: var(--background-dark-0);
-                    }
-
-                    &:active {
-                        transform: scale(0.95);
-                        transition-duration: 80ms;
-                    }
+                    
                 }
             }
         }
+    }
 
-        @include media.media-screen(mobile) {
-            width: 100%;
-            left: 0;
-            right: 0;
-            top: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 0.5rem;
+    @keyframes float {
 
-            .aurle-page-header-list {
-                gap: 0.125rem;
+        from,
+        to {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(3px);
+        }
+    }
+
+    .aurle-page-header-panel {
+        width: fit-content;
+        left: 50%;
+        position: relative;
+        transform: translateX(-50%);
+        margin-top: 0.125rem;
+        animation: float 2s ease infinite;
+
+        .material-icons {
+            color: var(--color-surface-4);
+            font-size: 20px;
+            user-select: none;
+            cursor: pointer;
+            padding: 0.125rem;
+            border-radius: 50%;
+            transition: 150ms;
+
+            &:hover {
+                background: var(--background-dark-0);
             }
         }
     }
+
+    @include media.media-screen(mobile) {
+        width: 100%;
+        left: 0;
+        right: 0;
+        top: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0.5rem;
+
+        .aurle-page-header-list {
+            gap: 0.125rem;
+        }
+    }
+}
 </style>
