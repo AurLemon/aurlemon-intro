@@ -1,7 +1,4 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-import tailwindcss from "tailwindcss";
-import autoprefixer from "autoprefixer";
-
 export default defineNuxtConfig({
     compatibilityDate: "2024-04-03",
     ssr: true,
@@ -36,13 +33,9 @@ export default defineNuxtConfig({
     css: [
         "~/assets/styles/global.scss",
         "material-icons/iconfont/material-icons.css",
-        "~/assets/styles/tailwind.css",
     ],
     vite: {
         css: {
-            postcss: {
-                plugins: [tailwindcss(), autoprefixer()],
-            },
             preprocessorOptions: {
                 scss: {
                     api: "modern-compiler",
@@ -67,6 +60,6 @@ export default defineNuxtConfig({
         },
     },
     runtimeConfig: {
-        githubToken: process.env.GITHUB_TOKEN ?? "github_pat_114514",
+        githubToken: process.env.GITHUB_TOKEN ?? "github_pat",
     },
 });
