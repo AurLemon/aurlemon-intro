@@ -42,10 +42,10 @@ onMounted(() => {
         display: flex;
         align-items: center;
         flex-direction: column;
-        position: absolute;
-        top: 2rem;
-        left: 1.5rem;
+        position: fixed;
         right: 1.5rem;
+        bottom: 2rem;
+        z-index: 1;
         transform: scaleY(0);
         transition: 300ms;
         pointer-events: none;
@@ -55,13 +55,16 @@ onMounted(() => {
             align-items: center;
             gap: 0.25rem;
             color: var(--color-text--subtle);
-            font-size: 12px;
+            font-size: 14px;
             font-weight: 600;
-            padding: 0.25rem 0.75rem;
+            width: 100%;
+            max-width: 350px;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color-base--darker);
             border-radius: 8px;
             background-color: #fff;
+            box-shadow: 0 0 64px var(--border-color-base);
             pointer-events: all;
-            max-width: 750px;
 
             .aurle-announcement-item__icon {
                 .material-icons {

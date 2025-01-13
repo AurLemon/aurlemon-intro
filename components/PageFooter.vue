@@ -13,16 +13,16 @@ const miitRegisterCode = ref<string>('闽ICP备2023007345号-3')
                     <div class="aurle-page-footer__title">周边网站</div>
                     <div class="aurle-page-footer__item">
                         <div class="aurle-page-footer__target">
-                            <a href="" target="_blank">博客</a>
+                            <a href="https://cnblogs.com/AurLemon/" target="_blank">博客</a>
                         </div>
                         <div class="aurle-page-footer__target">
-                            <a href="" target="_blank">GitHub</a>
+                            <a href="https://github.com/AurLemon/" target="_blank">GitHub</a>
                         </div>
                         <div class="aurle-page-footer__target">
-                            <a href="" target="_blank">计划表</a>
+                            <a href="https://plan.aurlemon.top/" target="_blank">计划表</a>
                         </div>
                         <div class="aurle-page-footer__target">
-                            <a href="" target="_blank">知识库</a>
+                            <a href="https://wiki.aurlemon.top/" target="_blank">知识库</a>
                         </div>
                     </div>
                 </div>
@@ -30,10 +30,10 @@ const miitRegisterCode = ref<string>('闽ICP备2023007345号-3')
                     <div class="aurle-page-footer__title">建设</div>
                     <div class="aurle-page-footer__item">
                         <div class="aurle-page-footer__target">
-                            <a href="" target="_blank">友链</a>
+                            <a href="/friends" target="_blank">友链</a>
                         </div>
                         <div class="aurle-page-footer__target">
-                            <a href="" target="_blank">关于本站</a>
+                            <a href="/about" target="_blank">关于本站</a>
                         </div>
                     </div>
                 </div>
@@ -41,7 +41,7 @@ const miitRegisterCode = ref<string>('闽ICP备2023007345号-3')
                     <div class="aurle-page-footer__title">相关业务</div>
                     <div class="aurle-page-footer__item">
                         <div class="aurle-page-footer__target">
-                            <a href="" target="_blank">氢气工艺维基站</a>
+                            <a href="https://wiki.hydcraft.cn/" target="_blank">氢气工艺维基站</a>
                         </div>
                     </div>
                 </div>
@@ -77,7 +77,7 @@ const miitRegisterCode = ref<string>('闽ICP备2023007345号-3')
     .aurle-page-footer {
         background: var(--color-surface-0);
         border-top: 1px solid var(--border-color-base);
-        box-shadow: 0 -32px 128px rgba(140, 177, 191, 0.05);
+        box-shadow: 0 -96px 128px rgba(255, 255, 255, 0.6);
 
         .aurle-page-footer__wrapper {
             display: flex;
