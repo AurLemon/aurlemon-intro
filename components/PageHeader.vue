@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { gsap } from 'gsap'
 import { useInfoPanel } from '~/stores/infoPanel'
 
 const infoPanel = useInfoPanel()
@@ -39,6 +40,30 @@ const smoothUpdate = () => {
     requestAnimationFrame(smoothUpdate)
 }
 
+const handleHeaderClick = () => {
+    if (!headerList.value) return
+
+    gsap.to(headerList.value, {
+        y: 6,
+        duration: 0.15,
+        ease: 'power2.out',
+        onComplete: () => {
+            gsap.to(headerList.value, {
+                y: -4,
+                duration: 0.2,
+                ease: 'back.out(1.7)',
+                onComplete: () => {
+                    gsap.to(headerList.value, {
+                        y: 0,
+                        duration: 0.15,
+                        ease: 'power2.inOut',
+                    })
+                }
+            })
+        }
+    })
+}
+
 onMounted(() => {
     nextTick(() => calculateOffset())
     window.addEventListener('resize', calculateOffset)
@@ -54,7 +79,7 @@ onUnmounted(() => {
 
 <template>
     <header class="aurle-page-header">
-        <div class="aurle-page-header-list" ref="headerList">
+        <div class="aurle-page-header-list" ref="headerList" @click="handleHeaderClick">
             <div class="aurle-page-header-pointer"
                 :style="{ background: `radial-gradient(100px circle at ${pointerX}px ${pointerY}px, var(--background-color-primary--active) 0%, transparent 65%)` }">
             </div>
@@ -99,12 +124,13 @@ onUnmounted(() => {
             display: flex;
             align-items: center;
             padding: 0 0.5rem;
-            background: #fff;
+            background: var(--background-light-4);
             border: 1px solid var(--border-color-base);
             border-radius: 32px;
             backdrop-filter: blur(32px) saturate(1.5);
             box-shadow: 0 32px 48px var(--border-color-base);
             overflow: hidden;
+            transition: 300ms;
 
             .aurle-page-header-pointer {
                 position: absolute;
@@ -213,10 +239,6 @@ onUnmounted(() => {
                     background: var(--background-dark-0);
                 }
             }
-        }
-
-        @include media.media-screen(mobile) {
-        
         }
     }
 </style>

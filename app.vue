@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import InfoPanel from './components/InfoPanel.vue';
-import PageHeader from './components/PageHeader.vue';
-import PageContainer from './components/PageContainer.vue';
-import PageFooter from './components/PageFooter.vue';
+import InfoPanel from './components/InfoPanel.vue'
+import PageHeader from './components/PageHeader.vue'
+import PageContainer from './components/PageContainer.vue'
+import PageFooter from './components/PageFooter.vue'
 </script>
 
 <template>

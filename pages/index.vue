@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import dayjs from 'dayjs'
 
 import { useFriendLinkStore } from '~/stores/friendLink'
@@ -7,9 +7,38 @@ import { useFriendLinkStore } from '~/stores/friendLink'
 import GitHubRepo from '~/components/homepage/GitHubRepo.vue';
 import HomeTags from '~/components/homepage/HomeTags.vue';
 import { birthdate, atbeeExamDate } from '../utils/time'
+import SlideFlow from '~/components/homepage/SlideFlow.vue';
 
 const friendLinkStore = useFriendLinkStore()
 friendLinkStore.getSettingData()
+
+const scrollProgress = ref(0)
+
+const updateScrollProgress = () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop
+    const docHeight = document.documentElement.scrollHeight
+    const winHeight = window.innerHeight
+
+    const progress = (scrollTop / (docHeight - winHeight)) * 100;
+    scrollProgress.value = Math.min(Math.max(progress, 0), 100);    
+}
+
+const backgroundOffsetValue = ref(0)
+const backgroundAnimation = () => {
+    const footer = document.querySelector('footer.aurle-page-footer') as HTMLElement
+    const footerHeight = footer.offsetHeight || 160
+    backgroundOffsetValue.value = footerHeight * scrollProgress.value / 100
+}
+
+watch(scrollProgress, backgroundAnimation)
+
+onMounted(() => {
+    window.addEventListener('scroll', updateScrollProgress)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('scroll', updateScrollProgress)
+})
 
 useHead({
     meta: [
@@ -42,9 +71,17 @@ useHead({
                 </div>
                 <div class="aurle-home-greeting">
                     👏🥵 你好啊小朋友<br>
-                    居然会有人来看我 /(ㄒoㄒ)/~~
+                    居然会有人来看我这破网站 /(ㄒoㄒ)/~~<br>
+                    <s>（爬虫都不稀罕的）</s>
                 </div>
-                <div class="aurle-home-saying"></div>
+                <div class="aurle-home-bottom">
+                    <SlideFlow />
+                    <div class="aurle-home-status">
+                        <div class="aurle-home-status__item left"></div>
+                        <div class="aurle-home-status__item center">主动思考 · 实践与总结 · 做一颗好的螺丝钉 · 保持谦逊 · 多玩抽象</div>
+                        <div class="aurle-home-status__item right"></div>
+                    </div>
+                </div>
             </div>
             <div class="aurle-home-section user-tag">
                 <div class="aurle-home-section">
@@ -53,11 +90,11 @@ useHead({
                 </div>
             </div>
         </div>
-        <div class="aurle-page-background">
-            <div class="circle circle-top-left"></div>
-            <div class="circle circle-top-right"></div>
-            <div class="circle circle-bottom-left"></div>
-            <div class="circle circle-bottom-right"></div>
+        <div class="aurle-page-background" :style="{ opacity: 1 - scrollProgress / 100 }">
+            <div class="circle circle-top-left" :style="{ transform: `translateY(-${ backgroundOffsetValue }px)` }"></div>
+            <div class="circle circle-top-right" :style="{ transform: `translateY(-${ backgroundOffsetValue }px)` }"></div>
+            <div class="circle circle-bottom-left" :style="{ transform: `translateY(-${ backgroundOffsetValue }px)` }"></div>
+            <div class="circle circle-bottom-right" :style="{ transform: `translateY(-${ backgroundOffsetValue }px)` }"></div>
         </div>
     </div>
 </template>
@@ -65,70 +102,95 @@ useHead({
 <style scoped lang="scss">
 @use '~/assets/styles/media_screen.scss' as media;
 
-.aurle-page-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    filter: blur(64px) opacity(0.2);
-
-    .circle {
-        position: relative;
-        border-radius: 50%;
-        width: 30vw;
-        height: 30vw;
-    }
-
-    .circle-top-left {
-        transform: scale(0.8) translate(-60px, -80px);
-        background: hsl(205, 70, 75);
-    }
-
-    .circle-top-right {
-        margin-left: auto;
-        transform: translate(50px, 20px);
-        background: hsl(239, 72, 75);
-    }
-
-    .circle-bottom-left {
-        transform: scale(1.2) translate(-40px, 80px);
-        background: hsl(185, 83, 75);
-    }
-
-    .circle-bottom-right {
-        margin-left: auto;
-        transform: scale(0.82) translate(50px, 100px);
-        background: hsl(73, 66, 75);
-    }
-}
-
-.aurle-page-foreground {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    flex-direction: column;
-    position: relative;
-    z-index: 1;
-}
-
 .aurle-home {
+    .aurle-page-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -1;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+
+        .circle {
+            position: relative;
+            border-radius: 50%;
+            width: 100%;
+            height: 100%;
+            max-width: 800px;
+            max-height: 800px;
+            transition: 350ms ease-in-out;
+            filter: blur(72px) saturate(1.25) opacity(0.5);
+        }
+
+        @mixin zoom-keyframes($name, $scale, $offsetX, $offsetY) {
+            animation: #{$name} 4s infinite ease-in-out;
+
+            @keyframes #{$name} {
+                from, to {
+                    transform: translate(#{$offsetX}, #{$offsetY}) scale(#{$scale});
+                }
+
+                50% {
+                    transform: translate(#{$offsetX}, #{$offsetY}) scale(#{$scale * 1.2});
+                }
+            }
+        }
+
+        .circle-top-left {
+            background: radial-gradient(circle at center, rgba(147, 199, 236, 0.5) 0%, transparent 65%);
+            @include zoom-keyframes('zoom-top-left', 0.9, -15%, -15%);
+        }
+
+        .circle-top-right {
+            margin-left: auto;
+            background: radial-gradient(circle at center, rgba(178, 180, 255, 0.5) 0%, transparent 65%);
+            @include zoom-keyframes('zoom-top-right', 1.25, 10%, -10%);
+        }
+
+        .circle-bottom-left {
+            background: radial-gradient(circle at center, rgba(138, 235, 244, 0.5) 0%, transparent 65%);
+            @include zoom-keyframes('zoom-bottom-left', 1.15, -10%, 15%);
+        }
+
+        .circle-bottom-right {
+            margin-left: auto;
+            background: radial-gradient(circle at center, rgba(215, 233, 149, 0.5) 0%, transparent 65%);
+            @include zoom-keyframes('zoom-bottom-right', 1, 25%, 45%);
+        }
+    }
+
+    .aurle-page-foreground {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        flex-direction: column;
+        position: relative;
+        z-index: 1;
+    }
+
     .aurle-home-section {
         display: flex;
+        justify-content: center;
         flex-direction: column;
+        width: 75vw;
         height: 100dvh;
         padding: 1.75rem;
+
+        @include media.media-screen(mobile) {
+            width: 100%;
+        }
     }
 
     .aurle-home-me {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        gap: 5rem;
+        gap: 4rem;
+        width: 100%;
+        max-width: media.$media-screen-value-phone;
         margin: auto;
 
         .aurle-home-me__avatar {
@@ -139,7 +201,7 @@ useHead({
             user-select: none;
 
             img {
-                $value-image-length: 10rem;
+                $value-image-length: 12rem;
                 display: block;
                 width: $value-image-length;
                 height: $value-image-length;
@@ -163,7 +225,7 @@ useHead({
 
             .aurle-home-me__username {
                 color: transparent;
-                font-size: 72px;
+                font-size: 80px;
                 font-weight: 600;
                 font-family: 'Caveat';
                 line-height: 1;
@@ -173,7 +235,6 @@ useHead({
 
             .aurle-home-me__nick {
                 color: var(--color-text--subtle);
-                font-size: 16px;
                 display: flex;
                 align-items: center;
                 flex-wrap: wrap;
@@ -196,22 +257,37 @@ useHead({
                 color: var(--color-surface-4);
                 font-size: 18px;
             }
-
-            &:hover {
-                text-shadow: 0 0 64px var(--color-primary);
-            }
         }
     }
 
     .aurle-home-greeting {
+        color: var(--color-text--emphasized);
         text-align: center;
+        position: relative;
+        z-index: 5;
     }
 
-    .aurle-home-section {
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        gap: 1.75rem;
+
+    .aurle-home-bottom {
+        margin-top: auto;
+        perspective: 700px;
+        position: relative;
+
+        .aurle-home-status {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--color-text--subtle);
+            font-size: 14px;
+            padding: 0.375rem 1rem;
+            background: var(--background-light-4);
+            border: 1px solid var(--border-color-base--darker);
+            border-radius: 32px;
+            backdrop-filter: blur(32px) saturate(1.5);
+            position: relative;
+            z-index: 5;
+            overflow: hidden;
+        }
     }
 
     @include media.media-screen(mobile) {
