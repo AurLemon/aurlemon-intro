@@ -4,8 +4,8 @@ import InfoAnnouncement from './common/InfoAnnouncement.vue';
 
 <template>
     <main class="aurle-page-container">
-        <NuxtPage />
-        <InfoAnnouncement />
+            <NuxtPage />
+            <InfoAnnouncement />
     </main>
 </template>
 
