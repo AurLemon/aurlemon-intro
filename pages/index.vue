@@ -280,10 +280,9 @@ useHead({
             color: var(--color-text--subtle);
             font-size: 14px;
             padding: 0.375rem 1rem;
-            background: var(--background-light-4);
-            border: 1px solid var(--border-color-base--darker);
+            background: #fff;
+            border: 1px solid var(--border-color-base);
             border-radius: 32px;
-            backdrop-filter: blur(32px) saturate(1.5);
             position: relative;
             z-index: 5;
             overflow: hidden;
