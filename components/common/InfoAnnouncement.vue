@@ -30,7 +30,7 @@ onMounted(() => {
             </div>
             <div class="aurle-announcement-item__links">
                 <div class="aurle-announcement-item__link" v-for="(link, index) in info.more_info" v-if="info.more_info" :key="index">
-                    <a :href="link.url">{{ link.text === 'GitHub' ? 'GitHub' : '未知' }}</a>
+                    <a :href="link.url" target="_blank" rel="noopener noreferrer">{{ link.text === 'GitHub' ? 'GitHub' : '未知' }}</a>
                 </div>
             </div>
         </div>
@@ -62,7 +62,7 @@ onMounted(() => {
             padding: 0.75rem;
             border: 1px solid var(--border-color-base--darker);
             border-radius: 8px;
-            background-color: #fff;
+            background-color: var(--color-surface-0);
             box-shadow: 0 0 64px var(--border-color-base);
             pointer-events: all;
 

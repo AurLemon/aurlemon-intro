@@ -15,6 +15,10 @@ const pointerY = ref(0)
 const offsetX = ref(0)
 const offsetY = ref(12)
 
+const lastScrollProgress = ref(0)
+const scrollProgress = ref(0)
+const debounceTimer = ref<NodeJS.Timeout | null>(null) 
+
 const updateTargetPosition = (event: MouseEvent) => {
     if (!headerList.value) return
 
@@ -45,12 +49,12 @@ const handleHeaderClick = () => {
 
     gsap.to(headerList.value, {
         y: 6,
-        duration: 0.15,
+        duration: 0.2,
         ease: 'power2.out',
         onComplete: () => {
             gsap.to(headerList.value, {
                 y: -4,
-                duration: 0.2,
+                duration: 0.15,
                 ease: 'back.out(1.7)',
                 onComplete: () => {
                     gsap.to(headerList.value, {
@@ -64,16 +68,73 @@ const handleHeaderClick = () => {
     })
 }
 
+const updateScrollProgress = () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop
+    const docHeight = document.documentElement.scrollHeight
+    const winHeight = window.innerHeight
+    
+    const progress = (scrollTop / (docHeight - winHeight)) * 100
+    scrollProgress.value = Math.min(Math.max(progress, 0), 100)
+}
+
+const scrollbarAnimation = () => {
+    if (!headerList.value) return;
+    
+    const progressDiff = scrollProgress.value - lastScrollProgress.value
+    const mappedMin = 2
+    const mappedMax = 18
+    const mappedBounceY = (Math.abs(progressDiff) + 100) * (mappedMax - mappedMin) / 200 + mappedMin
+    let bounceY = Math.min(mappedBounceY, 50)
+    bounceY = progressDiff < 0 ? -bounceY : bounceY
+    lastScrollProgress.value = scrollProgress.value
+
+    gsap.to(headerList.value, {
+        y: bounceY,
+        duration: bounceY < 0 ? 0.15 : 0.2,
+        ease: 'power2.out',
+        onComplete: () => {
+            gsap.to(headerList.value, {
+                y: -bounceY * 0.75,
+                duration: bounceY < 0 ? 0.2 : 0.15,
+                ease: 'back.out(1.25)',
+                onComplete: () => {
+                    gsap.to(headerList.value, {
+                        y: 0,
+                        duration: 0.15,
+                        ease: 'power2.inOut',
+                    })
+                }
+            })
+        }
+    })
+}
+
+const debounceScroll = () => {
+    if (debounceTimer.value) {
+        clearTimeout(debounceTimer.value)
+    }
+    debounceTimer.value = setTimeout(() => {
+        scrollbarAnimation()
+    }, 80)
+}
+
+const handleScroll = () => {
+    updateScrollProgress()
+    debounceScroll()
+}
+
 onMounted(() => {
     nextTick(() => calculateOffset())
     window.addEventListener('resize', calculateOffset)
     document.addEventListener('mousemove', updateTargetPosition)
+    window.addEventListener('scroll', handleScroll)
     smoothUpdate()
 })
 
 onUnmounted(() => {
     window.removeEventListener('resize', calculateOffset)
     document.removeEventListener('mousemove', updateTargetPosition)
+    window.removeEventListener('scroll', handleScroll)
 })
 </script>
 
