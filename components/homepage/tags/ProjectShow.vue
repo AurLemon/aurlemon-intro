@@ -40,16 +40,16 @@ const projectInfo = ref<{
                     <div class="aurle-home-tag__subtitle">5月那会给船政整的因为觉得原来那个太 SB 了。</div>
                     <div class="aurle-home-tag__links">
                         <div class="aurle-home-tag__link" v-tooltip="{ content: 'B 站' }">
-                            <a href="https://www.bilibili.com/video/BV1Fjm6Y3EJ2" target="_blank">
+                            <a href="https://www.bilibili.com/video/BV1Fjm6Y3EJ2" target="_blank" rel="noopener noreferrer">
                                 <fa :icon="['fab', 'bilibili']" />
                             </a>
                         </div>
                         <div class="aurle-home-tag__link" v-tooltip="{ content: 'GitHub' }">
-                            <a href="https://github.com/AurLemon/fjcpc-transfer-exam-practice-system" target="_blank">
+                            <a href="https://github.com/AurLemon/fjcpc-transfer-exam-practice-system" target="_blank" rel="noopener noreferrer">
                                 <fa :icon="['fab', 'github']" />
                             </a>
                         </div>
-                        <div class="aurle-home-tag__link" v-tooltip="{ content: '部署网站' }">
+                        <div class="aurle-home-tag__link" v-tooltip="{ content: '部署网站' }" rel="noopener noreferrer">
                             <a href="https://fjcpc-teps.aurlemon.top" target="_blank">
                                 <fa :icon="['fas', 'globe']" />
                             </a>

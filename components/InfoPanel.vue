@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted, onBeforeMount } from 'vue'
+import { gsap } from 'gsap'
 import { useInfoPanel } from '~/stores/infoPanel'
 
 const infoPanel = useInfoPanel()
@@ -17,6 +18,26 @@ const onBeforeLeave = () => {
         panelRef.value.classList.remove('finish')
     }
 }
+
+const closePanel = () => {
+    if (infoPanel.panelStatus) infoPanel.togglePanel()
+}
+
+const handleKeydown = (e: KeyboardEvent) => {
+    switch (e.key) {
+        case 'Escape':
+            closePanel()
+            break
+    }
+}
+
+onMounted(() => {
+    document.addEventListener('keydown', handleKeydown)
+})
+
+onBeforeMount(() => {
+    document.removeEventListener('keydown', handleKeydown)
+})
 </script>
 
 <template>

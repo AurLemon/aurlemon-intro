@@ -3,11 +3,16 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
 import dayjs from 'dayjs'
 
 import { useFriendLinkStore } from '~/stores/friendLink'
-
-import GitHubRepo from '~/components/homepage/GitHubRepo.vue';
-import HomeTags from '~/components/homepage/HomeTags.vue';
 import { birthdate, atbeeExamDate } from '../utils/time'
-import SlideFlow from '~/components/homepage/SlideFlow.vue';
+
+import GitHubRepo from '~/components/homepage/GitHubRepo.vue'
+import HomeTags from '~/components/homepage/HomeTags.vue'
+import SlideFlow from '~/components/homepage/SlideFlow.vue'
+
+import GitHubIcon from '~/assets/images/homepage/icons/GitHub.svg'
+import MailIcon from '~/assets/images/homepage/icons/Mail.svg'
+import BilibiliIcon from '~/assets/images/homepage/icons/bilibili.svg'
+import LoveIcon from '~/assets/images/homepage/icons/Love.svg'
 
 const friendLinkStore = useFriendLinkStore()
 friendLinkStore.getSettingData()
@@ -51,22 +56,57 @@ useHead({
     <div class="aurle-home aurle-page">
         <div class="aurle-page-foreground">
             <div class="aurle-home-section basic-info">
-                <div class="aurle-home-me">
-                    <div class="aurle-home-me__name">
-                        <div class="aurle-home-me__info" translate="no">
-                            <div class="aurle-home-me__username">AurLemon</div>
-                            <div class="aurle-home-me__id">@AurLemon</div>
+                <div class="aurle-home-intro">
+                    <div class="aurle-home-me">
+                        <div class="aurle-home-me__name">
+                            <div class="aurle-home-me__info" translate="no">
+                                <div class="aurle-home-me__username">AurLemon</div>
+                                <div class="aurle-home-me__id">@AurLemon</div>
+                            </div>
+                            <div class="aurle-home-me__nick">
+                                <div class="nick">柠檬</div>
+                                <div class="simply-tag">{{ dayjs().diff(dayjs(birthdate), 'year') }}</div>
+                                <div class="simply-tag">{{ dayjs().isAfter(dayjs(atbeeExamDate)) ? '臭二本的' : '臭大专的' }}</div>
+                                <div class="simply-tag">INFJ/TJ</div>
+                                <div class="simply-tag">福州</div>
+                            </div>
+                            <div class="aurle-home-me__button">
+                                <div class="aurle-home-me__contact">
+                                    <div class="aurle-home-me__item">
+                                        <a href="https://github.com/AurLemon" target="_blank" rel="noopener noreferrer">
+                                            <GitHubIcon />
+                                        </a>
+                                    </div>
+                                    <div class="aurle-home-me__item">
+                                        <a href="mailto:2115386831@qq.com" target="_blank" rel="noopener noreferrer">
+                                            <MailIcon />
+                                        </a>
+                                    </div>
+                                    <div class="aurle-home-me__item">
+                                        <a href="https://space.bilibili.com/204271518" target="_blank" rel="noopener noreferrer">
+                                            <BilibiliIcon />
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="aurle-home-me__data">
+                                    <div class="aurle-home-me__item love">
+                                        <div class="aurle-home-me__icon">
+                                            <LoveIcon />
+                                        </div>
+                                        <div class="aurle-home-me__text">
+                                            喜欢本站
+                                            <span class="count">1</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="aurle-home-me__nick">
-                            <div class="nick">柠檬</div>
-                            <div class="simply-tag">{{ dayjs().diff(dayjs(birthdate), 'year') }}</div>
-                            <div class="simply-tag">{{ dayjs().isAfter(dayjs(atbeeExamDate)) ? '臭二本的' : '臭大专的' }}</div>
-                            <div class="simply-tag">INFJ/TJ</div>
-                            <div class="simply-tag">福州</div>
+                        <div class="aurle-home-me__avatar" v-tooltip="{ content: '喜欢我吗？' }">
+                            <img src="../assets/images/AurLemon_Avatar.jpg" alt="">
                         </div>
                     </div>
-                    <div class="aurle-home-me__avatar" v-tooltip="{ content: '喜欢我吗？' }">
-                        <img src="../assets/images/AurLemon_Avatar.jpg" alt="">
+                    <div class="aurle-home-quote">
+                        <div class="aurle-home-quote__text">主动思考 · 实践与总结 · 做一颗好的螺丝钉 · 保持谦逊 · 多玩抽象</div>
                     </div>
                 </div>
                 <div class="aurle-home-greeting">
@@ -76,11 +116,6 @@ useHead({
                 </div>
                 <div class="aurle-home-bottom">
                     <SlideFlow />
-                    <div class="aurle-home-status">
-                        <div class="aurle-home-status__item left"></div>
-                        <div class="aurle-home-status__item center">主动思考 · 实践与总结 · 做一颗好的螺丝钉 · 保持谦逊 · 多玩抽象</div>
-                        <div class="aurle-home-status__item right"></div>
-                    </div>
                 </div>
             </div>
             <div class="aurle-home-section user-tag">
@@ -141,7 +176,7 @@ useHead({
 
         .circle-top-left {
             background: radial-gradient(circle at center, rgba(147, 199, 236, 0.5) 0%, transparent 65%);
-            @include zoom-keyframes('zoom-top-left', 0.9, -15%, -15%);
+            @include zoom-keyframes('zoom-top-left', 1, -25%, -15%);
         }
 
         .circle-top-right {
@@ -152,7 +187,7 @@ useHead({
 
         .circle-bottom-left {
             background: radial-gradient(circle at center, rgba(138, 235, 244, 0.5) 0%, transparent 65%);
-            @include zoom-keyframes('zoom-bottom-left', 1.15, -10%, 15%);
+            @include zoom-keyframes('zoom-bottom-left', 1.5, -30%, 25%);
         }
 
         .circle-bottom-right {
@@ -184,78 +219,202 @@ useHead({
         }
     }
 
-    .aurle-home-me {
+    .aurle-home-intro {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 4rem;
+        flex-direction: column;
+        gap: 8rem;
+        margin: auto;
         width: 100%;
         max-width: media.$media-screen-value-phone;
-        margin: auto;
 
-        .aurle-home-me__avatar {
-            border: 2px solid #B7D9EB;
-            box-shadow: 0 0 32px rgba(190, 205, 212, 0.6);
-            border-radius: 50%;
-            overflow: hidden;
-            user-select: none;
+        .aurle-home-me {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 4rem;
 
-            img {
-                $value-image-length: 12rem;
-                display: block;
-                width: $value-image-length;
-                height: $value-image-length;
-                transition: 750ms;
-                transition-delay: 50ms;
+            .aurle-home-me__avatar {
+                border: 2px solid #B7D9EB;
+                box-shadow: 0 0 32px rgba(190, 205, 212, 0.6);
+                border-radius: 50%;
+                overflow: hidden;
+                user-select: none;
+
+                img {
+                    $value-image-length: 12rem;
+                    display: block;
+                    width: $value-image-length;
+                    height: $value-image-length;
+                    transition: 750ms;
+                    transition-delay: 50ms;
+                }
+            }
+
+            .aurle-home-me__name {
+                display: flex;
+                flex-direction: column;
+                transition: 350ms;
+
+                .aurle-home-me__info {
+                    display: flex;
+                    align-items: baseline;
+                    gap: 0.75rem;
+                    user-select: none;
+                }
+
+                .aurle-home-me__username {
+                    color: transparent;
+                    font-size: 80px;
+                    font-weight: bold;
+                    font-family: 'Caveat';
+                    line-height: 1;
+                    background: linear-gradient(60deg, var(--color-text) -15%, var(--color-primary) 225%);
+                    background-clip: text;
+                }
+
+                .aurle-home-me__nick {
+                    color: var(--color-text--subtle);
+                    display: flex;
+                    align-items: center;
+                    flex-wrap: wrap;
+                    gap: 0.375rem;
+
+                    .nick {
+                        line-height: 1;
+                    }
+
+                    .simply-tag {
+                        color: var(--color-text);
+                        font-size: 12px;
+                        padding: 2px 6px;
+                        border-radius: 8px;
+                        background: var(--background-color-primary--active);
+                    }
+                }
+
+                .aurle-home-me__id {
+                    color: var(--color-surface-4);
+                    font-size: 18px;
+                }
+            }
+
+            .aurle-home-me__button {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                margin-top: 1.25rem;
+
+                .aurle-home-me__item {
+                    cursor: pointer;
+                    user-select: none;
+                    transition: 350ms;
+
+                    a {
+                        display: block;
+                        padding: 0.375rem;
+                        background: #fff;
+                        border-radius: 50%;
+                        box-shadow: 0 0 32px rgba(181, 194, 199, 0.2);
+                        transition: 350ms;
+                    }
+
+                    svg {
+                        $image-length: 18px;
+                        display: block;
+                        width: $image-length;
+                        height: $image-length;
+                        margin: 0;
+                        object-fit: contain;
+                        transition: 350ms;
+                    }
+
+                    &:active {
+                        transform: scale(0.92);
+                    }
+                }
+
+                .aurle-home-me__contact {
+                    .aurle-home-me__item:hover {
+                        a {
+                            background: var(--color-primary);
+                        }
+
+                        svg {
+                            color: #fff;
+                        }
+                    }
+
+                    &, .aurle-home-me__data {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                    }
+                }
+
+                .aurle-home-me__data {
+                    .aurle-home-me__item {
+                        display: flex;
+                        align-items: center;
+                        padding: 0.375rem;
+                        background: #fff;
+                        border-radius: 0.875rem;
+                        box-shadow: 0 0 32px rgba(181, 194, 199, 0.2);
+
+                        &.love {
+                            background: #F87171;
+                        }
+
+                        .aurle-home-me__text {
+                            color: #fff;
+                            font-size: 0.8125rem;
+                            font-weight: 600;
+                            margin: 0 0.375rem;
+                            transition: 350ms;
+                        }
+
+                        .aurle-home-me__icon {
+                            svg {
+                                color: #fff;
+                            }
+                        }
+
+                        &:hover {
+                            transform: scale(1.02);
+                            filter: brightness(1.1);
+                        }
+
+                        &:active {
+                            transform: scale(0.94);
+                        }
+                    }
+                }
             }
         }
 
-        .aurle-home-me__name {
+        .aurle-home-quote {
             display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-            transition: 350ms;
+            justify-content: center;
+            align-items: center;
+            color: var(--color-text--subtle);
+            font-size: 14px;
+            width: 100%;
+            position: relative;
+            z-index: 5;
+            overflow: hidden;
+            margin-bottom: auto;
 
-            .aurle-home-me__info {
-                display: flex;
-                align-items: baseline;
-                gap: 0.75rem;
-                user-select: none;
-            }
-
-            .aurle-home-me__username {
-                color: transparent;
-                font-size: 80px;
-                font-weight: 600;
-                font-family: 'Caveat';
-                line-height: 1;
-                background: linear-gradient(60deg, var(--color-text) -15%, var(--color-primary) 225%);
-                background-clip: text;
-            }
-
-            .aurle-home-me__nick {
-                color: var(--color-text--subtle);
-                display: flex;
-                align-items: center;
-                flex-wrap: wrap;
-                gap: 0.375rem;
-
-                .nick {
-                    line-height: 1;
-                }
-
-                .simply-tag {
-                    color: var(--color-text);
-                    font-size: 12px;
-                    padding: 2px 6px;
-                    border-radius: 8px;
-                    background: var(--background-color-primary--active);
-                }
-            }
-
-            .aurle-home-me__id {
+            &::before, &::after {
                 color: var(--color-surface-4);
-                font-size: 18px;
+                margin: 0 0.75rem;
+                line-height: 1;
+            }
+
+            &::before {
+                content: '<';
+            }
+
+            &::after {
+                content: '>';
             }
         }
     }
@@ -267,26 +426,11 @@ useHead({
         z-index: 5;
     }
 
-
     .aurle-home-bottom {
-        margin-top: auto;
-        perspective: 700px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         position: relative;
-
-        .aurle-home-status {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: var(--color-text--subtle);
-            font-size: 14px;
-            padding: 0.375rem 1rem;
-            background: #fff;
-            border: 1px solid var(--border-color-base);
-            border-radius: 32px;
-            position: relative;
-            z-index: 5;
-            overflow: hidden;
-        }
     }
 
     @include media.media-screen(mobile) {

@@ -50,7 +50,7 @@ onMounted(() => {
         <div class="aurle-github-repo-list">
             <div class="aurle-github-repo-item" v-for="repo in repositories" :key="repo.id"
                 v-tooltip="{ content: repo.description }">
-                <a :href="repo.html_url" target="_blank">
+                <a :href="repo.html_url" target="_blank" rel="noopener noreferrer">
                     <div class="aurle-github-repo-item__title">
                         <span class="aurle-github-repo-item__color"
                             :style="{ backgroundColor: getLanguageColor(repo.language) }"></span>
