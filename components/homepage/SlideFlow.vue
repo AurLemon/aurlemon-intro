@@ -16,11 +16,7 @@
         z-index: 4;
         width: 100%;
         height: 300px;
-        mask-image: linear-gradient(to bottom, transparent, #fff);
+        mask-image: radial-gradient(ellipse at bottom, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.15) 50%, transparent 70%);
         opacity: 0.75;
-        transform: perspective(700px) rotateX(55deg);
-        transform-origin: bottom;
-        transform-style: preserve-3d;
-        will-change: transform;
     }
 </style>
