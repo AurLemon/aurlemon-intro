@@ -81,8 +81,8 @@ const scrollbarAnimation = () => {
     if (!headerList.value) return;
     
     const progressDiff = scrollProgress.value - lastScrollProgress.value
-    const mappedMin = 2
-    const mappedMax = 18
+    const mappedMin = 0
+    const mappedMax = 30
     const mappedBounceY = (Math.abs(progressDiff) + 100) * (mappedMax - mappedMin) / 200 + mappedMin
     let bounceY = Math.min(mappedBounceY, 50)
     bounceY = progressDiff < 0 ? -bounceY : bounceY
@@ -100,7 +100,7 @@ const scrollbarAnimation = () => {
                 onComplete: () => {
                     gsap.to(headerList.value, {
                         y: 0,
-                        duration: 0.15,
+                        duration: 0.2,
                         ease: 'power2.inOut',
                     })
                 }
@@ -115,7 +115,7 @@ const debounceScroll = () => {
     }
     debounceTimer.value = setTimeout(() => {
         scrollbarAnimation()
-    }, 80)
+    }, 20)
 }
 
 const handleScroll = () => {
