@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     ssr: true,
     devtools: { enabled: true },
     plugins: ["~/plugins/floating-vue.ts", "~/plugins/v-clipboard.ts"],
-    modules: ["@pinia/nuxt", "@vesp/nuxt-fontawesome", 'nuxt-svgo'],
+    modules: ["@pinia/nuxt", "@vesp/nuxt-fontawesome", 'nuxt-svgo', 'nuxt-locomotive-scroll'],
     fontawesome: {
         component: "fa",
         icons: {

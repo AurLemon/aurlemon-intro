@@ -17,7 +17,7 @@ const offsetY = ref(12)
 
 const lastScrollProgress = ref(0)
 const scrollProgress = ref(0)
-const debounceTimer = ref<NodeJS.Timeout | null>(null) 
+const throttleTimer = ref<number | null>(null) 
 
 const updateTargetPosition = (event: MouseEvent) => {
     if (!headerList.value) return
@@ -82,12 +82,12 @@ const scrollbarAnimation = () => {
     
     const progressDiff = scrollProgress.value - lastScrollProgress.value
     const mappedMin = 0
-    const mappedMax = 30
-    const mappedBounceY = (Math.abs(progressDiff) + 100) * (mappedMax - mappedMin) / 200 + mappedMin
+    const mappedMax = 10
+    const mappedBounceY = (Math.abs(progressDiff) + 100) * (mappedMax - mappedMin) / 200 + mappedMin // 线性变换
     let bounceY = Math.min(mappedBounceY, 50)
-    bounceY = progressDiff < 0 ? -bounceY : bounceY
+    bounceY = progressDiff < 0 ? -bounceY : bounceY // 上滑和下滑的动画是相反的
     lastScrollProgress.value = scrollProgress.value
-
+    
     gsap.to(headerList.value, {
         y: bounceY,
         duration: bounceY < 0 ? 0.15 : 0.2,
@@ -109,18 +109,18 @@ const scrollbarAnimation = () => {
     })
 }
 
-const debounceScroll = () => {
-    if (debounceTimer.value) {
-        clearTimeout(debounceTimer.value)
+const throttleScroll = () => {
+    if (throttleTimer.value === null) {
+        throttleTimer.value = setTimeout(() => {
+            scrollbarAnimation()
+            throttleTimer.value = null
+        }, 750)
     }
-    debounceTimer.value = setTimeout(() => {
-        scrollbarAnimation()
-    }, 20)
 }
 
 const handleScroll = () => {
     updateScrollProgress()
-    debounceScroll()
+    throttleScroll()
 }
 
 onMounted(() => {
