@@ -102,7 +102,7 @@ useHead({
                             </div>
                         </div>
                         <div class="aurle-home-me__avatar" v-tooltip="{ content: '喜欢我吗？' }">
-                            <img src="../assets/images/AurLemon_Avatar.jpg" alt="">
+                            <img src="../assets/images/AurLemon_Avatar.jpg" />
                         </div>
                     </div>
                     <div class="aurle-home-quote">

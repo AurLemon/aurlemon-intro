@@ -1,7 +1,6 @@
 import { defineEventHandler, getQuery } from 'h3'
 import fetch from 'node-fetch'
 
-const CACHE_KEY = 'github_repositories_cache'
 const CACHE_EXPIRATION = 3600 * 1000 * 24 // 缓存有效期（1天）
 let cache: { data: any; timestamp: number } | null = null
 
