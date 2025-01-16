@@ -17,7 +17,7 @@ const offsetY = ref(12)
 
 const lastScrollProgress = ref(0)
 const scrollProgress = ref(0)
-const throttleTimer = ref<number | null>(null) 
+const throttleTimer = ref<number | ReturnType<typeof setTimeout> | null>(null) 
 
 const updateTargetPosition = (event: MouseEvent) => {
     if (!headerList.value) return
@@ -85,7 +85,7 @@ const scrollbarAnimation = () => {
     const mappedMax = 10
     const mappedBounceY = (Math.abs(progressDiff) + 100) * (mappedMax - mappedMin) / 200 + mappedMin // 线性变换
     let bounceY = Math.min(mappedBounceY, 50)
-    bounceY = progressDiff < 0 ? -bounceY : bounceY // 上滑和下滑的动画是相反的
+    bounceY = progressDiff < 0 ? bounceY : -bounceY // 上滑和下滑的动画是相反的
     lastScrollProgress.value = scrollProgress.value
     
     gsap.to(headerList.value, {
@@ -114,7 +114,7 @@ const throttleScroll = () => {
         throttleTimer.value = setTimeout(() => {
             scrollbarAnimation()
             throttleTimer.value = null
-        }, 750)
+        }, 300)
     }
 }
 
