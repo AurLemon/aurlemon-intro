@@ -11,6 +11,7 @@
         "update": "git pull && npm run build"
     },
     "dependencies": {
+        "@nuxt/content": "^3.0.0",
         "@nuxtjs/fontawesome": "^1.1.2",
         "@pinia/nuxt": "^0.7.0",
         "@vesp/nuxt-fontawesome": "^1.1.0",

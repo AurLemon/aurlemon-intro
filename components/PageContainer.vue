@@ -13,6 +13,7 @@ import InfoAnnouncement from './common/InfoAnnouncement.vue';
     .aurle-page-container {
         min-height: 100vh;
         display: flex;
+        flex-direction: column;
         position: relative;
     }
 </style>

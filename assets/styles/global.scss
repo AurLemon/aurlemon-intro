@@ -1,3 +1,5 @@
+@use '~/assets/styles/media_screen.scss' as media;
+
 @font-face {
     font-family: 'Minecraft';
     src: url('~/assets/fonts/Minecraft_Regular.woff2') format(woff2);
@@ -106,7 +108,14 @@ a {
 }
 
 .aurle-page {
-    width: 100%;
+    width: media.$media-screen-value-pad;
+    min-height: 100vh;
+    margin: 0 auto;
+    margin-top: 4rem + 0.75rem;
+
+    @include media.media-screen(mobile) {
+        width: 100%;
+    }
 }
 
 .v-popper__inner {

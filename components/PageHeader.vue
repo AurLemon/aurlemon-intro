@@ -180,6 +180,7 @@ onUnmounted(() => {
         left: 50%;
         transform: translateX(-50%);
         z-index: 99999;
+        height: 4rem;
 
         .aurle-page-header-list {
             display: flex;
@@ -192,6 +193,7 @@ onUnmounted(() => {
             box-shadow: 0 32px 48px var(--border-color-base);
             overflow: hidden;
             transition: 300ms;
+            user-select: none;
 
             .aurle-page-header-pointer {
                 position: absolute;
