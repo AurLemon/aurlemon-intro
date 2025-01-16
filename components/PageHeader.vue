@@ -234,11 +234,12 @@ onUnmounted(() => {
 
                 a {
                     display: block;
-                    padding: 0.5rem 0.125rem;
+                    padding: 0.5rem 0;
                     color: var(--color-text);
                     font-size: 14px;
                     line-height: normal;
                     transition: $item-transition-duration;
+                    word-break: keep-all;
 
                     &::after {
                         $offset-position: 0.125rem;

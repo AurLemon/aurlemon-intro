@@ -218,6 +218,11 @@ useHead({
                 margin-bottom: 1.5rem;
             }
 
+            &.user-tag {
+                height: 100%;
+                min-height: 100dvh;
+            }
+
             @include media.media-screen(mobile) {
                 width: 100%;
             }
