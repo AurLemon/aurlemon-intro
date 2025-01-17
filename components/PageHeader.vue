@@ -143,7 +143,7 @@ const scrollbarAnimation = () => {
 }
 
 const throttleScroll = () => {
-    if (throttleTimer.value === null) {
+    if (!throttleTimer.value) {
         throttleTimer.value = setTimeout(() => {
             scrollbarAnimation()
             throttleTimer.value = null

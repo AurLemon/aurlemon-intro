@@ -6,8 +6,20 @@
                 <BottomFlow />
             </div>
             <div class="aurle-home-section user-tag">
-                <div class="aurle-home-section__title">个性の卡片</div>
-                <HomeTags />
+                <div class="aurle-home-wrapper">
+                    <div class="aurle-home-section__item interview">
+                        <div class="aurle-home-section__title">速览</div>
+                        <HomeInterview />
+                    </div>
+                    <div class="aurle-home-section__item ability">
+                        <div class="aurle-home-section__title">能力</div>
+                        <HomeAbility />
+                    </div>
+                    <div class="aurle-home-section__item tags col-span-2">
+                        <div class="aurle-home-section__title">标签</div>
+                        <HomeTags />
+                    </div>
+                </div>
             </div>
         </div>
         <div class="aurle-page-background" :style="{ opacity: 1 - scrollProgress / 100 }">
@@ -26,6 +38,8 @@ import { useFriendLinkStore } from '~/stores/friendLink'
 
 import BasicIntro from '~/components/homepage/BasicIntro.vue'
 import BottomFlow from '~/components/homepage/BottomFlow.vue'
+import HomeInterview from '~/components/homepage/HomeInterview.vue'
+import HomeAbility from '~/components/homepage/HomeAbility.vue'
 import HomeTags from '~/components/homepage/HomeTags.vue'
 
 const friendLinkStore = useFriendLinkStore()
@@ -144,6 +158,7 @@ useHead({
             display: flex;
             justify-content: center;
             flex-direction: column;
+            gap: 1.5rem;
             width: 100%;
             height: 100dvh;
             padding: 1.75rem;
@@ -153,15 +168,25 @@ useHead({
             }
 
             .aurle-home-section__title {
-                text-align: center;
                 font-size: 32px;
                 font-weight: 600;
-                margin-bottom: 1.5rem;
+                margin-bottom: 0.75rem;
             }
 
             &.user-tag {
                 height: 100%;
-                min-height: 100dvh;
+                min-height: 90dvh;
+
+                .aurle-home-wrapper {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    grid-template-rows: repeat(2, auto);
+                    gap: inherit;
+
+                    .col-span-2 {
+                        grid-column: span 2;
+                    }
+                }
             }
 
             @include media.media-screen(mobile) {
