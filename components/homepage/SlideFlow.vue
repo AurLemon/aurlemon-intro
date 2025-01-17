@@ -18,7 +18,7 @@ import { ref } from 'vue'
         max-width: 360px;
         max-height: 80px;
         border: 1px solid var(--border-color-base);
-        border-radius: 8px;
+        border-radius: 12px;
         margin: 0 auto;
     }
 </style>

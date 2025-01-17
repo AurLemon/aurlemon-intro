@@ -1,3 +1,13 @@
+<template>
+    <transition name="panel-fade" @after-enter="onAfterEnter" @before-leave="onBeforeLeave">
+        <aside class="aurle-panel" v-if="infoPanel.panelStatus" ref="panelRef">
+            <div class="aurle-panel-building">
+                信息面板慢慢做，不急。
+            </div>
+        </aside>
+    </transition>
+</template>
+
 <script setup lang="ts">
 import { ref, onMounted, onBeforeMount } from 'vue'
 import { gsap } from 'gsap'
@@ -39,16 +49,6 @@ onBeforeMount(() => {
     document.removeEventListener('keydown', handleKeydown)
 })
 </script>
-
-<template>
-    <transition name="panel-fade" @after-enter="onAfterEnter" @before-leave="onBeforeLeave">
-        <aside class="aurle-panel" v-if="infoPanel.panelStatus" ref="panelRef">
-            <div class="aurle-panel-building">
-                信息面板慢慢做，不急。
-            </div>
-        </aside>
-    </transition>
-</template>
 
 <style scoped lang="scss">
     .aurle-panel {

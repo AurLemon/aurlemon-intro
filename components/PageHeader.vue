@@ -1,3 +1,36 @@
+<template>
+    <header class="aurle-page-header">
+        <div class="aurle-page-header-list" ref="headerList" @click="handleHeaderClick">
+            <div class="aurle-page-header-pointer"
+                :style="{ background: `radial-gradient(100px circle at ${pointerX}px ${pointerY}px, var(--background-color-primary--active) 0%, transparent 65%)` }">
+            </div>
+            <div class="aurle-page-header-avatar">
+                <img src="~/assets/images/AurLemon_Avatar.jpg" />
+            </div>
+            <div class="aurle-page-header-link">
+                <div class="aurle-page-header-item">
+                    <NuxtLink to="/">首页</NuxtLink>
+                </div>
+                <div class="aurle-page-header-item">
+                    <NuxtLink to="/desc">自述</NuxtLink>
+                </div>
+                <div class="aurle-page-header-item">
+                    <NuxtLink to="/profile">成分</NuxtLink>
+                </div>
+                <div class="aurle-page-header-item">
+                    <NuxtLink to="/project">项目</NuxtLink>
+                </div>
+                <div class="aurle-page-header-item">
+                    <NuxtLink to="/more">更多</NuxtLink>
+                </div>
+            </div>
+        </div>
+        <div class="aurle-page-header-panel" @click="infoPanel.togglePanel">
+            <div class="material-icons">keyboard_arrow_down</div>
+        </div>
+    </header>
+</template>
+
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { gsap } from 'gsap'
@@ -137,39 +170,6 @@ onUnmounted(() => {
     window.removeEventListener('scroll', handleScroll)
 })
 </script>
-
-<template>
-    <header class="aurle-page-header">
-        <div class="aurle-page-header-list" ref="headerList" @click="handleHeaderClick">
-            <div class="aurle-page-header-pointer"
-                :style="{ background: `radial-gradient(100px circle at ${pointerX}px ${pointerY}px, var(--background-color-primary--active) 0%, transparent 65%)` }">
-            </div>
-            <div class="aurle-page-header-avatar">
-                <img src="~/assets/images/AurLemon_Avatar.jpg" />
-            </div>
-            <div class="aurle-page-header-link">
-                <div class="aurle-page-header-item">
-                    <NuxtLink to="/">首页</NuxtLink>
-                </div>
-                <div class="aurle-page-header-item">
-                    <NuxtLink to="/desc">自述</NuxtLink>
-                </div>
-                <div class="aurle-page-header-item">
-                    <NuxtLink to="/profile">成分</NuxtLink>
-                </div>
-                <div class="aurle-page-header-item">
-                    <NuxtLink to="/project">项目</NuxtLink>
-                </div>
-                <div class="aurle-page-header-item">
-                    <NuxtLink to="/more">更多</NuxtLink>
-                </div>
-            </div>
-        </div>
-        <div class="aurle-page-header-panel" @click="infoPanel.togglePanel">
-            <div class="material-icons">keyboard_arrow_down</div>
-        </div>
-    </header>
-</template>
 
 <style scoped lang="scss">
     @use '~/assets/styles/media_screen.scss' as media;

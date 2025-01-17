@@ -1,13 +1,13 @@
-<script setup lang="ts">
-import InfoAnnouncement from './common/InfoAnnouncement.vue';
-</script>
-
 <template>
     <main class="aurle-page-container">
             <NuxtPage />
             <InfoAnnouncement />
     </main>
 </template>
+
+<script setup lang="ts">
+import InfoAnnouncement from './common/InfoAnnouncement.vue';
+</script>
 
 <style scoped lang="scss">
     .aurle-page-container {

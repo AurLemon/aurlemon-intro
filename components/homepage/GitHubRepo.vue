@@ -1,3 +1,36 @@
+<template>
+    <div class="aurle-github-repo">
+        <div class="aurle-github-repo-list">
+            <div class="aurle-github-repo-item" v-for="repo in repositories" :key="repo.id"
+                v-tooltip="{ content: repo.description }">
+                <a :href="repo.html_url" target="_blank" rel="noopener noreferrer">
+                    <div class="aurle-github-repo-item__title">
+                        <span class="aurle-github-repo-item__color"
+                            :style="{ backgroundColor: getLanguageColor(repo.language) }"></span>
+                        {{ repo.name }}
+                    </div>
+                    <div class="aurle-github-repo-item__wrapper">
+                        <div class="aurle-github-repo-item__info">
+                            <div class="aurle-github-repo-item__data aurle-github-repo-item__language"
+                                v-if="repo.language">
+                                {{ repo.language }}
+                            </div>
+                            <div class="aurle-github-repo-item__data aurle-github-repo-item__star"
+                                v-if="repo.stargazers_count">
+                                {{ repo.stargazers_count }}
+                            </div>
+                            <div class="aurle-github-repo-item__data aurle-github-repo-item__fork"
+                                v-if="repo.forks_count">
+                                {{ repo.forks_count }}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</template>
+
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import languageColorsData from '~/assets/utils/language_color.json'
@@ -44,39 +77,6 @@ onMounted(() => {
     fetchRepositories()
 })
 </script>
-
-<template>
-    <div class="aurle-github-repo">
-        <div class="aurle-github-repo-list">
-            <div class="aurle-github-repo-item" v-for="repo in repositories" :key="repo.id"
-                v-tooltip="{ content: repo.description }">
-                <a :href="repo.html_url" target="_blank" rel="noopener noreferrer">
-                    <div class="aurle-github-repo-item__title">
-                        <span class="aurle-github-repo-item__color"
-                            :style="{ backgroundColor: getLanguageColor(repo.language) }"></span>
-                        {{ repo.name }}
-                    </div>
-                    <div class="aurle-github-repo-item__wrapper">
-                        <div class="aurle-github-repo-item__info">
-                            <div class="aurle-github-repo-item__data aurle-github-repo-item__language"
-                                v-if="repo.language">
-                                {{ repo.language }}
-                            </div>
-                            <div class="aurle-github-repo-item__data aurle-github-repo-item__star"
-                                v-if="repo.stargazers_count">
-                                {{ repo.stargazers_count }}
-                            </div>
-                            <div class="aurle-github-repo-item__data aurle-github-repo-item__fork"
-                                v-if="repo.forks_count">
-                                {{ repo.forks_count }}
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    </div>
-</template>
 
 <style scoped lang="scss">
 @use '~/assets/styles/media_screen.scss' as media;
