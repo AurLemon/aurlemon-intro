@@ -8,15 +8,24 @@
             <div class="aurle-home-section user-tag">
                 <div class="aurle-home-wrapper">
                     <div class="aurle-home-section__item interview">
-                        <div class="aurle-home-section__title">速览</div>
-                        <HomeInterview />
+                        <div class="aurle-home-section__title">
+                            小朋友你好，<br>
+                            谢谢你这么喜欢看我。
+                        </div>
+                        <HomeOverview />
                     </div>
                     <div class="aurle-home-section__item ability">
-                        <div class="aurle-home-section__title">能力</div>
+                        <div class="aurle-home-section__title">
+                            怎么回事啊，<br>
+                            怎么会有人在大专学计算机？
+                        </div>
                         <HomeAbility />
                     </div>
                     <div class="aurle-home-section__item tags col-span-2">
-                        <div class="aurle-home-section__title">标签</div>
+                        <div class="aurle-home-section__title">
+                            叔叔我啊，<br>
+                            其实已经电子阳痿了。
+                        </div>
                         <HomeTags />
                     </div>
                 </div>
@@ -38,7 +47,7 @@ import { useFriendLinkStore } from '~/stores/friendLink'
 
 import BasicIntro from '~/components/homepage/BasicIntro.vue'
 import BottomFlow from '~/components/homepage/BottomFlow.vue'
-import HomeInterview from '~/components/homepage/HomeInterview.vue'
+import HomeOverview from '~/components/homepage/HomeOverview.vue'
 import HomeAbility from '~/components/homepage/HomeAbility.vue'
 import HomeTags from '~/components/homepage/HomeTags.vue'
 
@@ -168,14 +177,33 @@ useHead({
             }
 
             .aurle-home-section__title {
-                font-size: 32px;
-                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                color: var(--color-text--subtle);
+                font-size: 20px;
+                margin: 0 0.25rem;
                 margin-bottom: 0.75rem;
+                user-select: none;
+                transition: 300ms;
+            }
+
+            .aurle-home-section__item {
+                &:hover {
+                    .aurle-home-section__title {
+                        font-weight: 400;
+
+                        &::before {
+                            transform: rotate(90deg);
+                        }
+                    }
+                }
             }
 
             &.user-tag {
                 height: 100%;
                 min-height: 90dvh;
+                border-top: 1px solid var(--border-color-base);
 
                 .aurle-home-wrapper {
                     display: grid;

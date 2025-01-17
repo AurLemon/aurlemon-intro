@@ -9,7 +9,7 @@
                 来看我这
             </span>
         </div>
-        <div class="aurle-home-flow__subtitle">我这爬虫都不稀罕的。</div>
+        <div class="aurle-home-flow__subtitle">爬虫都不稀罕我这的。</div>
     </div>
 </template>
 
