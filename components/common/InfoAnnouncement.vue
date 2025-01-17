@@ -1,3 +1,21 @@
+<template>
+    <div class="aurle-announcement" :class="{ expand: isLoaded }" @click="closeAnnouncement">
+        <div class="aurle-announcement-item" v-for="info in utilsConfig.announcement" :key="info.id">
+            <div class="aurle-announcement-item__icon">
+                <span class="material-icons" v-if="info.icon.type === 'material-icons'">{{ info.icon.content }}</span>
+            </div>
+            <div class="aurle-announcement-item__message">
+                {{ info.message }}
+            </div>
+            <div class="aurle-announcement-item__links">
+                <div class="aurle-announcement-item__link" v-for="(link, index) in info.more_info" v-if="info.more_info" :key="index">
+                    <a :href="link.url" target="_blank" rel="noopener noreferrer">{{ link.text === 'GitHub' ? 'GitHub' : '未知' }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
 
@@ -18,24 +36,6 @@ onMounted(() => {
     }, 1000)
 })
 </script>
-
-<template>
-    <div class="aurle-announcement" :class="{ expand: isLoaded }" @click="closeAnnouncement">
-        <div class="aurle-announcement-item" v-for="info in utilsConfig.announcement" :key="info.id">
-            <div class="aurle-announcement-item__icon">
-                <span class="material-icons" v-if="info.icon.type === 'material-icons'">{{ info.icon.content }}</span>
-            </div>
-            <div class="aurle-announcement-item__message">
-                {{ info.message }}
-            </div>
-            <div class="aurle-announcement-item__links">
-                <div class="aurle-announcement-item__link" v-for="(link, index) in info.more_info" v-if="info.more_info" :key="index">
-                    <a :href="link.url" target="_blank" rel="noopener noreferrer">{{ link.text === 'GitHub' ? 'GitHub' : '未知' }}</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
 
 <style scoped lang="scss">
     .aurle-announcement {

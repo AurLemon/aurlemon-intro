@@ -1,3 +1,8 @@
+<template>
+    <div class="aurle-more aurle-page">
+    </div>
+</template>
+
 <script setup lang="ts">
 import { ref } from 'vue'
 
@@ -8,11 +13,6 @@ useHead({
     ]
 })
 </script>
-
-<template>
-    <div class="aurle-more aurle-page">
-    </div>
-</template>
 
 <style scoped lang="scss">
     .aurle-more {

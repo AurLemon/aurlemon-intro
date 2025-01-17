@@ -1,24 +1,3 @@
-<script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-
-import FrontendCard from './tags/FrontendCard.vue'
-import BackendCard from './tags/BackendCard.vue'
-import MiFans from './tags/MiFans.vue'
-import EmbeddedDev from './tags/EmbeddedDev.vue'
-import ProjectShow from './tags/ProjectShow.vue'
-import ComputerScience from './tags/ComputerScience.vue'
-import DevOps from './tags/DevOps.vue'
-import LongStick from './tags/LongStick.vue'
-import FollowMe from './tags/FollowMe.vue'
-import MinecraftCard from './tags/MinecraftCard.vue'
-import SkinShow from './tags/SkinShow.vue'
-import AnimeCard from './tags/AnimeCard.vue'
-import TransporationCard from './tags/TransporationCard.vue'
-import CollegeCard from './tags/CollegeCard.vue'
-import PersonalityCard from './tags/PersonalityCard.vue'
-import TodoList from './tags/TodoList.vue'
-</script>
-
 <template>
     <div class="aurle-home-tags">
         <FrontendCard />
@@ -39,6 +18,27 @@ import TodoList from './tags/TodoList.vue'
         <TodoList />
     </div>
 </template>
+
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+
+import FrontendCard from './tags/FrontendCard.vue'
+import BackendCard from './tags/BackendCard.vue'
+import MiFans from './tags/MiFans.vue'
+import EmbeddedDev from './tags/EmbeddedDev.vue'
+import ProjectShow from './tags/ProjectShow.vue'
+import ComputerScience from './tags/ComputerScience.vue'
+import DevOps from './tags/DevOps.vue'
+import LongStick from './tags/LongStick.vue'
+import FollowMe from './tags/FollowMe.vue'
+import MinecraftCard from './tags/MinecraftCard.vue'
+import SkinShow from './tags/SkinShow.vue'
+import AnimeCard from './tags/AnimeCard.vue'
+import TransporationCard from './tags/TransporationCard.vue'
+import CollegeCard from './tags/CollegeCard.vue'
+import PersonalityCard from './tags/PersonalityCard.vue'
+import TodoList from './tags/TodoList.vue'
+</script>
 
 <style lang="scss">
     @use '~/assets/styles/module/tags_global' as tags;

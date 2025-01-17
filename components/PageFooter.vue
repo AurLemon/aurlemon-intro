@@ -1,10 +1,3 @@
-<script setup lang="ts">
-import dayjs from 'dayjs'
-import { siteBuildTime } from '../utils/time'
-
-const miitRegisterCode = ref<string>('闽ICP备2023007345号-3')
-</script>
-
 <template>
     <footer class="aurle-page-footer">
         <div class="aurle-page-footer__wrapper">
@@ -70,6 +63,13 @@ const miitRegisterCode = ref<string>('闽ICP备2023007345号-3')
         </div>
     </footer>
 </template>
+
+<script setup lang="ts">
+import dayjs from 'dayjs'
+import { siteBuildTime } from '../utils/time'
+
+const miitRegisterCode = ref<string>('闽ICP备2023007345号-3')
+</script>
 
 <style scoped lang="scss">
     @use '~/assets/styles/media_screen.scss' as media;
