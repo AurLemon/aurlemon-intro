@@ -3,7 +3,7 @@
         <div class="aurle-page-foreground">
             <div class="aurle-home-section basic-info">
                 <BasicIntro />
-                <SlideFlow />
+                <BottomFlow />
             </div>
             <div class="aurle-home-section user-tag">
                 <div class="aurle-home-section__title">个性の卡片</div>
@@ -25,7 +25,7 @@ import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { useFriendLinkStore } from '~/stores/friendLink'
 
 import BasicIntro from '~/components/homepage/BasicIntro.vue'
-import SlideFlow from '~/components/homepage/SlideFlow.vue'
+import BottomFlow from '~/components/homepage/BottomFlow.vue'
 import HomeTags from '~/components/homepage/HomeTags.vue'
 
 const friendLinkStore = useFriendLinkStore()

@@ -2,7 +2,7 @@
     <div class="aurle-desc aurle-page">
         <div class="aurle-page-container">
             <ContentRenderer v-if="desc" :value="desc" class="aurle-page-content" />
-            <div class="aurle-page-content" v-else>正在加载内容...</div>
+            <div class="aurle-page-content" v-else>正在加载内容</div>
         </div>
     </div>
 </template>
