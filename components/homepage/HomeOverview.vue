@@ -34,7 +34,7 @@
             border: 1px solid var(--border-color-base--darker);
             border-radius: 8px;
             padding: 0.75rem;
-            box-shadow: 0 0 128px var(--border-color-base);
+            box-shadow: 0 0 64px var(--border-color-base);
             position: relative;
 
             &.info {
@@ -55,6 +55,7 @@
                     justify-content: space-between;
                     align-items: center;
                     background: linear-gradient(135deg, var(--background-color-primary--hover), var(--background-color-primary--active) 200%);
+                    user-select: none;
 
                     img {
                         $image-length: 90px;
@@ -82,7 +83,6 @@
                         font-family: 'Caveat';
                         font-weight: 600;
                         opacity: 0.4;
-                        user-select: none;
                         transform: rotate(-2.5deg) scale(1.25);
                     }
                 }
