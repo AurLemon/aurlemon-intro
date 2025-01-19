@@ -183,21 +183,8 @@ useHead({
                 color: var(--color-text--subtle);
                 font-size: 20px;
                 margin: 0 0.25rem;
-                margin-bottom: 0.75rem;
-                user-select: none;
+                margin-bottom: 0.5rem;
                 transition: 300ms;
-            }
-
-            .aurle-home-section__item {
-                &:hover {
-                    .aurle-home-section__title {
-                        font-weight: 400;
-
-                        &::before {
-                            transform: rotate(90deg);
-                        }
-                    }
-                }
             }
 
             &.user-tag {

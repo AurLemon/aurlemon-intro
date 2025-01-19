@@ -186,7 +186,7 @@ onUnmounted(() => {
             display: flex;
             align-items: center;
             padding: 0 0.5rem;
-            background: var(--background-light-4);
+            background: var(--background-light-3);
             border: 1px solid var(--border-color-base);
             border-radius: 32px;
             backdrop-filter: blur(32px) saturate(1.5);
