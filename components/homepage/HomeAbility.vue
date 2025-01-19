@@ -25,58 +25,31 @@
                 </div>
             </div>
         </div>
-        <div class="aurle-home-item s-card location">
+        <div class="aurle-home-item s-card profession">
             <div class="aurle-home-item__background">
-                <img src="~/assets/images/homepage/Ass_tree.png" />
+                <fa :icon="['fas', 'microchip']" />
             </div>
             <div class="aurle-home-item__foreground">
-                <div class="aurle-home-item__title">福建福州</div>
-                <div class="aurle-home-item__subtitle">闽A没啥玩的哈。</div>
+                <div class="aurle-home-item__title">计科类</div>
+                <div class="aurle-home-item__subtitle">我觉得还可以。</div>
             </div>
         </div>
-        <div class="aurle-home-item s-card birthdate">
+        <div class="aurle-home-item s-card self-position">
             <div class="aurle-home-item__background">
-                <span class="material-icons">calendar_month</span>
+                <fa :icon="['fab', 'node']" />
             </div>
             <div class="aurle-home-item__foreground">
-                <div class="aurle-home-item__title">男 / 2006</div>
-                <div class="aurle-home-item__subtitle">我也成老登了。</div>
+                <div class="aurle-home-item__title">全栈开发</div>
+                <div class="aurle-home-item__subtitle">样样不精通。</div>
             </div>
         </div>
         <div class="aurle-home-item s-card education">
             <div class="aurle-home-item__background">
-                <img src="~/assets/images/badge/FJCCC_Logo.png" />
+                <fa :icon="['fab', 'docker']" />
             </div>
             <div class="aurle-home-item__foreground">
-                <div class="aurle-home-item__title">在读学生</div>
-                <div class="aurle-home-item__subtitle">目前大（专）一。</div>
-            </div>
-        </div>
-        <div class="aurle-home-item s-card attributes">
-            <div class="aurle-home-item__background">
-                <span class="material-icons">accessible_forward</span>
-            </div>
-            <div class="aurle-home-item__foreground">
-                <div class="aurle-home-item__title">INF/TJ</div>
-                <div class="aurle-home-item__subtitle">测着玩玩。</div>
-            </div>
-        </div>
-        <div class="aurle-home-item s-card gene">
-            <div class="aurle-home-item__background">
-                <span class="material-icons">fork_left</span>
-            </div>
-            <div class="aurle-home-item__foreground">
-                <div class="aurle-home-item__title">?-??????</div>
-                <div class="aurle-home-item__subtitle">等检测结果出来。</div>
-            </div>
-        </div>
-        <div class="aurle-home-item s-card abstract">
-            <div class="aurle-home-item__background">
-                <span class="material-icons">boy</span>
-            </div>
-            <div class="aurle-home-item__foreground">
-                <div class="aurle-home-item__title">我是SB</div>
-                <div class="aurle-home-item__subtitle">不知道写什么了。</div>
+                <div class="aurle-home-item__title">小站站长</div>
+                <div class="aurle-home-item__subtitle">域名全备案。</div>
             </div>
         </div>
     </div>
@@ -128,6 +101,59 @@ const collegeList = ref<{
 const changeCurrentCollegeStage = (stage: number) => {
     currentStage.value = stage
 }
+
+const projectList = ref<{
+
+}[]>([
+    {
+
+    }
+])
+
+const planList = ref<{
+    name: string,
+    time: string,
+    score?: string,
+    is_finished: boolean,
+    is_passed?: boolean
+}[]>([
+    {
+        name: '计算机一级',
+        time: '2021-12-04',
+        score: '60',
+        is_finished: true,
+        is_passed: true
+    },
+    {
+        name: '计算机二级',
+        time: '2021-12-04',
+        score: '60',
+        is_finished: true,
+        is_passed: true
+    },
+    {
+        name: 'JLPT N2',
+        time: '2023-07-02',
+        score: '69',
+        is_finished: true,
+        is_passed: false
+    },
+    {
+        name: 'CET 4',
+        time: '2025-06',
+        is_finished: false
+    },
+    {
+        name: '蓝桥杯初赛',
+        time: '2025-04',
+        is_finished: false
+    },
+    {
+        name: '省统招专升本',
+        time: '2026-03',
+        is_finished: false
+    }
+])
 </script>
 
 <style scoped lang="scss">
@@ -166,6 +192,7 @@ const changeCurrentCollegeStage = (stage: number) => {
                 bottom: 0;
                 z-index: 5;
                 height: 100%;
+                transition: 250ms;
             }
 
             &.school {
@@ -213,32 +240,11 @@ const changeCurrentCollegeStage = (stage: number) => {
                         font-weight: 600;
                     }
 
-                    .aurle-home-item__subtitle {
-                        display: flex;
-                        gap: 0.5rem;
-                        font-size: 14px;
-
-                        .aurle-home-item__time {
-                            color: var(--color-surface-4);
-
-                            &::after {
-                                content: ">";
-                                line-height: 1;
-                                margin-left: 0.5rem;
-                            }
-                        }
-
-                        .aurle-home-item__school {
-                            display: flex;
-                            align-items: center;
-                            gap: 0.25rem;
-                        }
-                    }
-
                     .aurle-home-item__desc {
                         display: flex;
                         align-items: center;
                         gap: 0.5rem;
+                        color: var(--color-text--subtle);
                         font-size: 13px;
                         margin-top: 0.25rem;
                         margin-bottom: 0.125rem;
@@ -264,12 +270,34 @@ const changeCurrentCollegeStage = (stage: number) => {
                                 }
                             }
                         }
-                    }                    
+                    }
+
+                    .aurle-home-item__subtitle {
+                        display: flex;
+                        gap: 0.75rem;
+                        font-size: 14px;
+
+                        .aurle-home-item__time {
+                            color: var(--color-surface-4);
+
+                            &::after {
+                                content: ">";
+                                line-height: 1;
+                                margin-left: 0.5rem;
+                            }
+                        }
+
+                        .aurle-home-item__school {
+                            display: flex;
+                            align-items: center;
+                            gap: 0.25rem;
+                        }
+                    }                   
                 }
             }
 
             &.s-card {
-                $image-length: 54px;
+                $image-length: 50px;
                 overflow: hidden;
 
                 .aurle-home-item__background {
@@ -279,7 +307,7 @@ const changeCurrentCollegeStage = (stage: number) => {
                     img, svg, span {
                         display: block;
                         margin-left: auto;
-                        margin-right: 0.25rem;
+                        margin-right: 0.375rem;
                         width: $image-length;
                         font-size: $image-length;
                         height: 100%;

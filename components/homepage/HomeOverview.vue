@@ -25,7 +25,7 @@
                 <span class="material-icons">calendar_month</span>
             </div>
             <div class="aurle-home-item__foreground">
-                <div class="aurle-home-item__title">男 / 2006</div>
+                <div class="aurle-home-item__title">2006 · 男</div>
                 <div class="aurle-home-item__subtitle">我也成老登了。</div>
             </div>
         </div>
@@ -169,7 +169,7 @@
             }
 
             &.s-card {
-                $image-length: 54px;
+                $image-length: 50px;
                 overflow: hidden;
 
                 .aurle-home-item__background {
@@ -179,7 +179,7 @@
                     img, svg, span {
                         display: block;
                         margin-left: auto;
-                        margin-right: 0.25rem;
+                        margin-right: 0.375rem;
                         width: $image-length;
                         font-size: $image-length;
                         height: 100%;

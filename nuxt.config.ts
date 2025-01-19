@@ -28,6 +28,7 @@ export default defineNuxtConfig({
                 "faVuejs",
                 "faFlutter",
                 "faBilibili",
+                "faDocker",
             ],
         },
     },
