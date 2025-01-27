@@ -22,7 +22,7 @@ const projectInfo = ref<{
         <div class="aurle-home-tag__list">
             <div class="aurle-home-tag__item">
                 <div class="aurle-home-tag__background">
-                    <img src="/assets/images/homepage/project-show/teps_background.webp">
+                    <img src="~/assets/images/homepage/teps_background.webp">
                 </div>
                 <div class="aurle-home-tag__foreground">
                     <div class="aurle-home-tag__tags">

@@ -28,8 +28,7 @@
         <div class="aurle-home-wrapper">
             <div class="aurle-home-item project">
                 <div class="aurle-home-item__background">
-                    <div class="aurle-home-item__mask">
-                    </div>
+                    <div class="aurle-home-item__mask"></div>
                     <img src="~/assets/images/homepage/teps_background.webp" />
                 </div>
                 <div class="aurle-home-item__foreground">
