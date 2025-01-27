@@ -52,8 +52,8 @@
                 <span class="material-icons">fork_left</span>
             </div>
             <div class="aurle-home-item__foreground">
-                <div class="aurle-home-item__title">?-??????</div>
-                <div class="aurle-home-item__subtitle">等检测结果出来。</div>
+                <div class="aurle-home-item__title">O-MF13779</div>
+                <div class="aurle-home-item__subtitle">Y 染色体遗传标记。</div>
             </div>
         </div>
         <div class="aurle-home-item s-card abstract">
