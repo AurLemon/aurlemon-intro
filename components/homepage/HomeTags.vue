@@ -1,7 +1,5 @@
 <template>
     <div class="aurle-home-tags">
-        <FrontendCard />
-        <BackendCard /> 
         <MiFans /> 
         <EmbeddedDev />
         <ProjectShow />
@@ -11,7 +9,6 @@
         <FollowMe />
         <MinecraftCard />
         <SkinShow />
-        <AnimeCard />
         <TransporationCard />
         <CollegeCard />
         <PersonalityCard />
@@ -22,8 +19,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 
-import FrontendCard from './tags/FrontendCard.vue'
-import BackendCard from './tags/BackendCard.vue'
 import MiFans from './tags/MiFans.vue'
 import EmbeddedDev from './tags/EmbeddedDev.vue'
 import ProjectShow from './tags/ProjectShow.vue'
@@ -33,7 +28,6 @@ import LongStick from './tags/LongStick.vue'
 import FollowMe from './tags/FollowMe.vue'
 import MinecraftCard from './tags/MinecraftCard.vue'
 import SkinShow from './tags/SkinShow.vue'
-import AnimeCard from './tags/AnimeCard.vue'
 import TransporationCard from './tags/TransporationCard.vue'
 import CollegeCard from './tags/CollegeCard.vue'
 import PersonalityCard from './tags/PersonalityCard.vue'

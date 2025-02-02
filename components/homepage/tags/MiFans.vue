@@ -1,13 +1,17 @@
 <template>
     <div class="aurle-home-tag mi-fans" v-tooltip.top="{ content: '就买就买，怎么了，你们有没有这样的手机啊解 BL 要高考' }">
         <div class="aurle-home-tag__image">
-            <img src="~/assets/images/icons/Xiaomi_Logo.svg" alt="">
+            <MiLogo />
         </div>
         <div class="aurle-home-tag__info">
             <div class="aurle-home-tag__title">我是米猴</div>
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+import MiLogo from '~/assets/images/icons/Xiaomi_Logo.svg'
+</script>
 
 <style scoped lang="scss">
     @use '~/assets/styles/module/tags_global' as tags;
@@ -26,7 +30,7 @@
         }
 
         .aurle-home-tag__image {
-            img {
+            img, svg {
                 $value-mi-logo-width: 32px;
                 display: block;
                 width: $value-mi-logo-width;
@@ -46,7 +50,7 @@
 
         &:hover {
             .aurle-home-tag__image {
-                img {
+                img, svg {
                     filter: saturate(1.5);
                     transform: scale(1) rotate(360deg);
                 }
