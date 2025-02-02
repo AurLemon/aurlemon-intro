@@ -54,24 +54,14 @@
             <div class="aurle-home-item plan">
                 <div class="aurle-home-item__background">
                     <div class="aurle-home-item__mask"></div>
-                    <img src="~/assets/images/homepage/teps_background.webp" />
+                    <div class="material-icons">schedule</div>
                 </div>
                 <div class="aurle-home-item__foreground">
-                    <div class="aurle-home-item__title">转轨考刷题系统</div>
-                    <div class="aurle-home-item__subtitle">原来那个太sb了。</div>
+                    <div class="aurle-home-item__title">最近比较忙</div>
+                    <div class="aurle-home-item__subtitle">要准备CET4和蓝桥杯。</div>
                     <div class="aurle-home-item__button">
                         <div class="aurle-home-item__link main">
-                            <a href="https://fjcpc-teps.aurlemon.top/" target="_blank" rel="noopener noreferrer">查看部署</a>
-                        </div>
-                        <div class="aurle-home-item__link github">
-                            <a href="https://github.com/AurLemon/fjcpc-transfer-exam-practice-system" target="_blank" rel="noopener noreferrer">
-                                <fa :icon="['fab', 'github']" />
-                            </a>
-                        </div>
-                        <div class="aurle-home-item__link bilibili">
-                            <a href="https://www.bilibili.com/video/BV1Fjm6Y3EJ2" target="_blank" rel="noopener noreferrer">
-                                <fa :icon="['fab', 'bilibili']" />
-                            </a>
+                            <a href="https://plan.aurlemon.top/" target="_blank" rel="noopener noreferrer">我的计划</a>
                         </div>
                     </div>
                 </div>
@@ -523,6 +513,9 @@ const planList = ref<{
                 overflow: hidden;
 
                 .aurle-home-item__background {
+                    display: flex;
+                    justify-content: right;
+
                     .aurle-home-item__mask {
                         position: absolute;
                         top: 0;
@@ -530,7 +523,7 @@ const planList = ref<{
                         right: 0;
                         bottom: 0;
                         z-index: 4;
-                        mask-image: linear-gradient(to right, #fff 20%, transparent 95%);
+                        mask-image: linear-gradient(to right, #fff 20%, transparent 125%);
                         backdrop-filter: blur(8px) saturate(1.5);
 
                         &::before {
@@ -540,18 +533,13 @@ const planList = ref<{
                             left: 0;
                             right: 0;
                             bottom: 0;
-                            background: rgba(2, 164, 239, 0.2);
+                            background: rgba(2, 13, 239, 0.07);
                         }
                     }
 
-                    img {
-                        display: block;
-                        width: 100%;
-                        height: 100%;
-                        object-fit: contain;
-                        object-position: right top;
-                        position: relative;
-                        z-index: 1;
+                    .material-icons {
+                        font-size: 4rem;
+                        margin-top: auto;
                     }
                 }
 
