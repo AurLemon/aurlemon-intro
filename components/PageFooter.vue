@@ -47,7 +47,7 @@
                 </div>
                 <div class="aurle-page-footer__list">
                     <div class="aurle-page-footer__info aurle-page-footer__copyright">
-                        © AurLemon 2006 - 2025 All Rights Reserved
+                        © AurLemon 2006 - {{ dayjs().year() }} All Rights Reserved
                     </div>
                     <div class="aurle-page-footer__info aurle-page-footer__license">
                         CC BY-NC-SA 4.0

@@ -53,11 +53,27 @@
             </div>
             <div class="aurle-home-item plan">
                 <div class="aurle-home-item__background">
-                    
+                    <div class="aurle-home-item__mask"></div>
+                    <img src="~/assets/images/homepage/teps_background.webp" />
                 </div>
                 <div class="aurle-home-item__foreground">
-                    <div class="aurle-home-item__title">全栈开发</div>
-                    <div class="aurle-home-item__subtitle">样样不精通。</div>
+                    <div class="aurle-home-item__title">转轨考刷题系统</div>
+                    <div class="aurle-home-item__subtitle">原来那个太sb了。</div>
+                    <div class="aurle-home-item__button">
+                        <div class="aurle-home-item__link main">
+                            <a href="https://fjcpc-teps.aurlemon.top/" target="_blank" rel="noopener noreferrer">查看部署</a>
+                        </div>
+                        <div class="aurle-home-item__link github">
+                            <a href="https://github.com/AurLemon/fjcpc-transfer-exam-practice-system" target="_blank" rel="noopener noreferrer">
+                                <fa :icon="['fab', 'github']" />
+                            </a>
+                        </div>
+                        <div class="aurle-home-item__link bilibili">
+                            <a href="https://www.bilibili.com/video/BV1Fjm6Y3EJ2" target="_blank" rel="noopener noreferrer">
+                                <fa :icon="['fab', 'bilibili']" />
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -393,6 +409,117 @@ const planList = ref<{
             }
 
             &.project {
+                overflow: hidden;
+
+                .aurle-home-item__background {
+                    .aurle-home-item__mask {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        z-index: 4;
+                        mask-image: linear-gradient(to right, #fff 20%, transparent 95%);
+                        backdrop-filter: blur(8px) saturate(1.5);
+
+                        &::before {
+                            content: '';
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background: rgba(2, 164, 239, 0.2);
+                        }
+                    }
+
+                    img {
+                        display: block;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                        object-position: right top;
+                        position: relative;
+                        z-index: 1;
+                    }
+                }
+
+                .aurle-home-item__foreground {
+                    padding: 0.5rem 0.75rem;
+                    background: radial-gradient(circle at bottom left, transparent 0% 10%, rgba(53, 141, 177, 0.1) 10% 20%, transparent 20% 100%);
+
+                    .aurle-home-item__title {
+                        font-size: 18px;
+                        font-weight: 600;
+                    }
+
+                    .aurle-home-item__subtitle {
+                        font-size: 12px;
+                    }
+
+                    .aurle-home-item__button {
+                        display: flex;
+                        align-items: center;
+                        margin-top: 0.25rem;
+
+                        .aurle-home-item__link {
+                            &.main {
+                                margin-right: 0.25rem;
+
+                                a {
+                                    display: block;
+                                    color: #fff;
+                                    font-size: 12px;
+                                    padding: 0.125rem 0.5rem;
+                                    background: var(--color-primary);
+                                    border-radius: 24px;
+                                    transition: 250ms;
+                                }
+
+                                &:hover {
+                                    a {
+                                        color: var(--color-primary);
+                                        background: var(--color-surface-0);
+                                    }
+                                }
+
+                                &:active {
+                                    a {
+                                        transform: scale(0.96);
+                                    }
+                                }
+                            }
+
+                            a {
+                                display: block;
+                            }
+
+                            img, svg {
+                                $image-length: 16px;
+                                color: var(--color-text--subtle);
+                                display: block;
+                                width: $image-length;
+                                height: $image-length;
+                                border-radius: 50%;
+                                object-fit: cover;
+                                padding: 0.25rem;
+                                transition: 250ms;
+
+                                &:hover {
+                                    transform: scale(1.02);
+                                    background: var(--background-dark-0);
+                                }
+
+                                &:active {
+                                    transform: scale(0.95);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.plan {
                 overflow: hidden;
 
                 .aurle-home-item__background {
