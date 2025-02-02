@@ -1,0 +1,22 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+    provider = "sqlite"
+    url      = "file:./sqlite.db"
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Like {
+  id          Int      @id @default(autoincrement()) // 主键
+  ip          String   // IP 地址
+  fingerprint String   // 前端传入的 fingerprint
+  uuid        String   // UUID
+  timestamp   DateTime @default(now()) // 当前时间戳
+}

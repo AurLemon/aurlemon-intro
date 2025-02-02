@@ -24,7 +24,7 @@
     "announcement": [
         {
             "id": 1,
-            "message": "网站还处于 WIP 阶段，大部分功能都是残废的。但是没关系啊可以来 GitHub 仓库给我提 Issue 嘻嘻。",
+            "message": "网站在开发阶段，大部分功能都是残废的，改改停停的。闲着没事可以来 GitHub 仓库给我提 Issue 嘻嘻。",
             "icon": {
                 "type": "material-icons",
                 "content": "warning"
