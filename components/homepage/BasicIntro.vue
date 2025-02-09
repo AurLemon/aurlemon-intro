@@ -1,5 +1,5 @@
 <template>
-    <div class="aurle-home-intro">
+    <div class="aurle-home-intro" :class="{ hidden: homeCardStore.isCardOpen() }">
         <div class="aurle-home-me">
             <div class="aurle-home-me__name">
                 <div class="aurle-home-me__info" translate="no">
@@ -71,12 +71,15 @@ import FingerprintJS from '@fingerprintjs/fingerprintjs'
 
 import dayjs from 'dayjs'
 import { birthdate, atbeeExamDate } from '../../utils/time'
+import { useHomeCard } from '~/stores/homeCard'
 
 import GitHubIcon from '~/assets/images/homepage/icons/GitHub.svg'
 import MailIcon from '~/assets/images/homepage/icons/Mail.svg'
 import BilibiliIcon from '~/assets/images/homepage/icons/bilibili.svg'
 import NCMIcon from '~/assets/images/homepage/icons/NCMusic.svg'
 import LoveIcon from '~/assets/images/homepage/icons/Love.svg'
+
+const homeCardStore = useHomeCard()
 
 const likeCount = ref<number>(0)
 const isLiking = ref<boolean>(false)
@@ -139,9 +142,10 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     gap: 6.25rem;
-    margin: auto;
     width: 100%;
+    margin: auto;
     max-width: media.$media-screen-value-phone;
+    transition: 400ms;
 
     .aurle-home-me {
         display: flex;
@@ -345,6 +349,12 @@ onMounted(() => {
         &::after {
             content: '>';
         }
+    }
+
+    &.hidden {
+        transform: translateY(20%) scale(0.5);
+        opacity: 0;
+        transform-origin: bottom;
     }
 }
 </style>

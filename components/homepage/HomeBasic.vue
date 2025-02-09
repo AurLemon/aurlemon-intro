@@ -1,5 +1,5 @@
 <template>
-    <div class="aurle-home-overview">
+    <div class="aurle-home-basic">
         <div class="aurle-home-item info">
             <div class="aurle-home-item__background">
                 <img src="~/assets/images/AurLemon_Avatar.jpg" />
@@ -35,7 +35,7 @@
             </div>
             <div class="aurle-home-item__foreground">
                 <div class="aurle-home-item__title">在读学生</div>
-                <div class="aurle-home-item__subtitle">目前大（专）一。</div>
+                <div class="aurle-home-item__subtitle">目前大（专）一，计算机应用技术，大专特有的。</div>
             </div>
         </div>
         <div class="aurle-home-item s-card attributes">
@@ -44,7 +44,7 @@
             </div>
             <div class="aurle-home-item__foreground">
                 <div class="aurle-home-item__title">INF/TJ</div>
-                <div class="aurle-home-item__subtitle">测着玩玩。</div>
+                <div class="aurle-home-item__subtitle">测着玩玩。有一种赛博算卦的感觉。</div>
             </div>
         </div>
         <div class="aurle-home-item s-card gene">
@@ -71,11 +71,10 @@
 <style scoped lang="scss">
     @use '~/assets/styles/media_screen.scss' as media;
     
-    .aurle-home-overview {
+    .aurle-home-basic {
         display: grid;
         gap: 0.5rem;
-        grid-template-rows: repeat(2, 1fr);
-        grid-auto-flow: column;
+        grid-template-columns: repeat(4, 1fr);
 
         .aurle-home-item {
             background: var(--background-light-4);
@@ -108,8 +107,8 @@
             }
 
             &.info {
-                min-width: 500px;
-                grid-row: span 2;
+                grid-column: span 2;
+                grid-row: span 3;
                 text-align: center;
                 padding: 0;
                 border: 1px solid var(--border-color-base--darker);
@@ -123,7 +122,7 @@
                     user-select: none;
 
                     img {
-                        $image-length: 100px;
+                        $image-length: 80px;
                         display: block;
                         width: $image-length;
                         height: $image-length;
@@ -144,7 +143,7 @@
                     .text {
                         color: var(--color-surface-0);
                         text-shadow: 0 0 24px var(--background-dark-0);
-                        font-size: 96px;
+                        font-size: 80px;
                         font-family: 'Caveat';
                         font-weight: 600;
                         opacity: 0.4;
@@ -164,7 +163,7 @@
                     justify-content: center;
                     align-items: center;
                     color: var(--color-text);
-                    font-size: 42px;
+                    font-size: 36px;
                     font-weight: 600;
                 }
 
@@ -176,6 +175,7 @@
             &.s-card {
                 $image-length: 50px;
                 overflow: hidden;
+                grid-row: span 2;
 
                 .aurle-home-item__background {
                     display: flex;
@@ -205,7 +205,7 @@
                     flex-direction: column;
                     justify-content: center;
                     padding: 0.75rem 0.5rem;
-                    padding-right: $image-length * 0.75;
+                    padding-right: $image-length;
                     background: linear-gradient(-45deg, rgba(185, 230, 253, 0.25), transparent 70%),
                                 radial-gradient(circle at bottom left, transparent 0% 10%, rgba(184, 213, 225, 0.1) 10% 20%, transparent 20% 100%);
 
@@ -235,10 +235,16 @@
             }
 
             &.education {
+                grid-row: span 3;
+
                 .aurle-home-item__foreground {
                     background: linear-gradient(-45deg, rgba(156, 183, 221, 0.25), transparent 70%),
                                 radial-gradient(circle at bottom left, transparent 0% 10%, rgba(184, 196, 225, 0.1) 10% 20%, transparent 20% 100%);
                 }
+            }
+
+            &.attributes {
+                grid-row: span 3;
             }
 
             &:hover {
