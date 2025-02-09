@@ -5,31 +5,6 @@
                 <BasicIntro />
                 <BottomFlow />
             </div>
-            <div class="aurle-home-section user-tag">
-                <div class="aurle-home-wrapper">
-                    <div class="aurle-home-section__item interview">
-                        <div class="aurle-home-section__title">
-                            小朋友你好，<br>
-                            谢谢你这么喜欢看我。
-                        </div>
-                        <HomeOverview />
-                    </div>
-                    <div class="aurle-home-section__item ability">
-                        <div class="aurle-home-section__title">
-                            怎么回事啊，<br>
-                            怎么会有人在大专学计算机？
-                        </div>
-                        <HomeAbility />
-                    </div>
-                    <div class="aurle-home-section__item tags col-span-2">
-                        <div class="aurle-home-section__title">
-                            叔叔我啊，<br>
-                            其实已经电子阳痿了。
-                        </div>
-                        <HomeTags />
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="aurle-page-background" :style="{ opacity: 1 - scrollProgress / 100 }">
             <div class="circle circle-top-left" :style="{ transform: `translateY(-${ backgroundOffsetValue }px)` }"></div>
@@ -49,7 +24,6 @@ import BasicIntro from '~/components/homepage/BasicIntro.vue'
 import BottomFlow from '~/components/homepage/BottomFlow.vue'
 import HomeOverview from '~/components/homepage/HomeOverview.vue'
 import HomeAbility from '~/components/homepage/HomeAbility.vue'
-import HomeTags from '~/components/homepage/HomeTags.vue'
 
 const friendLinkStore = useFriendLinkStore()
 friendLinkStore.getSettingData()
@@ -132,24 +106,24 @@ useHead({
             }
 
             .circle-top-left {
-                background: radial-gradient(circle at center, rgba(147, 199, 236, 0.5) 0%, transparent 65%);
+                background: radial-gradient(circle at center, rgba(147, 199, 236, 0.35) 0%, transparent 65%);
                 @include zoom-keyframes('zoom-top-left', 1, -25%, -15%);
             }
 
             .circle-top-right {
                 margin-left: auto;
-                background: radial-gradient(circle at center, rgba(178, 180, 255, 0.5) 0%, transparent 65%);
+                background: radial-gradient(circle at center, rgba(178, 180, 255, 0.35) 0%, transparent 65%);
                 @include zoom-keyframes('zoom-top-right', 1.25, 10%, -10%);
             }
 
             .circle-bottom-left {
-                background: radial-gradient(circle at center, rgba(138, 235, 244, 0.5) 0%, transparent 65%);
+                background: radial-gradient(circle at center, rgba(138, 235, 244, 0.35) 0%, transparent 65%);
                 @include zoom-keyframes('zoom-bottom-left', 1.5, -30%, 25%);
             }
 
             .circle-bottom-right {
                 margin-left: auto;
-                background: radial-gradient(circle at center, rgba(215, 233, 149, 0.5) 0%, transparent 65%);
+                background: radial-gradient(circle at center, rgba(215, 233, 149, 0.35) 0%, transparent 65%);
                 @include zoom-keyframes('zoom-bottom-right', 1, 25%, 45%);
             }
         }

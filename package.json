@@ -13,7 +13,6 @@
     "dependencies": {
         "@fingerprintjs/fingerprintjs": "^4.5.1",
         "@nuxt/content": "^3.0.0",
-        "@nuxt/ui": "^2.21.0",
         "@nuxtjs/fontawesome": "^1.1.2",
         "@pinia/nuxt": "^0.7.0",
         "@prisma/client": "^6.3.0",
