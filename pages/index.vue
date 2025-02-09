@@ -193,9 +193,8 @@ useHead({
                 border-top: 1px solid var(--border-color-base);
 
                 .aurle-home-wrapper {
-                    display: grid;
-                    grid-template-columns: repeat(2, 1fr);
-                    grid-template-rows: repeat(2, auto);
+                    display: flex;
+                    flex-direction: column;
                     gap: inherit;
 
                     .col-span-2 {

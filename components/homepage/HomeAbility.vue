@@ -143,51 +143,6 @@ const collegeList = ref<{
 const changeCurrentCollegeStage = (stage: number) => {
     currentStage.value = stage
 }
-
-const planList = ref<{
-    name: string,
-    time: string,
-    score?: string,
-    is_finished: boolean,
-    is_passed?: boolean
-}[]>([
-    {
-        name: '计算机一级',
-        time: '2021-12-04',
-        score: '60',
-        is_finished: true,
-        is_passed: true
-    },
-    {
-        name: '计算机二级',
-        time: '2021-12-04',
-        score: '60',
-        is_finished: true,
-        is_passed: true
-    },
-    {
-        name: 'JLPT N2',
-        time: '2023-07-02',
-        score: '69',
-        is_finished: true,
-        is_passed: false
-    },
-    {
-        name: 'CET 4',
-        time: '2025-06',
-        is_finished: false
-    },
-    {
-        name: '蓝桥杯初赛',
-        time: '2025-04',
-        is_finished: false
-    },
-    {
-        name: '省统招专升本',
-        time: '2026-03',
-        is_finished: false
-    }
-])
 </script>
 
 <style scoped lang="scss">
@@ -196,7 +151,8 @@ const planList = ref<{
     .aurle-home-ability {
         display: grid;
         gap: 0.5rem;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        grid-auto-flow: column;
 
         .aurle-home-item {
             background: var(--background-light-4);
@@ -230,7 +186,9 @@ const planList = ref<{
             }
 
             &.school {
-                grid-column: span 3;
+                grid-row: span 2;
+                width: 100%;
+                max-width: 500px;
                 padding: 0;
                 border: 1px solid var(--border-color-base--darker);
                 overflow: hidden;
