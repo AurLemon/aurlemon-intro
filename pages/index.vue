@@ -1,8 +1,11 @@
 <template>
     <div class="aurle-home aurle-page">
         <div class="aurle-page-foreground">
-            <div class="aurle-home-section basic-info">
-                <BasicIntro />
+            <div class="aurle-home-section">
+                <div class="aurle-home-header">
+                    <BasicIntro />
+                    <HomeCards />
+                </div>
                 <BottomFlow />
             </div>
         </div>
@@ -19,14 +22,16 @@
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 
 import { useFriendLinkStore } from '~/stores/friendLink'
+import { useHomeCard } from '~/stores/homeCard'
 
 import BasicIntro from '~/components/homepage/BasicIntro.vue'
 import BottomFlow from '~/components/homepage/BottomFlow.vue'
-import HomeOverview from '~/components/homepage/HomeOverview.vue'
-import HomeAbility from '~/components/homepage/HomeAbility.vue'
+import HomeCards from '~/components/homepage/HomeCards.vue'
 
 const friendLinkStore = useFriendLinkStore()
 friendLinkStore.getSettingData()
+
+const homeCardStore = useHomeCard()
 
 const scrollProgress = ref(0)
 
@@ -145,41 +150,17 @@ useHead({
             width: 100%;
             height: 100dvh;
             padding: 1.75rem;
+            padding-top: 4rem + 0.75rem;
+            margin-bottom: 5vh;
+        }
 
-            &:first-of-type {
-                padding-top: 4rem + 0.75rem;
-            }
-
-            .aurle-home-section__title {
-                display: flex;
-                align-items: center;
-                gap: 0.75rem;
-                color: var(--color-text--subtle);
-                font-size: 20px;
-                margin: 0 0.25rem;
-                margin-bottom: 0.5rem;
-                transition: 300ms;
-            }
-
-            &.user-tag {
-                height: 100%;
-                min-height: 90dvh;
-                border-top: 1px solid var(--border-color-base);
-
-                .aurle-home-wrapper {
-                    display: flex;
-                    flex-direction: column;
-                    gap: inherit;
-
-                    .col-span-2 {
-                        grid-column: span 2;
-                    }
-                }
-            }
-
-            @include media.media-screen(mobile) {
-                width: 100%;
-            }
+        .aurle-home-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            position: relative;
         }
     }
 </style>

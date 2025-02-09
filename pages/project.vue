@@ -47,6 +47,15 @@ useHead({
 </style>
 
 <style scoped lang="scss">
+    @use '~/assets/styles/media_screen.scss' as media;
+
     .aurle-project {
+        .aurle-page-container {
+            padding: 1rem;
+
+            @include media.media-screen(mobile) {
+                padding: 1rem 2rem;
+            }
+        }
     }
 </style>

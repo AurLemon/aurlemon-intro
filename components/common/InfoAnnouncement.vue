@@ -53,7 +53,7 @@ onMounted(() => {
         .aurle-announcement-item {
             display: flex;
             align-items: center;
-            gap: 0.25rem;
+            gap: 0.5rem;
             color: var(--color-text--subtle);
             font-size: 14px;
             font-weight: 600;
@@ -79,7 +79,7 @@ onMounted(() => {
                 .aurle-announcement-item__link {
                     a {
                         display: block;
-                        padding: 0.125rem 0.25rem;
+                        padding: 0.375rem;
                         border: 1px solid var(--border-color-base--darker);
                         border-radius: 4px;
                         background: var(--color-surface-0);

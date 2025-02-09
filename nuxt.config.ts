@@ -3,7 +3,7 @@
 export default defineNuxtConfig({
     compatibilityDate: "2024-04-03",
     ssr: true,
-    devtools: { enabled: true },
+    devtools: { enabled: false },
     plugins: ["~/plugins/floating-vue.ts", "~/plugins/v-clipboard.ts"],
     modules: ["@pinia/nuxt", "@vesp/nuxt-fontawesome", 'nuxt-svgo', '@nuxt/content', 'nuxt-locomotive-scroll'],
     svgo: {

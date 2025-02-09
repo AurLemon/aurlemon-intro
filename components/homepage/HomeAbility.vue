@@ -151,8 +151,7 @@ const changeCurrentCollegeStage = (stage: number) => {
     .aurle-home-ability {
         display: grid;
         gap: 0.5rem;
-        grid-template-rows: repeat(2, 1fr);
-        grid-auto-flow: column;
+        grid-template-columns: repeat(3, 1fr);
 
         .aurle-home-item {
             background: var(--background-light-4);
@@ -186,9 +185,9 @@ const changeCurrentCollegeStage = (stage: number) => {
             }
 
             &.school {
+                grid-column: span 2;
                 grid-row: span 2;
                 width: 100%;
-                max-width: 500px;
                 padding: 0;
                 border: 1px solid var(--border-color-base--darker);
                 overflow: hidden;
@@ -291,6 +290,7 @@ const changeCurrentCollegeStage = (stage: number) => {
             &.s-card {
                 $image-length: 50px;
                 overflow: hidden;
+                grid-row: span 1;
 
                 .aurle-home-item__background {
                     display: flex;
@@ -582,8 +582,10 @@ const changeCurrentCollegeStage = (stage: number) => {
         }
 
         .aurle-home-wrapper {
-            grid-column: span 3;
+            grid-column: 3;
+            grid-row: span 3;
             display: flex;
+            flex-direction: column;
             gap: inherit;
 
             .aurle-home-item {
