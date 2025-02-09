@@ -132,24 +132,24 @@ useHead({
             }
 
             .circle-top-left {
-                background: radial-gradient(circle at center, rgba(147, 199, 236, 0.75) 0%, transparent 65%);
+                background: radial-gradient(circle at center, rgba(147, 199, 236, 0.5) 0%, transparent 65%);
                 @include zoom-keyframes('zoom-top-left', 1, -25%, -15%);
             }
 
             .circle-top-right {
                 margin-left: auto;
-                background: radial-gradient(circle at center, rgba(178, 180, 255, 0.75) 0%, transparent 65%);
+                background: radial-gradient(circle at center, rgba(178, 180, 255, 0.5) 0%, transparent 65%);
                 @include zoom-keyframes('zoom-top-right', 1.25, 10%, -10%);
             }
 
             .circle-bottom-left {
-                background: radial-gradient(circle at center, rgba(138, 235, 244, 0.75) 0%, transparent 65%);
+                background: radial-gradient(circle at center, rgba(138, 235, 244, 0.5) 0%, transparent 65%);
                 @include zoom-keyframes('zoom-bottom-left', 1.5, -30%, 25%);
             }
 
             .circle-bottom-right {
                 margin-left: auto;
-                background: radial-gradient(circle at center, rgba(215, 233, 149, 0.75) 0%, transparent 65%);
+                background: radial-gradient(circle at center, rgba(215, 233, 149, 0.5) 0%, transparent 65%);
                 @include zoom-keyframes('zoom-bottom-right', 1, 25%, 45%);
             }
         }

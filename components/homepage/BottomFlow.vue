@@ -13,6 +13,9 @@
     </div>
 </template>
 
+<script setup lang="ts">
+</script>
+
 <style scoped lang="scss">
     @use '~/assets/styles/media_screen.scss' as media;
 
