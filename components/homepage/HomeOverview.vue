@@ -74,7 +74,8 @@
     .aurle-home-overview {
         display: grid;
         gap: 0.5rem;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+        grid-auto-flow: column;
 
         .aurle-home-item {
             background: var(--background-light-4);
@@ -107,7 +108,8 @@
             }
 
             &.info {
-                grid-column: span 3;
+                min-width: 500px;
+                grid-row: span 2;
                 text-align: center;
                 padding: 0;
                 border: 1px solid var(--border-color-base--darker);
@@ -121,7 +123,7 @@
                     user-select: none;
 
                     img {
-                        $image-length: 90px;
+                        $image-length: 100px;
                         display: block;
                         width: $image-length;
                         height: $image-length;
@@ -142,7 +144,7 @@
                     .text {
                         color: var(--color-surface-0);
                         text-shadow: 0 0 24px var(--background-dark-0);
-                        font-size: 80px;
+                        font-size: 96px;
                         font-family: 'Caveat';
                         font-weight: 600;
                         opacity: 0.4;
@@ -152,6 +154,9 @@
 
                 .aurle-home-item__foreground {
                     padding: 0.75rem 1.25rem;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
                 }
 
                 .aurle-home-item__title {
@@ -159,7 +164,7 @@
                     justify-content: center;
                     align-items: center;
                     color: var(--color-text);
-                    font-size: 32px;
+                    font-size: 42px;
                     font-weight: 600;
                 }
 

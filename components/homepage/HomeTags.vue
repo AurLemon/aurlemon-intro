@@ -1,37 +1,11 @@
 <template>
     <div class="aurle-home-tags">
-        <MiFans /> 
-        <EmbeddedDev />
-        <ProjectShow />
-        <ComputerScience />
-        <DevOps />
-        <LongStick />
-        <FollowMe />
-        <MinecraftCard />
-        <SkinShow />
-        <TransporationCard />
-        <CollegeCard />
-        <PersonalityCard />
-        <TodoList />
+        
     </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-
-import MiFans from './tags/MiFans.vue'
-import EmbeddedDev from './tags/EmbeddedDev.vue'
-import ProjectShow from './tags/ProjectShow.vue'
-import ComputerScience from './tags/ComputerScience.vue'
-import DevOps from './tags/DevOps.vue'
-import LongStick from './tags/LongStick.vue'
-import FollowMe from './tags/FollowMe.vue'
-import MinecraftCard from './tags/MinecraftCard.vue'
-import SkinShow from './tags/SkinShow.vue'
-import TransporationCard from './tags/TransporationCard.vue'
-import CollegeCard from './tags/CollegeCard.vue'
-import PersonalityCard from './tags/PersonalityCard.vue'
-import TodoList from './tags/TodoList.vue'
 </script>
 
 <style lang="scss">
