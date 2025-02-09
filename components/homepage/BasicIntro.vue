@@ -1,5 +1,4 @@
 <template>
-    <Toaster class="toaster"/>
     <div class="aurle-home-intro">
         <div class="aurle-home-me">
             <div class="aurle-home-me__name">
