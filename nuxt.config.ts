@@ -5,14 +5,7 @@ export default defineNuxtConfig({
     ssr: true,
     devtools: { enabled: true },
     plugins: ["~/plugins/floating-vue.ts", "~/plugins/v-clipboard.ts"],
-    modules: ["@pinia/nuxt", "@vesp/nuxt-fontawesome", 'nuxt-svgo', '@nuxt/content', 'nuxt-locomotive-scroll', '@nuxtjs/tailwindcss', '@nuxtjs/color-mode', 'shadcn-nuxt'],
-    colorMode: {
-        classSuffix: "",
-    },
-    shadcn: {
-        prefix: '',
-        componentDir: './components/ui'
-    },
+    modules: ["@pinia/nuxt", "@vesp/nuxt-fontawesome", 'nuxt-svgo', '@nuxt/content', 'nuxt-locomotive-scroll', '@nuxt/ui'],
     svgo: {
         global: false,
         defaultImport: 'component',

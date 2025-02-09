@@ -62,7 +62,7 @@ onBeforeMount(() => {
         bottom: 0;
         z-index: 100000;
         padding: 1rem;
-        background-color: var(--background-light-1);
+        background-color: var(--background-light-2);
         backdrop-filter: blur(64px) saturate(1.5);
         opacity: 0;
         transform: translateY(-100%);
