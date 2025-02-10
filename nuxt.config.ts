@@ -48,6 +48,16 @@ export default defineNuxtConfig({
                 },
             },
         },
+
+        // 神医：https://github.com/nuxt/nuxt/issues/24690
+        ssr: {
+            external: ["@prisma/client"]
+        },
+        resolve: {
+            alias: {
+                ".prisma/client/index-browser": "./node_modules/.prisma/client/index-browser.js",
+            }
+        },
     },
     app: {
         head: {
@@ -68,8 +78,5 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
         githubToken: process.env.GITHUB_TOKEN ?? "github_pat",
-    },
-    imports: {
-        dirs: ['lib'],
     },
 })
