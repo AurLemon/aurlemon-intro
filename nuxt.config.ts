@@ -69,4 +69,7 @@ export default defineNuxtConfig({
     runtimeConfig: {
         githubToken: process.env.GITHUB_TOKEN ?? "github_pat",
     },
+    imports: {
+        dirs: ['lib'],
+    },
 })
