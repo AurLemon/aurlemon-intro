@@ -81,7 +81,6 @@
             backdrop-filter: blur(32px) saturate(1.25);
             border-radius: 8px;
             outline: 1.75px solid transparent;
-            box-shadow: 0 0 64px var(--border-color-base);
             position: relative;
             min-height: 64px;
             transition: 250ms;
@@ -250,6 +249,10 @@
             &:hover {
                 outline-color: var(--color-primary);
             }
+        }
+        
+        @include media.media-screen(mobile) {
+            grid-template-columns: repeat(2, 1fr);
         }
     }
 </style>
