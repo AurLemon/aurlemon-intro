@@ -35,7 +35,7 @@ const homeCardStore = useHomeCard()
         height: 100%;
 
         .page-home-card {
-            margin: 8rem 4rem;
+            margin: 2rem;
             position: absolute;
             top: 0;
             left: 0;
