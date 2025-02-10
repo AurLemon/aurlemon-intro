@@ -46,7 +46,7 @@ const homeCardStore = useHomeCard()
             pointer-events: none;
             transition: $card-transition-duration;
             transform: translateY(-20%) scale(0.5);
-            filter: drop-shadow(0 0 64px var(--border-color-base));
+            filter: drop-shadow(0 0 12px var(--border-color-base));
             overflow-y: auto;
 
             &.show {
@@ -55,6 +55,10 @@ const homeCardStore = useHomeCard()
                 pointer-events: all;
                 transform: translateY(0) scale(1);
                 overflow-y: auto;
+
+                @include media.media-screen(phone) {
+                    mask: linear-gradient(to top, transparent 1rem, #fff 8rem);
+                }
             }
             
             .page-home-card__title {
@@ -65,7 +69,8 @@ const homeCardStore = useHomeCard()
             }
 
             @include media.media-screen(mobile) {
-                padding: 1rem 0;
+                padding: 1rem;
+                padding-bottom: 10rem;
                 margin: 0;
             }
         }

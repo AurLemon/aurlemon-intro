@@ -115,13 +115,14 @@
 
                 .aurle-home-item__background {
                     display: flex;
-                    justify-content: space-between;
+                    justify-content: center;
                     align-items: center;
                     background: linear-gradient(135deg, var(--background-color-primary--hover), var(--background-color-primary--active) 200%);
                     user-select: none;
 
                     img {
                         $image-length: 80px;
+                        position: absolute;
                         display: block;
                         width: $image-length;
                         height: $image-length;
@@ -132,10 +133,14 @@
 
                         &:first-of-type {
                             transform: translate(-10%, 25%);
+                            left: 0;
+                            bottom: 0;
                         }
 
                         &:last-of-type {
                             transform: translate(10%, -25%);
+                            top: 0;
+                            right: 0;
                         }
                     }
 
@@ -204,13 +209,14 @@
                     flex-direction: column;
                     justify-content: center;
                     padding: 0.75rem 0.5rem;
-                    padding-right: $image-length;
+                    padding-right: $image-length * 1.25;
                     background: linear-gradient(-45deg, rgba(185, 230, 253, 0.25), transparent 70%),
                                 radial-gradient(circle at bottom left, transparent 0% 10%, rgba(184, 213, 225, 0.1) 10% 20%, transparent 20% 100%);
 
                     .aurle-home-item__title {
                         font-size: 18px;
                         font-weight: 600;
+                        word-break: break-all;
                     }
 
                     .aurle-home-item__subtitle {

@@ -284,6 +284,10 @@ const changeCurrentCollegeStage = (stage: number) => {
                         }
                     }                   
                 }
+
+                @include media.media-screen(phone) {
+                    grid-column: span 2;
+                }
             }
 
             &.s-card {
@@ -591,14 +595,14 @@ const changeCurrentCollegeStage = (stage: number) => {
             }
 
             @include media.media-screen(phone) {
-                grid-column: span 3;
+                grid-column: span 2;
                 grid-row: span 1;
                 flex-direction: row;
             }
         }
         
         @include media.media-screen(phone) {
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
         }
     }
 </style>

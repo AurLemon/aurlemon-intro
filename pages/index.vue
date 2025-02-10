@@ -151,9 +151,10 @@ useHead({
             justify-content: center;
             flex-direction: column;
             gap: 3rem;
+            position: relative;
             width: 100%;
-            height: 100dvh;
-            padding: 1.75rem;
+            height: 100vh;
+            padding: 1.25rem;
             padding-top: 4rem + 0.75rem;
             margin-bottom: 5vh;
         }
@@ -166,6 +167,7 @@ useHead({
             width: 100%;
             height: 100%;
             position: relative;
+            margin-bottom: 4.5rem;
         }
     }
     

@@ -69,6 +69,11 @@ onMounted(() => {
         justify-content: center;
         align-items: center;
         gap: 1rem;
+        position: absolute;
+        bottom: 1.75rem;
+        left: 1.75rem;
+        right: 1.75rem;
+        z-index: 10;
 
         .aurle-flow-card {
             $card-transition-duration: 400ms;
@@ -83,7 +88,6 @@ onMounted(() => {
                 left: 0;
                 right: 0;
                 bottom: 0.75rem;
-                z-index: 0;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
