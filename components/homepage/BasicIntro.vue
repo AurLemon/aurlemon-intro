@@ -1,5 +1,5 @@
 <template>
-    <div class="aurle-home-intro" :class="{ hidden: homeCardStore.isCardOpen() }">
+    <div class="aurle-home-intro">
         <div class="aurle-home-me">
             <div class="aurle-home-me__name">
                 <div class="aurle-home-me__info" translate="no">
@@ -136,225 +136,259 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-@use '~/assets/styles/media_screen.scss' as media;
+    @use '~/assets/styles/media_screen.scss' as media;
 
-.aurle-home-intro {
-    display: flex;
-    flex-direction: column;
-    gap: 6.25rem;
-    width: 100%;
-    margin: auto;
-    max-width: media.$media-screen-value-phone;
-    transition: 400ms;
-
-    .aurle-home-me {
+    .aurle-home-intro {
         display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 4rem;
+        justify-content: center;
+        flex-direction: column;
+        gap: 6.25rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        margin: auto;
+        max-width: media.$media-screen-value-phone;
+        transition: 400ms;
 
-        .aurle-home-me__avatar {
-            border: 2px solid #B7D9EB;
-            box-shadow: 0 0 32px rgba(190, 205, 212, 0.6);
-            border-radius: 50%;
-            overflow: hidden;
-            user-select: none;
-
-            img {
-                $value-image-length: 12rem;
-                display: block;
-                width: $value-image-length;
-                height: $value-image-length;
-                transition: 750ms;
-                transition-delay: 50ms;
-            }
-        }
-
-        .aurle-home-me__name {
+        .aurle-home-me {
             display: flex;
-            flex-direction: column;
-            transition: 350ms;
-
-            .aurle-home-me__info {
-                display: flex;
-                align-items: baseline;
-                gap: 0.75rem;
-                user-select: none;
-            }
-
-            .aurle-home-me__username {
-                color: transparent;
-                font-size: 80px;
-                font-weight: 600;
-                font-family: 'Caveat';
-                line-height: 1;
-                background: linear-gradient(60deg, var(--color-text) -15%, var(--color-primary) 225%);
-                background-clip: text;
-            }
-
-            .aurle-home-me__nick {
-                color: var(--color-text--subtle);
-                display: flex;
-                align-items: center;
-                flex-wrap: wrap;
-                gap: 0.375rem;
-
-                .nick {
-                    line-height: 1;
-                }
-
-                .simply-tag {
-                    color: var(--color-text);
-                    font-size: 12px;
-                    padding: 2px 6px;
-                    border-radius: 8px;
-                    background: var(--background-color-primary--active);
-                }
-            }
-
-            .aurle-home-me__id {
-                color: var(--color-surface-4);
-                font-size: 18px;
-            }
-        }
-
-        .aurle-home-me__button {
-            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 1rem;
-            margin-top: 1.25rem;
+            gap: 4rem;
 
-            .aurle-home-me__item {
-                cursor: pointer;
+            .aurle-home-me__avatar {
+                border: 2px solid #B7D9EB;
+                box-shadow: 0 0 32px rgba(190, 205, 212, 0.9);
+                border-radius: 50%;
+                overflow: hidden;
                 user-select: none;
+
+                img {
+                    $value-image-length: 12rem;
+                    display: block;
+                    width: $value-image-length;
+                    height: $value-image-length;
+                    transition: 750ms;
+                    transition-delay: 50ms;
+
+                    @include media.media-screen(phone) {
+                        $value-image-length: 8rem;
+                        width: $value-image-length;
+                        height: $value-image-length;
+                    }
+                }
+            }
+
+            .aurle-home-me__name {
+                display: flex;
+                flex-direction: column;
                 transition: 350ms;
 
-                a {
-                    display: block;
-                    padding: 0.375rem;
-                    background: #fff;
-                    border-radius: 50%;
-                    box-shadow: 0 0 32px rgba(181, 194, 199, 0.2);
-                    transition: 350ms;
-                }
-
-                svg,
-                img {
-                    $image-length: 18px;
-                    display: block;
-                    width: $image-length;
-                    height: $image-length;
-                    margin: 0;
-                    object-fit: contain;
-                    transition: 350ms;
-
-                    * {
-                        transition: 350ms;
+                .aurle-home-me__info {
+                    display: flex;
+                    align-items: baseline;
+                    gap: 0.75rem;
+                    user-select: none;
+                    
+                    @include media.media-screen(phone) {
+                        align-items: center;
+                        flex-direction: column;
+                        gap: 0;
+                        margin-bottom: 0.75rem;
                     }
                 }
 
-                &:active {
-                    transform: scale(0.92);
-                }
-            }
-
-            .aurle-home-me__contact {
-                .aurle-home-me__item:hover {
-                    a {
-                        background: var(--color-primary);
-                    }
-
-                    svg * {
-                        fill: #fff;
-                    }
-
-                    img {
-                        filter: brightness(100);
-                    }
+                .aurle-home-me__username {
+                    color: transparent;
+                    font-size: 80px;
+                    font-weight: 600;
+                    font-family: 'Caveat';
+                    line-height: 1;
+                    background: linear-gradient(60deg, var(--color-text) -15%, var(--color-primary) 225%);
+                    background-clip: text;
                 }
 
-                &,
-                .aurle-home-me__data {
+                .aurle-home-me__nick {
+                    color: var(--color-text--subtle);
                     display: flex;
                     align-items: center;
-                    gap: 0.5rem;
+                    flex-wrap: wrap;
+                    gap: 0.375rem;
+
+                    .nick {
+                        line-height: 1;
+                    }
+
+                    .simply-tag {
+                        color: var(--color-text);
+                        font-size: 12px;
+                        padding: 2px 6px;
+                        border-radius: 8px;
+                        background: var(--background-color-primary--active);
+                    }
+
+                    @include media.media-screen(phone) {
+                        justify-content: center;
+                    }
+                }
+
+                .aurle-home-me__id {
+                    color: var(--color-surface-4);
+                    font-size: 18px;
                 }
             }
 
-            .aurle-home-me__data {
+            .aurle-home-me__button {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+                margin-top: 1.25rem;
+
                 .aurle-home-me__item {
-                    display: flex;
-                    align-items: center;
-                    padding: 0.375rem;
-                    background: #fff;
-                    border-radius: 0.875rem;
-                    box-shadow: 0 0 32px rgba(181, 194, 199, 0.2);
+                    cursor: pointer;
+                    user-select: none;
+                    transition: 350ms;
 
-                    &.love {
-                        background: #F87171;
-                    }
-
-                    .aurle-home-me__text {
-                        color: #fff;
-                        font-size: 0.8125rem;
-                        font-weight: 600;
-                        margin: 0 0.375rem;
+                    a {
+                        display: block;
+                        padding: 0.375rem;
+                        background: #fff;
+                        border-radius: 50%;
+                        box-shadow: 0 0 32px rgba(181, 194, 199, 0.2);
                         transition: 350ms;
                     }
 
-                    .aurle-home-me__icon {
+                    svg, img {
+                        $image-length: 18px;
+                        display: block;
+                        width: $image-length;
+                        height: $image-length;
+                        margin: 0;
+                        object-fit: contain;
+                        transition: 350ms;
 
-                        svg,
-                        img {
-                            color: #fff;
+                        * {
+                            transition: 350ms;
                         }
                     }
 
-                    &:hover {
-                        transform: scale(1.02);
-                        filter: brightness(1.1);
+                    &:active {
+                        transform: scale(0.92);
+                    }
+                }
+
+                .aurle-home-me__contact {
+                    .aurle-home-me__item:hover {
+                        a {
+                            background: var(--color-primary);
+                        }
+
+                        svg * {
+                            fill: #fff;
+                        }
+
+                        img {
+                            filter: brightness(100);
+                        }
                     }
 
-                    &:active {
-                        transform: scale(0.94);
+                    &, .aurle-home-me__data {
+                        display: flex;
+                        align-items: center;
+                        gap: 0.5rem;
+                    }
+                }
+
+                .aurle-home-me__data {
+                    .aurle-home-me__item {
+                        display: flex;
+                        align-items: center;
+                        padding: 0.375rem;
+                        background: #fff;
+                        border-radius: 0.875rem;
+                        box-shadow: 0 0 32px rgba(181, 194, 199, 0.2);
+
+                        &.love {
+                            background: #F87171;
+                        }
+
+                        .aurle-home-me__text {
+                            color: #fff;
+                            font-size: 0.8125rem;
+                            font-weight: 600;
+                            margin: 0 0.375rem;
+                            transition: 350ms;
+                        }
+
+                        .aurle-home-me__icon {
+                            svg, img {
+                                color: #fff;
+                            }
+                        }
+
+                        &:hover {
+                            transform: scale(1.02);
+                            filter: brightness(1.1);
+                        }
+
+                        &:active {
+                            transform: scale(0.94);
+                        }
                     }
                 }
             }
+
+            @include media.media-screen(phone) {
+                flex-direction: column-reverse;
+                gap: 1rem;
+            }
+        }
+
+        .aurle-home-quote {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--color-text--subtle);
+            font-size: 14px;
+            width: 100%;
+            position: relative;
+            z-index: 5;
+            overflow: hidden;
+
+            &::before, &::after {
+                color: var(--color-surface-4);
+                margin: 0 0.75rem;
+                line-height: 1;
+            }
+
+            &::before {
+                content: '<';
+            }
+
+            &::after {
+                content: '>';
+            }
+            
+            @include media.media-screen(phone) {
+                align-items: center;
+                flex-direction: column;
+
+                .aurle-home-quote__text {
+                    text-align: center;
+                }
+
+                &::before, &::after {
+                    transform: rotate(90deg);
+                    margin: 0.75rem;
+                }
+            }
+        }
+        
+        @include media.media-screen(phone) {
+            gap: 3rem;
         }
     }
-
-    .aurle-home-quote {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        color: var(--color-text--subtle);
-        font-size: 14px;
-        width: 100%;
-        position: relative;
-        z-index: 5;
-        overflow: hidden;
-        margin-bottom: auto;
-
-        &::before,
-        &::after {
-            color: var(--color-surface-4);
-            margin: 0 0.75rem;
-            line-height: 1;
-        }
-
-        &::before {
-            content: '<';
-        }
-
-        &::after {
-            content: '>';
-        }
-    }
-
-    &.hidden {
-        transform: translateY(20%) scale(0.5);
-        opacity: 0;
-        transform-origin: bottom;
-    }
-}
 </style>

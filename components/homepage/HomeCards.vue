@@ -31,6 +31,9 @@ const homeCardStore = useHomeCard()
     $card-transition-duration: 400ms;
 
     .page-home-cards {
+        width: 100%;
+        height: 100%;
+
         .page-home-card {
             margin: 8rem 4rem;
             position: absolute;
@@ -43,16 +46,15 @@ const homeCardStore = useHomeCard()
             pointer-events: none;
             transition: $card-transition-duration;
             transform: translateY(-20%) scale(0.5);
-
-            @include media.media-screen(mobile) {
-                margin: 2rem 1rem;
-            }
+            filter: drop-shadow(0 0 64px var(--border-color-base));
+            overflow-y: auto;
 
             &.show {
                 opacity: 1;
                 user-select: auto;
                 pointer-events: all;
                 transform: translateY(0) scale(1);
+                overflow-y: auto;
             }
             
             .page-home-card__title {
@@ -60,6 +62,11 @@ const homeCardStore = useHomeCard()
                 font-weight: 600;
                 text-align: center;
                 margin-bottom: 1rem;
+            }
+
+            @include media.media-screen(mobile) {
+                padding: 1rem 0;
+                margin: 0;
             }
         }
     }

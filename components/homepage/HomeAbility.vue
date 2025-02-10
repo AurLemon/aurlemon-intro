@@ -151,14 +151,13 @@ const changeCurrentCollegeStage = (stage: number) => {
     .aurle-home-ability {
         display: grid;
         gap: 0.5rem;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
 
         .aurle-home-item {
             background: var(--background-light-4);
             backdrop-filter: blur(32px) saturate(1.25);
             border-radius: 8px;
             outline: 1.75px solid transparent;
-            box-shadow: 0 0 64px var(--border-color-base);
             position: relative;
             min-height: 64px;
             transition: 250ms;
@@ -185,7 +184,7 @@ const changeCurrentCollegeStage = (stage: number) => {
             }
 
             &.school {
-                grid-column: span 2;
+                grid-column: span 3;
                 grid-row: span 2;
                 width: 100%;
                 padding: 0;
@@ -582,7 +581,6 @@ const changeCurrentCollegeStage = (stage: number) => {
         }
 
         .aurle-home-wrapper {
-            grid-column: 3;
             grid-row: span 3;
             display: flex;
             flex-direction: column;
@@ -591,6 +589,16 @@ const changeCurrentCollegeStage = (stage: number) => {
             .aurle-home-item {
                 flex: 1;
             }
+
+            @include media.media-screen(phone) {
+                grid-column: span 3;
+                grid-row: span 1;
+                flex-direction: row;
+            }
+        }
+        
+        @include media.media-screen(phone) {
+            grid-template-columns: repeat(3, 1fr);
         }
     }
 </style>

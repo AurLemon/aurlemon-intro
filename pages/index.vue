@@ -3,8 +3,12 @@
         <div class="aurle-page-foreground">
             <div class="aurle-home-section">
                 <div class="aurle-home-header">
-                    <BasicIntro />
-                    <HomeCards />
+                    <Transition name="basic-intro" mode="out-in">
+                        <BasicIntro v-if="!homeCardStore.isCardOpen()" />
+                    </Transition>
+                    <Transition name="home-cards" mode="out-in">
+                        <HomeCards v-if="homeCardStore.isCardOpen()" />
+                    </Transition>
                 </div>
                 <BottomFlow />
             </div>
@@ -146,7 +150,7 @@ useHead({
             display: flex;
             justify-content: center;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 3rem;
             width: 100%;
             height: 100dvh;
             padding: 1.75rem;
@@ -158,9 +162,58 @@ useHead({
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
             width: 100%;
             height: 100%;
             position: relative;
         }
+    }
+    
+    .basic-intro-enter-active, .basic-intro-leave-active {
+        transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+
+    .basic-intro-enter-from {
+        transform: translateY(20%) scale(0.5);
+        opacity: 0;
+    }
+
+    .basic-intro-enter-to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+
+    .basic-intro-leave-from {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+
+    .basic-intro-leave-to {
+        transform: translateY(20%) scale(0.5);
+        opacity: 0;
+    }
+    
+    .home-cards-enter-active, .home-cards-leave-active {
+        transition: transform 500ms ease, opacity 500ms ease;
+    }
+
+    .home-cards-enter-from {
+        transform: translateY(-20%) scale(0.5);
+        opacity: 0;
+    }
+
+    .home-cards-enter-to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+
+    .home-cards-leave-from {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+
+    .home-cards-leave-to {
+        transform: translateY(-20%) scale(0.5);
+        opacity: 0;
     }
 </style>

@@ -92,12 +92,14 @@ onMounted(() => {
                     font-size: 54px;
                     text-align: center;
                     transition: $card-transition-duration;
+                    user-select: none;
                 }
                 
                 .image {
                     display: flex;
                     justify-content: center;
                     margin-right: 0.125rem;
+                    user-select: none;
                     
                     img {
                         display: block;
@@ -111,6 +113,7 @@ onMounted(() => {
                 .canvas {
                     display: flex;
                     justify-content: center;
+                    user-select: none;
                     
                     canvas {
                         object-position: top;

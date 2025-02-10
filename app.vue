@@ -14,11 +14,11 @@ import PageFooter from './components/PageFooter.vue'
     </div>
 </template>
 
-<style lang="scss" scoped>
-.aurle-app {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    min-height: 100vh;
-}
+<style scoped lang="scss">
+    .aurle-app {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        min-height: 100vh;
+    }
 </style>
