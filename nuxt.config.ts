@@ -78,5 +78,6 @@ export default defineNuxtConfig({
     },
     runtimeConfig: {
         githubToken: process.env.GITHUB_TOKEN ?? "github_pat",
+        bdUrl: process.env.DATABASE_URL,
     },
 })

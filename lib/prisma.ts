@@ -1,11 +1,19 @@
 import { PrismaClient } from '@prisma/client'
 
+const config: any = useRuntimeConfig()
+
 const prismaClientSingleton = () => {
-  return new PrismaClient()
+    return new PrismaClient({
+        datasources: {
+            db: {
+                url: config.bdUrl
+            }
+        }
+        })
 }
 
 declare const globalThis: {
-  prismaGlobal: ReturnType<typeof prismaClientSingleton>;
+    prismaGlobal: ReturnType<typeof prismaClientSingleton>;
 } & typeof global;
 
 const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
