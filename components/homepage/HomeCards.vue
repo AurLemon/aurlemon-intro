@@ -35,6 +35,7 @@ const homeCardStore = useHomeCard()
         height: 100%;
 
         .page-home-card {
+            padding: 0.25rem;
             margin: 3rem;
             position: absolute;
             top: 0;
