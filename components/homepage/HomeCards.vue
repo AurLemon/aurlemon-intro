@@ -36,7 +36,7 @@ const homeCardStore = useHomeCard()
 
         .page-home-card {
             padding: 0.25rem;
-            margin: 3rem;
+            margin: 8rem 4rem;
             position: absolute;
             top: 0;
             left: 0;
@@ -67,6 +67,10 @@ const homeCardStore = useHomeCard()
                 font-weight: 600;
                 text-align: center;
                 margin-bottom: 1rem;
+            }
+
+            @media screen and (max-height: 768px) {
+                margin: 2rem;
             }
 
             @include media.media-screen(mobile) {
