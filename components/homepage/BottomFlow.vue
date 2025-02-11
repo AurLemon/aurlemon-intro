@@ -35,29 +35,34 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { SkinViewer } from 'skinview3d'
 
 import { useHomeCard } from '~/stores/homeCard'
 
+const homeCardStore = useHomeCard()
+
 const SKIN_API = 'https://minotar.net/skin/'
 const skinViewer = ref<HTMLCanvasElement>()
-
-const homeCardStore = useHomeCard()
+const aurLemonSkin = ref()
 
 onMounted(() => {
     if (skinViewer.value) {
-        const aurLemonSkin = new SkinViewer({
+        aurLemonSkin.value = new SkinViewer({
             canvas: skinViewer.value,
             skin: SKIN_API + 'Aurora_Lemon',
             width: 70,
             height: 90
         })
 
-        aurLemonSkin.fov = 60
-        aurLemonSkin.zoom = 1
-        aurLemonSkin.autoRotate = true
+        aurLemonSkin.value.fov = 60
+        aurLemonSkin.value.zoom = 1
+        aurLemonSkin.value.autoRotate = true
     }
+})
+
+watch(() => homeCardStore.interestCard, () => {
+    aurLemonSkin.value.autoRotate = !homeCardStore.interestCard
 })
 </script>
 
