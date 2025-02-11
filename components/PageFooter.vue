@@ -23,10 +23,10 @@
                     <div class="aurle-page-footer__title">建设</div>
                     <div class="aurle-page-footer__item">
                         <div class="aurle-page-footer__target">
-                            <a href="/friends" target="_blank" rel="noopener noreferrer">友链</a>
+                            <a href="/friends" target="_self" rel="noopener noreferrer">友链</a>
                         </div>
                         <div class="aurle-page-footer__target">
-                            <a href="/about" target="_blank" rel="noopener noreferrer">关于本站</a>
+                            <a href="/about" target="_self" rel="noopener noreferrer">关于本站</a>
                         </div>
                     </div>
                 </div>
