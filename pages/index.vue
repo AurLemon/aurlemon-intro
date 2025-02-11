@@ -153,7 +153,7 @@ useHead({
             gap: 3rem;
             position: relative;
             width: 100%;
-            height: 100vh;
+            height: 100dvh;
             padding: 1.25rem;
             padding-top: 4rem + 0.75rem;
             margin-bottom: 5vh;

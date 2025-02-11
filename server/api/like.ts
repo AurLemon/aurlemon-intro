@@ -55,7 +55,7 @@ export default defineEventHandler(async (event) => {
                 },
             })
 
-            return newLike
+            return { status: "success", newLike }
         } catch (error) {
             console.error('Error creating like:', error)
             return { error: 'Database error' }
