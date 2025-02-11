@@ -101,7 +101,7 @@ const fetchLikeCount = async (): Promise<void> => {
 }
 
 const addLike = async (): Promise<void> => {
-    if (isLiking.value || localStorage.getItem('hasLiked')) {
+    if (isLiking.value) {
         return
     }
 
@@ -120,8 +120,10 @@ const addLike = async (): Promise<void> => {
         if (response.ok) {
             const data = await response.json()
             console.log('Like added:', data)
-            likeCount.value += 1
-            localStorage.setItem('hasLiked', 'true')
+
+            if (data.status) {
+                likeCount.value += 1
+            }
         }
     } catch (error) {
         console.error('Error adding like:', error)
