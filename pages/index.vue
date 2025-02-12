@@ -157,6 +157,7 @@ useHead({
             padding: 1.25rem;
             padding-top: 4rem + 0.75rem;
             margin-bottom: 5vh;
+            transition: 400ms;
         }
 
         .aurle-home-header {
