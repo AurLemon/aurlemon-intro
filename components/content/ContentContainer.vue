@@ -97,7 +97,6 @@ const { data: content } = await useAsyncData(() => queryCollection('content').pa
                         padding-left: 0.5em;
                         transition: $toc-transition-duration;
                         overflow: hidden;
-                        text-decoration: none;
 
                         &::after {
                             content: '';
