@@ -137,7 +137,7 @@ watch(() => homeCardStore.interestCard, () => {
                 z-index: 1;
                 font-size: 14px;
                 text-align: center;
-                padding: 0.5rem 0.75rem;
+                padding: 0.5rem 0.625rem;
                 background: var(--background-light-4);
                 backdrop-filter: blur(32px);
                 border: 1px solid var(--border-color-base--darker);
