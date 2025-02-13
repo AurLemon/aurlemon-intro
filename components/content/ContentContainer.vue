@@ -57,6 +57,10 @@ const { data: content } = await useAsyncData(() => queryCollection('content').pa
             display: flex;
             gap: 1em;
 
+            .aurle-content-render {
+                flex: 1;
+            }
+
             @include media.media-screen(mobile) {
                 flex-direction: column-reverse;
             }

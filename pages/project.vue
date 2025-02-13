@@ -1,20 +1,17 @@
 <template>
     <div class="aurle-project aurle-page">
-        <div class="aurle-page-container">
-            <ContentRenderer v-if="project" :value="project" class="aurle-page-content" />
-            <div class="aurle-page-content" v-else>正在加载内容</div>
-            <div class="aurle-project-item github-calendar" id="githubCalendar"></div>
-        </div>
+        <ContentContainer page="project" title="项目" subtitle="无语，懒得和不懂 JS 的美的人说话。"/>
+        <div class="aurle-project-item github-calendar" id="githubCalendar"></div>
     </div>
 </template>
 
 <script setup lang="ts">
+import ContentContainer from '~/components/content/ContentContainer.vue'
+
 import { ref, onMounted } from 'vue'
 import GitHubCalendar from 'github-calendar'
 import 'github-calendar/dist/github-calendar-responsive.css'
 import 'github-calendar/dist/github-calendar.css'
-
-const { data: project } = await useAsyncData(() => queryCollection('content').path('/project').first())
 
 onMounted(() => {
     GitHubCalendar('#githubCalendar', "AurLemon", { responsive: true })
@@ -42,20 +39,6 @@ useHead({
 
         .float-right {
             float: none;
-        }
-    }
-</style>
-
-<style scoped lang="scss">
-    @use '~/assets/styles/media_screen.scss' as media;
-
-    .aurle-project {
-        .aurle-page-container {
-            padding: 1rem;
-
-            @include media.media-screen(mobile) {
-                padding: 1rem 2rem;
-            }
         }
     }
 </style>
