@@ -1,5 +1,14 @@
 @use '~/assets/styles/media_screen.scss' as media;
 
+a {
+    color: var(--color-primary);
+    text-decoration: none;
+    
+    &:hover {
+        text-decoration: underline;
+    }
+}
+
 h1, h2, h3, h4, h5, h6 {
     color: var(--color-text);
     font-weight: 600;
@@ -9,6 +18,10 @@ h1, h2, h3, h4, h5, h6 {
     
     a {
         color: var(--color-text);
+
+        &:hover {
+            text-decoration: none;
+        }
     }
 }
 
