@@ -140,8 +140,9 @@ watch(() => homeCardStore.interestCard, () => {
                 padding: 0.5rem 0.75rem;
                 background: var(--background-light-4);
                 backdrop-filter: blur(32px);
+                border: 1px solid var(--border-color-base--darker);
                 border-radius: 16px;
-                box-shadow: 0 24px 96px var(--border-color-base--darker);
+                box-shadow: 0 8px 48px var(--border-color-base--darker);
                 transition: $card-transition-duration;
                 user-select: none;
             }
