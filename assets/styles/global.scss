@@ -25,6 +25,11 @@
     src: url('~/assets/fonts/Caveat.woff2') format(woff2);
 }
 
+@font-face {
+    font-family: 'SourceHanSerif';
+    src: url('~/assets/fonts/SourceHanSerif_Subset.woff2.woff2') format(woff2);
+}
+
 :root {
     --font-family: "Inter", "MiSans Latin", "Helvetica Neue", "Helvetica", "Roboto", "BlinkMacSystemFont", "MiSans", "HarmonyOS Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
     --color-primary__h: 200;

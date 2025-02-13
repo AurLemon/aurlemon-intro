@@ -43,7 +43,7 @@ const { data: content } = await useAsyncData(() => queryCollection('content').pa
             .aurle-content-title {
                 font-size: 2.25em;
                 font-weight: 700;
-                font-family: serif;
+                font-family: 'SourceHanSerif', serif;
             }
 
             .aurle-content-subtitle {
