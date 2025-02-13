@@ -35,11 +35,10 @@ const { data: content } = await useAsyncData(() => queryCollection('content').pa
         display: flex;
         flex-direction: column;
         padding: 1.5em;
-        margin-bottom: 1.5em;
+        margin-bottom: 3em;
 
         .aurle-content-info {
-            padding-top: 6em;
-            padding-bottom: 4em;
+            padding: 3em 0;
 
             .aurle-content-title {
                 font-size: 2.25em;
