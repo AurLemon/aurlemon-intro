@@ -82,9 +82,7 @@
     background: hsla(var(--color-primary__h), 5%, 54%, 22%);
 }
 
-*,
-*::before,
-*::after {
+*, *::before, *::after {
     scrollbar-color: var(--color-surface-3) transparent;
     scrollbar-width: thin;
     box-sizing: border-box;
@@ -98,7 +96,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    background: var(--color-surface-1);
+    background: var(--color-surface-0);
     min-height: 100vh;
 }
 

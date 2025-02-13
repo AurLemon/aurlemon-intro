@@ -190,7 +190,7 @@ onUnmounted(() => {
             border: 1px solid var(--border-color-base);
             border-radius: 32px;
             backdrop-filter: blur(32px) saturate(1.5);
-            box-shadow: 0 32px 48px var(--border-color-base);
+            box-shadow: 0 0 48px var(--border-color-base--darker);
             overflow: hidden;
             transition: 300ms;
             user-select: none;
