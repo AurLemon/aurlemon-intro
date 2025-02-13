@@ -1,16 +1,11 @@
 <template>
     <div class="aurle-more aurle-page">
-        <div class="aurle-page-container">
-            <ContentRenderer v-if="more" :value="more" class="aurle-page-content" />
-            <div class="aurle-page-content" v-else>正在加载内容</div>
-        </div>
+        <ContentContainer page="more" title="更多" subtitle="还有很多事这里写不下 →_→"/>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-
-const { data: more } = await useAsyncData(() => queryCollection('content').path('/more').first())
+import ContentContainer from '~/components/content/ContentContainer.vue'
 
 useHead({
     title: '更多 / AurLemon Intro',
@@ -19,17 +14,3 @@ useHead({
     ]
 })
 </script>
-
-<style scoped lang="scss">
-    @use '~/assets/styles/media_screen.scss' as media;
-
-    .aurle-more {
-        .aurle-page-container {
-            padding: 1rem;
-
-            @include media.media-screen(mobile) {
-                padding: 1rem 2rem;
-            }
-        }
-    }
-</style>
