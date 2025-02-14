@@ -23,10 +23,10 @@
                     <div class="aurle-page-footer__title">建设</div>
                     <div class="aurle-page-footer__item">
                         <div class="aurle-page-footer__target">
-                            <a href="/friends" target="_self" rel="noopener noreferrer">友链</a>
+                            <NuxtLink to="/friends">友链</NuxtLink>
                         </div>
                         <div class="aurle-page-footer__target">
-                            <a href="/about" target="_self" rel="noopener noreferrer">关于本站</a>
+                            <NuxtLink to="/about">关于本站</NuxtLink>
                         </div>
                     </div>
                 </div>

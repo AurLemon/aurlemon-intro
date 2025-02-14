@@ -1,16 +1,11 @@
 <template>
     <div class="aurle-about aurle-page">
-        <div class="aurle-page-container">
-            <ContentRenderer v-if="about" :value="about" class="aurle-page-content" />
-            <div class="aurle-page-content" v-else>正在加载内容</div>
-        </div>
+        <ContentContainer page="about" title="关于" subtitle="一个用 Nuxt 3 写的、Shiro UI 风格的个人介绍站。" />
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-
-const { data: about } = await useAsyncData(() => queryCollection('content').path('/about').first())
+import ContentContainer from '~/components/content/ContentContainer.vue'
 
 useHead({
     title: '关于 / AurLemon Intro',
@@ -19,17 +14,3 @@ useHead({
     ]
 })
 </script>
-
-<style scoped lang="scss">
-    @use '~/assets/styles/media_screen.scss' as media;
-
-    .aurle-about {
-        .aurle-page-container {
-            padding: 1rem;
-
-            @include media.media-screen(mobile) {
-                padding: 1rem 2rem;
-            }
-        }
-    }
-</style>
