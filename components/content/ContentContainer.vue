@@ -10,15 +10,15 @@
                 <TableOfContents v-if="content" :toc="content.body.toc" title="目录结构" class="aurle-content-toc" />
                 <div class="aurle-content-toc__scroll">
                     <svg width="14" height="14">
-                    <circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--color-surface-1)" stroke-width="2"></circle>
-                    <circle 
-                        cx="7" cy="7" r="6" stroke-linecap="round" fill="none" 
-                        stroke="var(--color-primary)" stroke-width="2"
-                        stroke-dasharray="50" 
-                        :stroke-dashoffset="50 - (contentScrollProgress / 100) * 50"
-                        transform="rotate(-90 7 7)"
-                    </circle>
-                </svg>
+                        <circle cx="7" cy="7" r="6" stroke-linecap="round" fill="none" stroke="var(--color-surface-1)" stroke-width="2"></circle>
+                        <circle 
+                            cx="7" cy="7" r="6" stroke-linecap="round" fill="none" 
+                            stroke="var(--color-primary)" stroke-width="2"
+                            stroke-dasharray="37" 
+                            :stroke-dashoffset="37 - (contentScrollProgress / 100) * 37"
+                            transform="rotate(-90 7 7)"
+                        </circle>
+                    </svg>
                     {{ contentScrollProgress.toFixed(0) }}%
                 </div>
             </div>
@@ -45,7 +45,7 @@ const calculateProgress = () => {
         
         if (progress < 0) {
             progress = 0
-        } else if (progress > 100) {
+        } else if (progress > 100 || elementHeight < viewportHeight) {
             progress = 100
         }
         
