@@ -52,6 +52,7 @@ useHead({
 
         .float-right {
             float: none;
+            padding: 0;
         }
     }
 </style>
