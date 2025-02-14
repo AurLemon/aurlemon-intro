@@ -1,14 +1,13 @@
 <template>
     <div class="aurle-project aurle-page">
-        <ContentContainer page="project" title="项目" subtitle="无语，懒得和不懂 JS 的美的人说话。"/>
-        <div class="aurle-project-item github-calendar" id="githubCalendar"></div>
+        <ContentContainer page="project" title="项目" subtitle="无语，懒得和不懂 JS 美的人说话。" />
     </div>
 </template>
 
 <script setup lang="ts">
 import ContentContainer from '~/components/content/ContentContainer.vue'
 
-import { ref, onMounted } from 'vue'
+import { onMounted } from 'vue'
 import GitHubCalendar from 'github-calendar'
 import 'github-calendar/dist/github-calendar-responsive.css'
 import 'github-calendar/dist/github-calendar.css'
@@ -32,6 +31,20 @@ useHead({
         --color-calendar-graph-day-L2-bg: hsl(200deg 50.56% 58.42%);
         --color-calendar-graph-day-L3-bg: hsl(200deg 44.1% 47.26%);
         --color-calendar-graph-day-L4-bg: hsl(200deg 56.12% 35.15%);
+
+        .ContributionCalendar > div:first-of-type {
+            width: fit-content;
+            margin: 0 auto;
+        }
+        
+        .ContributionCalendar > div:last-of-type {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
 
         .float-left, #user-activity-overview, .contrib-column {
             display: none;
