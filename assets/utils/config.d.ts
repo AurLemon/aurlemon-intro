@@ -28,6 +28,7 @@ interface Announcement {
     more_info: AnnouncementMoreInfo[] 
     expires: string 
     closability: boolean 
+    enable: boolean
 }
 
 interface Config {
