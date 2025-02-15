@@ -17,8 +17,8 @@
                         <circle 
                             cx="7" cy="7" r="6" stroke-linecap="round" fill="none" 
                             stroke="var(--color-primary)" stroke-width="2"
-                            stroke-dasharray="37" 
-                            :stroke-dashoffset="37 - (contentScrollProgress / 100) * 37"
+                            stroke-dasharray="37.7" 
+                            :stroke-dashoffset="37.7 - (contentScrollProgress / 100) * 37.7"
                             transform="rotate(-90 7 7)"
                         </circle>
                     </svg>
@@ -47,15 +47,12 @@ const calculateProgress = () => {
         const viewportHeight = window.innerHeight
         
         let progress = (scrollTop - elementTop) / (elementHeight - viewportHeight) * 100
-        console.log(progress);
-        
         tocMobileHidden.value = progress > 110 ? true : false
 
-        if (progress < 0) {
-            progress = 0
-        } else if (progress > 100 || elementHeight < viewportHeight) {
-            progress = 100
-        }
+        if (progress < 0) progress = 0
+        else if (progress > 100) progress = 100
+
+        if (elementHeight < viewportHeight) progress = 100
         
         contentScrollProgress.value = progress
     }
@@ -232,8 +229,8 @@ onUnmounted(() => {
                 gap: 0.5rem;
                 width: 65px;
 
-                svg * {
-                    transition: 400ms;
+                svg circle {
+                    transition: stroke-dashoffset 300ms;
                 }
             }
 
