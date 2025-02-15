@@ -12,7 +12,7 @@ export default defineNuxtConfig({
     ],
     modules: ['@nuxtjs/seo', '@pinia/nuxt', '@vesp/nuxt-fontawesome', 'nuxt-svgo', '@nuxt/content', 'nuxt-locomotive-scroll', '@prisma/nuxt', 'nuxt-toc'],
     site: {
-        url: 'https://www.aurlemon.top', // 网站地址
+        url: 'https://www.aurlemon.top',
         name: 'AurLemon Intro',
         description: 'AurLemon 的个人介绍站！',
         defaultLocale: 'zh-cn',
@@ -90,6 +90,7 @@ export default defineNuxtConfig({
                 { charset: 'utf-8' },
                 { name: 'viewport', content: 'width=device-width, initial-scale=1' },
             ],
+            titleTemplate: "%s",
         },
         pageTransition: { name: 'page', mode: 'out-in' },
     },
