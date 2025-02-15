@@ -7,11 +7,10 @@ declare global {
 }
   
 export default defineNuxtPlugin(nuxtApp => {
-    const baiduStatKey = process.env.BAIDU_STAT_KEY
-
+    const baiduStatKey = useRuntimeConfig().public.baiduStatKey
+    
     if (baiduStatKey) {
         window._hmt = window._hmt || []
-
         const script = document.createElement('script')
         script.src = `https://hm.baidu.com/hm.js?${baiduStatKey}`
         script.async = true

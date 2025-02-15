@@ -84,5 +84,10 @@ export default defineNuxtConfig({
     runtimeConfig: {
         githubToken: process.env.GITHUB_TOKEN ?? 'github_pat',
         bdUrl: process.env.DATABASE_URL,
+
+        public: {
+            baiduStatKey: process.env.BAIDU_STAT_KEY,
+            msClarityId: process.env.MS_CLARITY_ID,
+        },
     },
 })
