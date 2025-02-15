@@ -1,5 +1,5 @@
 ## 源码
-项目仓库见 [Github](https://github.com/AurLemon/aurlemon-intro)，基于 Nuxt 3 开发的一个小简介网站。UI 风格借鉴 [Innei](https://github.com/Innei) 大佬的 [Shiro](https://github.com/Innei/Shiro)（大佬这动效和 UI 是真 NB）。
+项目仓库见 [GitHub](https://github.com/AurLemon/aurlemon-intro)，基于 Nuxt 3 开发的一个小简介网站。UI 风格借鉴 [Innei](https://github.com/Innei) 大佬的 [Shiro](https://github.com/Innei/Shiro)（大佬这动效和 UI 是真 NB）。
 
 UI 部分把顶栏和内容页面给 ***借鉴*** 来了。自己一开始设计的时候从没想到顶栏菜单能这么玩，感谢大佬的指点，第一次看的时候感觉非常灵动！自己以前的项目就没这感觉，后面琢磨了下大概发现是过渡动画的时间（我原来习惯 150ms 到 350ms 这个区间的）和更细致的动画控制（GSAP）促成的。
 
