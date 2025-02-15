@@ -10,7 +10,19 @@ export default defineNuxtConfig({
         { src: '~/plugins/baidu-stat.ts', mode: 'client' },
         { src: '~/plugins/ms-clarity.ts', mode: 'client' },
     ],
-    modules: ['@pinia/nuxt', '@vesp/nuxt-fontawesome', 'nuxt-svgo', '@nuxt/content', 'nuxt-locomotive-scroll', '@prisma/nuxt', 'nuxt-toc'],
+    modules: ['@nuxtjs/seo', '@pinia/nuxt', '@vesp/nuxt-fontawesome', 'nuxt-svgo', '@nuxt/content', 'nuxt-locomotive-scroll', '@prisma/nuxt', 'nuxt-toc'],
+    site: {
+        url: 'https://www.aurlemon.top', // 网站地址
+        name: 'AurLemon Intro',
+        description: 'AurLemon 的个人介绍站！',
+        defaultLocale: 'zh-cn',
+        exclude: ['/admin/**'],
+        cacheMaxAgeSeconds: 24 * 3600,
+        autoLastmod: true,
+    },
+    routeRules: {
+        '/admin/**': { robots: false },
+    },
     svgo: {
         global: false,
         defaultImport: 'component',
