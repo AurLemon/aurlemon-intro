@@ -4,7 +4,12 @@ export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
     ssr: true,
     devtools: { enabled: false },
-    plugins: ['~/plugins/floating-vue.ts', '~/plugins/v-clipboard.ts'],
+    plugins: [
+        '~/plugins/floating-vue.ts',
+        '~/plugins/v-clipboard.ts',
+        { src: '~/plugins/baidu-stat.ts', mode: 'client' },
+        { src: '~/plugins/ms-clarity.ts', mode: 'client' },
+    ],
     modules: ['@pinia/nuxt', '@vesp/nuxt-fontawesome', 'nuxt-svgo', '@nuxt/content', 'nuxt-locomotive-scroll', '@prisma/nuxt', 'nuxt-toc'],
     svgo: {
         global: false,
