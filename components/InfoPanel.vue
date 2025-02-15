@@ -1,8 +1,9 @@
 <template>
     <transition name="panel-fade" @after-enter="onAfterEnter" @before-leave="onBeforeLeave">
         <aside class="aurle-panel" v-if="infoPanel.panelStatus" ref="panelRef">
-            <div class="aurle-panel-building">
-                信息面板慢慢做，不急。
+            <div class="aurle-panel-building">信息面板慢慢做，不急。</div>
+            <div class="aurle-panel-close" @click="infoPanel.togglePanel">
+                <span class="material-icons">close</span>
             </div>
         </aside>
     </transition>
@@ -51,6 +52,8 @@ onBeforeMount(() => {
 </script>
 
 <style scoped lang="scss">
+    @use '~/assets/styles/media_screen.scss' as media;
+
     .aurle-panel {
         display: flex;
         justify-content: center;
@@ -68,10 +71,41 @@ onBeforeMount(() => {
         transform: translateY(-100%);
         transition: transform 400ms ease, opacity 400ms ease;
 
-
         &.finish {
             transform: translateY(0);
             opacity: 1;
+        }
+
+        .aurle-panel-close {
+            position: fixed;
+            right: 3rem;
+            bottom: 3rem;
+            background: #fff;
+            border-radius: 50%;
+            padding: 0.75rem;
+            box-shadow: 0 0 32px var(--border-color-base);
+            user-select: none;
+            cursor: pointer;
+            transition: 500ms;
+
+            .material-icons {
+                display: block;
+                color: var(--failed-color);
+                font-size: 26px;
+            }
+
+            &:hover {
+                transform: rotate(75deg);
+            }
+
+            &:active {
+                transform: rotate(75deg) scale(0.75);
+            }
+
+            @include media.media-screen(phone) {
+                right: 1.5rem;
+                bottom: 1.5rem;
+            }
         }
     }
 
