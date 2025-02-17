@@ -154,6 +154,7 @@ useHead({
             position: relative;
             width: 100%;
             height: 100dvh;
+            min-height: 100vh;
             padding: 1.25rem;
             padding-top: 4rem + 0.75rem;
             margin-bottom: 5vh;
