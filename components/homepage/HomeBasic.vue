@@ -43,8 +43,8 @@
                 <span class="material-icons">accessible_forward</span>
             </div>
             <div class="aurle-home-item__foreground">
-                <div class="aurle-home-item__title">INF/TJ</div>
-                <div class="aurle-home-item__subtitle">测着玩玩。有一种赛博算卦的感觉。</div>
+                <div class="aurle-home-item__title">INFP+INT/FJ</div>
+                <div class="aurle-home-item__subtitle">测着玩玩。有一种赛博算卦的感觉，九维测出来是6w7。</div>
             </div>
         </div>
         <div class="aurle-home-item s-card gene">
