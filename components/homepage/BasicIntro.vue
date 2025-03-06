@@ -10,7 +10,8 @@
                     <div class="nick">柠檬</div>
                     <div class="simply-tag">{{ dayjs().diff(dayjs(birthdate), 'year') }}</div>
                     <div class="simply-tag">{{ dayjs().isAfter(dayjs(atbeeExamDate)) ? '臭二本的' : '臭大专的' }}</div>
-                    <div class="simply-tag">INFJ/TJ</div>
+                    <div class="simply-tag">INFP/FJ/TJ</div>
+                    <div class="simply-tag">6w7</div>
                     <div class="simply-tag">福州</div>
                 </div>
                 <div class="aurle-home-me__button">
