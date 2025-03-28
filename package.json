@@ -7,10 +7,9 @@
         "dev": "nuxt dev",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
-        "postinstall": "nuxt prepare",
+        "postinstall": "nuxt prepare && patch-package",
         "update": "git pull && npm run build",
-        "start": "node .output/server/index.mjs",
-        "postinstall": "patch-package"
+        "start": "node .output/server/index.mjs"
     },
     "dependencies": {
         "@fingerprintjs/fingerprintjs": "^4.5.1",
