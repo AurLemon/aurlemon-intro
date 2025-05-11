@@ -7,7 +7,7 @@
         "dev": "nuxt dev",
         "generate": "nuxt generate",
         "preview": "nuxt preview",
-        "postinstall": "nuxt prepare",
+        "postinstall": "nuxt prepare && patch-package",
         "update": "git pull && npm run build",
         "start": "node .output/server/index.mjs"
     },
@@ -36,6 +36,7 @@
         "nuxt-locomotive-scroll": "^0.0.1",
         "nuxt-svgo": "^4.0.11",
         "nuxt-toc": "^2.7.2",
+        "patch-package": "^8.0.0",
         "pinia": "^2.2.6",
         "pinia-plugin-persistedstate": "^4.1.3",
         "prisma": "^6.3.1",
