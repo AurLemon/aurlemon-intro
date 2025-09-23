@@ -61,7 +61,7 @@
             </div>
         </div>
         <div class="aurle-home-quote">
-            <div class="aurle-home-quote__text">主动思考 · 实践与总结 · 做一颗好的螺丝钉 · 保持谦逊 · 多玩抽象</div>
+            <div class="aurle-home-quote__text">做个好的螺丝钉就行 :)</div>
         </div>
     </div>
 </template>

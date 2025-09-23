@@ -58,7 +58,7 @@
                 </div>
                 <div class="aurle-home-item__foreground">
                     <div class="aurle-home-item__title">最近比较忙</div>
-                    <div class="aurle-home-item__subtitle">要准备CET4和蓝桥杯。</div>
+                    <div class="aurle-home-item__subtitle">要准备CET6和蓝桥杯。</div>
                     <div class="aurle-home-item__button">
                         <div class="aurle-home-item__link main">
                             <a href="https://plan.aurlemon.top/" target="_blank" rel="noopener noreferrer">我的计划</a>
