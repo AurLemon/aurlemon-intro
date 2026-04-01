@@ -1,39 +1,39 @@
 // config.d.ts
 
 interface FriendLink {
-    name: string
-    url: string
-    desc: string
-    icon?: string
-    stationmaster: {
-        name: string
-        contact: string
-    }
+	name: string
+	url: string
+	desc: string
+	icon?: string
+	stationmaster: {
+		name: string
+		contact: string
+	}
 }
 
 interface AnnouncementIcon {
-    type: string
-    content: string
+	type: string
+	content: string
 }
 
 interface AnnouncementMoreInfo {
-    text: string
-    url: string
+	text: string
+	url: string
 }
 
 interface Announcement {
-    id: number
-    message: string 
-    icon: AnnouncementIcon 
-    more_info: AnnouncementMoreInfo[] 
-    expires: string 
-    closability: boolean 
-    enable: boolean
+	id: number
+	message: string
+	icon: AnnouncementIcon
+	more_info: AnnouncementMoreInfo[]
+	expires: string
+	closability: boolean
+	enable: boolean
 }
 
 interface Config {
-    friend_link: FriendLink[]
-    announcement: Announcement[]
+	friend_link: FriendLink[]
+	announcement: Announcement[]
 }
 
 export default Config
