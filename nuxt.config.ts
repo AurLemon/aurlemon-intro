@@ -1,4 +1,19 @@
+import { dirname, resolve } from 'node:path'
+import { readdirSync } from 'node:fs'
+import { createRequire } from 'node:module'
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+const require = createRequire(import.meta.url)
+const prismaClientBrowserEntry = resolve(
+    dirname(require.resolve('@prisma/client/package.json')),
+    '../../.prisma/client/index-browser.js',
+)
+const pnpmStoreDir = resolve(process.cwd(), 'node_modules', '.pnpm')
+const unenvStoreEntry = readdirSync(pnpmStoreDir).find((entry) => entry.startsWith('unenv@'))
+const unenvMockEmptyEntry = unenvStoreEntry
+    ? resolve(pnpmStoreDir, unenvStoreEntry, 'node_modules', 'unenv', 'dist', 'runtime', 'mock', 'empty.mjs')
+    : ''
 
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
@@ -10,7 +25,12 @@ export default defineNuxtConfig({
         { src: '~/plugins/baidu-stat.ts', mode: 'client' },
         { src: '~/plugins/ms-clarity.ts', mode: 'client' },
     ],
-    modules: ['@nuxtjs/seo', '@pinia/nuxt', '@vesp/nuxt-fontawesome', 'nuxt-svgo', '@nuxt/content', 'nuxt-locomotive-scroll', '@prisma/nuxt', 'nuxt-toc'],
+    modules: ['@nuxtjs/seo', '@pinia/nuxt', '@vesp/nuxt-fontawesome', 'nuxt-svgo', '@nuxt/content', 'nuxt-locomotive-scroll', '@prisma/nuxt'],
+    content: {
+        experimental: {
+            sqliteConnector: 'native',
+        },
+    },
     site: {
         url: 'https://www.aurlemon.top',
         name: 'AurLemon Intro',
@@ -72,7 +92,8 @@ export default defineNuxtConfig({
         },
         resolve: {
             alias: {
-                '.prisma/client/index-browser': './node_modules/.prisma/client/index-browser.js',
+                '.prisma/client/index-browser': prismaClientBrowserEntry,
+                'unenv/runtime/mock/empty': unenvMockEmptyEntry,
             }
         },
     },
