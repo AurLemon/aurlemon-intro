@@ -1,6 +1,6 @@
 import { dirname, resolve } from 'node:path'
-import { readdirSync } from 'node:fs'
 import { createRequire } from 'node:module'
+import tailwindcss from '@tailwindcss/vite'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
@@ -9,39 +9,20 @@ const prismaClientBrowserEntry = resolve(
     dirname(require.resolve('@prisma/client/package.json')),
     '../../.prisma/client/index-browser.js',
 )
-const pnpmStoreDir = resolve(process.cwd(), 'node_modules', '.pnpm')
-const unenvStoreEntry = readdirSync(pnpmStoreDir).find((entry) => entry.startsWith('unenv@'))
-const unenvMockEmptyEntry = unenvStoreEntry
-    ? resolve(pnpmStoreDir, unenvStoreEntry, 'node_modules', 'unenv', 'dist', 'runtime', 'mock', 'empty.mjs')
-    : ''
 
 export default defineNuxtConfig({
     compatibilityDate: '2024-04-03',
     ssr: true,
     devtools: { enabled: false },
-    plugins: [
-        '~/plugins/floating-vue.ts',
-        '~/plugins/v-clipboard.ts',
-        { src: '~/plugins/baidu-stat.ts', mode: 'client' },
-        { src: '~/plugins/ms-clarity.ts', mode: 'client' },
-    ],
-    modules: ['@nuxtjs/seo', '@pinia/nuxt', '@vesp/nuxt-fontawesome', 'nuxt-svgo', '@nuxt/content', 'nuxt-locomotive-scroll', '@prisma/nuxt'],
+    plugins: [{ src: '~/plugins/baidu-stat.ts', mode: 'client' }, { src: '~/plugins/ms-clarity.ts', mode: 'client' }],
+    modules: ['@pinia/nuxt', '@vesp/nuxt-fontawesome', 'nuxt-svgo', '@nuxt/content', '@nuxt/ui'],
+    ui: {
+        fonts: false,
+    },
     content: {
         experimental: {
             sqliteConnector: 'native',
         },
-    },
-    site: {
-        url: 'https://www.aurlemon.top',
-        name: 'AurLemon Intro',
-        description: 'AurLemon 的个人介绍站！',
-        defaultLocale: 'zh-cn',
-        exclude: ['/admin/**'],
-        cacheMaxAgeSeconds: 24 * 3600,
-        autoLastmod: true,
-    },
-    routeRules: {
-        '/admin/**': { robots: false },
     },
     svgo: {
         global: false,
@@ -74,10 +55,14 @@ export default defineNuxtConfig({
         },
     },
     css: [
+        '~/assets/styles/tailwind.css',
         '~/assets/styles/global.scss',
         'material-icons/iconfont/material-icons.css',
     ],
     vite: {
+        plugins: [
+            tailwindcss(),
+        ],
         css: {
             preprocessorOptions: {
                 scss: {
@@ -93,9 +78,8 @@ export default defineNuxtConfig({
         resolve: {
             alias: {
                 '.prisma/client/index-browser': prismaClientBrowserEntry,
-                'unenv/runtime/mock/empty': unenvMockEmptyEntry,
             }
-        },
+        }
     },
     app: {
         head: {
