@@ -1,5 +1,4 @@
 import { defineEventHandler, getQuery } from 'h3'
-import fetch from 'node-fetch'
 
 const CACHE_EXPIRATION = 3600 * 1000 * 24 // 缓存有效期（1天）
 let cache: { data: any; timestamp: number } | null = null
@@ -10,7 +9,6 @@ export default defineEventHandler(async (event) => {
 
     // 检查缓存
     if (cache && Date.now() - cache.timestamp < CACHE_EXPIRATION) {
-        console.log('🍋 server/api/github: Get GitHub user info from cache')
         return cache.data
     }
 

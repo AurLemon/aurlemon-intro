@@ -6,12 +6,14 @@ import PageFooter from './components/PageFooter.vue'
 </script>
 
 <template>
-    <div class="aurle-app">
-        <InfoPanel />
-        <PageHeader />
-        <PageContainer />
-        <PageFooter />
-    </div>
+    <UApp>
+        <div class="aurle-app">
+            <InfoPanel />
+            <PageHeader />
+            <PageContainer />
+            <PageFooter />
+        </div>
+    </UApp>
 </template>
 
 <style scoped lang="scss">

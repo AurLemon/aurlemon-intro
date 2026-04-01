@@ -56,9 +56,11 @@
                     </div>
                 </div>
             </div>
-            <div class="aurle-home-me__avatar" v-tooltip="{ content: '喜欢我吗？' }">
-                <img src="~/assets/images/AurLemon_Avatar.jpg" />
-            </div>
+            <UTooltip text="喜欢我吗？">
+                <div class="aurle-home-me__avatar">
+                    <img src="~/assets/images/AurLemon_Avatar.jpg" />
+                </div>
+            </UTooltip>
         </div>
         <div class="aurle-home-quote">
             <div class="aurle-home-quote__text">做个好的螺丝钉就行 :)</div>
@@ -120,8 +122,6 @@ const addLike = async (): Promise<void> => {
 
         if (response.ok) {
             const data = await response.json()
-            console.log('Like added:', data)
-
             if (data.status) {
                 likeCount.value += 1
             }
