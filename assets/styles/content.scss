@@ -1,125 +1,130 @@
 @use '~/assets/styles/media_screen.scss' as media;
 
 .aurle-content-render {
-    a {
-        color: var(--color-primary);
-        text-decoration: none;
-        
-        &:hover {
-            text-decoration: underline;
-        }
-    }
+	a {
+		color: var(--color-primary);
+		text-decoration: none;
 
-    h1, h2, h3, h4, h5, h6 {
-        color: var(--color-text);
-        font-weight: 600;
-        margin-top: 2rem;
-        margin-bottom: 1rem;
-        line-height: 1.5;
-        user-select: none;
-        
-        a {
-            color: var(--color-text);
+		&:hover {
+			text-decoration: underline;
+		}
+	}
 
-            &:hover {
-                text-decoration: none;
-            }
-        }
-    }
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		color: var(--color-text);
+		font-weight: 600;
+		margin-top: 2rem;
+		margin-bottom: 1rem;
+		line-height: 1.5;
+		user-select: none;
 
-    h1 {
-        font-size: 2rem;
-    }
+		a {
+			color: var(--color-text);
 
-    h2 {
-        font-size: 1.5rem;
-    }
+			&:hover {
+				text-decoration: none;
+			}
+		}
+	}
 
-    h3 {
-        font-size: 1.25rem;
-    }
+	h1 {
+		font-size: 2rem;
+	}
 
-    h4 {
-        font-size: 1rem;
-    }
+	h2 {
+		font-size: 1.5rem;
+	}
 
-    h5 {
-        font-size: 0.75rem;
-    }
+	h3 {
+		font-size: 1.25rem;
+	}
 
-    h6 {
-        font-size: 0.5rem;
-    }
+	h4 {
+		font-size: 1rem;
+	}
 
-    p {
-        margin: 0;
-        margin-bottom: 1.25rem;
-        letter-spacing: 0.5px;
-        line-height: 1.75;
+	h5 {
+		font-size: 0.75rem;
+	}
 
-        img {
-            max-width: 100%;
-        }
-    }
+	h6 {
+		font-size: 0.5rem;
+	}
 
-    ul {
-        list-style-type: disc;
-        margin-top: 0;
-        margin-bottom: 1.25rem;
-        padding-inline-start: 1.25rem;
-    }
+	p {
+		margin: 0;
+		margin-bottom: 1.25rem;
+		letter-spacing: 0.5px;
+		line-height: 1.75;
 
-    li {
-        margin: 1.25rem 0;
-        line-height: 1.75;
+		img {
+			max-width: 100%;
+		}
+	}
 
-        &::marker {
-            color: var(--color-text--subtle);
-        }
-    }
+	ul {
+		list-style-type: disc;
+		margin-top: 0;
+		margin-bottom: 1.25rem;
+		padding-inline-start: 1.25rem;
+	}
 
-    blockquote {
-        position: relative;
-        font-weight: 400;
-        padding-inline: 2rem;
-        margin: 0;
-        margin-top: 1.6rem;
-        margin-bottom: 1.6rem;
-        background: var(--color-surface-1);
+	li {
+		margin: 1.25rem 0;
+		line-height: 1.75;
 
-        &::before {
-            content: "";
-            display: block;
-            width: 3px;
-            height: 100%;
-            position: absolute;
-            left: 0;
-            top: 0;
-            border-radius: 1rem;
-            background-color: var(--color-primary);
-        }
+		&::marker {
+			color: var(--color-text--subtle);
+		}
+	}
 
-        p {
-            margin: 0;
-            padding: 0.25rem 0;
-        }
-    }
+	blockquote {
+		position: relative;
+		font-weight: 400;
+		padding-inline: 2rem;
+		margin: 0;
+		margin-top: 1.6rem;
+		margin-bottom: 1.6rem;
+		background: var(--color-surface-1);
 
-    code {
-        font-family: 'JetBrains Mono';
-        font-size: 0.8125rem;
-        background: var(--color-surface-1);
-        border-radius: 4px;
-        padding: 0.125rem 0;
-        padding-inline: 0.5rem;
-    }
+		&::before {
+			content: '';
+			display: block;
+			width: 3px;
+			height: 100%;
+			position: absolute;
+			left: 0;
+			top: 0;
+			border-radius: 1rem;
+			background-color: var(--color-primary);
+		}
 
-    .aurle-content-container {
-        padding: 1rem;
-        margin-bottom: 2rem;
+		p {
+			margin: 0;
+			padding: 0.25rem 0;
+		}
+	}
 
-        @include media.media-screen(mobile) {
-            padding: 1.5rem;
-        }
-    }
+	code {
+		font-family: 'JetBrains Mono';
+		font-size: 0.8125rem;
+		background: var(--color-surface-1);
+		border-radius: 4px;
+		padding: 0.125rem 0;
+		padding-inline: 0.5rem;
+	}
+
+	.aurle-content-container {
+		padding: 1rem;
+		margin-bottom: 2rem;
+
+		@include media.media-screen(mobile) {
+			padding: 1.5rem;
+		}
+	}
 }
