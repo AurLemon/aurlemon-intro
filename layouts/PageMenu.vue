@@ -18,9 +18,11 @@ const shellWidth = ref<number | null>(null)
 const displayedFallback = ref<MenuItem | null>(null)
 const fallbackSlotVisible = ref(false)
 const fallbackSlotWidth = ref(0)
+const isAtBottom = ref(false)
 const SIDE_GUTTER = 12
 let resizeObserver: ResizeObserver | null = null
 let fallbackLeaveTimer: ReturnType<typeof setTimeout> | null = null
+let scrollRaf = 0
 
 const baseNavItems = computed<MenuItem[]>(() => [
 	{ key: 'overview', label: t('menu.overview'), to: '/' },
@@ -70,7 +72,7 @@ const currentFallback = computed<MenuItem | null>(() => {
 	const fallbackLabel = t(routeToLabelKey[normalizedPath] || 'menu.currentPage')
 
 	return {
-		key: '__fallback-nav__',
+		key: route.fullPath || route.path,
 		label: fallbackLabel,
 		to: route.fullPath || route.path,
 		isFallback: true,
@@ -111,6 +113,34 @@ const syncShellWidth = async (animate = true) => {
 	}
 
 	shellWidth.value = nextWidth
+}
+
+const updateBottomState = () => {
+	if (!import.meta.client) {
+		return
+	}
+
+	const doc = document.documentElement
+	const scrollTop = window.scrollY || doc.scrollTop || 0
+	const viewportHeight = window.innerHeight
+	const scrollHeight = Math.max(
+		doc.scrollHeight,
+		document.body?.scrollHeight ?? 0,
+	)
+	const threshold = 12
+
+	isAtBottom.value = scrollTop + viewportHeight >= scrollHeight - threshold
+}
+
+const onScroll = () => {
+	if (scrollRaf) {
+		return
+	}
+
+	scrollRaf = window.requestAnimationFrame(() => {
+		scrollRaf = 0
+		updateBottomState()
+	})
 }
 
 watch(
@@ -154,8 +184,16 @@ watch(
 	},
 )
 
+watch(
+	() => route.fullPath,
+	() => {
+		void nextTick(updateBottomState)
+	},
+)
+
 onMounted(() => {
 	void syncShellWidth(false)
+	updateBottomState()
 
 	if (!menuInner.value) {
 		return
@@ -171,11 +209,19 @@ onMounted(() => {
 	})
 
 	resizeObserver.observe(menuInner.value)
+	window.addEventListener('scroll', onScroll, { passive: true })
+	window.addEventListener('resize', onScroll, { passive: true })
 })
 
 onBeforeUnmount(() => {
 	resizeObserver?.disconnect()
 	resizeObserver = null
+	window.removeEventListener('scroll', onScroll)
+	window.removeEventListener('resize', onScroll)
+	if (scrollRaf) {
+		window.cancelAnimationFrame(scrollRaf)
+		scrollRaf = 0
+	}
 	if (fallbackLeaveTimer) {
 		clearTimeout(fallbackLeaveTimer)
 		fallbackLeaveTimer = null
@@ -185,7 +231,8 @@ onBeforeUnmount(() => {
 
 <template>
 	<div
-		class="pointer-events-none fixed left-1/2 bottom-9 z-50 -translate-x-1/2 transition-[width] duration-350 ease-out"
+		class="pointer-events-none fixed left-1/2 z-50 -translate-x-1/2 transition-[width,bottom] duration-350 ease-out"
+		:class="isAtBottom ? 'bottom-3' : 'bottom-9'"
 		:style="
 			shellWidth === null
 				? undefined
@@ -193,7 +240,8 @@ onBeforeUnmount(() => {
 		"
 	>
 		<nav
-			class="pointer-events-auto inline-flex w-full flex-nowrap items-center justify-center gap-1 overflow-hidden rounded-full border-[1.5px] border-primary-400 bg-white/70 px-2 shadow-[0_3rem_4rem_#000a0f7a] backdrop-blur-lg transition-[width] duration-350 ease-out dark:bg-slate-900/90"
+			class="pointer-events-auto inline-flex w-full flex-nowrap items-center justify-center gap-1 overflow-hidden rounded-full border-[1.5px] border-slate-300 bg-white/70 px-2 backdrop-blur-lg transition-[width,box-shadow,border-color] duration-350 ease-out dark:border-slate-700 dark:bg-slate-900/90"
+			:class="isAtBottom ? 'shadow-none' : 'shadow-[0_3rem_4rem_#000a0f7a]'"
 		>
 			<div
 				ref="menuInner"
@@ -203,12 +251,12 @@ onBeforeUnmount(() => {
 					v-for="item in baseNavItems"
 					:key="item.key"
 					:to="resolveTo(item)"
-					:class="[
-						'rounded-full p-2 text-sm md:text-base leading-none whitespace-nowrap transition-colors duration-350',
+					class="menu-link rounded-full p-2 text-sm md:text-base leading-none whitespace-nowrap transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
+					:class="
 						isPathActive(item)
-							? 'text-primary font-semibold'
-							: 'text-slate-800 hover:text-primary-800',
-					]"
+							? 'menu-link--active font-semibold text-primary opacity-100 dark:text-sky-300'
+							: 'text-slate-800 opacity-85 hover:opacity-100 hover:text-sky-700 dark:text-slate-300 dark:opacity-75 dark:hover:opacity-100 dark:hover:text-sky-100'
+					"
 					:aria-current="isPathActive(item) ? 'page' : undefined"
 				>
 					{{ item.label }}
@@ -220,12 +268,12 @@ onBeforeUnmount(() => {
 					class="overflow-hidden transition-[width] duration-350 ease-out"
 					:style="{ width: `${fallbackSlotWidth}px` }"
 				>
-					<Transition name="menu-fallback" appear>
+					<Transition name="menu-fallback" mode="out-in" appear>
 						<NuxtLink
 							v-if="displayedFallback"
-							:key="displayedFallback.key"
+							:key="displayedFallback.to"
 							:to="resolveTo(displayedFallback)"
-							class="rounded-full p-2 text-sm md:text-base leading-none whitespace-nowrap text-primary font-semibold transition-colors duration-350"
+							class="menu-link menu-link--active rounded-full p-2 text-sm md:text-base leading-none whitespace-nowrap font-semibold text-primary opacity-100 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] dark:text-sky-300"
 							aria-current="page"
 						>
 							{{ displayedFallback.label }}
@@ -238,30 +286,61 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.menu-fallback-enter-active,
-.menu-fallback-leave-active {
+.menu-link {
+	position: relative;
+	z-index: 0;
+}
+
+.menu-link::before {
+	content: '';
+	position: absolute;
+	left: 50%;
+	bottom: 0.375em;
+	z-index: -1;
+	height: 0.75em;
+	width: 90%;
+	border-radius: 0.25rem;
+	background: rgba(125, 211, 252, 0.28);
+	box-shadow: 0 0 10px rgba(125, 211, 252, 0.18);
+	opacity: 0;
+	transform: translateX(-50%) translateY(0.24em) scaleY(0.2);
+	transform-origin: center bottom;
 	transition:
 		opacity 350ms ease-out,
-		transform 350ms ease-out;
+		transform 350ms ease-out,
+		box-shadow 350ms ease-out;
+	pointer-events: none;
+}
+
+.dark .menu-link::before {
+	background: rgba(125, 211, 252, 0.16);
+	box-shadow: 0 0 10px rgba(125, 211, 252, 0.12);
+}
+
+.menu-link:hover::before,
+.menu-link--active::before {
+	opacity: 1;
+	transform: translateX(-50%) translateY(0) scaleY(1);
+}
+
+.menu-fallback-enter-active,
+.menu-fallback-leave-active {
+	transition: opacity 250ms ease-out;
 }
 
 .menu-fallback-enter-from {
 	opacity: 0;
-	transform: translateX(8px) scale(0.98);
 }
 
 .menu-fallback-enter-to {
 	opacity: 1;
-	transform: translateX(0) scale(1);
 }
 
 .menu-fallback-leave-from {
 	opacity: 1;
-	transform: translateX(0) scale(1);
 }
 
 .menu-fallback-leave-to {
 	opacity: 0;
-	transform: translateX(8px) scale(0.98);
 }
 </style>
