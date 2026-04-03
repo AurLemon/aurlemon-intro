@@ -79,7 +79,6 @@
 							}"
 							@click="selectLocale(item.value)"
 						>
-							<UIcon name="i-lucide-languages" class="text-base" />
 							<span>{{ item.label }}</span>
 							<UIcon
 								v-if="selectedLocale === item.value"

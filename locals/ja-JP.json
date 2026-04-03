@@ -6,8 +6,42 @@
 	"main": {
 		"index": {
 			"line1": "皆は大体私をレモン🍋って呼びます。",
-			"line2": "フルスタック開発者{doubtful}、福建省福州市出身、{age}歳、INF/TJ。",
-			"doubtful": "かもしれない"
+			"line2": "フルスタック開発者{doubtful}、福州市出身、{age}歳、INF/TJ。",
+			"doubtful": "かも",
+			"card": {
+				"education": {
+					"title": "厦門理工学院",
+					"subtitle": "在学 2026-2028",
+					"type": "学歴"
+				},
+				"tech": {
+					"title": "フルスタック",
+					"subtitle": "TypeScript / Web / DevOps",
+					"type": "技術"
+				},
+				"acg": {
+					"title": "GIRL LOVE",
+					"subtitle": "やさしめ",
+					"type": "趣味"
+				},
+				"music": {
+					"title": "J-POP とボカロ",
+					"subtitle": "ヨルシカ + ずとまよ",
+					"type": "音楽"
+				},
+				"online": {
+					"title": "夜更かし",
+					"bilibili": "bilibili",
+					"xiaohongshu": "Rednote",
+					"github": "GitHub",
+					"type": "SNS"
+				},
+				"language": {
+					"title": "中国語ネイティブ",
+					"subtitle": "CET-4 (~510) + N4",
+					"type": "言語"
+				}
+			}
 		}
 	},
 	"footer": {

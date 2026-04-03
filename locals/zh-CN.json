@@ -8,7 +8,40 @@
 			"line1": "朋友们一般叫我柠檬🍋。",
 			"line2": "全栈开发者{doubtful}，福建福州人，{age} 岁，INF/TJ。",
 			"doubtful": "存疑",
-			"card": {}
+			"card": {
+				"education": {
+					"title": "厦门理工学院",
+					"subtitle": "在读 2026 — 2028",
+					"type": "教育经历"
+				},
+				"tech": {
+					"title": "全栈开发",
+					"subtitle": "TypeScript / Web / DevOps",
+					"type": "技术方向"
+				},
+				"acg": {
+					"title": "GIRL LOVE",
+					"subtitle": "治愈系",
+					"type": "ACG 偏好"
+				},
+				"music": {
+					"title": "J-POP",
+					"subtitle": "ヨルシカ + ずとまよ",
+					"type": "音乐偏好"
+				},
+				"online": {
+					"title": "夜间出没",
+					"bilibili": "哔哩哔哩",
+					"xiaohongshu": "小红书",
+					"github": "GitHub",
+					"type": "线上足迹"
+				},
+				"language": {
+					"title": "中文母语者",
+					"subtitle": "CET-4 (~510) + JLPT N4",
+					"type": "语言能力"
+				}
+			}
 		}
 	},
 	"footer": {
