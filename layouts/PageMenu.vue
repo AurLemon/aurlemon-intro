@@ -15,11 +15,14 @@ const { t } = useI18n()
 const menuInner = ref<HTMLElement | null>(null)
 const fallbackSlot = ref<HTMLElement | null>(null)
 const shellWidth = ref<number | null>(null)
+const viewportWidth = ref<number | null>(null)
 const displayedFallback = ref<MenuItem | null>(null)
 const fallbackSlotVisible = ref(false)
 const fallbackSlotWidth = ref(0)
 const isAtBottom = ref(false)
 const SIDE_GUTTER = 12
+const MOBILE_SIDE_GUTTER = 12
+const MOBILE_BREAKPOINT = 768
 let resizeObserver: ResizeObserver | null = null
 let fallbackLeaveTimer: ReturnType<typeof setTimeout> | null = null
 let scrollRaf = 0
@@ -85,6 +88,41 @@ const displayNavItems = computed<MenuItem[]>(() =>
 		: baseNavItems.value,
 )
 
+const isMobileMenuClamped = computed(() => {
+	if (viewportWidth.value === null || shellWidth.value === null) {
+		return false
+	}
+
+	const contentWidth = shellWidth.value + SIDE_GUTTER * 2
+	const maxMobileWidth = viewportWidth.value - MOBILE_SIDE_GUTTER * 2
+	return (
+		viewportWidth.value < MOBILE_BREAKPOINT && contentWidth > maxMobileWidth
+	)
+})
+
+const menuShellStyle = computed(() => {
+	if (shellWidth.value === null) {
+		return undefined
+	}
+
+	const contentWidth = shellWidth.value + SIDE_GUTTER * 2
+	if (
+		viewportWidth.value === null ||
+		viewportWidth.value >= MOBILE_BREAKPOINT
+	) {
+		return { width: `${contentWidth}px` }
+	}
+
+	const maxMobileWidth = Math.max(
+		0,
+		viewportWidth.value - MOBILE_SIDE_GUTTER * 2,
+	)
+
+	return {
+		width: `${Math.min(contentWidth, maxMobileWidth)}px`,
+	}
+})
+
 const measureFallbackWidth = async () => {
 	await nextTick()
 	const el = fallbackSlot.value
@@ -106,13 +144,21 @@ const syncShellWidth = async (animate = true) => {
 		return
 	}
 
-	const nextWidth = Math.ceil(inner.getBoundingClientRect().width)
+	const nextWidth = Math.ceil(inner.scrollWidth)
 	if (!animate || shellWidth.value === null) {
 		shellWidth.value = nextWidth
 		return
 	}
 
 	shellWidth.value = nextWidth
+}
+
+const syncViewportWidth = () => {
+	if (!import.meta.client) {
+		return
+	}
+
+	viewportWidth.value = window.innerWidth
 }
 
 const updateBottomState = () => {
@@ -141,6 +187,11 @@ const onScroll = () => {
 		scrollRaf = 0
 		updateBottomState()
 	})
+}
+
+const onResize = () => {
+	syncViewportWidth()
+	onScroll()
 }
 
 watch(
@@ -192,6 +243,7 @@ watch(
 )
 
 onMounted(() => {
+	syncViewportWidth()
 	void syncShellWidth(false)
 	updateBottomState()
 
@@ -200,24 +252,23 @@ onMounted(() => {
 	}
 
 	resizeObserver = new ResizeObserver((entries) => {
-		const entry = entries[0]
-		if (!entry) {
+		if (!entries[0]) {
 			return
 		}
 
-		shellWidth.value = Math.ceil(entry.contentRect.width)
+		void syncShellWidth(false)
 	})
 
 	resizeObserver.observe(menuInner.value)
 	window.addEventListener('scroll', onScroll, { passive: true })
-	window.addEventListener('resize', onScroll, { passive: true })
+	window.addEventListener('resize', onResize, { passive: true })
 })
 
 onBeforeUnmount(() => {
 	resizeObserver?.disconnect()
 	resizeObserver = null
 	window.removeEventListener('scroll', onScroll)
-	window.removeEventListener('resize', onScroll)
+	window.removeEventListener('resize', onResize)
 	if (scrollRaf) {
 		window.cancelAnimationFrame(scrollRaf)
 		scrollRaf = 0
@@ -239,19 +290,20 @@ onBeforeUnmount(() => {
 		<div
 			class="pointer-events-none fixed left-1/2 z-100 -translate-x-1/2 transition-[width,bottom] duration-350 ease-out"
 			:class="isAtBottom ? 'bottom-4' : 'bottom-14'"
-			:style="
-				shellWidth === null
-					? undefined
-					: { width: `${shellWidth + SIDE_GUTTER * 2}px` }
-			"
+			:style="menuShellStyle"
 		>
 			<nav
-				class="pointer-events-auto inline-flex w-full flex-nowrap items-center justify-center gap-1 overflow-hidden rounded-full border-[1.5px] border-slate-300 bg-white/70 px-2 backdrop-blur-lg transition-[width,box-shadow,border-color] duration-350 ease-out dark:border-slate-700 dark:bg-slate-900/90"
-				:class="isAtBottom ? 'shadow-none' : 'shadow-[0_4rem_5rem_#000a0f80]'"
+				class="pointer-events-auto inline-flex w-full flex-nowrap items-center justify-center gap-1 rounded-full border-[1.5px] border-slate-300 bg-white/70 px-2 backdrop-blur-lg transition-[width,box-shadow,border-color] duration-350 ease-out dark:border-slate-700 dark:bg-slate-900/90"
+				:class="[
+					isMobileMenuClamped
+						? 'overflow-x-auto overflow-y-hidden justify-start'
+						: 'overflow-hidden justify-center',
+					isAtBottom ? 'shadow-none' : 'shadow-[0_4rem_5rem_#000a0f80]',
+				]"
 			>
 				<div
 					ref="menuInner"
-					class="inline-flex flex-nowrap items-center justify-center gap-1"
+					class="inline-flex w-max flex-none flex-nowrap items-center justify-center gap-1"
 				>
 					<NuxtLink
 						v-for="item in baseNavItems"
