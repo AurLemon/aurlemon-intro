@@ -1,0 +1,19 @@
+{
+	"header": {
+		"siteName": "AurLemon Intro",
+		"switchLanguage": "言語を切り替え"
+	},
+	"main": {
+		"index": {
+			"line1": "皆は大体私をレモン🍋って呼びます。",
+			"line2": "フルスタック開発者{doubtful}、福建省福州市出身、{age}歳、INF/TJ。",
+			"doubtful": "かもしれない"
+		}
+	},
+	"footer": {
+		"aboutSite": "サイトについて",
+		"friendLink": "リンク集",
+		"githubProfile": "GitHub",
+		"miitRegistration": "闽ICP備2023007345号-3"
+	}
+}
