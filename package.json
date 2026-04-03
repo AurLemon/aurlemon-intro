@@ -11,8 +11,7 @@
 		"lint": "eslint .",
 		"postinstall": "nuxt prepare",
 		"preview": "nuxt preview",
-		"start": "node .output/server/index.mjs",
-		"update": "git pull && pnpm build"
+		"start": "node .output/server/index.mjs"
 	},
 	"dependencies": {
 		"@microsoft/clarity": "^1.0.0",
