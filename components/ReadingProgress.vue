@@ -29,10 +29,14 @@ const calculateProgress = () => {
 		containerTopAbsolute + targetElement.offsetHeight
 	const start = containerTopAbsolute
 	const end = containerBottomAbsolute - window.innerHeight
+	const viewportHeight = window.innerHeight
+	const containerRect = targetElement.getBoundingClientRect()
 
 	// Handle the edge case where container is smaller than viewport
 	if (end <= start) {
-		progress.value = window.scrollY >= start ? 100 : 0
+		// 如果内容整体能被视口完整包住，就直接视为 100%
+		progress.value =
+			containerRect.top >= 0 && containerRect.bottom <= viewportHeight ? 100 : 0
 		return
 	}
 
