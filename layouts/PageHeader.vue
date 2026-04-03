@@ -141,7 +141,9 @@ const selectedThemeMode = computed<ThemeMode>(() => {
 const currentThemeIcon = computed(() => themeIconMap[currentTheme.value])
 
 const systemTheme = computed<'light' | 'dark'>(() =>
-	colorMode.system === 'dark' ? 'dark' : 'light',
+	(colorMode as unknown as { system?: 'light' | 'dark' }).system === 'dark'
+		? 'dark'
+		: 'light',
 )
 
 const systemThemeIcon = computed(() => themeIconMap[systemTheme.value])
