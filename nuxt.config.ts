@@ -24,12 +24,40 @@ export default defineNuxtConfig({
 		'@vesp/nuxt-fontawesome',
 		'nuxt-svgo',
 		'@nuxt/content',
+		[
+			'@nuxtjs/i18n',
+			{
+				defaultLocale: 'zh-CN',
+				strategy: 'prefix_except_default',
+				lazy: true,
+				langDir: '../locals',
+				locales: [
+					{ code: 'zh-CN', name: '简体中文', file: 'zh-CN.json' },
+					{ code: 'ja-JP', name: '日本語', file: 'ja-JP.json' },
+					{ code: 'en-US', name: 'English', file: 'en-US.json' },
+				],
+				detectBrowserLanguage: {
+					useCookie: true,
+					cookieKey: 'i18n_redirected',
+					redirectOn: 'root',
+				},
+				vueI18n: './i18n.config.ts',
+			},
+		],
 		'@nuxt/ui',
 	],
 	ui: {
 		fonts: false,
 		theme: {
-			colors: ['primary', 'neutral', 'success', 'warning', 'danger'],
+			colors: [
+				'primary',
+				'secondary',
+				'success',
+				'info',
+				'warning',
+				'error',
+				'neutral',
+			],
 		},
 	},
 	content: {
@@ -67,11 +95,7 @@ export default defineNuxtConfig({
 			],
 		},
 	},
-	css: [
-		'~/assets/styles/main.css',
-		'~/assets/styles/tailwind.css',
-		'material-icons/iconfont/material-icons.css',
-	],
+	css: ['~/assets/styles/main.css', '~/assets/styles/tailwind.css'],
 	vite: {
 		plugins: [tailwindcss()],
 		ssr: {

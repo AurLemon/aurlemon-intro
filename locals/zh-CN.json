@@ -1,0 +1,20 @@
+{
+	"header": {
+		"siteName": "AurLemon Intro",
+		"switchLanguage": "切换语言"
+	},
+	"main": {
+		"index": {
+			"line1": "朋友们一般叫我柠檬🍋。",
+			"line2": "全栈开发者{doubtful}，福建福州人，{age} 岁，INF/TJ。",
+			"doubtful": "存疑",
+			"card": {}
+		}
+	},
+	"footer": {
+		"aboutSite": "关于本站",
+		"friendLink": "友好链接",
+		"githubProfile": "GitHub",
+		"miitRegistration": "闽ICP备2023007345号-3"
+	}
+}

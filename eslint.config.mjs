@@ -8,5 +8,17 @@ export default withNuxt({
 		'no-shadow-restricted-names': 'off',
 		'vue/no-use-v-if-with-v-for': 'warn',
 		'vue/require-v-for-key': 'warn',
+		'vue/html-self-closing': [
+			'warn',
+			{
+				html: {
+					void: 'any',
+					normal: 'always',
+					component: 'always',
+				},
+				svg: 'always',
+				math: 'always',
+			},
+		],
 	},
 })

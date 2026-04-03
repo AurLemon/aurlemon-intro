@@ -1,0 +1,19 @@
+{
+	"header": {
+		"siteName": "AurLemon Intro",
+		"switchLanguage": "Switch language"
+	},
+	"main": {
+		"index": {
+			"line1": "Friends usually call me LEMON🍋.",
+			"line2": "Full-stack developer {doubtful}, from Fuzhou, {age} y.o., INF/TJ.",
+			"doubtful": "debatable"
+		}
+	},
+	"footer": {
+		"aboutSite": "About",
+		"friendLink": "Links",
+		"githubProfile": "GitHub",
+		"miitRegistration": "ICP License"
+	}
+}

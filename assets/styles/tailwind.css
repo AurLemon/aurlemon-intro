@@ -32,6 +32,19 @@
 	--color-neutral-900: hsl(210 12% 18%);
 	--color-neutral-950: hsl(210 14% 11%);
 
+	/* 兼容 `*-slate-*` 工具类：让 slate 使用当前 neutral 灰阶 */
+	--color-slate-50: var(--color-neutral-50);
+	--color-slate-100: var(--color-neutral-100);
+	--color-slate-200: var(--color-neutral-200);
+	--color-slate-300: var(--color-neutral-300);
+	--color-slate-400: var(--color-neutral-400);
+	--color-slate-500: var(--color-neutral-500);
+	--color-slate-600: var(--color-neutral-600);
+	--color-slate-700: var(--color-neutral-700);
+	--color-slate-800: var(--color-neutral-800);
+	--color-slate-900: var(--color-neutral-900);
+	--color-slate-950: var(--color-neutral-950);
+
 	/* 语义场景可复用的辅助色系列 */
 	--color-success-50: hsl(147 60% 96%);
 	--color-success-100: hsl(147 55% 90%);
