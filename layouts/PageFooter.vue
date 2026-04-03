@@ -1,6 +1,6 @@
 <template>
 	<footer
-		class="mx-auto max-w-4xl w-full flex flex-col justify-between md:flex-row px-6 md:px-0 my-6 mb-12 mt-auto"
+		class="mx-auto max-w-4xl w-full flex flex-col justify-between md:flex-row px-6 md:px-0 my-6 mb-16 mt-auto"
 	>
 		<SiteMark />
 		<div

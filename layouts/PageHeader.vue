@@ -22,7 +22,7 @@
 						icon-only
 						:aria-label="'主题模式'"
 					>
-						<UIcon :name="currentThemeIcon" class="h-5 w-5" />
+						<UIcon :name="currentThemeIconSafe" class="h-5 w-5" />
 					</UButton>
 
 					<template #content>
@@ -102,6 +102,7 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { locale, t } = useI18n()
@@ -128,6 +129,8 @@ const themeModes: { value: ThemeMode; label: string; icon: string }[] = [
 	{ value: 'system', label: '跟随系统', icon: 'i-lucide-monitor' },
 ]
 
+const isMounted = ref(false)
+
 const currentTheme = computed<'light' | 'dark'>(() =>
 	colorMode.value === 'dark' ? 'dark' : 'light',
 )
@@ -140,10 +143,17 @@ const selectedThemeMode = computed<ThemeMode>(() => {
 })
 
 const currentThemeIcon = computed(() => themeIconMap[currentTheme.value])
+const currentThemeIconSafe = computed(() =>
+	isMounted.value ? currentThemeIcon.value : 'i-lucide-monitor',
+)
 
 const selectTheme = (mode: ThemeMode): void => {
 	colorMode.preference = mode
 }
+
+onMounted(() => {
+	isMounted.value = true
+})
 
 const selectedLocale = computed(() => locale.value as LocaleCode)
 
