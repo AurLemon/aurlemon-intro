@@ -6,7 +6,7 @@ import PageFooter from '~/layouts/PageFooter.vue'
 
 <template>
 	<UApp>
-		<div class="mx-auto max-w-4xl flex flex-col min-h-[105vh]">
+		<div class="flex flex-col min-h-[105vh]">
 			<PageHeader />
 			<PageContainer />
 			<PageFooter />

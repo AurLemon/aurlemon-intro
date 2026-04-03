@@ -1,94 +1,101 @@
 <template>
-	<header class="flex items-center justify-between sticky top-6 z-40 my-6">
-		<div>
-			<ReadingProgress targetSelector="#article-container" />
-		</div>
-		<div class="flex items-center gap-2">
-			<UPopover
-				:popper="{ placement: 'bottom-end' }"
-				:ui="{ content: 'z-[40000]' }"
-			>
-				<UButton
-					color="neutral"
-					variant="ghost"
-					size="xs"
-					class="h-9 w-9 rounded-full hover:bg-slate-500/10 active:bg-slate-500/20"
-					icon-only
-					:aria-label="'主题模式'"
+	<header class="sticky top-0 z-100 pt-6 md:pt-10 md:pb-16">
+		<div
+			class="absolute top-0 left-0 right-0 -bottom-3/5 z-10 pointer-events-none bg-white/85 dark:bg-slate-900/75 backdrop-blur-[48px] mask-[linear-gradient(to_bottom,black_0%,rgba(0,0,0,0.98)_30%,rgba(0,0,0,0.92)_45%,rgba(0,0,0,0.8)_55%,rgba(0,0,0,0.58)_65%,rgba(0,0,0,0.35)_75%,rgba(0,0,0,0.15)_85%,transparent_100%)]"
+		/>
+		<div
+			class="mx-auto max-w-4xl px-6 md:px-0 flex items-center justify-between relative z-40"
+		>
+			<div>
+				<ReadingProgress targetSelector="#article-container" />
+			</div>
+			<div class="flex items-center gap-2">
+				<UPopover
+					:popper="{ placement: 'bottom-end' }"
+					:ui="{ content: 'z-[40000]' }"
 				>
-					<UIcon :name="currentThemeIcon" class="h-5 w-5" />
-				</UButton>
+					<UButton
+						color="neutral"
+						variant="ghost"
+						size="xs"
+						class="h-9 w-9 rounded-full hover:bg-slate-500/10 active:bg-slate-500/20"
+						icon-only
+						:aria-label="'主题模式'"
+					>
+						<UIcon :name="currentThemeIcon" class="h-5 w-5" />
+					</UButton>
 
-				<template #content>
-					<div class="w-40 space-y-1 p-2">
-						<button
-							v-for="mode in themeModes"
-							:key="mode.value"
-							type="button"
-							class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
-							:class="{
-								'bg-primary-100/60 text-primary-600 dark:bg-primary-500/20 dark:text-primary-200':
-									selectedThemeMode === mode.value,
-								'text-slate-600 dark:text-slate-300':
-									selectedThemeMode !== mode.value,
-							}"
-							@click="selectTheme(mode.value)"
-						>
-							<UIcon
-								:name="mode.value === 'system' ? currentThemeIcon : mode.icon"
-								class="text-base"
-							/>
-							<span>{{ mode.label }}</span>
-							<UIcon
-								v-if="selectedThemeMode === mode.value"
-								name="i-lucide-check"
-								class="ml-auto text-base"
-							/>
-						</button>
-					</div>
-				</template>
-			</UPopover>
+					<template #content>
+						<div class="w-40 space-y-1 p-2">
+							<button
+								v-for="mode in themeModes"
+								:key="mode.value"
+								type="button"
+								class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
+								:class="{
+									'bg-primary-100/60 text-primary-600 dark:bg-primary-500/20 dark:text-primary-200':
+										selectedThemeMode === mode.value,
+									'text-slate-600 dark:text-slate-300':
+										selectedThemeMode !== mode.value,
+								}"
+								@click="selectTheme(mode.value)"
+							>
+								<UIcon
+									:name="mode.value === 'system' ? currentThemeIcon : mode.icon"
+									class="text-base"
+								/>
+								<span>{{ mode.label }}</span>
+								<UIcon
+									v-if="selectedThemeMode === mode.value"
+									name="i-lucide-check"
+									class="ml-auto text-base"
+								/>
+							</button>
+						</div>
+					</template>
+				</UPopover>
 
-			<UPopover
-				:popper="{ placement: 'bottom-end' }"
-				:ui="{ content: 'z-[40000]' }"
-			>
-				<UButton
-					color="neutral"
-					variant="ghost"
-					size="xs"
-					class="h-9 w-9 rounded-full hover:bg-slate-500/10 active:bg-slate-500/20"
-					icon-only
-					:aria-label="t('header.switchLanguage')"
+				<UPopover
+					:popper="{ placement: 'bottom-end' }"
+					:ui="{ content: 'z-[40000]' }"
 				>
-					<UIcon name="i-lucide-languages" class="h-5 w-5" />
-				</UButton>
+					<UButton
+						color="neutral"
+						variant="ghost"
+						size="xs"
+						class="h-9 w-9 rounded-full hover:bg-slate-500/10 active:bg-slate-500/20"
+						icon-only
+						:aria-label="t('header.switchLanguage')"
+					>
+						<UIcon name="i-lucide-languages" class="h-5 w-5" />
+					</UButton>
 
-				<template #content>
-					<div class="w-40 space-y-1 p-2">
-						<button
-							v-for="item in localeItems"
-							:key="item.value"
-							type="button"
-							class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
-							:class="{
-								'bg-primary-100/60 text-primary-600 dark:bg-primary-500/20 dark:text-primary-200':
-									selectedLocale === item.value,
-								'text-slate-600 dark:text-slate-300':
-									selectedLocale !== item.value,
-							}"
-							@click="selectLocale(item.value)"
-						>
-							<span>{{ item.label }}</span>
-							<UIcon
-								v-if="selectedLocale === item.value"
-								name="i-lucide-check"
-								class="ml-auto text-base"
-							/>
-						</button>
-					</div>
-				</template>
-			</UPopover>
+					<template #content>
+						<div class="w-40 space-y-1 p-2">
+							<button
+								v-for="item in localeItems"
+								:key="item.value"
+								type="button"
+								class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
+								:class="{
+									'bg-primary-100/60 text-primary-600 dark:bg-primary-500/20 dark:text-primary-200':
+										selectedLocale === item.value,
+									'text-slate-600 dark:text-slate-300':
+										selectedLocale !== item.value,
+								}"
+								@click="selectLocale(item.value)"
+							>
+								<span>{{ item.label }}</span>
+								<UIcon
+									v-if="selectedLocale === item.value"
+									name="i-lucide-check"
+									class="ml-auto text-base"
+								/>
+							</button>
+						</div>
+					</template>
+				</UPopover>
+			</div>
 		</div>
 	</header>
 </template>

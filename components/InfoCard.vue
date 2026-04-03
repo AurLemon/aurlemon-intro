@@ -9,12 +9,12 @@
 			/>
 		</div>
 		<div
-			class="foreground relative z-1 flex gap-4 justify-center items-center w-full h-full pb-3"
+			class="foreground relative z-1 flex gap-2 md:gap-4 justify-between md:justify-center items-center w-full h-full p-3"
 		>
 			<div class="w-20 h-20 select-none">
 				<slot name="logo" />
 			</div>
-			<div class="text-center">
+			<div class="text-center flex-1 md:flex-none">
 				<div class="text-3xl font-medium text-slate-800 dark:text-slate-300">
 					<slot name="title" />
 				</div>
@@ -22,7 +22,9 @@
 					<slot name="subtitle" />
 				</div>
 			</div>
-			<div class="absolute bottom-1 text-xs text-slate-500">
+			<div
+				class="absolute left-0 right-0 bottom-1 text-xs text-center text-slate-500"
+			>
 				<slot name="type" />
 			</div>
 		</div>
