@@ -127,7 +127,7 @@ const updateBottomState = () => {
 		doc.scrollHeight,
 		document.body?.scrollHeight ?? 0,
 	)
-	const threshold = 12
+	const threshold = 32
 
 	isAtBottom.value = scrollTop + viewportHeight >= scrollHeight - threshold
 }
@@ -230,59 +230,66 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-	<div
-		class="pointer-events-none fixed left-1/2 z-50 -translate-x-1/2 transition-[width,bottom] duration-350 ease-out"
-		:class="isAtBottom ? 'bottom-3' : 'bottom-9'"
-		:style="
-			shellWidth === null
-				? undefined
-				: { width: `${shellWidth + SIDE_GUTTER * 2}px` }
-		"
-	>
-		<nav
-			class="pointer-events-auto inline-flex w-full flex-nowrap items-center justify-center gap-1 overflow-hidden rounded-full border-[1.5px] border-slate-300 bg-white/70 px-2 backdrop-blur-lg transition-[width,box-shadow,border-color] duration-350 ease-out dark:border-slate-700 dark:bg-slate-900/90"
-			:class="isAtBottom ? 'shadow-none' : 'shadow-[0_3rem_4rem_#000a0f7a]'"
-		>
-			<div
-				ref="menuInner"
-				class="inline-flex flex-nowrap items-center justify-center gap-1"
-			>
-				<NuxtLink
-					v-for="item in baseNavItems"
-					:key="item.key"
-					:to="resolveTo(item)"
-					class="menu-link rounded-full p-2 text-sm md:text-base leading-none whitespace-nowrap transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
-					:class="
-						isPathActive(item)
-							? 'menu-link--active font-semibold text-primary opacity-100 dark:text-sky-300'
-							: 'text-slate-800 opacity-85 hover:opacity-100 hover:text-sky-700 dark:text-slate-300 dark:opacity-75 dark:hover:opacity-100 dark:hover:text-sky-100'
-					"
-					:aria-current="isPathActive(item) ? 'page' : undefined"
-				>
-					{{ item.label }}
-				</NuxtLink>
+	<aside>
+		<div
+			class="fixed left-0 right-0 bottom-0 z-10 h-32 pointer-events-none bg-white/95 dark:bg-slate-950/85 backdrop-blur-[48px] mask-[linear-gradient(to_top,black_-5%,transparent_100%)] transition-opacity duration-350 ease-out"
+			:class="isAtBottom ? 'opacity-0' : 'opacity-100'"
+		/>
 
+		<div
+			class="pointer-events-none fixed left-1/2 z-100 -translate-x-1/2 transition-[width,bottom] duration-350 ease-out"
+			:class="isAtBottom ? 'bottom-4' : 'bottom-14'"
+			:style="
+				shellWidth === null
+					? undefined
+					: { width: `${shellWidth + SIDE_GUTTER * 2}px` }
+			"
+		>
+			<nav
+				class="pointer-events-auto inline-flex w-full flex-nowrap items-center justify-center gap-1 overflow-hidden rounded-full border-[1.5px] border-slate-300 bg-white/70 px-2 backdrop-blur-lg transition-[width,box-shadow,border-color] duration-350 ease-out dark:border-slate-700 dark:bg-slate-900/90"
+				:class="isAtBottom ? 'shadow-none' : 'shadow-[0_4rem_5rem_#000a0f80]'"
+			>
 				<div
-					v-if="fallbackSlotVisible"
-					ref="fallbackSlot"
-					class="overflow-hidden transition-[width] duration-350 ease-out"
-					:style="{ width: `${fallbackSlotWidth}px` }"
+					ref="menuInner"
+					class="inline-flex flex-nowrap items-center justify-center gap-1"
 				>
-					<Transition name="menu-fallback" mode="out-in" appear>
-						<NuxtLink
-							v-if="displayedFallback"
-							:key="displayedFallback.to"
-							:to="resolveTo(displayedFallback)"
-							class="menu-link menu-link--active rounded-full p-2 text-sm md:text-base leading-none whitespace-nowrap font-semibold text-primary opacity-100 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] dark:text-sky-300"
-							aria-current="page"
-						>
-							{{ displayedFallback.label }}
-						</NuxtLink>
-					</Transition>
+					<NuxtLink
+						v-for="item in baseNavItems"
+						:key="item.key"
+						:to="resolveTo(item)"
+						class="menu-link rounded-full p-2 text-sm md:text-base leading-none whitespace-nowrap transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
+						:class="
+							isPathActive(item)
+								? 'menu-link--active font-semibold text-primary opacity-100 dark:text-sky-300'
+								: 'text-slate-800 opacity-85 hover:opacity-100 hover:text-sky-700 dark:text-slate-300 dark:opacity-75 dark:hover:opacity-100 dark:hover:text-sky-100'
+						"
+						:aria-current="isPathActive(item) ? 'page' : undefined"
+					>
+						{{ item.label }}
+					</NuxtLink>
+
+					<div
+						v-if="fallbackSlotVisible"
+						ref="fallbackSlot"
+						class="overflow-hidden transition-[width] duration-350 ease-out"
+						:style="{ width: `${fallbackSlotWidth}px` }"
+					>
+						<Transition name="menu-fallback" mode="out-in" appear>
+							<NuxtLink
+								v-if="displayedFallback"
+								:key="displayedFallback.to"
+								:to="resolveTo(displayedFallback)"
+								class="menu-link menu-link--active rounded-full p-2 text-sm md:text-base leading-none whitespace-nowrap font-semibold text-primary opacity-100 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] dark:text-sky-300"
+								aria-current="page"
+							>
+								{{ displayedFallback.label }}
+							</NuxtLink>
+						</Transition>
+					</div>
 				</div>
-			</div>
-		</nav>
-	</div>
+			</nav>
+		</div>
+	</aside>
 </template>
 
 <style scoped>
