@@ -1,5 +1,9 @@
 <template>
-	<ContentDoc path="/about" />
+	<main class="mx-auto max-w-3xl px-6 py-16">
+		<h1 class="text-3xl font-semibold text-slate-900 dark:text-slate-100">
+			关于本站
+		</h1>
+	</main>
 </template>
 
 <script setup lang="ts">
