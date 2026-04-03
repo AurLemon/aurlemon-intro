@@ -60,6 +60,12 @@ export default defineNuxtConfig({
 			],
 		},
 	},
+	icon: {
+		serverBundle: {
+			collections: ['lucide'],
+		},
+		fallbackToApi: false,
+	},
 	colorMode: {
 		preference: 'system',
 	},
