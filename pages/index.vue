@@ -1,5 +1,16 @@
 <template>
 	<div class="mt-4">
+		<!-- 预渲染学校徽章，避免切换时加载延迟 -->
+		<div class="sr-only" aria-hidden="true">
+			<template v-for="stage in educationStages" :key="stage">
+				<component
+					v-if="isLogoComponent(educationLogos[stage])"
+					:is="educationLogos[stage]"
+					class="block"
+				/>
+				<img v-else :src="educationLogos[stage]" class="block" />
+			</template>
+		</div>
 		<!-- 顶部问候 -->
 		<div class="mx-2">
 			<img
@@ -21,16 +32,75 @@
 
 		<!-- 信息卡片 -->
 		<div class="mt-10 pb-10 grid grid-cols-2 gap-5">
-			<InfoCard :background-src="educationBg">
-				<template #logo>
-					<XMTULogo class="block" />
-				</template>
-				<template #title>{{ $t('main.index.card.education.title') }}</template>
-				<template #subtitle>{{
-					$t('main.index.card.education.subtitle')
-				}}</template>
-				<template #type>{{ $t('main.index.card.education.type') }}</template>
-			</InfoCard>
+			<div class="relative">
+				<InfoCard :background-src="currentEducationBg">
+					<template #logo>
+						<component
+							v-if="currentEducationLogoIsComponent"
+							:is="currentEducationLogo"
+							class="block"
+						/>
+						<img v-else :src="currentEducationLogo" class="block" />
+					</template>
+					<template #title>{{ currentEducationStage.title }}</template>
+					<template #subtitle>{{ currentEducationStage.subtitle }}</template>
+					<template #type>
+						<div class="flex items-center justify-between w-full">
+							<span class="pr-1">
+								{{ $t('main.index.card.education.type') }}
+							</span>
+							<UPopover
+								:popper="{ placement: 'bottom-end' }"
+								:ui="{ content: 'z-[40000]' }"
+							>
+								<UButton
+									variant="link"
+									color="neutral"
+									class="font-semibold text-xs p-0 gap-0"
+								>
+									{{ currentEducationStage.label }}
+									<span v-if="currentEducationStage.hint" class="text-xs ml-1">
+										{{ currentEducationStage.hint }}
+									</span>
+								</UButton>
+
+								<template #content>
+									<div class="w-52 space-y-1 p-2">
+										<button
+											v-for="stage in educationStages"
+											:key="stage"
+											type="button"
+											class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
+											:class="{
+												'bg-primary-100/60 text-primary-600 dark:bg-primary-500/20 dark:text-primary-200':
+													selectedEducationStage === stage,
+												'text-slate-600 dark:text-slate-300':
+													selectedEducationStage !== stage,
+											}"
+											@click="selectedEducationStage = stage"
+										>
+											<span class="flex-1 flex items-center gap-1">
+												<span>{{ getEducationStage(stage).label }}</span>
+												<span
+													v-if="getEducationStage(stage).hint"
+													class="text-xs text-slate-500 dark:text-slate-400"
+												>
+													{{ getEducationStage(stage).hint }}
+												</span>
+											</span>
+											<UIcon
+												v-if="selectedEducationStage === stage"
+												name="i-lucide-check"
+												class="ml-auto text-base"
+											/>
+										</button>
+									</div>
+								</template>
+							</UPopover>
+						</div>
+					</template>
+				</InfoCard>
+			</div>
 
 			<InfoCard :background-src="techBg">
 				<template #logo>
@@ -75,7 +145,7 @@
 					>
 						{{ $t('main.index.card.online.bilibili') }}
 					</NuxtLink>
-					<span>/</span>
+					<span class="mx-1">/</span>
 					<NuxtLink
 						to="https://xhslink.com/m/9tlfAIy8eAJ"
 						target="_blank"
@@ -84,7 +154,7 @@
 					>
 						{{ $t('main.index.card.online.xiaohongshu') }}
 					</NuxtLink>
-					<span>/</span>
+					<span class="mx-1">/</span>
 					<NuxtLink
 						to="https://github.com/AurLemon"
 						target="_blank"
@@ -115,10 +185,16 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import dayjs from 'dayjs'
 import InfoCard from '~/components/InfoCard.vue'
 
+import FPMLogo from '~/assets/resources/school_badge/FPM.png'
+import FEESLogo from '~/assets/resources/school_badge/FEES.png'
+import FJCCCLogo from '~/assets/resources/school_badge/FJCCC.png'
 import XMTULogo from '~/assets/resources/school_badge/XMTU.svg'
+
 import educationBg from '~/assets/resources/homepage/education_bg.webp'
 import techCover from '~/assets/resources/homepage/tech_cover.svg'
 import techBg from '~/assets/resources/homepage/tech_bg.webp'
@@ -131,5 +207,49 @@ import onlineCover from '~/assets/resources/homepage/online_cover.svg'
 import languageAbilityBg from '~/assets/resources/homepage/language_ability_bg.webp'
 import languageAbilityCover from '~/assets/resources/homepage/language_ability_cover.webp'
 
+type EducationStage = 'bachelor' | 'specialty' | 'highSchool' | 'juniorSchool'
+
+const { t, te } = useI18n()
+
 const age = dayjs().diff('2006-05-18', 'year')
+
+const educationStages: EducationStage[] = [
+	'bachelor',
+	'specialty',
+	'highSchool',
+	'juniorSchool',
+]
+const selectedEducationStage = ref<EducationStage>('bachelor')
+
+const educationLogos: Record<EducationStage, any> = {
+	bachelor: XMTULogo,
+	specialty: FJCCCLogo,
+	highSchool: FEESLogo,
+	juniorSchool: FPMLogo,
+}
+
+const getEducationStage = (stage: EducationStage) => {
+	const baseKey = `main.index.card.education.stages.${stage}`
+	const hintValue = te(`${baseKey}.hint`) ? t(`${baseKey}.hint`) : ''
+	return {
+		label: t(`${baseKey}.label`),
+		title: t(`${baseKey}.title`),
+		subtitle: t(`${baseKey}.subtitle`),
+		hint: hintValue ?? '',
+	}
+}
+
+const currentEducationStage = computed(() =>
+	getEducationStage(selectedEducationStage.value),
+)
+
+const currentEducationLogo = computed(
+	() => educationLogos[selectedEducationStage.value],
+)
+const currentEducationLogoIsComponent = computed(
+	() => typeof currentEducationLogo.value !== 'string',
+)
+const currentEducationBg = educationBg
+
+const isLogoComponent = (logo: any) => typeof logo !== 'string'
 </script>
