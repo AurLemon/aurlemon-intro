@@ -3,6 +3,15 @@
 		"siteName": "AurLemon Intro",
 		"switchLanguage": "言語を切り替え"
 	},
+	"menu": {
+		"overview": "概要",
+		"project": "プロジェクト",
+		"profile": "自己紹介",
+		"preference": "好み",
+		"about": "サイトについて",
+		"friends": "リンク集",
+		"currentPage": "現在のページ"
+	},
 	"main": {
 		"index": {
 			"line1": "皆は大体私をレモン🍋って呼びます。",

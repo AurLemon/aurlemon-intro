@@ -3,6 +3,15 @@
 		"siteName": "AurLemon Intro",
 		"switchLanguage": "切换语言"
 	},
+	"menu": {
+		"overview": "概览",
+		"project": "项目",
+		"profile": "自述",
+		"preference": "偏好",
+		"about": "关于本站",
+		"friends": "友好链接",
+		"currentPage": "当前页"
+	},
 	"main": {
 		"index": {
 			"line1": "朋友们一般叫我柠檬🍋。",

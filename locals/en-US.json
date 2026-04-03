@@ -3,6 +3,15 @@
 		"siteName": "AurLemon Intro",
 		"switchLanguage": "Switch language"
 	},
+	"menu": {
+		"overview": "Overview",
+		"project": "Projects",
+		"profile": "Profile",
+		"preference": "Preferences",
+		"about": "About",
+		"friends": "Links",
+		"currentPage": "Current Page"
+	},
 	"main": {
 		"index": {
 			"line1": "Friends usually call me LEMON🍋.",
