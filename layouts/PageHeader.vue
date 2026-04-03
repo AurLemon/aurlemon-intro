@@ -41,7 +41,7 @@
 								@click="selectTheme(mode.value)"
 							>
 								<UIcon
-									:name="mode.value === 'system' ? currentThemeIcon : mode.icon"
+									:name="mode.value === 'system' ? systemThemeIcon : mode.icon"
 									class="text-base"
 								/>
 								<span>{{ mode.label }}</span>
@@ -110,6 +110,11 @@ const nuxtApp = useNuxtApp()
 type LocaleCode = 'zh-CN' | 'ja-JP' | 'en-US'
 type ThemeMode = 'light' | 'dark' | 'system'
 
+const themeIconMap = {
+	light: 'i-lucide-sun',
+	dark: 'i-lucide-moon',
+} as const
+
 const localeItems: { label: string; value: LocaleCode }[] = [
 	{ label: '简体中文', value: 'zh-CN' },
 	{ label: '日本語', value: 'ja-JP' },
@@ -117,9 +122,9 @@ const localeItems: { label: string; value: LocaleCode }[] = [
 ]
 
 const themeModes: { value: ThemeMode; label: string; icon: string }[] = [
-	{ value: 'light', label: '浅色', icon: 'i-lucide-sun' },
-	{ value: 'dark', label: '深色', icon: 'i-lucide-moon' },
-	{ value: 'system', label: '跟随系统', icon: 'i-lucide-sun' },
+	{ value: 'light', label: '浅色', icon: themeIconMap.light },
+	{ value: 'dark', label: '深色', icon: themeIconMap.dark },
+	{ value: 'system', label: '跟随系统', icon: themeIconMap.light },
 ]
 
 const currentTheme = computed<'light' | 'dark'>(() =>
@@ -133,10 +138,13 @@ const selectedThemeMode = computed<ThemeMode>(() => {
 		: 'system'
 })
 
-const currentThemeIcon = computed(() => {
-	const found = themeModes.find((mode) => mode.value === currentTheme.value)
-	return found?.icon ?? 'i-lucide-sun'
-})
+const currentThemeIcon = computed(() => themeIconMap[currentTheme.value])
+
+const systemTheme = computed<'light' | 'dark'>(() =>
+	colorMode.system === 'dark' ? 'dark' : 'light',
+)
+
+const systemThemeIcon = computed(() => themeIconMap[systemTheme.value])
 
 const selectTheme = (mode: ThemeMode): void => {
 	colorMode.preference = mode

@@ -60,6 +60,9 @@ export default defineNuxtConfig({
 			],
 		},
 	},
+	colorMode: {
+		preference: 'system',
+	},
 	content: {
 		experimental: {
 			sqliteConnector: 'native',
