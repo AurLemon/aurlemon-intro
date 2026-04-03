@@ -7,7 +7,7 @@
 			class="mx-auto max-w-4xl px-6 md:px-0 flex items-center justify-between relative z-40"
 		>
 			<div>
-				<ReadingProgress targetSelector="#article-container" />
+				<ReadingProgress targetSelector="#page-container" />
 			</div>
 			<div class="flex items-center gap-2">
 				<UPopover
@@ -42,10 +42,7 @@
 								}"
 								@click="selectTheme(mode.value)"
 							>
-								<UIcon
-									:name="mode.value === 'system' ? systemThemeIcon : mode.icon"
-									class="text-base"
-								/>
+								<UIcon :name="mode.icon" class="text-base" />
 								<span>{{ mode.label }}</span>
 								<UIcon
 									v-if="selectedThemeMode === mode.value"
@@ -128,7 +125,7 @@ const localeItems: { label: string; value: LocaleCode }[] = [
 const themeModes: { value: ThemeMode; label: string; icon: string }[] = [
 	{ value: 'light', label: '浅色', icon: themeIconMap.light },
 	{ value: 'dark', label: '深色', icon: themeIconMap.dark },
-	{ value: 'system', label: '跟随系统', icon: themeIconMap.light },
+	{ value: 'system', label: '跟随系统', icon: 'i-lucide-monitor' },
 ]
 
 const currentTheme = computed<'light' | 'dark'>(() =>
@@ -143,14 +140,6 @@ const selectedThemeMode = computed<ThemeMode>(() => {
 })
 
 const currentThemeIcon = computed(() => themeIconMap[currentTheme.value])
-
-const systemTheme = computed<'light' | 'dark'>(() =>
-	(colorMode as unknown as { system?: 'light' | 'dark' }).system === 'dark'
-		? 'dark'
-		: 'light',
-)
-
-const systemThemeIcon = computed(() => themeIconMap[systemTheme.value])
 
 const selectTheme = (mode: ThemeMode): void => {
 	colorMode.preference = mode
