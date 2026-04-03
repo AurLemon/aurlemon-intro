@@ -15,6 +15,10 @@ export default defineNuxtPlugin((nuxtApp) => {
 		script.src = `https://hm.baidu.com/hm.js?${baiduStatKey}`
 		script.async = true
 		const firstScript = document.getElementsByTagName('script')[0]
-		firstScript.parentNode?.insertBefore(script, firstScript)
+		if (firstScript?.parentNode) {
+			firstScript.parentNode.insertBefore(script, firstScript)
+		} else {
+			document.head.appendChild(script)
+		}
 	}
 })

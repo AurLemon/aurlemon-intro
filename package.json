@@ -33,8 +33,6 @@
 		"nuxt-svgo": "^4.0.11",
 		"pinia": "^3.0.4",
 		"prisma": "^6.3.1",
-		"sass": "^1.79.4",
-		"sass-loader": "^16.0.2",
 		"skinview3d": "^3.1.0",
 		"tailwindcss": "^4.2.2",
 		"uuid": "^11.0.5",
@@ -73,6 +71,7 @@
 		"@nuxt/eslint": "1.15.2",
 		"eslint": "10.1.0",
 		"prettier": "3.8.1",
-		"typescript": "5.9.3"
+		"typescript": "5.9.3",
+		"vue-tsc": "^3.2.6"
 	}
 }
