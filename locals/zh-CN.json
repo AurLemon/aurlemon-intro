@@ -10,9 +10,33 @@
 			"doubtful": "存疑",
 			"card": {
 				"education": {
-					"title": "厦门理工学院",
-					"subtitle": "在读 2026 — 2028",
-					"type": "教育经历"
+					"type": "教育经历",
+					"stages": {
+						"bachelor": {
+							"label": "本科",
+							"title": "厦门理工学院",
+							"subtitle": "在读中 2026 — 2028",
+							"hint": null
+						},
+						"specialty": {
+							"label": "专科",
+							"title": "船政交通职业学院",
+							"subtitle": "2024 — 2026",
+							"hint": "3+2 高职阶段"
+						},
+						"highSchool": {
+							"label": "中职",
+							"title": "福建工贸学校",
+							"subtitle": "2021 — 2024",
+							"hint": "3+2 中职阶段"
+						},
+						"juniorSchool": {
+							"label": "初中",
+							"title": "福州屏东中学",
+							"subtitle": "2018 — 2021",
+							"hint": null
+						}
+					}
 				},
 				"tech": {
 					"title": "全栈开发",
@@ -21,12 +45,12 @@
 				},
 				"acg": {
 					"title": "GIRL LOVE",
-					"subtitle": "治愈系",
+					"subtitle": "GL 即仙品 不得不品",
 					"type": "ACG 偏好"
 				},
 				"music": {
-					"title": "J-POP",
-					"subtitle": "ヨルシカ + ずとまよ",
+					"title": "J-POP 和术",
+					"subtitle": "ヨルシカ + ずとまよ最常听",
 					"type": "音乐偏好"
 				},
 				"online": {

@@ -10,9 +10,33 @@
 			"doubtful": "かも",
 			"card": {
 				"education": {
-					"title": "厦門理工学院",
-					"subtitle": "在学 2026-2028",
-					"type": "学歴"
+					"type": "学歴",
+					"stages": {
+						"bachelor": {
+							"label": "学部",
+							"title": "厦門理工学院",
+							"subtitle": "在学中 2026 - 2028",
+							"hint": null
+						},
+						"specialty": {
+							"label": "高等専門",
+							"title": "船政交通職業学院",
+							"subtitle": "2024 - 2026",
+							"hint": null
+						},
+						"highSchool": {
+							"label": "高校",
+							"title": "福建工貿学校",
+							"subtitle": "2021 - 2024",
+							"hint": null
+						},
+						"juniorSchool": {
+							"label": "中学",
+							"title": "福州屏東中学",
+							"subtitle": "2018 - 2021",
+							"hint": null
+						}
+					}
 				},
 				"tech": {
 					"title": "フルスタック",
