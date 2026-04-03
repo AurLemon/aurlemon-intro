@@ -31,7 +31,7 @@
 		</div>
 
 		<!-- 信息卡片 -->
-		<div class="mt-10 pb-10 grid grid-cols-2 gap-5">
+		<div class="mt-10 pb-10 grid grid-cols-1 md:grid-cols-2 gap-5">
 			<div class="relative">
 				<InfoCard :background-src="currentEducationBg">
 					<template #logo>
@@ -45,7 +45,7 @@
 					<template #title>{{ currentEducationStage.title }}</template>
 					<template #subtitle>{{ currentEducationStage.subtitle }}</template>
 					<template #type>
-						<div class="flex items-center justify-between w-full">
+						<div class="flex items-center justify-center w-full">
 							<span class="pr-1">
 								{{ $t('main.index.card.education.type') }}
 							</span>
@@ -122,7 +122,10 @@
 
 			<InfoCard :background-src="musicPreferenceBg">
 				<template #logo>
-					<img :src="musicPreferenceCover" class="block rounded-xl shadow" />
+					<img
+						:src="musicPreferenceCover"
+						class="block rounded-xl border border-slate-300/60"
+					/>
 				</template>
 				<template #title>{{ $t('main.index.card.music.title') }}</template>
 				<template #subtitle>{{
@@ -133,7 +136,9 @@
 
 			<InfoCard :background-src="onlineBg">
 				<template #logo>
-					<onlineCover class="block bg-slate-200/60 rounded-xl shadow" />
+					<onlineCover
+						class="block bg-slate-200/60 rounded-xl border border-slate-300/60"
+					/>
 				</template>
 				<template #title>{{ $t('main.index.card.online.title') }}</template>
 				<template #subtitle>
@@ -171,7 +176,7 @@
 				<template #logo>
 					<img
 						:src="languageAbilityCover"
-						class="block bg-slate-200/60 rounded-xl shadow"
+						class="block bg-slate-200/60 rounded-xl border border-slate-300/60"
 					/>
 				</template>
 				<template #title>{{ $t('main.index.card.language.title') }}</template>

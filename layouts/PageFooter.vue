@@ -1,8 +1,10 @@
 <template>
-	<footer class="flex flex-col justify-between md:flex-row my-6 mb-12 mt-auto">
+	<footer
+		class="mx-auto max-w-4xl w-full flex flex-col justify-between md:flex-row px-6 md:px-0 my-6 mb-12 mt-auto"
+	>
 		<SiteMark />
 		<div
-			class="flex flex-col gap-2 md:flex-row md:items-center md:gap-4 text-[15px] text-slate-800 dark:text-slate-200 tracking-wide"
+			class="mt-3 md:mt-0 break-all flex flex-wrap gap-x-2 md:items-center md:gap-x-4 text-[15px] text-slate-800 dark:text-slate-200 tracking-wide"
 		>
 			<NuxtLink
 				to="/about"

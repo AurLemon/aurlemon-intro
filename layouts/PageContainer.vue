@@ -1,5 +1,5 @@
 <template>
-	<main class="px-2 py-6">
+	<main class="mx-auto max-w-4xl w-full p-6">
 		<NuxtPage />
 	</main>
 </template>
