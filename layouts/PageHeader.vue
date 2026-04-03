@@ -27,11 +27,13 @@
 
 					<template #content>
 						<div class="w-40 space-y-1 p-2">
-							<button
+							<UButton
 								v-for="mode in themeModes"
 								:key="mode.value"
 								type="button"
-								class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
+								color="neutral"
+								variant="ghost"
+								class="w-full justify-start gap-2 rounded-lg px-3 py-2 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
 								:class="{
 									'bg-primary-100/60 text-primary-600 dark:bg-primary-500/20 dark:text-primary-200':
 										selectedThemeMode === mode.value,
@@ -50,7 +52,7 @@
 									name="i-lucide-check"
 									class="ml-auto text-base"
 								/>
-							</button>
+							</UButton>
 						</div>
 					</template>
 				</UPopover>
@@ -72,11 +74,13 @@
 
 					<template #content>
 						<div class="w-40 space-y-1 p-2">
-							<button
+							<UButton
 								v-for="item in localeItems"
 								:key="item.value"
 								type="button"
-								class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
+								color="neutral"
+								variant="ghost"
+								class="w-full justify-start gap-2 rounded-lg px-3 py-2 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
 								:class="{
 									'bg-primary-100/60 text-primary-600 dark:bg-primary-500/20 dark:text-primary-200':
 										selectedLocale === item.value,
@@ -91,7 +95,7 @@
 									name="i-lucide-check"
 									class="ml-auto text-base"
 								/>
-							</button>
+							</UButton>
 						</div>
 					</template>
 				</UPopover>

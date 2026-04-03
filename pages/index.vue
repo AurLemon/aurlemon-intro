@@ -56,7 +56,7 @@
 								<UButton
 									variant="link"
 									color="neutral"
-									class="font-semibold text-xs p-0 gap-0"
+									class="font-semibold text-xs p-0 gap-0 cursor-pointer"
 								>
 									{{ currentEducationStage.label }}
 									<span v-if="currentEducationStage.hint" class="text-xs ml-1">
@@ -66,11 +66,13 @@
 
 								<template #content>
 									<div class="w-52 space-y-1 p-2">
-										<button
+										<UButton
 											v-for="stage in educationStages"
 											:key="stage"
 											type="button"
-											class="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
+											color="neutral"
+											variant="ghost"
+											class="w-full justify-start gap-2 rounded-lg px-3 py-2 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
 											:class="{
 												'bg-primary-100/60 text-primary-600 dark:bg-primary-500/20 dark:text-primary-200':
 													selectedEducationStage === stage,
@@ -93,7 +95,7 @@
 												name="i-lucide-check"
 												class="ml-auto text-base"
 											/>
-										</button>
+										</UButton>
 									</div>
 								</template>
 							</UPopover>
@@ -142,32 +144,40 @@
 				</template>
 				<template #title>{{ $t('main.index.card.online.title') }}</template>
 				<template #subtitle>
-					<NuxtLink
-						to="https://space.bilibili.com/204271518"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="hover:text-slate-600/50 dark:hover:text-slate-200/50 transition-colors"
+					<span
+						class="inline-flex flex-wrap items-center"
+						@mouseleave="hoveredOnlineLink = null"
 					>
-						{{ $t('main.index.card.online.bilibili') }}
-					</NuxtLink>
-					<span class="mx-1">/</span>
-					<NuxtLink
-						to="https://xhslink.com/m/9tlfAIy8eAJ"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="hover:text-slate-600/50 dark:hover:text-slate-200/50 transition-colors"
-					>
-						{{ $t('main.index.card.online.xiaohongshu') }}
-					</NuxtLink>
-					<span class="mx-1">/</span>
-					<NuxtLink
-						to="https://github.com/AurLemon"
-						target="_blank"
-						rel="noopener noreferrer"
-						class="hover:text-slate-600/50 dark:hover:text-slate-200/50 transition-colors"
-					>
-						{{ $t('main.index.card.online.github') }}
-					</NuxtLink>
+						<NuxtLink
+							to="https://space.bilibili.com/204271518"
+							target="_blank"
+							rel="noopener noreferrer"
+							:class="onlineLinkClass(0)"
+							@mouseenter="hoveredOnlineLink = 0"
+						>
+							{{ $t('main.index.card.online.bilibili') }}
+						</NuxtLink>
+						<span class="mx-1">/</span>
+						<NuxtLink
+							to="https://xhslink.com/m/9tlfAIy8eAJ"
+							target="_blank"
+							rel="noopener noreferrer"
+							:class="onlineLinkClass(1)"
+							@mouseenter="hoveredOnlineLink = 1"
+						>
+							{{ $t('main.index.card.online.xiaohongshu') }}
+						</NuxtLink>
+						<span class="mx-1">/</span>
+						<NuxtLink
+							to="https://github.com/AurLemon"
+							target="_blank"
+							rel="noopener noreferrer"
+							:class="onlineLinkClass(2)"
+							@mouseenter="hoveredOnlineLink = 2"
+						>
+							{{ $t('main.index.card.online.github') }}
+						</NuxtLink>
+					</span>
 				</template>
 				<template #type>{{ $t('main.index.card.online.type') }}</template>
 			</InfoCard>
@@ -225,6 +235,7 @@ const educationStages: EducationStage[] = [
 	'juniorSchool',
 ]
 const selectedEducationStage = ref<EducationStage>('bachelor')
+const hoveredOnlineLink = ref<number | null>(null)
 
 const educationLogos: Record<EducationStage, any> = {
 	bachelor: XMTULogo,
@@ -257,4 +268,13 @@ const currentEducationLogoIsComponent = computed(
 const currentEducationBg = educationBg
 
 const isLogoComponent = (logo: any) => typeof logo !== 'string'
+
+const onlineLinkClass = (index: number) => [
+	'transition-colors',
+	hoveredOnlineLink.value === null
+		? 'text-slate-800 dark:text-slate-200'
+		: hoveredOnlineLink.value === index
+			? 'text-slate-800 dark:text-slate-200'
+			: 'text-slate-500 dark:text-slate-400',
+]
 </script>
