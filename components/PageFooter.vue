@@ -43,10 +43,10 @@
 					<div class="aurle-page-footer__title">建设</div>
 					<div class="aurle-page-footer__item">
 						<div class="aurle-page-footer__target">
-							<NuxtLink to="/friends">友链</NuxtLink>
+							<span>友链</span>
 						</div>
 						<div class="aurle-page-footer__target">
-							<NuxtLink to="/about">关于本站</NuxtLink>
+							<span>关于本站</span>
 						</div>
 					</div>
 				</div>
@@ -78,9 +78,7 @@
 						CC BY-NC-SA 4.0
 					</div>
 					<div class="aurle-page-footer__info aurle-page-footer__onlinetime">
-						已运行<span class="time">{{
-							dayjs().diff(dayjs(siteBuildTime), 'day')
-						}}</span
+						已运行<span class="time">{{ getSiteRunningDays() }}</span
 						>天
 					</div>
 					<div class="aurle-page-footer__info aurle-page-footer__contact">
@@ -94,118 +92,11 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
-import { siteBuildTime } from '../utils/time'
 
 const miitRegisterCode = ref<string>('闽ICP备2023007345号-3')
-</script>
+const siteBuildTime = dayjs('2024-11-6')
 
-<style scoped lang="scss">
-@use '~/assets/styles/media_screen.scss' as media;
-
-.aurle-page-footer {
-	background: var(--color-surface-0);
-	border-top: 1px solid var(--border-color-base);
-	box-shadow: 0 -96px 128px rgba(255, 255, 255, 0.6);
-
-	.aurle-page-footer__wrapper {
-		display: flex;
-		flex-direction: column;
-		gap: 3.25rem;
-		color: var(--color-surface-4);
-		font-size: 12px;
-		font-weight: 400;
-		padding: 1.75rem 2.25rem;
-		margin: auto;
-		max-width: 90vw;
-
-		@include media.media-screen(mobile) {
-			padding: 1.25rem 2rem;
-			max-width: 100%;
-		}
-	}
-
-	.aurle-page-footer__link {
-		display: flex;
-		gap: 2.25rem;
-		flex-wrap: wrap;
-		color: var(--color-text--subtle);
-		font-size: 16px;
-
-		.aurle-page-footer__menu {
-			display: flex;
-			row-gap: 0.125rem;
-			column-gap: 1rem;
-			flex-wrap: wrap;
-
-			.aurle-page-footer__title {
-				display: flex;
-				align-items: center;
-				row-gap: 0.125rem;
-				column-gap: 0.25rem;
-				color: var(--color-surface-4);
-
-				&::after {
-					content: '>';
-					line-height: 1;
-				}
-			}
-
-			.aurle-page-footer__item {
-				display: flex;
-				row-gap: 0.125rem;
-				column-gap: 0.5rem;
-				flex-wrap: wrap;
-				font-weight: 500;
-
-				.aurle-page-footer__target {
-					a {
-						color: var(--color-text--subtle);
-
-						&:hover {
-							text-decoration: underline;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	.aurle-page-footer__info {
-		.aurle-page-footer__register {
-			a {
-				color: var(--color-surface-4);
-
-				&:hover {
-					text-decoration: underline;
-				}
-			}
-		}
-
-		.aurle-page-footer__list {
-			display: flex;
-			align-items: center;
-			flex-wrap: wrap;
-
-			.aurle-page-footer__info {
-				display: flex;
-				align-items: center;
-				flex-wrap: wrap;
-
-				&::after {
-					content: '·';
-					color: var(--color-surface-3);
-					margin: 0 0.25rem;
-				}
-
-				&:last-of-type::after {
-					content: none;
-				}
-
-				.time {
-					margin: 0 0.25rem;
-				}
-			}
-		}
-	}
+const getSiteRunningDays = (): number => {
+	return dayjs().diff(siteBuildTime, 'day')
 }
-</style>
+</script>

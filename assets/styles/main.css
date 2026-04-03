@@ -1,0 +1,123 @@
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: normal;
+	font-weight: 100 800;
+	font-display: swap;
+	src: url('../fonts/JetBrains_Mono.woff2') format('woff2-variations');
+}
+
+@font-face {
+	font-family: 'SourceHanSerif';
+	font-style: normal;
+	font-weight: 200 900;
+	font-display: swap;
+	src: url('../fonts/SourceHanSerif_Subset.woff2') format('woff2-variations');
+}
+
+@font-face {
+	font-family: 'Literata';
+	font-style: normal;
+	font-weight: 200 900;
+	font-display: swap;
+	src: url('../fonts/Literata.woff2') format('woff2-variations');
+}
+
+@font-face {
+	font-family: 'Literata';
+	font-style: italic;
+	font-weight: 200 900;
+	font-display: swap;
+	src: url('../fonts/Literata_Italic.woff2') format('woff2-variations');
+}
+
+@font-face {
+	font-family: 'Rubik';
+	font-style: normal;
+	font-weight: 300 900;
+	font-display: swap;
+	src: url('../fonts/Rubik.woff2') format('woff2-variations');
+}
+
+@font-face {
+	font-family: 'Rubik';
+	font-style: italic;
+	font-weight: 300 900;
+	font-display: swap;
+	src: url('../fonts/Rubik_Italic.woff2') format('woff2-variations');
+}
+
+:root {
+	--font-family:
+		'Rubik', 'Helvetica', 'Roboto', 'BlinkMacSystemFont', 'MiSans',
+		'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+	--font-serif: 'Literata', 'SourceHanSerif', 'SimSun', '宋体', serif;
+	line-height: 1.75;
+	font-family: var(--font-family);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
+	font-synthesis: none;
+	color-scheme: light;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	background: var(--color-surface-0);
+}
+
+*,
+*::before,
+*::after {
+	scrollbar-color: var(--color-surface-3) transparent;
+	scrollbar-width: thin;
+	box-sizing: border-box;
+}
+
+*::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: var(--color-surface-3);
+	border-radius: 8px;
+	background-clip: content-box;
+	border: 2px solid transparent;
+}
+
+*::-webkit-scrollbar-corner {
+	background: transparent;
+}
+
+::selection {
+	background: color-mix(in srgb, var(--ui-color-primary-500) 85%, transparent);
+	color: var(--ui-primary-foreground);
+}
+
+::-moz-selection {
+	background: color-mix(in srgb, var(--ui-color-primary-500) 85%, transparent);
+	color: var(--ui-primary-foreground);
+}
+
+.dark ::selection {
+	background: color-mix(in srgb, var(--color-primary--hover) 70%, transparent);
+	color: var(--ui-primary-foreground);
+}
+
+.dark ::-moz-selection {
+	background: color-mix(in srgb, var(--color-primary--hover) 70%, transparent);
+	color: var(--ui-primary-foreground);
+}
+
+.dark {
+	color-scheme: dark;
+}

@@ -16,7 +16,7 @@ export default defineNuxtConfig({
 	devtools: { enabled: false },
 	plugins: [
 		{ src: '~/plugins/baidu-stat.ts', mode: 'client' },
-		{ src: '~/plugins/ms-clarity.ts', mode: 'client' },
+		{ src: '~/plugins/microsoft-clarity.ts', mode: 'client' },
 	],
 	modules: [
 		'@nuxt/eslint',
@@ -28,6 +28,9 @@ export default defineNuxtConfig({
 	],
 	ui: {
 		fonts: false,
+		theme: {
+			colors: ['primary', 'neutral', 'success', 'warning', 'danger'],
+		},
 	},
 	content: {
 		experimental: {
@@ -65,19 +68,12 @@ export default defineNuxtConfig({
 		},
 	},
 	css: [
+		'~/assets/styles/main.css',
 		'~/assets/styles/tailwind.css',
-		'~/assets/styles/global.scss',
 		'material-icons/iconfont/material-icons.css',
 	],
 	vite: {
 		plugins: [tailwindcss()],
-		css: {
-			preprocessorOptions: {
-				scss: {
-					api: 'modern-compiler',
-				},
-			},
-		},
 		ssr: {
 			external: ['@prisma/client'],
 		},
@@ -104,6 +100,10 @@ export default defineNuxtConfig({
 			titleTemplate: '%s',
 		},
 		pageTransition: { name: 'page', mode: 'out-in' },
+	},
+	typescript: {
+		strict: true,
+		typeCheck: process.env.NODE_ENV === 'production',
 	},
 	runtimeConfig: {
 		githubToken: process.env.GITHUB_TOKEN ?? 'github_pat',
