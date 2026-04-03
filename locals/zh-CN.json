@@ -5,9 +5,9 @@
 	},
 	"menu": {
 		"overview": "概览",
-		"project": "项目",
-		"profile": "自述",
-		"preference": "偏好",
+		"project": "项目概览",
+		"profile": "个人自述",
+		"preference": "个人偏好",
 		"about": "关于本站",
 		"friends": "友好链接",
 		"currentPage": "当前页"

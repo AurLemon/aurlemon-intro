@@ -7,11 +7,15 @@
 			class="mt-3 md:mt-0 break-all flex flex-wrap gap-x-2 md:items-center md:gap-x-4 text-[15px] text-slate-800 dark:text-slate-200 tracking-wide"
 			@mouseleave="hoveredLink = null"
 		>
-			<NuxtLink to="/about" :class="linkClass(0)" @mouseenter="hoveredLink = 0">
+			<NuxtLink
+				:to="localePath('/about')"
+				:class="linkClass(0)"
+				@mouseenter="hoveredLink = 0"
+			>
 				{{ $t('footer.aboutSite') }}
 			</NuxtLink>
 			<NuxtLink
-				to="/friends"
+				:to="localePath('/friends')"
 				:class="linkClass(1)"
 				@mouseenter="hoveredLink = 1"
 			>
@@ -44,6 +48,7 @@ import { ref } from 'vue'
 
 import SiteMark from '~/components/AurLemon.vue'
 
+const localePath = useLocalePath()
 const hoveredLink = ref<number | null>(null)
 
 const linkClass = (index: number) => [
