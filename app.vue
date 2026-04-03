@@ -2,6 +2,7 @@
 import PageHeader from '~/layouts/PageHeader.vue'
 import PageContainer from '~/layouts/PageContainer.vue'
 import PageFooter from '~/layouts/PageFooter.vue'
+import PageMenu from '~/layouts/PageMenu.vue'
 </script>
 
 <template>
@@ -10,6 +11,7 @@ import PageFooter from '~/layouts/PageFooter.vue'
 			<PageHeader />
 			<PageContainer />
 			<PageFooter />
+			<PageMenu />
 		</div>
 	</UApp>
 </template>
