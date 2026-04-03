@@ -7,7 +7,41 @@
 		"index": {
 			"line1": "Friends usually call me LEMON🍋.",
 			"line2": "Full-stack developer {doubtful}, from Fuzhou, {age} y.o., INF/TJ.",
-			"doubtful": "debatable"
+			"doubtful": "debatable",
+			"card": {
+				"education": {
+					"title": "XMU of Tech",
+					"subtitle": "2026 - 2028",
+					"type": "Education"
+				},
+				"tech": {
+					"title": "Full-stack",
+					"subtitle": "TypeScript / Web / DevOps",
+					"type": "Focus"
+				},
+				"acg": {
+					"title": "GIRL LOVE",
+					"subtitle": "Soft & cute",
+					"type": "Taste"
+				},
+				"music": {
+					"title": "J-POP",
+					"subtitle": "Yorushika + Zutomayo",
+					"type": "Music"
+				},
+				"online": {
+					"title": "Night owl",
+					"bilibili": "bilibili",
+					"xiaohongshu": "Rednote",
+					"github": "GitHub",
+					"type": "Online"
+				},
+				"language": {
+					"title": "Native CN",
+					"subtitle": "CET-4 (~510) + JLPT N4",
+					"type": "Lang"
+				}
+			}
 		}
 	},
 	"footer": {
