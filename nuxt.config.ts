@@ -73,6 +73,8 @@ export default defineNuxtConfig({
 		experimental: {
 			sqliteConnector: 'native',
 		},
+		locales: ['zh-CN', 'ja-JP', 'en-US'],
+		defaultLocale: 'zh-CN',
 	},
 	svgo: {
 		global: false,

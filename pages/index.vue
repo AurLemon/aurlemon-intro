@@ -14,7 +14,7 @@
 		<!-- 顶部问候 -->
 		<div class="mx-2">
 			<img
-				src="~/assets/sitemark/avatar_mark.jpg"
+				src="~/assets/resources/sitemark/avatar_mark.jpg"
 				class="block rounded-full h-42 border-[#236F95] border-2 select-none shadow-[0_0_32px_rgba(190,215,212,0.6)] dark:shadow-[0_0_32px_rgba(190,215,212,0.1)]"
 			/>
 			<div
@@ -104,9 +104,9 @@
 				</InfoCard>
 			</div>
 
-			<InfoCard :background-src="techBg">
+			<InfoCard :background-src="techBg" :darkInvert="true">
 				<template #logo>
-					<techCover class="block rounded-xl" />
+					<techCover class="block rounded-lg" />
 				</template>
 				<template #title>{{ $t('main.index.card.tech.title') }}</template>
 				<template #subtitle>{{ $t('main.index.card.tech.subtitle') }}</template>
@@ -115,7 +115,7 @@
 
 			<InfoCard :background-src="acgPreferenceBg">
 				<template #logo>
-					<img :src="acgPreferenceCover" class="block rounded-xl" />
+					<img :src="acgPreferenceCover" class="block rounded-lg" />
 				</template>
 				<template #title>{{ $t('main.index.card.acg.title') }}</template>
 				<template #subtitle>{{ $t('main.index.card.acg.subtitle') }}</template>
@@ -126,7 +126,7 @@
 				<template #logo>
 					<img
 						:src="musicPreferenceCover"
-						class="block rounded-xl border border-slate-300/60"
+						class="block rounded-lg border border-slate-300/60"
 					/>
 				</template>
 				<template #title>{{ $t('main.index.card.music.title') }}</template>
@@ -136,10 +136,10 @@
 				<template #type>{{ $t('main.index.card.music.type') }}</template>
 			</InfoCard>
 
-			<InfoCard :background-src="onlineBg">
+			<InfoCard :background-src="onlineBg" :darkInvert="true">
 				<template #logo>
 					<onlineCover
-						class="block bg-slate-200/60 rounded-xl border border-slate-300/60"
+						class="block bg-slate-200/60 dark:bg-slate-800/60 rounded-lg border border-slate-300/60 dark:border-slate-800/60 backdrop-blur-xl"
 					/>
 				</template>
 				<template #title>{{ $t('main.index.card.online.title') }}</template>
@@ -182,11 +182,15 @@
 				<template #type>{{ $t('main.index.card.online.type') }}</template>
 			</InfoCard>
 
-			<InfoCard :background-src="languageAbilityBg">
+			<InfoCard
+				:background-src="languageAbilityBg"
+				:darkInvert="true"
+				:backgroundBlur="2"
+			>
 				<template #logo>
 					<img
 						:src="languageAbilityCover"
-						class="block bg-slate-200/60 rounded-xl border border-slate-300/60"
+						class="block bg-slate-200/60 dark:bg-slate-800/60 rounded-lg border border-slate-300/60 dark:border-slate-800/60 backdrop-blur-xl"
 					/>
 				</template>
 				<template #title>{{ $t('main.index.card.language.title') }}</template>
