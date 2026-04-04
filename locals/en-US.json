@@ -85,5 +85,100 @@
 		"friendLink": "Links",
 		"githubProfile": "GitHub",
 		"miitRegistration": "ICP License"
+	},
+	"social": {
+		"actions": {
+			"close": "Close",
+			"loginWithGithub": "Sign in with GitHub",
+			"logout": "Sign out",
+			"refreshStatus": "Refresh status",
+			"openMessageBoard": "Message Board",
+			"sendComment": "Post",
+			"reply": "Reply",
+			"cancelReply": "Cancel reply",
+			"edit": "Edit",
+			"cancelEdit": "Cancel edit",
+			"saveEdit": "Save",
+			"delete": "Delete",
+			"applyFriendLink": "Apply Link Exchange",
+			"submitApplication": "Submit",
+			"approve": "Approve",
+			"createFriendLink": "Create Link"
+		},
+		"feedback": {
+			"authTitle": "Login required",
+			"errorTitle": "Action not completed"
+		},
+		"auth": {
+			"loggedIn": "Signed in",
+			"loggedInAs": "Signed in as {login}"
+		},
+		"siteLike": {
+			"count": "{count}",
+			"likedCount": "{count}"
+		},
+		"message": {
+			"title": "Message Board",
+			"placeholder": "Leave a message.",
+			"replyPlaceholder": "Reply to {login}",
+			"loginRequiredTitle": "GitHub login is required",
+			"loginRequiredDesc": "You need to sign in before posting, replying, or liking messages.",
+			"emptyTitle": "No messages yet",
+			"emptyDesc": "You can be the first one to leave a message.",
+			"likeCount": "{count}",
+			"likedCount": "{count}"
+		},
+		"friendLinks": {
+			"applyTitle": "Apply for Link Exchange",
+			"adminEntry": "Admin",
+			"loginRequiredTitle": "GitHub login is required",
+			"loginRequiredDesc": "You need to sign in before submitting a link exchange request.",
+			"adminTitle": "Friend Link Admin",
+			"adminRequiredTitle": "Admin only",
+			"adminRequiredDesc": "Your current account cannot manage friend links.",
+			"emptyLinks": "No friend links yet",
+			"listTitle": "Friend Link List",
+			"pendingTitle": "Pending Requests",
+			"pendingEmptyTitle": "No pending requests",
+			"pendingEmptyDesc": "New requests will show up here and expire after 7 days if untouched.",
+			"directCreateTitle": "Create Friend Link Directly",
+			"editTitle": "Edit Friend Link",
+			"status": {
+				"pending": "Pending"
+			},
+			"fields": {
+				"name": "Site name",
+				"url": "Site URL",
+				"desc": "Description",
+				"image": "Site image",
+				"chooseImage": "Choose image file",
+				"noFileSelected": "No file selected",
+				"keepCurrentImage": "Use current image"
+			}
+		},
+		"errors": {
+			"generic": "The request did not complete. Please try again later.",
+			"authRequired": "This action requires a GitHub login.",
+			"adminRequired": "The current account is not an administrator.",
+			"sessionExpired": "Your session may have expired. Refresh or sign in again.",
+			"siteAlreadyLiked": "This browser has already liked the site.",
+			"commentAlreadyLiked": "You have already liked this message.",
+			"commentEditForbidden": "You can only edit your own message.",
+			"commentDeleteForbidden": "You can only delete your own message.",
+			"commentNotFound": "The message does not exist or has been removed.",
+			"commentParentNotFound": "The reply target does not exist.",
+			"friendLinkAlreadyExists": "This friend link already exists.",
+			"friendLinkNotFound": "The friend link does not exist or was removed.",
+			"friendLinkApplicationPending": "There is already a pending request for this site.",
+			"friendLinkApplicationNotFound": "The request does not exist or has already been handled.",
+			"invalidGithubOauthState": "GitHub login validation failed. Please start again.",
+			"invalidCommentContent": "The message content cannot be empty or too long.",
+			"invalidFriendLinkName": "The friend link name is invalid.",
+			"invalidFriendLinkUrl": "The friend link URL must be a valid http or https URL.",
+			"invalidFriendLinkDesc": "The friend link description is invalid.",
+			"invalidImageBase64": "The image upload failed or the image format is invalid.",
+			"imageTooLarge": "Image is too large. Please upload a file under 3MB.",
+			"invalidFingerprint": "The browser fingerprint is invalid. Refresh and try again."
+		}
 	}
 }

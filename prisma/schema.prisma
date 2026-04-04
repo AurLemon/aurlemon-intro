@@ -17,7 +17,88 @@ generator client {
 model Like {
   id          Int      @id @default(autoincrement()) // 主键
   ip          String   // IP 地址
-  fingerprint String   // 前端传入的 fingerprint
+  fingerprint String   @unique // 前端传入的 fingerprint
   uuid        String   // UUID
   timestamp   DateTime @default(now()) // 当前时间戳
+}
+
+model GithubSession {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  githubLogin  String
+  avatarUrl    String
+  profileUrl   String
+  expiresAt    DateTime
+  createdAt    DateTime @default(now())
+
+  @@index([githubLogin])
+  @@index([expiresAt])
+}
+
+model MessageComment {
+  id          String               @id @default(cuid())
+  parentId    String?
+  content     String
+  githubLogin String
+  avatarUrl   String
+  profileUrl  String
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  parent      MessageComment?      @relation("MessageCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies     MessageComment[]     @relation("MessageCommentReplies")
+  likes       MessageCommentLike[]
+
+  @@index([parentId])
+  @@index([createdAt])
+}
+
+model MessageCommentLike {
+  id          String         @id @default(cuid())
+  commentId   String
+  githubLogin String
+  createdAt   DateTime       @default(now())
+  comment     MessageComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, githubLogin])
+  @@index([githubLogin])
+}
+
+model FriendLink {
+  id                    String   @id @default(cuid())
+  name                  String
+  url                   String   @unique
+  desc                  String
+  imageBase64           String
+  createdByGithubLogin  String
+  approvedByGithubLogin String?
+  isActive              Boolean  @default(true)
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@index([isActive, createdAt])
+}
+
+model FriendLinkApplication {
+  id                   String                      @id @default(cuid())
+  name                 String
+  url                  String
+  desc                 String
+  imageBase64          String
+  applicantGithubLogin String
+  status               FriendLinkApplicationStatus @default(pending)
+  expiresAt            DateTime
+  approvedAt           DateTime?
+  approvedByGithubLogin String?
+  createdAt            DateTime                    @default(now())
+  updatedAt            DateTime                    @updatedAt
+
+  @@index([status, expiresAt])
+  @@index([applicantGithubLogin, createdAt])
+}
+
+enum FriendLinkApplicationStatus {
+  pending
+  approved
+  rejected
+  expired
 }

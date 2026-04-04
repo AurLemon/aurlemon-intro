@@ -4,10 +4,16 @@
 			>👂👃👂</ContentHeader
 		>
 
-		<div class="grid gap-5 md:grid-cols-2 px-6">
+		<div v-if="!friends.length" class="px-6">
+			<div class="text-center text-slate-600 dark:text-slate-300 text-sm">
+				{{ $t('social.friendLinks.emptyLinks') }}
+			</div>
+		</div>
+
+		<div v-else class="grid gap-5 md:grid-cols-2 px-6">
 			<NuxtLink
 				v-for="friend in friends"
-				:key="friend.name"
+				:key="friend.id"
 				:to="friend.url"
 				target="_blank"
 				rel="noopener noreferrer"
@@ -32,15 +38,49 @@
 				</div>
 			</NuxtLink>
 		</div>
+
+		<div class="flex flex-wrap items-center justify-center gap-1 px-6">
+			<SocialAuthStatusBar compact />
+			<UButton
+				color="primary"
+				size="xs"
+				variant="link"
+				@click="applyOpen = true"
+			>
+				<span class="leading-[normal]">
+					{{ $t('social.actions.applyFriendLink') }}
+				</span>
+			</UButton>
+		</div>
+
+		<FriendLinkApplyModal
+			v-model:open="applyOpen"
+			@open-admin="openAdminFromApply"
+			@submitted="refresh()"
+		/>
+		<FriendLinkAdminModal v-model:open="adminOpen" @updated="refresh()" />
 	</div>
 </template>
 
 <script setup lang="ts">
 import ContentHeader from '~/components/ContentHeader.vue'
+import SocialAuthStatusBar from '~/components/common/SocialAuthStatusBar.vue'
+import FriendLinkAdminModal from '~/components/friends/FriendLinkAdminModal.vue'
+import FriendLinkApplyModal from '~/components/friends/FriendLinkApplyModal.vue'
 import linksCover from '~/assets/resources/pages/links_cover.webp'
-import friendData from '~/assets/utils/config.json'
+import type { FriendLinksResponse } from '~/shared/types/social'
 
-type FriendLink = (typeof friendData.friend_link)[number]
+const applyOpen = ref(false)
+const adminOpen = ref(false)
 
-const friends = friendData.friend_link as FriendLink[]
+const openAdminFromApply = async () => {
+	applyOpen.value = false
+	await nextTick()
+	adminOpen.value = true
+}
+
+const { data, refresh } =
+	await useFetch<FriendLinksResponse>('/api/friend-links')
+
+const friends = computed(() => data.value?.items ?? [])
 </script>

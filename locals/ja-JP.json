@@ -85,5 +85,100 @@
 		"friendLink": "リンク集",
 		"githubProfile": "GitHub",
 		"miitRegistration": "闽ICP備2023007345号-3"
+	},
+	"social": {
+		"actions": {
+			"close": "閉じる",
+			"loginWithGithub": "GitHub でログイン",
+			"logout": "ログアウト",
+			"refreshStatus": "状態を更新",
+			"openMessageBoard": "メッセージボード",
+			"sendComment": "送信",
+			"reply": "返信",
+			"cancelReply": "返信をやめる",
+			"edit": "編集",
+			"cancelEdit": "編集を取り消す",
+			"saveEdit": "保存",
+			"delete": "削除",
+			"applyFriendLink": "相互リンク申請",
+			"submitApplication": "申請を送信",
+			"approve": "承認する",
+			"createFriendLink": "直接追加"
+		},
+		"feedback": {
+			"authTitle": "ログインが必要です",
+			"errorTitle": "操作が完了しませんでした"
+		},
+		"auth": {
+			"loggedIn": "ログイン済み",
+			"loggedInAs": "ログイン中: {login}"
+		},
+		"siteLike": {
+			"count": "{count}",
+			"likedCount": "{count}"
+		},
+		"message": {
+			"title": "メッセージボード",
+			"placeholder": "ひとこと残してください。",
+			"replyPlaceholder": "{login} に返信",
+			"loginRequiredTitle": "GitHub ログインが必要です",
+			"loginRequiredDesc": "投稿、返信、いいねには GitHub ログインが必要です。",
+			"emptyTitle": "まだメッセージはありません",
+			"emptyDesc": "最初のメッセージを残せます。",
+			"likeCount": "{count}",
+			"likedCount": "{count}"
+		},
+		"friendLinks": {
+			"applyTitle": "相互リンク申請",
+			"adminEntry": "管理",
+			"loginRequiredTitle": "GitHub ログインが必要です",
+			"loginRequiredDesc": "相互リンク申請には GitHub ログインが必要です。",
+			"adminTitle": "相互リンク管理",
+			"adminRequiredTitle": "管理者のみ",
+			"adminRequiredDesc": "現在のアカウントには管理権限がありません。",
+			"emptyLinks": "リンクはまだありません",
+			"listTitle": "相互リンク一覧",
+			"pendingTitle": "承認待ち申請",
+			"pendingEmptyTitle": "承認待ち申請はありません",
+			"pendingEmptyDesc": "新しい申請はここに表示され、7日放置すると自動で解放されます。",
+			"directCreateTitle": "相互リンクを直接追加",
+			"editTitle": "相互リンクを編集",
+			"status": {
+				"pending": "承認待ち"
+			},
+			"fields": {
+				"name": "サイト名",
+				"url": "サイト URL",
+				"desc": "紹介文",
+				"image": "サイト画像",
+				"chooseImage": "画像ファイルを選択",
+				"noFileSelected": "未選択",
+				"keepCurrentImage": "現在の画像を使用"
+			}
+		},
+		"errors": {
+			"generic": "リクエストは完了しませんでした。あとでもう一度試してください。",
+			"authRequired": "この操作には GitHub ログインが必要です。",
+			"adminRequired": "現在のアカウントは管理者ではありません。",
+			"sessionExpired": "ログイン状態が切れている可能性があります。更新または再ログインしてください。",
+			"siteAlreadyLiked": "このブラウザではすでにいいね済みです。",
+			"commentAlreadyLiked": "このメッセージにはすでにいいね済みです。",
+			"commentEditForbidden": "自分のメッセージのみ編集できます。",
+			"commentDeleteForbidden": "自分のメッセージのみ削除できます。",
+			"commentNotFound": "メッセージが存在しないか削除されています。",
+			"commentParentNotFound": "返信先が見つかりません。",
+			"friendLinkAlreadyExists": "この相互リンクはすでに存在します。",
+			"friendLinkNotFound": "相互リンクが存在しないか削除されています。",
+			"friendLinkApplicationPending": "このサイトにはすでに承認待ち申請があります。",
+			"friendLinkApplicationNotFound": "申請が存在しないか、すでに処理済みです。",
+			"invalidGithubOauthState": "GitHub ログインの検証に失敗しました。もう一度やり直してください。",
+			"invalidCommentContent": "メッセージ内容は空にできず、長すぎてもいけません。",
+			"invalidFriendLinkName": "相互リンク名が不正です。",
+			"invalidFriendLinkUrl": "相互リンク URL は有効な http または https である必要があります。",
+			"invalidFriendLinkDesc": "相互リンク紹介文が不正です。",
+			"invalidImageBase64": "画像アップロードに失敗したか、画像形式が不正です。",
+			"imageTooLarge": "画像サイズが大きすぎます。3MB 以下の画像をアップロードしてください。",
+			"invalidFingerprint": "ブラウザ識別子が無効です。更新して再試行してください。"
+		}
 	}
 }
