@@ -13,7 +13,7 @@
 			</div>
 		</div>
 		<h1
-			class="mt-6 text-4xl font-medium text-center text-slate-900 dark:text-slate-100"
+			class="mt-10 text-4xl font-medium text-center text-slate-900 dark:text-slate-100"
 		>
 			{{ title }}
 		</h1>
