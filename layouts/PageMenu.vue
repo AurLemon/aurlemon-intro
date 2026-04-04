@@ -14,6 +14,7 @@ const localePath = useLocalePath()
 const { t } = useI18n()
 const menuInner = ref<HTMLElement | null>(null)
 const fallbackSlot = ref<HTMLElement | null>(null)
+const fallbackMeasure = ref<HTMLElement | null>(null)
 const shellWidth = ref<number | null>(null)
 const viewportWidth = ref<number | null>(null)
 const displayedFallback = ref<MenuItem | null>(null)
@@ -125,12 +126,17 @@ const menuShellStyle = computed(() => {
 
 const measureFallbackWidth = async () => {
 	await nextTick()
-	const el = fallbackSlot.value
+	const el = fallbackMeasure.value
 	if (!el) {
 		return
 	}
 
 	fallbackSlotWidth.value = Math.ceil(el.scrollWidth)
+}
+
+const syncFallbackWidth = async () => {
+	await measureFallbackWidth()
+	void syncShellWidth(false)
 }
 
 const syncShellWidth = async (animate = true) => {
@@ -205,8 +211,7 @@ watch(
 		if (next) {
 			displayedFallback.value = next
 			fallbackSlotVisible.value = true
-			fallbackSlotWidth.value = 0
-			await measureFallbackWidth()
+			await syncFallbackWidth()
 			return
 		}
 
@@ -228,6 +233,17 @@ watch(
 )
 
 watch(
+	() => displayedFallback.value?.label,
+	() => {
+		if (!displayedFallback.value) {
+			return
+		}
+
+		void syncFallbackWidth()
+	},
+)
+
+watch(
 	() =>
 		displayNavItems.value.map((item) => `${item.key}:${item.label}`).join('|'),
 	() => {
@@ -246,6 +262,9 @@ onMounted(() => {
 	syncViewportWidth()
 	void syncShellWidth(false)
 	updateBottomState()
+	if (currentFallback.value) {
+		void syncFallbackWidth()
+	}
 
 	if (!menuInner.value) {
 		return
@@ -282,6 +301,14 @@ onBeforeUnmount(() => {
 
 <template>
 	<aside>
+		<div
+			ref="fallbackMeasure"
+			class="pointer-events-none fixed left-0 top-0 -z-10 opacity-0 whitespace-nowrap rounded-full p-2 text-sm md:text-base leading-none font-semibold"
+			aria-hidden="true"
+		>
+			{{ displayedFallback?.label ?? currentFallback?.label ?? '' }}
+		</div>
+
 		<div
 			class="fixed left-0 right-0 bottom-0 z-10 h-32 pointer-events-none bg-white/95 dark:bg-slate-950/85 backdrop-blur-[48px] mask-[linear-gradient(to_top,black_-5%,transparent_100%)] transition-opacity duration-350 ease-out"
 			:class="isAtBottom ? 'opacity-0' : 'opacity-100'"
