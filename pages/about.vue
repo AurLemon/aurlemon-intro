@@ -12,8 +12,8 @@
 </template>
 
 <script setup lang="ts">
-import ContentHeader from '~/components/ContentHeader.vue'
-import ContentContainer from '~/components/ContentContainer.vue'
+import ContentHeader from '~/components/content/ContentHeader.vue'
+import ContentContainer from '~/components/content/ContentContainer.vue'
 import aboutCover from '~/assets/resources/pages/about_cover.webp'
-import SiteMark from '~/components/AurLemon.vue'
+import SiteMark from '~/components/branding/AurLemon.vue'
 </script>

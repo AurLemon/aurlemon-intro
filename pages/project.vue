@@ -9,8 +9,8 @@
 </template>
 
 <script setup lang="ts">
-import ContentHeader from '~/components/ContentHeader.vue'
-import ContentContainer from '~/components/ContentContainer.vue'
+import ContentHeader from '~/components/content/ContentHeader.vue'
+import ContentContainer from '~/components/content/ContentContainer.vue'
 import projectCover from '~/assets/resources/pages/project_cover.webp'
 import openaiLogo from '~/assets/resources/brand/openai_logo.svg'
 </script>

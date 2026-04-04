@@ -30,6 +30,12 @@ export default defineNuxtConfig({
 	compatibilityDate: '2024-04-03',
 	ssr: true,
 	devtools: { enabled: false },
+	components: [
+		{
+			path: '~/components',
+			pathPrefix: false,
+		},
+	],
 	plugins: [
 		{ src: '~/plugins/baidu-stat.ts', mode: 'client' },
 		{ src: '~/plugins/microsoft-clarity.ts', mode: 'client' },
