@@ -2,8 +2,6 @@
 @import '@nuxt/ui';
 
 @theme {
-	--font-mono: 'JetBrains Mono', 'Fira Code', Consolas, Monaco, monospace;
-
 	/* 基于 hsl(200 55% 48%) 的主色系 */
 	--color-primary-25: hsl(200 55% 98%);
 	--color-primary-50: hsl(200 60% 96%);

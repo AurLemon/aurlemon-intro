@@ -1,3 +1,5 @@
+@import url('https://cdn-font.hyperos.mi.com/font/css?family=MiSans_VF:VF:Chinese_Simplify,Latin&display=swap');
+
 @font-face {
 	font-family: 'JetBrains Mono';
 	font-style: normal;
@@ -281,7 +283,7 @@
 	font-style: normal;
 	font-weight: 200 900;
 	font-display: swap;
-	src: url('../../fonts/Literata.woff2') format('woff2-variations');
+	src: url('../fonts/Literata.woff2') format('woff2-variations');
 }
 
 @font-face {
@@ -289,7 +291,7 @@
 	font-style: italic;
 	font-weight: 200 900;
 	font-display: swap;
-	src: url('../../fonts/Literata_Italic.woff2') format('woff2-variations');
+	src: url('../fonts/Literata_Italic.woff2') format('woff2-variations');
 }
 
 @font-face {
@@ -297,7 +299,7 @@
 	font-style: normal;
 	font-weight: 300 900;
 	font-display: swap;
-	src: url('../../fonts/Rubik.woff2') format('woff2-variations');
+	src: url('../fonts/Rubik.woff2') format('woff2-variations');
 }
 
 @font-face {
@@ -305,7 +307,7 @@
 	font-style: italic;
 	font-weight: 300 900;
 	font-display: swap;
-	src: url('../../fonts/Rubik_Italic.woff2') format('woff2-variations');
+	src: url('../fonts/Rubik_Italic.woff2') format('woff2-variations');
 }
 
 @font-face {

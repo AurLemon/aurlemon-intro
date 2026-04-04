@@ -130,6 +130,11 @@ export default defineNuxtConfig({
 					crossorigin: '',
 				},
 				{
+					rel: 'preconnect',
+					href: 'https://cdn-font.hyperos.mi.com',
+					crossorigin: '',
+				},
+				{
 					rel: 'icon',
 					type: 'image/x-icon',
 					href: '/favicon.ico',
