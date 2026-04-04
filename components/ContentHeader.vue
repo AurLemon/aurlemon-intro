@@ -26,7 +26,7 @@
 			</div>
 		</div>
 		<h1
-			class="mt-10 text-4xl font-medium text-center text-slate-900 dark:text-slate-100"
+			class="mt-10 text-4xl font-medium text-center text-slate-800 dark:text-slate-200 tracking-wide"
 		>
 			{{ title }}
 		</h1>
