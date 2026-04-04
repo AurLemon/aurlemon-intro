@@ -73,8 +73,6 @@ export default defineNuxtConfig({
 		experimental: {
 			sqliteConnector: 'native',
 		},
-		locales: ['zh-CN', 'ja-JP', 'en-US'],
-		defaultLocale: 'zh-CN',
 	},
 	svgo: {
 		global: false,
@@ -122,6 +120,11 @@ export default defineNuxtConfig({
 		head: {
 			title: 'AurLemon Intro',
 			link: [
+				{
+					rel: 'preconnect',
+					href: 'https://fonts.gstatic.com',
+					crossorigin: '',
+				},
 				{
 					rel: 'icon',
 					type: 'image/x-icon',
