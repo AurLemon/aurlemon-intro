@@ -7,13 +7,6 @@
 }
 
 @font-face {
-	font-family: 'SourceHanSerif';
-	font-weight: 200 900;
-	font-display: swap;
-	src: url('../fonts/SourceHanSerif_Subset.woff2') format('woff2-variations');
-}
-
-@font-face {
 	font-family: 'Literata';
 	font-style: normal;
 	font-weight: 200 900;
@@ -45,11 +38,47 @@
 	src: url('../fonts/Rubik_Italic.woff2') format('woff2-variations');
 }
 
+@font-face {
+	font-family: 'Noto Serif SC';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('https://fonts.gstatic.com/s/notoserifsc/v35/H4cyBXePl9DZ0Xe7gG9cyOj7uK2-n-D2rd4FY7SCqyWv.ttf')
+		format('truetype');
+	unicode-range:
+		U+3000-303F, U+31C0-31EF, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF,
+		U+FF00-FFEF, U+20000-2EBEF;
+}
+
+@font-face {
+	font-family: 'Noto Serif SC';
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url('https://fonts.gstatic.com/s/notoserifsc/v35/H4cyBXePl9DZ0Xe7gG9cyOj7uK2-n-D2rd4FY7SwqyWv.ttf')
+		format('truetype');
+	unicode-range:
+		U+3000-303F, U+31C0-31EF, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF,
+		U+FF00-FFEF, U+20000-2EBEF;
+}
+
+@font-face {
+	font-family: 'Noto Serif SC';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('https://fonts.gstatic.com/s/notoserifsc/v35/H4cyBXePl9DZ0Xe7gG9cyOj7uK2-n-D2rd4FY7RlrCWv.ttf')
+		format('truetype');
+	unicode-range:
+		U+3000-303F, U+31C0-31EF, U+3400-4DBF, U+4E00-9FFF, U+F900-FAFF,
+		U+FF00-FFEF, U+20000-2EBEF;
+}
+
 :root {
 	--font-family:
 		'Rubik', 'Helvetica', 'Roboto', 'BlinkMacSystemFont', 'MiSans',
 		'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
-	--font-serif: 'Literata', 'SourceHanSerif', 'SimSun', '宋体', serif;
+	--font-serif: 'Literata', 'Noto Serif SC', 'SimSun', '宋体', serif;
 	line-height: 1.75;
 	font-family: var(--font-family);
 	-webkit-font-smoothing: antialiased;
