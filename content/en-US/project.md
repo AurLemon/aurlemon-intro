@@ -1,49 +1,40 @@
-## Summary
+As the home page says, I am a full-stack developer. I am not very confident in that label, because - I know my ability and experience are nowhere near enough to support the word "full-stack." I am just a half-bucket.
 
-<div class="aurle-project-item github-calendar" id="githubCalendar"></div>
+## Development Path
 
-I mainly focus on frontend, client apps, and Node.js. Most of my GitHub repos are Vue, but I also touch backend and ops (Python FastAPI/Flask, Java Spring) - not too deep, especially databases. I have **kind of** used some common workflow tools (Git, Jenkins, etc.). Layout and UI are not my strength; I can imitate and copy, but I cannot really create.
+My usual language is TypeScript. I have also written Python, Java, and even Rust, but more than 90% of that was with Agent assistance, only to finish specific tasks, so I do not count them as my usual languages here. The first language I studied systematically was C (2021).
 
-## Experience
+The first area I got into was front end, which I also mentioned on my [GitHub page](https://github.com/AurLemon), around 2022. As for back end, it was not until 2024 that I wrote my first TS project in Nest. Only from that point on did I start touching back end and DevOps.
 
-The following ones are relatively long-term:
+Most of my projects are written in TypeScript. Ironically, the most common back end stack, Spring Boot, is something I have not touched much. The most recent time was a teacher's RuoYi project, and I happened to need to help, so I tried to work on it.
 
-- 2017.7 - present -> [Oxygen Team](https://www.oxygenstudio.cn)<br>
-  Honestly this is not really my thing; I am mostly listed in name. I handled the ICP filing and website, ~~basically nothing else~~.
+I got into site building and operations relatively early, around 2020. That also meant that learning Web stuff later did not feel too stressful. If I had to name the language I know best, I can only say CSS. When I was practicing front end, LLMs could not write front end yet... CSS had to be adjusted entirely by hand. Even now, in my opinion, Agents still cannot generate a truly "beautiful" UI from one sentence.
 
-- 2018.9 - present -> [Hydcraft Server](https://wiki.hydcraft.cn)<br>
-  Thanks to a Minecraft server, I learned everything from CDN and site setup to management, and from tuning WordPress themes to full-stack and ops... ~~but I have not written Java mods or plugins ->\_->~~ Not huge or tiny: 250+ in the group, but daily players are countable on one hand. I also hang out there and met many good friends.
+Still, LLMs really are moving at an incredible pace. They change almost every month. About three months after GPT-3.5 was released, I got into GPT around January 2023. It felt unbelievable to me at the time, so I found a shared Plus account, and later I opened my own account and kept renewing it myself. I still use it now. But even though I was shocked, I had no sense of crisis back then. I still did not really feel one through the first half of 2025. It was only in the second half, when Claude 4 and GPT 5 showed what they could do in Agent workflows, that things really went beyond what I expected.
 
-- 2023.9 - present -> MediaWiki setup and maintenance<br>
-  Helped friends with wikis, mainly homepage design or writing ~~(which is basically heavy CSS)~~, for example: [Lindong City Server](https://wiki.shangxiaoguan.top), Fetarute Wiki, EaseCation Wiki (shamelessly squeezed in to help their wiki team).
+Still, I use what I need. Right now I pay for GPT Plus and Google AI One. GPT's divergent thinking and Gemini Pro both help my studies a lot. When I was studying advanced math and calculus, Gemini solved a lot of problems for me. NotebookLM, bundled with Google AI One, also greatly improved the efficiency of studying and review. The tools I use most often for Agent Coding are Codex and GitHub Copilot.
 
-- 2024.6 - present -> Hydroline Leader<br>
-  A small coding studio spun out of Hydcraft (the MC server above). We write all kinds of things. It looks like several people in the GitHub org, but I am basically the only one working.
+From the release of GPT-3.5 to now, only three years have passed... though three years is not exactly short. The GPT-4 and GPT o3 that once dominated the scene have now been left far behind by newer models. Lately I really have been wondering whether I should switch industries. I may not even have gotten in before I am out of work.
 
-- 2024.12 - present -> [LawerLab](https://lawerlab.cn) secondary developer<br>
-  A small studio for a lawyer friend's tools (maybe not really a studio, just two people). I work on mini-app frontend (Uniapp) and a bit of backend, mostly on tasks he assigns and refactoring spaghetti.
+## Milestones
 
-- 2025.7 - present -> Volya website development<br>
-  A guy followed my Wiki.js CSS to this site and emailed to ask if I wanted to join his project. Not much to say; it is about books (and I have been a bit flaky).
+There are not many projects that count as milestones for me. I can probably count them on one hand, so I will not list small tools or projects that did not matter much.
 
-- 2025.9 -> World Vocational College Skills Competition Finals (New-generation IT track) Bronze Award<br>
-  I was doing odd jobs there. Thanks to teachers, school, and teammates for getting me in. I wrote a drone backend in Rust (vibe coding).
+1. [The Wiki and portal site for my own Minecraft server](https://wiki.hydcraft.cn) (2022). Back then, my MC server needed MediaWiki maintenance, and as the server owner I designed many versions of the homepage UI. In the process, I got exposed to the basics of HTML, CSS, JavaScript, and PHP.<br>After that, in July 2024, I touched Vue 2 for the first time in order to design the [server portal site](https://github.com/AurLemon/hydcraft-intro). It was the first standard front-end project in my development history, and the first one based on a package manager. The project never went live, though. Working on my own server also forced me to learn a lot of front-end, site operations, and site-building knowledge.
+2. [The exam practice system I wrote for my class and myself during vocational school](https://github.com/AurLemon/fjcpc-transfer-exam-practice-system) (2024), a decoupled web project based on Nest + Vue + TS. The first version was actually a traditional JavaScript + PHP simple back end. The current stack was chosen later in development. The site kept getting updated until mid-2025 (the next class was supposed to use it too, but there was no next class, so updates stopped), and it is now archived. This was my first real exposure to a proper back-end architecture, and the first time I wrote a complete project with full functionality from start to finish. Looking back now, it is also a bit of a black mark.
+3. [The CSS override I wrote for Wiki.js](https://github.com/AurLemon/wikijs-citizen-styles) (2024), a pure SCSS project and the one with the most GitHub stars. There is not much worth saying technically; it is here as a keepsake.
+4. [My own intro site](https://github.com/AurLemon/aurlemon-intro) (2024), which is this site. It was my first Nuxt full-stack framework project, and nothing especially flashy beyond that.
+5. [My Minecraft server's information aggregation site](https://github.com/Hydroline/hydroline-hydcraft-services) (2025), a decoupled web project based on Nest + Vue + TS. It was the first project where I configured GitHub Actions deployment to the source site and set up EdgeOne and the rules around it. The feeling of moving from understanding to actually using it is completely different. During that period, I also first pulled off things I had never even thought about before through DNS resolution, Cloudflare resolution, and other tricks. This may be the first project that really counts as "big" and "messy" for me, and it is still being written. I am still exploring the right pattern for Agent Coding... it is still under development.
 
-Other bits, roughly:
+In summary, I may have roughly walked through the technical path from the birth of the Web to the present. I really did write projects that only switched between HTML files and did not rely on any newer technical standards such as ES6. Writing like that was extremely painful. It helps with understanding the macro structure, though from a job-hunting perspective my learning speed is still a bit slow, and there is not much time left until graduation... In 2025 I was busy doing work at school the whole time, and followed teachers on a few projects, but the results were not ideal. Now in 2026, even though the transfer-to-undergraduate process is over, most of the later plans are still just exam prep, exam prep, exam prep...
 
-- Three domains under my name, all ICP-filed, and a loyal Tencent Cloud user.
-- MediaWiki and Wiki.js for a while.
-- Cannot remember more; probably that is it... (skipping the tiny stuff).
+## Other
 
-## Projects
+I have also touched a few languages and fields outside TypeScript and Web, more or less, but I do not know them well enough to say much, so I will just list a few below.
 
-If we talk about systematic projects, I do not really have any; just the one below. The rest are just for fun (on GitHub).
+- I have written some Minecraft Mods and Plugins in Java (with Agent assistance).
+- I wrote a Web project for a competition in Rust (with Agent assistance), and later it took third place nationally.
+- I have written some scripts in Python for Excel, automatic sign-in, and ML training (partly with Agent assistance). In addition, because Python was part of the transfer-undergraduate professional courses, I reviewed the basic syntax for one or two months.
+- Lately I have been working on my ESP32S3 graduation project.
 
-- 2024.4 [FJCPC Transfer Exam Practice System](https://fjcpc-teps.aurlemon.top)<br>
-  While doing practice papers I found the school system too random, so I crawled data and built one. Reworked with Nest and Vue in Nov 2024. [GitHub repo](https://github.com/AurLemon/fjcpc-transfer-exam-practice-system)
-
-## Direction
-
-The current training track in my junior college (Computer Application Technology, a program only in the associate track) focuses on Web frontend and mobile apps. Most courses are relatively easy and low pressure, and there is a big gap from real work. My plan is to study along a normal computer science path (similar to CS postgrad exams), and at least build a not-too-bad foundation in the four years of college (2 years associate + 2 years top-up, 2024-2028).
-
-So I may not have a very clear career direction yet (because at my half-baked level, I do not really know what I can do right away), hard to say.
+You can follow my GitHub Contributions. **Usually** I have commits on four or five days in a week. Sometimes I work hard all day, then open my profile and seeing the screen full of green dots still gives me a strong sense of accomplishment, haha.

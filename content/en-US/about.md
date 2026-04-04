@@ -1,30 +1,38 @@
-## Source
+Recently, around April 2026, I spent some time rewriting the site. I tried a lot of UI directions, and in the end I still went with this version. I originally planned to add a sidebar, but the overall look was just average, so I scrapped it. lol.
 
-The repo is on [GitHub](https://github.com/AurLemon/aurlemon-intro), a small intro site built with Nuxt 3. The UI style was inspired by [Innei](https://github.com/Innei) and their [Shiro](https://github.com/Innei/Shiro) (the motion and UI are really awesome).
+## Rambling
 
-I **_borrowed_** the top bar and content page layout. When I started designing, I never imagined the top menu could be done like this. Thanks for the inspiration - it felt super lively the first time I saw it. My previous projects never had that vibe. After looking into it, I think the main reasons are the transition timing (I used to keep it around 150ms to 350ms) and finer animation control (GSAP).
+I have to admit that taste is subjective. But this is my own site, and I still do not want it to look like everyone else's. So... I very boldly, really very boldly, moved the Menu to the bottom of the page; kept the Header to the reading progress bar and a few action buttons; made the Footer a simple site logo plus non-core page links, external links, and the registration record; and added a Blur Mask to the Header and Menu so the text transitions smoothly while the page scrolls.
 
-## Features
+Another thing is that I used a serif typeface for the body this time, while the sans-serif face is used only for titles, buttons, the header, the footer, and other non-core text. I suspect I may be overusing the serif a bit, Source Han Serif, even though I personally think it looks beautiful. I hope people who dislike this pairing do not yell at me.
 
-Mostly a place to put my intro. I use it when I need to introduce myself or share online, so I made one. My blog is on [Cnblogs](https://www.cnblogs.com/AurLemon) (the UI style hasn't been updated in a while; I'll tweak it when I have time).
+As for the source of inspiration, Claude was actually what sparked it for me, though Anthropic banned me the next morning, ha. Setting Anthropic's habit of banning accounts aside, let's be fair. Claude's design is still quite distinctive: rounded sans-serif, a serious serif, a cool yellow theme color, and the simple line-art graphics around it. It perfectly captures Claude's core traits: aloof, restrained, mature.
 
-The main function of this site is rendering Markdown with `@nuxt/content`. Other than that, there isn't much. No backend, just something I hacked together, and some parts are written very casually.
+OpenAI's design is also very minimal, with a strongly volumetric mixed-color background paired with restrained sans-serif text, which is also a solid UI practice. But Gemini cannot be selected, and Material Design's messy colors, shadows, and corner radii are just not my thing.
 
-There is a database: Prisma + SQLite (SSR brings a lot of issues; I struggled with Nuxt + Prisma for a long time because I only used TypeORM before).
+So if someone asks me what this site's style is, the first word that comes to mind is probably **restraint**. Even the primary color is just an accent at this point; black, gray, and white still do most of the heavy lifting. In short, no unnecessary design, _Less is More_.
 
-## Frameworks and packages
+Still, I should explain a bit more. I am not a designer, so all I can rely on is the "design instinct" I have built up from years of browsing websites while writing front end. I also found another problem. When I sketch prototypes, the moment I get specific about a card's details, shadow, font, layout, even how much text to put in it, I will spend ages agonizing over it, sometimes without coming up with anything at all. That is exactly why I know I am not suited to design. My engineering background is merely average, and my design ability is definitely even worse.
+
+And only recently did I convince myself that not every card needs to be hand-written one-to-one in HTML. I used to hand-craft the background of my old personal intro card 1:1... extremely tedious, extremely disgusting. In practice, designing it properly in a UI/UX tool and then exporting the asset is the better way. Front end, after all, is not a dedicated design tool.
+
+## Me
+
+Having finished talking about good UI design, what is the main content of this site? That question gets right to the point - I have no idea either. Who told me to write whatever comes to mind?
+
+Also, one reason I suddenly updated my site recently, around April 2026, is that I really could not stand the cringe-soaked text I wrote when I first entered university as a freshman. I did not realize I used to be this unhinged.
+
+Not only was my self-awareness about my own ability severely off, I was also full of strange self-satisfaction, lecturing, and fantasy... and the flag planting was bizarrely funny! I once imagined that putting goals in public would somehow create social commitment, but the end result was only me quietly deleting them in embarrassment. No wonder first-year students are called freshmen, though sophomore is not much better.
+
+Fortunately, by the time you are reading this, I have already deleted those painful articles.
+
+One last disclaimer: this site only gets updated when I remember to update it, strictly speaking once every three or four months. In other words, when I do not remember, I barely touch it at all. If the font CDN blows up, which should not really happen to Google's CDN, I may not even know. That does not feel like a huge problem anyway, since I already turned on TypeScript strict mode. As long as the build passes, it is fine.
+
+## Tech
+
+The repo is [here](https://github.com/AurLemon/aurlemon-intro), and the site is built with Nuxt. The fonts were picked by me on Google Fonts.
 
 - Nuxt 3 + TypeScript
-
-- SCSS
-
-- Pinia
-
-- Nuxt Content
-
-- Prisma
-
-## License
-
-- Code: MIT
-- Content: CC BY-NC-SA 4.0
+- Nuxt UI + TailwindCSS + Motion-V
+- MiSans + Rubik / Source Han Serif + Literata
+- GitHub Actions + Tencent Cloud EdgeOne
