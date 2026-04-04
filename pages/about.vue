@@ -5,7 +5,7 @@
 			:title="$t('menu.about')"
 			:useCleanSlot="true"
 		>
-			<SiteMark class="mb-2" />
+			<SiteMark class="mb-4" />
 		</ContentHeader>
 		<ContentContainer page="about" />
 	</div>
