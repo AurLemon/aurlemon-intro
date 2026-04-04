@@ -18,7 +18,7 @@
 					:class="
 						useCleanSlot
 							? ''
-							: 'flex justify-center items-center gap-1 px-3 py-2 rounded-full bg-white/50 dark:bg-slate-900/50 backdrop-blur-lg mb-2 border border-slate-200 dark:border-slate-800 text-base text-slate-800 dark:text-slate-100'
+							: 'flex justify-center items-center gap-1 px-3 py-2 rounded-full bg-white/50 dark:bg-slate-900/50 backdrop-blur-lg m-2 border border-slate-200 dark:border-slate-800 text-base text-slate-800 dark:text-slate-100'
 					"
 				>
 					<slot />
