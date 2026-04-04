@@ -104,7 +104,11 @@ export default defineNuxtConfig({
 			],
 		},
 	},
-	css: ['~/assets/styles/main.css', '~/assets/styles/tailwind.css'],
+	css: [
+		'~/assets/styles/fonts.css',
+		'~/assets/styles/main.css',
+		'~/assets/styles/tailwind.css',
+	],
 	vite: {
 		plugins: [tailwindcss()],
 		ssr: {
@@ -122,7 +126,7 @@ export default defineNuxtConfig({
 			link: [
 				{
 					rel: 'preconnect',
-					href: 'https://fonts.gstatic.com',
+					href: 'https://fonts.gstatic.cn',
 					crossorigin: '',
 				},
 				{
