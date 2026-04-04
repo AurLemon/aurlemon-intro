@@ -1,5 +1,5 @@
 <template>
-	<div class="px-6 py-6 pb-16 text-[18px] font-serif font-medium">
+	<div class="md:px-6 py-6 pb-16 text-[18px] font-serif font-medium">
 		<ContentRenderer v-if="doc" :value="doc" />
 	</div>
 </template>

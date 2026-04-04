@@ -3,6 +3,7 @@
 		'Rubik', 'Helvetica', 'Roboto', 'BlinkMacSystemFont', 'MiSans',
 		'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
 	--font-serif: 'Literata', 'Noto Serif SC', 'SimSun', '宋体', serif;
+	--font-mono: 'JetBrains Mono', 'MiSans', monospace;
 	line-height: 1.75;
 	font-family: var(--font-family);
 	-webkit-font-smoothing: antialiased;
