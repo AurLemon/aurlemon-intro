@@ -19,7 +19,9 @@ html:lang(ja-JP) {
 }
 
 html[lang='zh-CN'],
-html:lang(zh-CN) {
+html:lang(zh-CN),
+html[lang='en-US'],
+html:lang(en-US) {
 	--font-serif: 'Literata', 'Noto Serif SC', 'Noto Serif JP', serif;
 }
 

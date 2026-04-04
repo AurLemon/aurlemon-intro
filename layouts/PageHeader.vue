@@ -87,6 +87,12 @@
 								@click="selectLocale(item.value)"
 							>
 								<span>{{ item.label }}</span>
+								<span
+									v-if="item.badge"
+									class="rounded bg-slate-500/10 px-1.5 py-0.5 text-[10px] leading-none text-slate-500 dark:bg-slate-400/10 dark:text-slate-400"
+								>
+									{{ item.badge }}
+								</span>
 								<UIcon
 									v-if="selectedLocale === item.value"
 									name="i-lucide-check"
@@ -117,10 +123,10 @@ const themeIconMap = {
 	dark: 'i-lucide-moon',
 } as const
 
-const localeItems: { label: string; value: LocaleCode }[] = [
+const localeItems: { label: string; value: LocaleCode; badge?: string }[] = [
 	{ label: '简体中文', value: 'zh-CN' },
-	{ label: '日本語', value: 'ja-JP' },
-	{ label: 'English', value: 'en-US' },
+	{ label: '日本語', value: 'ja-JP', badge: 'AI' },
+	{ label: 'English', value: 'en-US', badge: 'AI' },
 ]
 
 const themeModes: { value: ThemeMode; label: string; icon: string }[] = [

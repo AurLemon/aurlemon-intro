@@ -61,6 +61,15 @@ export default defineNuxtConfig({
 		},
 	},
 	icon: {
+		clientBundle: {
+			icons: [
+				'lucide:sun',
+				'lucide:moon',
+				'lucide:monitor',
+				'lucide:languages',
+				'lucide:check',
+			],
+		},
 		serverBundle: {
 			collections: ['lucide'],
 		},
