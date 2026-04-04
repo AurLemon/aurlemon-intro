@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import ContentHeader from '~/components/ContentHeader.vue'
+import ContentHeader from '~/components/content/ContentHeader.vue'
 import SocialAuthStatusBar from '~/components/common/SocialAuthStatusBar.vue'
 import FriendLinkAdminModal from '~/components/friends/FriendLinkAdminModal.vue'
 import FriendLinkApplyModal from '~/components/friends/FriendLinkApplyModal.vue'

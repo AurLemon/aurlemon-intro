@@ -207,7 +207,7 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import dayjs from 'dayjs'
-import InfoCard from '~/components/InfoCard.vue'
+import InfoCard from '~/components/cards/InfoCard.vue'
 
 import FPMLogo from '~/assets/resources/school_badge/FPM.png'
 import FEESLogo from '~/assets/resources/school_badge/FEES.png'

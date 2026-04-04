@@ -58,7 +58,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-import SiteMark from '~/components/AurLemon.vue'
+import SiteMark from '~/components/branding/AurLemon.vue'
 import SiteLikeButton from '~/components/footer/SiteLikeButton.vue'
 import MessageBoardModal from '~/components/message/MessageBoardModal.vue'
 
