@@ -75,6 +75,9 @@
 					"type": "语言能力"
 				}
 			}
+		},
+		"project": {
+			"line1": "Hey Codex，帮我把这个页面的内容写一下。"
 		}
 	},
 	"footer": {

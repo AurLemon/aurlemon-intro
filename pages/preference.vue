@@ -1,6 +1,8 @@
 <template>
 	<div>
-		<ContentHeader :bg-src="preferenceCover" :title="$t('menu.preference')" />
+		<ContentHeader :bg-src="preferenceCover" :title="$t('menu.preference')"
+			>👍😋👍
+		</ContentHeader>
 		<ContentContainer page="preference" />
 	</div>
 </template>
