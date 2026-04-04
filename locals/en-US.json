@@ -75,6 +75,9 @@
 					"type": "Lang"
 				}
 			}
+		},
+		"project": {
+			"line1": "Hey Codex, help me write the content for this page."
 		}
 	},
 	"footer": {

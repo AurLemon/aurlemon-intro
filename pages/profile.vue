@@ -1,6 +1,8 @@
 <template>
 	<div>
-		<ContentHeader :bg-src="profileCover" :title="$t('menu.profile')" />
+		<ContentHeader :bg-src="profileCover" :title="$t('menu.profile')"
+			>👎🤔👍
+		</ContentHeader>
 		<ContentContainer page="profile" />
 	</div>
 </template>

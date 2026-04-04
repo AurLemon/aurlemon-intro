@@ -1,6 +1,8 @@
 <template>
 	<div class="space-y-6">
-		<ContentHeader :bg-src="linksCover" :title="$t('menu.friends')" />
+		<ContentHeader :bg-src="linksCover" :title="$t('menu.friends')"
+			>👂👃👂</ContentHeader
+		>
 
 		<div class="grid gap-4 md:grid-cols-2">
 			<NuxtLink
