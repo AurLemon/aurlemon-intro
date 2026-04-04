@@ -6,7 +6,7 @@ declare global {
 	}
 }
 
-export default defineNuxtPlugin((nuxtApp) => {
+export default defineNuxtPlugin(() => {
 	const baiduStatKey = useRuntimeConfig().public.baiduStatKey
 
 	if (baiduStatKey) {

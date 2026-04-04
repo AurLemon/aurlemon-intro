@@ -1,10 +1,10 @@
 <script setup lang="ts">
-const { locale } = useI18n()
-
 import PageHeader from '~/layouts/PageHeader.vue'
 import PageContainer from '~/layouts/PageContainer.vue'
 import PageFooter from '~/layouts/PageFooter.vue'
 import PageMenu from '~/layouts/PageMenu.vue'
+
+const { locale } = useI18n()
 
 useHead(() => ({
 	htmlAttrs: {
