@@ -21,11 +21,16 @@ const displayedFallback = ref<MenuItem | null>(null)
 const fallbackSlotVisible = ref(false)
 const fallbackSlotWidth = ref(0)
 const isAtBottom = ref(false)
+const rawAtBottom = ref(false)
 const SIDE_GUTTER = 12
 const MOBILE_SIDE_GUTTER = 12
 const MOBILE_BREAKPOINT = 768
+const BOTTOM_HIDE_DELAY = 180
+const BOTTOM_SHOW_DELAY = 120
 let resizeObserver: ResizeObserver | null = null
 let fallbackLeaveTimer: ReturnType<typeof setTimeout> | null = null
+let bottomHideTimer: ReturnType<typeof setTimeout> | null = null
+let bottomShowTimer: ReturnType<typeof setTimeout> | null = null
 let scrollRaf = 0
 
 const baseNavItems = computed<MenuItem[]>(() => [
@@ -181,7 +186,49 @@ const updateBottomState = () => {
 	)
 	const threshold = 32
 
-	isAtBottom.value = scrollTop + viewportHeight >= scrollHeight - threshold
+	const nextAtBottom = scrollTop + viewportHeight >= scrollHeight - threshold
+	if (nextAtBottom === rawAtBottom.value) {
+		return
+	}
+
+	rawAtBottom.value = nextAtBottom
+	if (nextAtBottom) {
+		if (bottomShowTimer) {
+			clearTimeout(bottomShowTimer)
+			bottomShowTimer = null
+		}
+		if (isAtBottom.value || bottomHideTimer) {
+			return
+		}
+		bottomHideTimer = setTimeout(() => {
+			bottomHideTimer = null
+			if (rawAtBottom.value) {
+				isAtBottom.value = true
+			}
+		}, BOTTOM_HIDE_DELAY)
+		return
+	}
+
+	if (bottomHideTimer) {
+		clearTimeout(bottomHideTimer)
+		bottomHideTimer = null
+	}
+	if (!isAtBottom.value) {
+		if (bottomShowTimer) {
+			clearTimeout(bottomShowTimer)
+			bottomShowTimer = null
+		}
+		return
+	}
+	if (bottomShowTimer) {
+		return
+	}
+	bottomShowTimer = setTimeout(() => {
+		bottomShowTimer = null
+		if (!rawAtBottom.value) {
+			isAtBottom.value = false
+		}
+	}, BOTTOM_SHOW_DELAY)
 }
 
 const onScroll = () => {
@@ -296,6 +343,14 @@ onBeforeUnmount(() => {
 		clearTimeout(fallbackLeaveTimer)
 		fallbackLeaveTimer = null
 	}
+	if (bottomHideTimer) {
+		clearTimeout(bottomHideTimer)
+		bottomHideTimer = null
+	}
+	if (bottomShowTimer) {
+		clearTimeout(bottomShowTimer)
+		bottomShowTimer = null
+	}
 })
 </script>
 
@@ -310,22 +365,24 @@ onBeforeUnmount(() => {
 		</div>
 
 		<div
-			class="fixed left-0 right-0 bottom-0 z-10 h-32 pointer-events-none bg-white/95 dark:bg-slate-950/85 backdrop-blur-[48px] mask-[linear-gradient(to_top,black_-5%,transparent_100%)] transition-opacity duration-350 ease-out"
+			class="fixed left-0 right-0 bottom-0 z-10 h-32 pointer-events-none bg-white dark:bg-slate-950 mask-[linear-gradient(to_top,black_-5%,transparent_100%)] transition-opacity duration-500 ease-out"
 			:class="isAtBottom ? 'opacity-0' : 'opacity-100'"
 		/>
 
 		<div
-			class="pointer-events-none fixed left-1/2 z-100 -translate-x-1/2 transition-[width,bottom] duration-350 ease-out"
-			:class="isAtBottom ? 'bottom-4' : 'bottom-14'"
+			class="menu-shell pointer-events-none fixed left-1/2 bottom-14 z-100"
+			:class="isAtBottom ? 'menu-shell--hidden' : 'menu-shell--visible'"
+			:aria-hidden="isAtBottom ? 'true' : 'false'"
 			:style="menuShellStyle"
 		>
 			<nav
-				class="pointer-events-auto inline-flex w-full flex-nowrap items-center justify-center gap-1 rounded-full border-[1.5px] border-slate-300 bg-white/70 px-2 backdrop-blur-lg transition-[width,box-shadow,border-color] duration-350 ease-out dark:border-slate-700 dark:bg-slate-900/90"
+				class="pointer-events-auto inline-flex w-full flex-nowrap items-center justify-center gap-1 rounded-full border-[1.5px] border-slate-300 bg-white px-2 transition-[width,box-shadow,border-color] duration-500 ease-out dark:border-slate-700 dark:bg-slate-900/90"
 				:class="[
 					isMobileMenuClamped
 						? 'overflow-x-auto overflow-y-hidden justify-start'
 						: 'overflow-hidden justify-center',
 					isAtBottom ? 'shadow-none' : 'shadow-[0_4rem_5rem_#000a0f80]',
+					isAtBottom ? 'pointer-events-none' : 'pointer-events-auto',
 				]"
 			>
 				<div
@@ -372,6 +429,30 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+.menu-shell {
+	transform: translateX(-50%) translateY(0) scale(1);
+	opacity: 1;
+	filter: blur(0);
+	transition-property: width, opacity, transform, filter;
+	transition-duration: 500ms, 280ms, 560ms, 280ms;
+	transition-timing-function:
+		cubic-bezier(0.22, 1, 0.36, 1), cubic-bezier(0.2, 0.8, 0.2, 1),
+		cubic-bezier(0.16, 1, 0.3, 1), cubic-bezier(0.2, 0.8, 0.2, 1);
+	will-change: transform, opacity, filter, width;
+}
+
+.menu-shell--visible {
+	transform: translateX(-50%) translateY(0) scale(1);
+	opacity: 1;
+	filter: blur(0);
+}
+
+.menu-shell--hidden {
+	transform: translateX(-50%) translateY(14px) scale(0.94);
+	opacity: 0;
+	filter: blur(1px);
+}
+
 .menu-link {
 	position: relative;
 	z-index: 0;
