@@ -2,7 +2,7 @@
 	<div class="relative w-fit">
 		<div class="relative z-1 flex items-center gap-1.5">
 			<img
-				src="~/assets/sitemark/avatar_mark.jpg"
+				src="~/assets/resources/sitemark/avatar_mark.jpg"
 				class="block rounded-full h-7.5 border-[#236F95] border-1.5 select-none"
 			/>
 			<AurLemon class="h-6.75 text-[#236F95] dark:text-[#54aed7]" />
@@ -14,5 +14,5 @@
 </template>
 
 <script setup lang="ts">
-import AurLemon from '~/assets/sitemark/text_mark.svg'
+import AurLemon from '~/assets/resources/sitemark/text_mark.svg'
 </script>

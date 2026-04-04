@@ -37,7 +37,7 @@ const baseNavItems = computed<MenuItem[]>(() => [
 	{ key: 'overview', label: t('menu.overview'), to: '/' },
 	{ key: 'project', label: t('menu.project'), to: '/project' },
 	{ key: 'profile', label: t('menu.profile'), to: '/profile' },
-	{ key: 'more', label: t('menu.preference'), to: '/more' },
+	{ key: 'preference', label: t('menu.preference'), to: '/preference' },
 ])
 
 const resolveTo = (item: MenuItem): string => localePath(item.to)
@@ -72,7 +72,7 @@ const currentFallback = computed<MenuItem | null>(() => {
 		'/': 'menu.overview',
 		'/project': 'menu.project',
 		'/profile': 'menu.profile',
-		'/more': 'menu.preference',
+		'/preference': 'menu.preference',
 		'/about': 'menu.about',
 		'/friends': 'menu.friends',
 	}
@@ -376,7 +376,7 @@ onBeforeUnmount(() => {
 			:style="menuShellStyle"
 		>
 			<nav
-				class="pointer-events-auto inline-flex w-full flex-nowrap items-center justify-center gap-1 rounded-full border-[1.5px] border-slate-300 bg-white px-2 transition-[width,box-shadow,border-color] duration-500 ease-out dark:border-slate-700 dark:bg-slate-900/90"
+				class="pointer-events-auto inline-flex w-full flex-nowrap items-center justify-center gap-1 rounded-full border-[1.5px] border-slate-300 bg-white px-2 transition-[width,box-shadow,border-color] duration-500 ease-out dark:border-slate-700 dark:bg-slate-900"
 				:class="[
 					isMobileMenuClamped
 						? 'overflow-x-auto overflow-y-hidden justify-start'

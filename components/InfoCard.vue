@@ -2,10 +2,16 @@
 	<div
 		class="border-6 border-slate-200 hover:border-slate-400/60 dark:border-slate-800 rounded-xl relative h-40 transition"
 	>
-		<div class="background absolute -z-1 top-0 left-0 right-0 bottom-0">
+		<div
+			class="background absolute -z-1 top-0 left-0 right-0 bottom-0 overflow-hidden"
+			:style="backgroundStyle"
+		>
 			<img
 				:src="backgroundSrc"
-				class="w-full h-full block object-cover select-none dark:filter-[invert(1)]"
+				:class="[
+					'w-full h-full block object-cover select-none',
+					darkInvert ? 'dark:filter-[invert(1)]' : '',
+				]"
 			/>
 		</div>
 		<div
@@ -32,7 +38,28 @@
 </template>
 
 <script setup lang="ts">
-defineProps<{
-	backgroundSrc: string
-}>()
+import { computed } from 'vue'
+
+const props = withDefaults(
+	defineProps<{
+		backgroundSrc: string
+		backgroundBlur?: number | string
+		darkInvert?: boolean
+	}>(),
+	{
+		backgroundBlur: 3,
+		darkInvert: false,
+	},
+)
+
+const backgroundStyle = computed(() => {
+	const blurValue =
+		typeof props.backgroundBlur === 'number'
+			? `${props.backgroundBlur}px`
+			: props.backgroundBlur
+
+	return {
+		filter: `blur(${blurValue}) opacity(0.1)`,
+	}
+})
 </script>

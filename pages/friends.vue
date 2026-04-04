@@ -1,13 +1,6 @@
 <template>
 	<div class="space-y-6">
-		<div class="space-y-2">
-			<h1 class="text-3xl font-semibold text-slate-900 dark:text-slate-100">
-				友好链接
-			</h1>
-			<p class="text-sm text-slate-500 dark:text-slate-400">
-				这里放一些长期互访的站点。
-			</p>
-		</div>
+		<ContentHeader :bg-src="linksCover" :title="$t('menu.friends')" />
 
 		<div class="grid gap-4 md:grid-cols-2">
 			<NuxtLink
@@ -51,13 +44,11 @@
 </template>
 
 <script setup lang="ts">
+import ContentHeader from '~/components/ContentHeader.vue'
+import linksCover from '~/assets/resources/pages/links_cover.webp'
 import friendData from '~/assets/utils/config.json'
 
 type FriendLink = (typeof friendData.friend_link)[number]
 
 const friends = friendData.friend_link as FriendLink[]
-
-useHead({
-	title: '友好链接',
-})
 </script>
