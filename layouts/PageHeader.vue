@@ -1,7 +1,7 @@
 <template>
 	<header class="sticky top-0 z-100 pt-6 md:pt-10 md:pb-16">
 		<div
-			class="absolute top-0 left-0 right-0 -bottom-3/5 z-10 pointer-events-none bg-white/85 dark:bg-slate-900/75 backdrop-blur-[48px] mask-[linear-gradient(to_bottom,black_0%,rgba(0,0,0,0.98)_30%,rgba(0,0,0,0.92)_45%,rgba(0,0,0,0.8)_55%,rgba(0,0,0,0.58)_65%,rgba(0,0,0,0.35)_75%,rgba(0,0,0,0.15)_85%,transparent_100%)]"
+			class="absolute top-0 left-0 right-0 -bottom-3/5 z-10 pointer-events-none bg-[#FAFAFA] dark:bg-[#192024] backdrop-blur-[48px] mask-[linear-gradient(to_bottom,black_0%,rgba(0,0,0,0.98)_30%,rgba(0,0,0,0.92)_45%,rgba(0,0,0,0.8)_55%,rgba(0,0,0,0.58)_65%,rgba(0,0,0,0.35)_75%,rgba(0,0,0,0.15)_85%,transparent_100%)]"
 		/>
 		<div
 			class="mx-auto max-w-4xl px-6 md:px-0 flex items-center justify-between relative z-40"

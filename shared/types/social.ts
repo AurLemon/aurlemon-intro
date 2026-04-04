@@ -1,0 +1,155 @@
+export interface GithubAuthUser {
+	githubLogin: string
+	avatarUrl: string
+	profileUrl: string
+	isAdmin: boolean
+}
+
+export interface SiteLikeSummary {
+	totalCount: number
+	hasLiked: boolean
+}
+
+export interface SiteLikedEvent {
+	likeId: number
+	fingerprint: string
+	ip: string
+	uuid: string
+	createdAt: string
+}
+
+export interface CommentCreatedEvent {
+	commentId: string
+	parentId: string | null
+	githubLogin: string
+	avatarUrl: string
+	profileUrl: string
+	content: string
+	createdAt: string
+}
+
+export interface CommentLikedEvent {
+	commentLikeId: string
+	commentId: string
+	githubLogin: string
+	createdAt: string
+}
+
+export interface CommentUpdatedEvent {
+	commentId: string
+	githubLogin: string
+	content: string
+	updatedAt: string
+}
+
+export interface CommentDeletedEvent {
+	commentId: string
+	githubLogin: string
+	deletedAt: string
+}
+
+export interface FriendLinkApplicationSubmittedEvent {
+	applicationId: string
+	applicantGithubLogin: string
+	name: string
+	url: string
+	desc: string
+	imageBase64: string
+	expiresAt: string
+	createdAt: string
+}
+
+export interface FriendLinkApplicationApprovedEvent {
+	applicationId: string
+	approvedByGithubLogin: string
+	approvedAt: string
+}
+
+export interface FriendLinkCreatedEvent {
+	friendLinkId: string
+	name: string
+	url: string
+	desc: string
+	imageBase64: string
+	createdByGithubLogin: string
+	createdAt: string
+}
+
+export interface FriendLinkUpdatedEvent {
+	friendLinkId: string
+	name: string
+	url: string
+	desc: string
+	imageBase64: string
+	updatedByGithubLogin: string
+	updatedAt: string
+}
+
+export interface FriendLinkDeletedEvent {
+	friendLinkId: string
+	deletedByGithubLogin: string
+	deletedAt: string
+}
+
+export interface PendingFriendLinkExpiredEvent {
+	applicationId: string
+	expiredAt: string
+}
+
+export interface MessageCommentItem {
+	id: string
+	parentId: string | null
+	content: string
+	githubLogin: string
+	avatarUrl: string
+	profileUrl: string
+	createdAt: string
+	likeCount: number
+	hasLiked: boolean
+	canEdit: boolean
+	replies: MessageCommentItem[]
+}
+
+export interface MessageBoardResponse {
+	items: MessageCommentItem[]
+	currentUser: GithubAuthUser | null
+}
+
+export interface FriendLinkItem {
+	id: string
+	name: string
+	url: string
+	desc: string
+	icon: string
+	source: 'database'
+}
+
+export interface FriendLinkApplicationItem {
+	id: string
+	name: string
+	url: string
+	desc: string
+	imageBase64: string
+	applicantGithubLogin: string
+	status: 'pending' | 'approved' | 'rejected' | 'expired'
+	expiresAt: string
+	approvedAt: string | null
+	approvedByGithubLogin: string | null
+	createdAt: string
+}
+
+export interface FriendLinksResponse {
+	items: FriendLinkItem[]
+	currentUser: GithubAuthUser | null
+}
+
+export interface AdminFriendLinkListItem {
+	id: string
+	type: 'friend-link' | 'pending-application'
+	name: string
+	url: string
+	desc: string
+	imageBase64: string
+	createdAt: string
+	applicantGithubLogin: string | null
+}

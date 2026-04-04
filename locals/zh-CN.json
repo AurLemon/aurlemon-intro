@@ -85,5 +85,100 @@
 		"friendLink": "友好链接",
 		"githubProfile": "GitHub",
 		"miitRegistration": "闽ICP备2023007345号-3"
+	},
+	"social": {
+		"actions": {
+			"close": "关闭",
+			"loginWithGithub": "使用 GitHub 登录",
+			"logout": "退出登录",
+			"refreshStatus": "刷新状态",
+			"openMessageBoard": "留言板",
+			"sendComment": "发送留言",
+			"reply": "回复",
+			"cancelReply": "取消回复",
+			"edit": "编辑",
+			"cancelEdit": "取消编辑",
+			"saveEdit": "保存",
+			"delete": "删除",
+			"applyFriendLink": "申请友链",
+			"submitApplication": "提交申请",
+			"approve": "审批通过",
+			"createFriendLink": "直接新建友链"
+		},
+		"feedback": {
+			"authTitle": "需要登录",
+			"errorTitle": "操作未完成"
+		},
+		"auth": {
+			"loggedIn": "已登录",
+			"loggedInAs": "已登录：{login}"
+		},
+		"siteLike": {
+			"count": "{count}",
+			"likedCount": "{count}"
+		},
+		"message": {
+			"title": "留言板",
+			"placeholder": "不好的评论我会删除。",
+			"replyPlaceholder": "回复 {login}",
+			"loginRequiredTitle": "留言需要 GitHub 登录",
+			"loginRequiredDesc": "登录后才能发表评论、回复别人以及点赞评论。",
+			"emptyTitle": "还没有留言",
+			"emptyDesc": "不好的评论已经被我删除了。",
+			"likeCount": "{count}",
+			"likedCount": "{count}"
+		},
+		"friendLinks": {
+			"applyTitle": "申请友链",
+			"adminEntry": "管理员管理",
+			"loginRequiredTitle": "申请友链需要 GitHub 登录",
+			"loginRequiredDesc": "登录后才能提交友链申请。",
+			"adminTitle": "友链管理",
+			"adminRequiredTitle": "仅管理员可管理友链",
+			"adminRequiredDesc": "当前账号没有友链管理权限。",
+			"emptyLinks": "暂无友链",
+			"listTitle": "友链列表",
+			"pendingTitle": "待审批申请",
+			"pendingEmptyTitle": "暂无待审批申请",
+			"pendingEmptyDesc": "新的申请会在这里出现，7 天未处理会自动释放。",
+			"directCreateTitle": "直接新建友链",
+			"editTitle": "编辑友链",
+			"status": {
+				"pending": "待审批"
+			},
+			"fields": {
+				"name": "站点名称",
+				"url": "站点地址",
+				"desc": "站点简介",
+				"image": "站点图片",
+				"chooseImage": "选择图片文件",
+				"noFileSelected": "未选择文件",
+				"keepCurrentImage": "使用当前图片"
+			}
+		},
+		"errors": {
+			"generic": "请求没有成功，请稍后再试。",
+			"authRequired": "当前操作需要 GitHub 登录。",
+			"adminRequired": "当前账号没有管理员权限。",
+			"sessionExpired": "登录状态可能已经失效，请刷新状态或重新登录。",
+			"siteAlreadyLiked": "这个浏览器已经点过赞了。",
+			"commentAlreadyLiked": "这条留言你已经点过赞了。",
+			"commentEditForbidden": "只能编辑自己的留言。",
+			"commentDeleteForbidden": "只能删除自己的留言。",
+			"commentNotFound": "留言不存在或已经被删除。",
+			"commentParentNotFound": "回复目标不存在。",
+			"friendLinkAlreadyExists": "这个友链已经存在。",
+			"friendLinkNotFound": "友链不存在或已删除。",
+			"friendLinkApplicationPending": "这个站点已经有待审批申请。",
+			"friendLinkApplicationNotFound": "友链申请不存在或已处理。",
+			"invalidGithubOauthState": "GitHub 登录校验失败，请重新发起登录。",
+			"invalidCommentContent": "留言内容不能为空，且长度不能过长。",
+			"invalidFriendLinkName": "友链名称不合法。",
+			"invalidFriendLinkUrl": "友链地址必须是合法的 http 或 https 链接。",
+			"invalidFriendLinkDesc": "友链简介不合法。",
+			"invalidImageBase64": "图片上传失败，或图片格式不正确。",
+			"imageTooLarge": "图片过大，请上传 3MB 以内的文件。",
+			"invalidFingerprint": "浏览器指纹无效，请刷新后重试。"
+		}
 	}
 }

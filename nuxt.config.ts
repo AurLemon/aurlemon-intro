@@ -10,6 +10,22 @@ const prismaClientBrowserEntry = resolve(
 	'../../.prisma/client/index-browser.js',
 )
 
+const resolveSqliteFileUrl = (input: string): string => {
+	if (!input.startsWith('file:')) {
+		return input
+	}
+
+	const databasePath = input.slice('file:'.length)
+
+	if (databasePath.startsWith('/')) {
+		return input
+	}
+
+	return `file:${resolve(process.cwd(), databasePath)}`
+}
+
+const defaultDatabaseUrl = resolveSqliteFileUrl('file:./prisma/dev.db')
+
 export default defineNuxtConfig({
 	compatibilityDate: '2024-04-03',
 	ssr: true,
@@ -68,6 +84,9 @@ export default defineNuxtConfig({
 				'lucide:monitor',
 				'lucide:languages',
 				'lucide:check',
+				'lucide:check-circle-2',
+				'lucide:heart',
+				'lucide:messages-square',
 			],
 		},
 		serverBundle: {
@@ -163,7 +182,11 @@ export default defineNuxtConfig({
 	},
 	runtimeConfig: {
 		githubToken: process.env.GITHUB_TOKEN ?? 'github_pat',
-		bdUrl: process.env.DATABASE_URL,
+		bdUrl: resolveSqliteFileUrl(process.env.DATABASE_URL ?? defaultDatabaseUrl),
+		githubClientId: process.env.GITHUB_CLIENT_ID ?? '',
+		githubClientSecret: process.env.GITHUB_CLIENT_SECRET ?? '',
+		githubCallbackUrl: process.env.GITHUB_CALLBACK_URL ?? '',
+		adminGithubLogins: process.env.ADMIN_GITHUB_IDS ?? 'AurLemon',
 		public: {
 			baiduStatKey: process.env.BAIDU_STAT_KEY,
 			msClarityId: process.env.MS_CLARITY_ID,

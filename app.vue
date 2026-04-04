@@ -14,7 +14,14 @@ useHead(() => ({
 </script>
 
 <template>
-	<UApp>
+	<UApp
+		:toaster="{
+			position: 'top-right',
+			ui: {
+				viewport: 'z-[60000]',
+			},
+		}"
+	>
 		<div class="flex flex-col min-h-[105vh]">
 			<PageHeader />
 			<PageContainer />
