@@ -238,7 +238,7 @@ const educationStages: EducationStage[] = [
 	'highSchool',
 	'juniorSchool',
 ]
-const selectedEducationStage = ref<EducationStage>('bachelor')
+const selectedEducationStage = ref<EducationStage>('specialty')
 const hoveredOnlineLink = ref<number | null>(null)
 
 const educationLogos: Record<EducationStage, any> = {
