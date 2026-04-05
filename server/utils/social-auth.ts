@@ -18,36 +18,104 @@ interface GithubUserResponse {
 	html_url: string
 }
 
+const GITHUB_FETCH_TIMEOUT = 20_000
+const GITHUB_FETCH_RETRIES = 2
+const GITHUB_RETRY_DELAYS = [400, 1000]
+const RETRYABLE_GITHUB_NETWORK_CODES = new Set([
+	'UND_ERR_CONNECT_TIMEOUT',
+	'UND_ERR_CONNECT_ERROR',
+	'UND_ERR_HEADERS_TIMEOUT',
+	'UND_ERR_BODY_TIMEOUT',
+	'UND_ERR_ABORTED',
+	'UND_ERR_SOCKET',
+	'ECONNRESET',
+	'ECONNREFUSED',
+	'ETIMEDOUT',
+	'EAI_AGAIN',
+	'ENOTFOUND',
+	'ENETUNREACH',
+	'EHOSTUNREACH',
+])
+
+export const GITHUB_OAUTH_ERROR_CODES = {
+	NOT_CONFIGURED: 'GITHUB_OAUTH_NOT_CONFIGURED',
+	NETWORK_ERROR: 'GITHUB_OAUTH_NETWORK_ERROR',
+	PROVIDER_ERROR: 'GITHUB_OAUTH_PROVIDER_ERROR',
+	TOKEN_EXCHANGE_FAILED: 'GITHUB_OAUTH_TOKEN_EXCHANGE_FAILED',
+	USER_PAYLOAD_INVALID: 'GITHUB_OAUTH_USER_PAYLOAD_INVALID',
+	CALLBACK_FAILED: 'GITHUB_OAUTH_CALLBACK_FAILED',
+} as const
+
 const retryDelay = (ms: number) =>
 	new Promise((resolve) => setTimeout(resolve, ms))
 
-const isRetryableGithubNetworkError = (error: unknown): boolean => {
-	const cause = error as {
+const getErrorCode = (error: unknown): string | undefined => {
+	if (!error || typeof error !== 'object') {
+		return undefined
+	}
+
+	const maybeError = error as {
+		code?: string
 		cause?: {
 			code?: string
 		}
-		code?: string
+	}
+
+	return maybeError.cause?.code ?? maybeError.code
+}
+
+const isRetryableGithubNetworkError = (error: unknown): boolean => {
+	const code = getErrorCode(error)
+	return RETRYABLE_GITHUB_NETWORK_CODES.has(code ?? '')
+}
+
+const resolveFetchErrorStatus = (error: unknown): number | undefined => {
+	if (!error || typeof error !== 'object') {
+		return undefined
+	}
+
+	const maybeError = error as {
+		statusCode?: number
+		status?: number
+		response?: {
+			status?: number
+		}
 	}
 
 	return (
-		cause?.code === 'UND_ERR_CONNECT_TIMEOUT' ||
-		cause?.code === 'UND_ERR_SOCKET' ||
-		cause?.cause?.code === 'UND_ERR_CONNECT_TIMEOUT' ||
-		cause?.cause?.code === 'UND_ERR_SOCKET'
+		maybeError.response?.status ?? maybeError.statusCode ?? maybeError.status
 	)
+}
+
+const resolveFetchErrorData = (error: unknown): unknown => {
+	if (!error || typeof error !== 'object') {
+		return undefined
+	}
+
+	const maybeError = error as {
+		data?: unknown
+		response?: {
+			_data?: unknown
+		}
+	}
+
+	return maybeError.response?._data ?? maybeError.data
 }
 
 const fetchWithRetry = async <T>(
 	url: string,
-	options: Parameters<typeof $fetch>[1],
-	retries = 2,
-	baseDelayMs = 300,
+	options: Parameters<typeof $fetch<T>>[1],
+	retries = GITHUB_FETCH_RETRIES,
 ): Promise<T> => {
 	let lastError: unknown
 
 	for (let attempt = 0; attempt <= retries; attempt++) {
 		try {
-			return (await $fetch<T>(url, options)) as T
+			return (await $fetch<T>(url, {
+				...options,
+				timeout: options?.timeout ?? GITHUB_FETCH_TIMEOUT,
+				retry: 0,
+			})) as T
 		} catch (error) {
 			lastError = error
 
@@ -55,7 +123,7 @@ const fetchWithRetry = async <T>(
 				throw error
 			}
 
-			await retryDelay(baseDelayMs * 2 ** attempt)
+			await retryDelay(GITHUB_RETRY_DELAYS[attempt] ?? 1500)
 		}
 	}
 
@@ -92,7 +160,7 @@ export const createGithubOAuthUrl = (event: H3Event): string => {
 	if (!githubClientId || !githubCallbackUrl) {
 		throw createError({
 			statusCode: 500,
-			statusMessage: 'GitHub OAuth is not configured.',
+			statusMessage: GITHUB_OAUTH_ERROR_CODES.NOT_CONFIGURED,
 		})
 	}
 
@@ -127,30 +195,62 @@ export const exchangeGithubCode = async (code: string): Promise<string> => {
 	if (!githubClientId || !githubClientSecret || !githubCallbackUrl) {
 		throw createError({
 			statusCode: 500,
-			statusMessage: 'GitHub OAuth is not configured.',
+			statusMessage: GITHUB_OAUTH_ERROR_CODES.NOT_CONFIGURED,
 		})
 	}
 
-	const tokenResponse = await fetchWithRetry<GithubAccessTokenResponse>(
-		'https://github.com/login/oauth/access_token',
-		{
-			method: 'POST',
-			headers: {
-				accept: 'application/json',
+	let tokenResponse: GithubAccessTokenResponse
+
+	try {
+		tokenResponse = await fetchWithRetry<GithubAccessTokenResponse>(
+			'https://github.com/login/oauth/access_token',
+			{
+				method: 'POST',
+				headers: {
+					accept: 'application/json',
+					'content-type': 'application/x-www-form-urlencoded',
+				},
+				body: new URLSearchParams({
+					client_id: githubClientId,
+					client_secret: githubClientSecret,
+					code,
+					redirect_uri: githubCallbackUrl,
+				}).toString(),
 			},
-			body: {
-				client_id: githubClientId,
-				client_secret: githubClientSecret,
-				code,
-				redirect_uri: githubCallbackUrl,
-			},
-		},
-	)
+		)
+	} catch (error) {
+		const errorCode = getErrorCode(error)
+		const upstreamStatus = resolveFetchErrorStatus(error)
+		const upstreamData = resolveFetchErrorData(error)
+
+		if (isRetryableGithubNetworkError(error)) {
+			console.error('[auth/github] token exchange network error', {
+				errorCode,
+				upstreamStatus,
+			})
+
+			throw createError({
+				statusCode: 503,
+				statusMessage: GITHUB_OAUTH_ERROR_CODES.NETWORK_ERROR,
+			})
+		}
+
+		console.error('[auth/github] token exchange provider error', {
+			errorCode,
+			upstreamStatus,
+			upstreamData,
+		})
+
+		throw createError({
+			statusCode: 502,
+			statusMessage: GITHUB_OAUTH_ERROR_CODES.PROVIDER_ERROR,
+		})
+	}
 
 	if (!tokenResponse.access_token) {
 		throw createError({
 			statusCode: 401,
-			statusMessage: 'GitHub OAuth token exchange failed.',
+			statusMessage: GITHUB_OAUTH_ERROR_CODES.TOKEN_EXCHANGE_FAILED,
 		})
 	}
 
@@ -160,21 +260,52 @@ export const exchangeGithubCode = async (code: string): Promise<string> => {
 export const fetchGithubUser = async (
 	accessToken: string,
 ): Promise<GithubUserResponse> => {
-	const githubUser = await fetchWithRetry<GithubUserResponse>(
-		'https://api.github.com/user',
-		{
-			headers: {
-				authorization: `Bearer ${accessToken}`,
-				accept: 'application/vnd.github+json',
-				'user-agent': 'AurLemon-Intro',
+	let githubUser: GithubUserResponse
+
+	try {
+		githubUser = await fetchWithRetry<GithubUserResponse>(
+			'https://api.github.com/user',
+			{
+				headers: {
+					authorization: `Bearer ${accessToken}`,
+					accept: 'application/vnd.github+json',
+					'user-agent': 'AurLemon-Intro',
+				},
 			},
-		},
-	)
+		)
+	} catch (error) {
+		const errorCode = getErrorCode(error)
+		const upstreamStatus = resolveFetchErrorStatus(error)
+		const upstreamData = resolveFetchErrorData(error)
+
+		if (isRetryableGithubNetworkError(error)) {
+			console.error('[auth/github] user info network error', {
+				errorCode,
+				upstreamStatus,
+			})
+
+			throw createError({
+				statusCode: 503,
+				statusMessage: GITHUB_OAUTH_ERROR_CODES.NETWORK_ERROR,
+			})
+		}
+
+		console.error('[auth/github] user info provider error', {
+			errorCode,
+			upstreamStatus,
+			upstreamData,
+		})
+
+		throw createError({
+			statusCode: 502,
+			statusMessage: GITHUB_OAUTH_ERROR_CODES.PROVIDER_ERROR,
+		})
+	}
 
 	if (!githubUser.login || !githubUser.avatar_url || !githubUser.html_url) {
 		throw createError({
 			statusCode: 401,
-			statusMessage: 'GitHub OAuth user payload is invalid.',
+			statusMessage: GITHUB_OAUTH_ERROR_CODES.USER_PAYLOAD_INVALID,
 		})
 	}
 
