@@ -5,13 +5,7 @@
 
 ## 发展路径
 
-我的常用语言是 TypeScript。尽管也写过 Python、Java 甚至 Rust，但 90% 以上都是 Agent 协助编写的，只是为了完成特定的业务，就不当成熟悉掌握的语言列出了。我第一个系统学习的语言是 C（2021 年）。简单列一个掌握程度表：
-
-- T0（最熟悉的）：HTML、CSS、TypeScript（含 JavaScript）。
-- T1（比较熟悉）：Java、Python。
-- T2（看着眼熟）：Android 开发（上过一段时间的课，做过几个大作业）、Rust、C、C++。
-
-我 GitHub 上占比最高的应该是 Vue 和 TypeScript。
+我的常用语言是 TypeScript。尽管也写过 Python、Java 甚至 Rust，但 90% 以上都是 Agent 协助编写的，只是为了完成特定的业务，就不当成熟悉掌握的语言列出了。
 
 我最早接触的开发领域是前端（这点在我的 [GitHub 主页](https://github.com/AurLemon)有提到），大概是 2022 年左右。至于后端，2024 年才第一次用 Nest 写了个 TS 的项目。也是从这时开始，才开始接触后端和 DevOps。
 
@@ -39,11 +33,17 @@
 
 ## 其它
 
-其实除了 TypeScript、Web 以外的语言和领域，我也多多少少接触过一些，但了解的不多，稍微列几个在下方。
+其实除了 TypeScript、Web 以外的语言和领域，我也多多少少接触过一些，毕竟我第一个系统学习的语言是 C（2021 年），虽然了解的不多。稍微列几个用过的语言在下方。
 
 - 用 Java 写过一些 Minecraft Mods 和 Plugins（Agent 协助）。
 - 用 Rust 写过一个比赛的 Web 项目（Agent 协助），后续是国三。
 - 用 Python 写过一些 Excel、自动签到或是 ML 训练的脚本（部分 Agent 协助）。此外，因为专升本的专业课包含 Python，所以复习了一两个月 Python 的基本语法。
 - 最近在做 ESP32S3 的毕设。
 
-可以关注我的 GitHub Contributions，**一般**一周里会有四五天有 Commit 提交。有时候忙活了一整天，打开 Profile 也没看自己满满的绿点点也会很有成就感，哈哈哈。
+简单列一个掌握程度表的话，是这样的：
+
+- T0（最熟悉的）：HTML、CSS、TypeScript（含 JavaScript）。
+- T1（比较熟悉）：Java、Python。
+- T2（看着眼熟）：Android 开发（上过一段时间的课，做过几个大作业）、Rust、C、C++。
+
+我 GitHub 上占比最高的应该是 Vue 和 TypeScript。可以关注我的 GitHub Contributions，**一般**一周里会有四五天有 Commit 提交。有时候忙活了一整天，打开 Profile 也没看自己满满的绿点点也会很有成就感，哈哈哈。

@@ -5,13 +5,7 @@ As the home page says, I am a full-stack developer. I am not very confident in t
 
 ## Development Path
 
-My usual language is TypeScript. I have also written Python, Java, and even Rust, but more than 90% of that was with Agent assistance and only to finish specific tasks, so I do not treat them as languages I have truly mastered. The first language I studied systematically was C (2021). Here is a simple proficiency table:
-
-- T0 (most familiar): HTML, CSS, TypeScript (including JavaScript).
-- T1 (fairly familiar): Java, Python.
-- T2 (looks familiar): Android development (I took related courses for a while and completed several major assignments), Rust, C, C++.
-
-On GitHub, my largest share is probably Vue and TypeScript.
+My usual language is TypeScript. I have also written Python, Java, and even Rust, but more than 90% of that was with Agent assistance and only to finish specific tasks, so I do not treat them as languages I have truly mastered.
 
 The first area I got into was front end, which I also mentioned on my [GitHub page](https://github.com/AurLemon), around 2022. As for back end, it was not until 2024 that I wrote my first TS project in Nest. Only from that point on did I start touching back end and DevOps.
 
@@ -39,11 +33,17 @@ In summary, I may have roughly walked through the technical path from the birth 
 
 ## Other
 
-I have also touched a few languages and fields outside TypeScript and Web, more or less, but I do not know them well enough to say much, so I will just list a few below.
+I have also touched a few languages and fields outside TypeScript and Web. After all, the first language I studied systematically was C (2021), though I do not know these areas deeply. I will just list a few languages I have used below.
 
 - I have written some Minecraft Mods and Plugins in Java (with Agent assistance).
 - I wrote a Web project for a competition in Rust (with Agent assistance), and later it took third place nationally.
 - I have written some scripts in Python for Excel, automatic sign-in, and ML training (partly with Agent assistance). In addition, because Python was part of the transfer-undergraduate professional courses, I reviewed the basic syntax for one or two months.
 - Lately I have been working on my ESP32S3 graduation project.
 
-You can follow my GitHub Contributions. **Usually** I have commits on four or five days in a week. Sometimes I work hard all day, then open my profile and seeing the screen full of green dots still gives me a strong sense of accomplishment, haha.
+If I were to give a simple proficiency table, it would look like this:
+
+- T0 (most familiar): HTML, CSS, TypeScript (including JavaScript).
+- T1 (fairly familiar): Java, Python.
+- T2 (looks familiar): Android development (I took related courses for a while and completed several major assignments), Rust, C, C++.
+
+On GitHub, my largest share is probably Vue and TypeScript. You can follow my GitHub Contributions. **Usually** I have commits on four or five days in a week. Sometimes after working hard all day, opening my profile and seeing the screen full of green dots still gives me a strong sense of accomplishment, haha.
