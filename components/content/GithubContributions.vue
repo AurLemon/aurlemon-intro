@@ -180,6 +180,15 @@ const waitForNextFrame = (): Promise<void> => {
 	})
 }
 
+const jumpCalendarToLatest = (): void => {
+	const el = calendarScrollRef.value
+	if (!el) {
+		return
+	}
+
+	el.scrollLeft = Math.max(0, el.scrollWidth - el.clientWidth)
+}
+
 const scrollCalendarToLatest = async (): Promise<void> => {
 	if (!import.meta.client) {
 		return
@@ -189,23 +198,18 @@ const scrollCalendarToLatest = async (): Promise<void> => {
 	await waitForNextFrame()
 	await waitForNextFrame()
 
-	const el = calendarScrollRef.value
-	if (!el) {
-		return
-	}
-
-	const lastWeek = el.lastElementChild as HTMLElement | null
-	lastWeek?.scrollIntoView({
-		block: 'nearest',
-		inline: 'end',
-		behavior: 'smooth',
-	})
-
-	el.scrollTo({
-		left: el.scrollWidth - el.clientWidth,
-		behavior: 'smooth',
-	})
+	jumpCalendarToLatest()
+	await waitForNextFrame()
+	jumpCalendarToLatest()
 }
+
+onMounted(() => {
+	void scrollCalendarToLatest()
+})
+
+onActivated(() => {
+	void scrollCalendarToLatest()
+})
 
 watch(
 	isPlaceholder,
