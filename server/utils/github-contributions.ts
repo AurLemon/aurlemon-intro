@@ -377,7 +377,6 @@ export const warmupGithubContributionCalendar = async (options?: {
 }
 
 declare global {
-	// eslint-disable-next-line no-var
 	var __githubContributionRefreshTimer__: NodeJS.Timeout | undefined
 }
 

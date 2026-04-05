@@ -492,7 +492,6 @@ export const warmupBangumiSnapshot = async (): Promise<void> => {
 }
 
 declare global {
-	// eslint-disable-next-line no-var
 	var __bangumiRefreshTimer__: NodeJS.Timeout | undefined
 }
 
