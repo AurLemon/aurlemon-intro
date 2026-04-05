@@ -123,6 +123,9 @@ const themeIconMap = {
 	dark: 'i-lucide-moon',
 } as const
 
+const getThemeModeIcon = (mode: ThemeMode): string =>
+	mode === 'system' ? 'i-lucide-monitor' : themeIconMap[mode]
+
 const localeItems: { label: string; value: LocaleCode; badge?: string }[] = [
 	{ label: '简体中文', value: 'zh-CN' },
 	{ label: '日本語', value: 'ja-JP', badge: 'AI' },
@@ -132,7 +135,7 @@ const localeItems: { label: string; value: LocaleCode; badge?: string }[] = [
 const themeModes: { value: ThemeMode; label: string; icon: string }[] = [
 	{ value: 'light', label: '浅色', icon: themeIconMap.light },
 	{ value: 'dark', label: '深色', icon: themeIconMap.dark },
-	{ value: 'system', label: '跟随系统', icon: 'i-lucide-monitor' },
+	{ value: 'system', label: '跟随系统', icon: getThemeModeIcon('system') },
 ]
 
 const selectedThemeMode = computed<ThemeMode>(() => {
@@ -142,14 +145,8 @@ const selectedThemeMode = computed<ThemeMode>(() => {
 		: 'system'
 })
 
-const themeButtonIconMap = {
-	light: themeIconMap.light,
-	dark: themeIconMap.dark,
-	system: 'i-lucide-monitor',
-} as const
-
-const themeButtonIcon = computed(
-	() => themeButtonIconMap[selectedThemeMode.value],
+const themeButtonIcon = computed(() =>
+	getThemeModeIcon(selectedThemeMode.value),
 )
 
 const selectTheme = (mode: ThemeMode): void => {
