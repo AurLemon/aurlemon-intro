@@ -13,14 +13,14 @@
 		/>
 		<div
 			:class="[
-				'flex items-center gap-3',
+				'flex items-center gap-2 sm:gap-3',
 				$slots.leading ? 'justify-between' : 'justify-end',
 			]"
 		>
 			<div v-if="$slots.leading" class="min-w-0">
 				<slot name="leading" />
 			</div>
-			<div class="flex items-center justify-end gap-3">
+			<div class="flex items-center justify-end gap-2 sm:gap-3">
 				<UButton
 					v-if="replyingTo"
 					color="neutral"
