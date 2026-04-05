@@ -13,6 +13,9 @@ export interface SiteLikeSummary {
 export interface SiteLikeListItem {
 	likeId: number
 	maskedFingerprint: string
+	ip: string
+	ipVersion: 4 | 6 | null
+	ipRegionLabel: string | null
 	likedAt: string
 }
 

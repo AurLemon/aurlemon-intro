@@ -32,9 +32,30 @@
 							<div
 								class="min-w-0 flex-1 flex flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
 							>
-								<p class="truncate text-sm font-mono">
-									{{ item.maskedFingerprint }}
-								</p>
+								<div
+									class="min-w-0 flex items-center gap-2 flex-wrap sm:flex-nowrap"
+								>
+									<p class="truncate text-sm font-mono">
+										{{ item.maskedFingerprint }}
+									</p>
+									<UBadge
+										v-if="item.ipRegionLabel"
+										color="neutral"
+										variant="soft"
+										size="sm"
+										class="max-w-full truncate"
+									>
+										{{ item.ipRegionLabel }}
+									</UBadge>
+									<UBadge
+										v-if="item.ipVersion"
+										color="primary"
+										variant="soft"
+										size="sm"
+									>
+										{{ item.ipVersion === 4 ? 'IPv4' : 'IPv6' }}
+									</UBadge>
+								</div>
 								<p
 									class="text-xs text-slate-500 dark:text-slate-400 sm:shrink-0"
 								>

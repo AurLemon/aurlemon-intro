@@ -1,6 +1,10 @@
 import crypto from 'node:crypto'
 import prisma from '~/lib/prisma'
 import {
+	detectIpVersion,
+	lookupIpRegionLabel,
+} from '~/server/utils/ip-location'
+import {
 	SOCIAL_EVENT_NAMES,
 	socialEventBus,
 } from '~/server/utils/social-events'
@@ -40,12 +44,19 @@ export const listSiteLikes = async (limit = 100) => {
 		take: safeLimit,
 	})
 
-	return {
-		items: likes.map((like) => ({
+	const items = await Promise.all(
+		likes.map(async (like) => ({
 			likeId: like.id,
 			maskedFingerprint: maskFingerprint(like.fingerprint),
+			ip: like.ip,
+			ipVersion: detectIpVersion(like.ip),
+			ipRegionLabel: await lookupIpRegionLabel(like.ip),
 			likedAt: like.timestamp.toISOString(),
 		})),
+	)
+
+	return {
+		items,
 	}
 }
 

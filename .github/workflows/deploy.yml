@@ -66,6 +66,8 @@ jobs:
               cp -R /app/.output/public \
                     /app/.output/server \
                     /app/deploy-artifact/
+              mkdir -p /app/deploy-artifact/server/data
+              cp -R /app/data/ip2region /app/deploy-artifact/server/data/
               cp /app/.output/nitro.json /app/deploy-artifact/nitro.json
 
               if [ -f /app/.env ]; then
