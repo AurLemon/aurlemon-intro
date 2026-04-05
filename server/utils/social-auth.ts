@@ -18,6 +18,50 @@ interface GithubUserResponse {
 	html_url: string
 }
 
+const retryDelay = (ms: number) =>
+	new Promise((resolve) => setTimeout(resolve, ms))
+
+const isRetryableGithubNetworkError = (error: unknown): boolean => {
+	const cause = error as {
+		cause?: {
+			code?: string
+		}
+		code?: string
+	}
+
+	return (
+		cause?.code === 'UND_ERR_CONNECT_TIMEOUT' ||
+		cause?.code === 'UND_ERR_SOCKET' ||
+		cause?.cause?.code === 'UND_ERR_CONNECT_TIMEOUT' ||
+		cause?.cause?.code === 'UND_ERR_SOCKET'
+	)
+}
+
+const fetchWithRetry = async <T>(
+	url: string,
+	options: Parameters<typeof $fetch>[1],
+	retries = 2,
+	baseDelayMs = 300,
+): Promise<T> => {
+	let lastError: unknown
+
+	for (let attempt = 0; attempt <= retries; attempt++) {
+		try {
+			return (await $fetch<T>(url, options)) as T
+		} catch (error) {
+			lastError = error
+
+			if (attempt >= retries || !isRetryableGithubNetworkError(error)) {
+				throw error
+			}
+
+			await retryDelay(baseDelayMs * 2 ** attempt)
+		}
+	}
+
+	throw lastError
+}
+
 const buildCookieOptions = (maxAgeSeconds: number) => ({
 	httpOnly: true,
 	sameSite: 'lax' as const,
@@ -87,7 +131,7 @@ export const exchangeGithubCode = async (code: string): Promise<string> => {
 		})
 	}
 
-	const tokenResponse = await $fetch<GithubAccessTokenResponse>(
+	const tokenResponse = await fetchWithRetry<GithubAccessTokenResponse>(
 		'https://github.com/login/oauth/access_token',
 		{
 			method: 'POST',
@@ -116,7 +160,7 @@ export const exchangeGithubCode = async (code: string): Promise<string> => {
 export const fetchGithubUser = async (
 	accessToken: string,
 ): Promise<GithubUserResponse> => {
-	const githubUser = await $fetch<GithubUserResponse>(
+	const githubUser = await fetchWithRetry<GithubUserResponse>(
 		'https://api.github.com/user',
 		{
 			headers: {
