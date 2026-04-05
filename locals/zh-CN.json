@@ -84,8 +84,8 @@
 		"preference": {
 			"bangumiAnimeTitle": "Bangumi 番剧",
 			"bangumiBooksTitle": "Bangumi 书籍",
-			"bangumiAnimeSummary": "想看的有 {wish} 个，看过 {done} 个作品",
-			"bangumiBooksSummary": "想读的有 {wish} 个，读过 {done} 个作品",
+			"bangumiAnimeSummary": "在看的有 {doing} 个，想看的有 {wish} 个，看过 {done} 个作品",
+			"bangumiBooksSummary": "在读的有 {doing} 个，想读的有 {wish} 个，读过 {done} 个作品",
 			"bangumiAnimeStatusWish": "想看",
 			"bangumiAnimeStatusDoing": "在看",
 			"bangumiAnimeStatusDone": "看过",

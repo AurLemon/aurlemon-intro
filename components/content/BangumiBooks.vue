@@ -58,6 +58,7 @@
 						>
 							{{
 								t('main.preference.bangumiBooksSummary', {
+									doing: booksDoingCount,
 									wish: section.wishCount,
 									done: section.doneCount,
 								})
@@ -160,6 +161,12 @@ const isPlaceholder = computed(() => section.value.isPlaceholder === true)
 const isLoading = computed(
 	() => pending.value || !data.value || isPlaceholder.value,
 )
+const booksDoingCount = computed(() => {
+	return section.value.items.reduce(
+		(total, item) => total + (item.collectionType === 3 ? 1 : 0),
+		0,
+	)
+})
 
 const resolveBooksBadgeLabel = (collectionType: number): string => {
 	if (collectionType === 1) {
