@@ -78,6 +78,41 @@ const normalizeSegment = (value: string | null | undefined): string | null => {
 	return normalized
 }
 
+const isCountryToken = (value: string) => {
+	const normalized = value.trim().toLowerCase()
+	return normalized === '中国' || normalized === 'china'
+}
+
+const dedupeAdjacent = (values: string[]) => {
+	const result: string[] = []
+	for (const value of values) {
+		if (result[result.length - 1] === value) {
+			continue
+		}
+		result.push(value)
+	}
+	return result
+}
+
+const normalizeIspToken = (value: string): string => {
+	const trimmed = value.trim()
+	if (!trimmed) {
+		return trimmed
+	}
+
+	const base = trimmed.endsWith('用户') ? trimmed.slice(0, -2) : trimmed
+	if (base === '电信') {
+		return '中国电信'
+	}
+	if (base === '联通') {
+		return '中国联通'
+	}
+	if (base === '移动') {
+		return '中国移动'
+	}
+	return base
+}
+
 const toRegionString = (input: unknown): string | null => {
 	if (typeof input === 'string') {
 		return input
@@ -91,16 +126,28 @@ const toRegionString = (input: unknown): string | null => {
 }
 
 const toDisplayLabel = (regionText: string): string | null => {
-	const rawTokens = regionText
+	const normalizedTokens = regionText
 		.split('|')
 		.map((token) => normalizeSegment(token))
 		.filter((token): token is string => Boolean(token))
+		.filter((token) => !isCountryToken(token))
 
-	if (rawTokens.length === 0) {
+	if (normalizedTokens.length === 0) {
 		return null
 	}
 
-	return rawTokens.join(' ')
+	const tokens = dedupeAdjacent(normalizedTokens)
+	if (tokens.length === 0) {
+		return null
+	}
+
+	if (tokens.length >= 2) {
+		const lastIndex = tokens.length - 1
+		tokens[lastIndex] = normalizeIspToken(tokens[lastIndex] ?? '')
+	}
+
+	const compactTokens = dedupeAdjacent(tokens.filter(Boolean))
+	return compactTokens.length > 0 ? compactTokens.join(' ') : null
 }
 
 const resolveDbPath = (version: 'v4' | 'v6'): string | null => {
