@@ -14,12 +14,12 @@ The question I get most often from people who know me is, "Why is your junior co
 
 1. Middle school at **Fuzhou Pingdong Middle School** (2018 - 2021).
 2. After the entrance exam, I was admitted to the 3+2 **five-year vocational track** at Fujian Chuanzheng Communications College. My high-school and junior-college years were spent at **Fujian Engineering & Economics School** (2021 - 2024) and **Fujian Chuanzheng Communications College** (2024 - 2026).
-3. The result of my transfer-to-undergraduate admission is still unknown for now (2026 - 2028).
+3. The admission result for my transfer-to-undergraduate is still pending. For the undergraduate stage (2026 - 2028), I am leaving a placeholder here for now.
 
 ## Main Experience
 
 I have almost no real experience or awards worth showing off, so I will force out a few lines here.
 
-1. On the code side, old-school manual programming is basically nonexistent. Aside from the occasional hand-tuned CSS, almost 98% of the work is done by Agents. I also keep wondering what my way forward is. Having control over a project's core architecture matters, but how to get that control is the problem. My grasp of design patterns, algorithms, and data structures is also basically not enough.
+1. On the code side, old-school manual programming is basically nonexistent. Aside from the occasional hand-tuned CSS, almost 98% of the work is done by Agents. I also keep wondering what my way forward is. Having control over a project's core architecture matters, but how to get that control is the problem. My grasp of design patterns, algorithms, and data structures is still not enough.
 2. I have a small Minecraft server (2018 -). There is a group of very familiar old players in it, and I basically chat in the player group every day.
 3. Third prize in the 2025 World Vocational College Skills Competition qualifier. It was a result from my junior-college years, though it was mostly due to the school's and instructors' efforts.
