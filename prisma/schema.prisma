@@ -5,20 +5,20 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 datasource db {
-    provider = "sqlite"
-    url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
-    provider = "prisma-client-js"
-    binaryTargets = ["native", "debian-openssl-1.1.x"]
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x"]
 }
 
 model Like {
   id          Int      @id @default(autoincrement()) // 主键
-  ip          String   // IP 地址
+  ip          String // IP 地址
   fingerprint String   @unique // 前端传入的 fingerprint
-  uuid        String   // UUID
+  uuid        String // UUID
   timestamp   DateTime @default(now()) // 当前时间戳
 }
 
@@ -79,18 +79,18 @@ model FriendLink {
 }
 
 model FriendLinkApplication {
-  id                   String                      @id @default(cuid())
-  name                 String
-  url                  String
-  desc                 String
-  imageBase64          String
-  applicantGithubLogin String
-  status               FriendLinkApplicationStatus @default(pending)
-  expiresAt            DateTime
-  approvedAt           DateTime?
+  id                    String                      @id @default(cuid())
+  name                  String
+  url                   String
+  desc                  String
+  imageBase64           String
+  applicantGithubLogin  String
+  status                FriendLinkApplicationStatus @default(pending)
+  expiresAt             DateTime
+  approvedAt            DateTime?
   approvedByGithubLogin String?
-  createdAt            DateTime                    @default(now())
-  updatedAt            DateTime                    @updatedAt
+  createdAt             DateTime                    @default(now())
+  updatedAt             DateTime                    @updatedAt
 
   @@index([status, expiresAt])
   @@index([applicantGithubLogin, createdAt])
