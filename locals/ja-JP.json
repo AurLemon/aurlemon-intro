@@ -86,6 +86,12 @@
 		"githubProfile": "GitHub",
 		"miitRegistration": "闽ICP備2023007345号-3"
 	},
+	"error": {
+		"pageTitle": "エラーページ",
+		"accessError": "アクセスエラー",
+		"backHome": "ホームへ戻る",
+		"backAbout": "Aboutへ戻る"
+	},
 	"social": {
 		"actions": {
 			"close": "閉じる",
@@ -120,7 +126,7 @@
 		"message": {
 			"title": "メッセージボード",
 			"count": "{count}",
-			"placeholder": "ひとこと残してください。",
+			"placeholder": "不快なコメントは削除させていただきます。",
 			"replyPlaceholder": "{login} に返信",
 			"loginRequiredTitle": "GitHub ログインが必要です",
 			"loginRequiredDesc": "投稿、返信、いいねには GitHub ログインが必要です。",

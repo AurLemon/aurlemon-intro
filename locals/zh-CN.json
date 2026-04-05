@@ -86,6 +86,12 @@
 		"githubProfile": "GitHub",
 		"miitRegistration": "闽ICP备2023007345号-3"
 	},
+	"error": {
+		"pageTitle": "错误页面",
+		"accessError": "访问错误",
+		"backHome": "回首页",
+		"backAbout": "回关于页"
+	},
 	"social": {
 		"actions": {
 			"close": "关闭",
