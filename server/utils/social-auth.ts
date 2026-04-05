@@ -68,6 +68,15 @@ export const GITHUB_OAUTH_ERROR_CODES = {
 const retryDelay = (ms: number) =>
 	new Promise((resolve) => setTimeout(resolve, ms))
 
+const buildGithubRequestMeta = (
+	attempt: number,
+	startedAt: number,
+): GithubRequestMeta => ({
+	attemptCount: attempt + 1,
+	retryCount: attempt,
+	durationMs: Date.now() - startedAt,
+})
+
 interface GithubFetchErrorShape {
 	code?: string
 	name?: string
@@ -95,6 +104,27 @@ interface GithubLookupDiagnostic {
 interface GithubNetworkDiagnostic {
 	dnsDefaultResultOrder?: string
 	lookups: GithubLookupDiagnostic[]
+}
+
+interface GithubRequestMeta {
+	attemptCount: number
+	retryCount: number
+	durationMs: number
+}
+
+interface FetchWithRetryResult<T> {
+	data: T
+	requestMeta: GithubRequestMeta
+}
+
+interface GithubTokenExchangeResult {
+	accessToken: string
+	requestMeta: GithubRequestMeta
+}
+
+interface GithubUserFetchResult {
+	user: GithubUserResponse
+	requestMeta: GithubRequestMeta
 }
 
 const getErrorCode = (error: unknown): string | undefined => {
@@ -237,16 +267,22 @@ const fetchWithRetry = async <T>(
 	url: string,
 	options: Parameters<typeof $fetch<T>>[1],
 	retries = GITHUB_FETCH_RETRIES,
-): Promise<T> => {
+): Promise<FetchWithRetryResult<T>> => {
 	let lastError: unknown
+	const startedAt = Date.now()
 
 	for (let attempt = 0; attempt <= retries; attempt++) {
 		try {
-			return (await $fetch<T>(url, {
+			const data = (await $fetch<T>(url, {
 				...options,
 				timeout: options?.timeout ?? GITHUB_FETCH_TIMEOUT,
 				retry: 0,
 			})) as T
+
+			return {
+				data,
+				requestMeta: buildGithubRequestMeta(attempt, startedAt),
+			}
 		} catch (error) {
 			lastError = error
 
@@ -318,7 +354,9 @@ export const createGithubOAuthUrl = (event: H3Event): string => {
 	return authorizeUrl.toString()
 }
 
-export const exchangeGithubCode = async (code: string): Promise<string> => {
+export const exchangeGithubCode = async (
+	code: string,
+): Promise<GithubTokenExchangeResult> => {
 	const githubClientId = process.env.GITHUB_CLIENT_ID ?? ''
 	const githubClientSecret = process.env.GITHUB_CLIENT_SECRET ?? ''
 	const githubCallbackUrl = process.env.GITHUB_CALLBACK_URL ?? ''
@@ -330,10 +368,10 @@ export const exchangeGithubCode = async (code: string): Promise<string> => {
 		})
 	}
 
-	let tokenResponse: GithubAccessTokenResponse
+	let tokenExchangeResult: FetchWithRetryResult<GithubAccessTokenResponse>
 
 	try {
-		tokenResponse = await fetchWithRetry<GithubAccessTokenResponse>(
+		tokenExchangeResult = await fetchWithRetry<GithubAccessTokenResponse>(
 			'https://github.com/login/oauth/access_token',
 			{
 				method: 'POST',
@@ -387,6 +425,8 @@ export const exchangeGithubCode = async (code: string): Promise<string> => {
 		})
 	}
 
+	const tokenResponse = tokenExchangeResult.data
+
 	if (!tokenResponse.access_token) {
 		throw createError({
 			statusCode: 401,
@@ -394,16 +434,19 @@ export const exchangeGithubCode = async (code: string): Promise<string> => {
 		})
 	}
 
-	return tokenResponse.access_token
+	return {
+		accessToken: tokenResponse.access_token,
+		requestMeta: tokenExchangeResult.requestMeta,
+	}
 }
 
 export const fetchGithubUser = async (
 	accessToken: string,
-): Promise<GithubUserResponse> => {
-	let githubUser: GithubUserResponse
+): Promise<GithubUserFetchResult> => {
+	let githubUserResult: FetchWithRetryResult<GithubUserResponse>
 
 	try {
-		githubUser = await fetchWithRetry<GithubUserResponse>(
+		githubUserResult = await fetchWithRetry<GithubUserResponse>(
 			'https://api.github.com/user',
 			{
 				headers: {
@@ -451,6 +494,8 @@ export const fetchGithubUser = async (
 		})
 	}
 
+	const githubUser = githubUserResult.data
+
 	if (!githubUser.login || !githubUser.avatar_url || !githubUser.html_url) {
 		throw createError({
 			statusCode: 401,
@@ -458,7 +503,10 @@ export const fetchGithubUser = async (
 		})
 	}
 
-	return githubUser
+	return {
+		user: githubUser,
+		requestMeta: githubUserResult.requestMeta,
+	}
 }
 
 export const createGithubSession = async (

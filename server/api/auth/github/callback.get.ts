@@ -86,11 +86,24 @@ export default defineEventHandler(async (event) => {
 		)
 	}
 
-	try {
-		const accessToken = await exchangeGithubCode(code)
-		const githubUser = await fetchGithubUser(accessToken)
+	const callbackStartedAt = Date.now()
 
-		await createGithubSession(event, githubUser)
+	try {
+		const tokenExchange = await exchangeGithubCode(code)
+		const githubUserFetch = await fetchGithubUser(tokenExchange.accessToken)
+		const sessionUser = await createGithubSession(event, githubUserFetch.user)
+		const tokenRetryCount = tokenExchange.requestMeta.retryCount
+		const userRetryCount = githubUserFetch.requestMeta.retryCount
+		const totalRetryCount = tokenRetryCount + userRetryCount
+
+		console.info('[auth/github/callback] GitHub OAuth callback succeeded', {
+			githubLogin: sessionUser.githubLogin,
+			redirectPath,
+			retried: totalRetryCount > 0,
+			tokenRetryCount,
+			userRetryCount,
+			durationMs: Date.now() - callbackStartedAt,
+		})
 
 		return sendRedirect(event, redirectPath)
 	} catch (error) {
