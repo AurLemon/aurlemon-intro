@@ -9,7 +9,7 @@ My usual language is TypeScript. I have also written Python, Java, and even Rust
 
 The first area I got into was front end, which I also mentioned on my [GitHub page](https://github.com/AurLemon), around 2022. As for back end, it was not until 2024 that I wrote my first TS project in Nest. Only from that point on did I start touching back end and DevOps.
 
-Most of my projects are written in TypeScript. Ironically, the most common back end stack, Spring Boot, is something I have not touched much. The most recent case was a teacher's RuoYi project that happened to need an extra hand, so I handled part of it.
+More than 90% of my projects are written in TypeScript. Ironically, the most common stack in back-end development, Spring Boot, is something I have not touched much. The most recent case was a teacher's RuoYi project that happened to need an extra hand, so I handled part of it.
 
 I got into site building and operations relatively early, around 2020. That also meant that learning Web stuff later did not feel too stressful. If I had to name the language I know best, I can only say CSS. When I was practicing front end, LLMs could not write front end yet... CSS had to be adjusted entirely by hand. Even now, in my opinion, Agents still cannot generate a truly "beautiful" UI from one sentence.
 
