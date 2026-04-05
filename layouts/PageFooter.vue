@@ -64,6 +64,7 @@
 		<MessageBoardModal
 			v-model:open="messageOpen"
 			@open-site-like-list="openSiteLikeListFromMessage"
+			@refresh-message-count="loadMessageCount"
 		/>
 		<SiteLikeListModal v-model:open="siteLikeListOpen" />
 	</footer>

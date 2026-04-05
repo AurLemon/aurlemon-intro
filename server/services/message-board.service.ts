@@ -50,7 +50,9 @@ export const listMessageBoard = async (
 			createdAt: comment.createdAt.toISOString(),
 			likeCount: comment.likes.length,
 			hasLiked: likedSet.has(comment.id),
-			canEdit: comment.githubLogin === currentUser?.githubLogin,
+			canEdit:
+				comment.githubLogin === currentUser?.githubLogin ||
+				currentUser?.isAdmin === true,
 			canDelete:
 				comment.githubLogin === currentUser?.githubLogin ||
 				currentUser?.isAdmin === true,
@@ -250,7 +252,7 @@ export const updateMessageComment = async (
 		})
 	}
 
-	if (comment.githubLogin !== currentUser.githubLogin) {
+	if (comment.githubLogin !== currentUser.githubLogin && !currentUser.isAdmin) {
 		throw createError({
 			statusCode: 403,
 			statusMessage: 'COMMENT_EDIT_FORBIDDEN',
