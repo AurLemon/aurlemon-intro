@@ -31,7 +31,7 @@
 		</div>
 
 		<div
-			v-if="pending"
+			v-if="pending || isPlaceholder"
 			class="grid grid-flow-col auto-cols-[12px] gap-1 overflow-x-auto py-2"
 		>
 			<div
@@ -64,7 +64,7 @@
 			<div
 				v-for="(week, weekIndex) in calendar.weeks"
 				:key="`week-${weekIndex}-${week.firstDay}`"
-				class="grid grid-rows-7 gap-1"
+				class="grid gap-1"
 			>
 				<UTooltip
 					v-for="day in week.contributionDays"
@@ -106,7 +106,6 @@ const props = withDefaults(
 	}>(),
 	{
 		username: undefined,
-		days: 365,
 	},
 )
 
@@ -114,7 +113,8 @@ const colorMode = useColorMode()
 const { locale, t } = useI18n()
 
 const key = computed(
-	() => `github-contributions-${props.username ?? 'default'}-${props.days}`,
+	() =>
+		`github-contributions-${props.username ?? 'default'}-${props.days ?? 'recent-year'}`,
 )
 
 const {
@@ -135,6 +135,39 @@ const {
 		watch: [() => props.username, () => props.days],
 	},
 )
+
+const isPlaceholder = computed(() => calendar.value?.isPlaceholder === true)
+
+let placeholderRefreshTimer: ReturnType<typeof setInterval> | undefined
+
+watch(
+	isPlaceholder,
+	(value) => {
+		if (!import.meta.client) {
+			return
+		}
+		if (value) {
+			if (!placeholderRefreshTimer) {
+				placeholderRefreshTimer = setInterval(() => {
+					void refresh()
+				}, 5000)
+			}
+			return
+		}
+		if (placeholderRefreshTimer) {
+			clearInterval(placeholderRefreshTimer)
+			placeholderRefreshTimer = undefined
+		}
+	},
+	{ immediate: true },
+)
+
+onBeforeUnmount(() => {
+	if (placeholderRefreshTimer) {
+		clearInterval(placeholderRefreshTimer)
+		placeholderRefreshTimer = undefined
+	}
+})
 
 const formatTooltipDate = (isoDate: string): string => {
 	return new Intl.DateTimeFormat(locale.value, {

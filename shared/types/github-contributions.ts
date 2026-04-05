@@ -22,4 +22,5 @@ export interface GithubContributionCalendar {
 	weeks: GithubContributionWeek[]
 	from: string
 	to: string
+	isPlaceholder?: boolean
 }

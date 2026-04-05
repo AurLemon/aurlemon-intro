@@ -21,14 +21,18 @@ export default defineEventHandler(async (event) => {
 		})
 	}
 
-	setHeader(
-		event,
-		'Cache-Control',
-		'public, s-maxage=300, stale-while-revalidate=600',
-	)
-
-	return fetchGithubContributionCalendar({
+	const result = await fetchGithubContributionCalendar({
 		username: typeof username === 'string' ? username : undefined,
 		days: parseOptionalPositiveInt(days),
 	})
+
+	setHeader(
+		event,
+		'Cache-Control',
+		result.isPlaceholder
+			? 'no-store'
+			: 'public, s-maxage=300, stale-while-revalidate=600',
+	)
+
+	return result
 })

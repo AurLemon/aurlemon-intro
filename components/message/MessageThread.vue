@@ -101,10 +101,7 @@
 						{{ t('social.actions.delete') }}
 					</UButton>
 				</div>
-				<div
-					v-if="item.replies.length"
-					class="space-y-3 border-l border-slate-200 pl-4 dark:border-slate-700"
-				>
+				<div v-if="item.replies.length" class="space-y-3">
 					<MessageThread
 						v-for="reply in item.replies"
 						:key="reply.id"
