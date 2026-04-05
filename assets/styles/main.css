@@ -1,9 +1,9 @@
 :root {
 	--font-family:
-		'Rubik', 'Helvetica', 'Roboto', 'BlinkMacSystemFont', 'MiSans VF', 'MiSans',
+		'Rubik', 'Helvetica', 'Roboto', 'BlinkMacSystemFont', 'MiSans',
 		'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
 	--font-serif: 'Literata', 'Noto Serif SC', 'SimSun', '宋体', serif;
-	--font-mono: 'JetBrains Mono', 'MiSans VF', 'MiSans', monospace;
+	--font-mono: 'JetBrains Mono', 'MiSans', monospace;
 	line-height: 1.75;
 	font-family: var(--font-family);
 	-webkit-font-smoothing: antialiased;
@@ -23,13 +23,6 @@ html:lang(zh-CN),
 html[lang='en-US'],
 html:lang(en-US) {
 	--font-serif: 'Literata', 'Noto Serif SC', 'Noto Serif JP', serif;
-}
-
-html[lang='zh-CN'],
-html:lang(zh-CN) {
-	--font-family:
-		'MiSans VF', 'MiSans', 'Rubik', 'Helvetica', 'Roboto', 'BlinkMacSystemFont',
-		'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
 }
 
 html {
