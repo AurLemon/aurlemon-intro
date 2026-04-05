@@ -1,3 +1,6 @@
+::GithubContributions
+::
+
 As the home page says, I am a full-stack developer. I am not very confident in that label, because - I know my ability and experience are nowhere near enough to support the word "full-stack." I am just a half-bucket.
 
 ## Development Path

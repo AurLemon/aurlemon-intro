@@ -77,7 +77,9 @@
 			}
 		},
 		"project": {
-			"line1": "Hey Codex、このページの内容を書いてくれませんか。"
+			"line1": "Hey Codex、このページの内容を書いてくれませんか。",
+			"githubContributionsTitle": "GitHub Contributions",
+			"commitsInLastYear": "直近1年のコミット {count} 回"
 		}
 	},
 	"footer": {
