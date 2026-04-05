@@ -5,6 +5,7 @@ type ContributionLevel =
 
 const DEFAULT_DAYS = 365
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000
+const MAX_CACHE_ENTRIES = 32
 const GITHUB_COLORS = ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39']
 const GITHUB_CONTRIBUTIONS_URL = 'https://github.com/users'
 
@@ -73,6 +74,37 @@ if (!globalThis.__githubContributionCache__) {
 }
 if (!globalThis.__githubContributionInFlight__) {
 	globalThis.__githubContributionInFlight__ = githubContributionInFlight
+}
+
+const cleanupGithubContributionCache = (options?: {
+	now?: number
+	keepKey?: string
+}): void => {
+	const now = options?.now ?? Date.now()
+	const keepKey = options?.keepKey
+
+	for (const [key, entry] of githubContributionCache.entries()) {
+		if (entry.expiresAt <= now && key !== keepKey) {
+			githubContributionCache.delete(key)
+		}
+	}
+
+	if (githubContributionCache.size <= MAX_CACHE_ENTRIES) {
+		return
+	}
+
+	const candidates = [...githubContributionCache.entries()]
+		.filter(([key]) => key !== keepKey)
+		.sort((a, b) => a[1].expiresAt - b[1].expiresAt)
+
+	const removeCount = githubContributionCache.size - MAX_CACHE_ENTRIES
+	for (let i = 0; i < removeCount; i++) {
+		const candidate = candidates[i]
+		if (!candidate) {
+			break
+		}
+		githubContributionCache.delete(candidate[0])
+	}
 }
 
 const buildCacheKey = (
@@ -308,6 +340,8 @@ const refreshGithubContributionCache = async (options: {
 	to: Date
 	silent?: boolean
 }): Promise<void> => {
+	cleanupGithubContributionCache({ keepKey: options.cacheKey })
+
 	const exists = githubContributionInFlight.get(options.cacheKey)
 	if (exists) {
 		return exists.promise
@@ -324,6 +358,7 @@ const refreshGithubContributionCache = async (options: {
 				expiresAt: Date.now() + CACHE_TTL_MS,
 				data: calendar,
 			})
+			cleanupGithubContributionCache({ keepKey: options.cacheKey })
 		} catch (error) {
 			if (!options.silent) {
 				console.error('[github-contributions] refresh failed', error)
@@ -350,6 +385,7 @@ export const fetchGithubContributionCalendar = async (options?: {
 		useRecentYear ? 'recent-year' : 'days',
 	)
 	const now = Date.now()
+	cleanupGithubContributionCache({ now, keepKey: cacheKey })
 	const cached = githubContributionCache.get(cacheKey)
 	const { from, to } = useRecentYear
 		? resolveRangeFromRecentYear()

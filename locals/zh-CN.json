@@ -14,7 +14,7 @@
 	},
 	"main": {
 		"index": {
-			"line1": "朋友们一般/叫我柠檬🍋。",
+			"line1": "朋友们/一般叫我柠檬🍋。",
 			"line2": "全栈开发者{doubtful}，福建福州人，{age} 岁，INF/TJ。",
 			"doubtful": "存疑",
 			"card": {
