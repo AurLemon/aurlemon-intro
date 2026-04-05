@@ -59,9 +59,6 @@
 									class="font-semibold text-xs p-0 gap-0 cursor-pointer"
 								>
 									{{ currentEducationStage.label }}
-									<span v-if="currentEducationStage.hint" class="text-xs ml-1">
-										{{ currentEducationStage.hint }}
-									</span>
 								</UButton>
 
 								<template #content>
