@@ -1,5 +1,5 @@
 <template>
-	<div class="space-y-6">
+	<div class="space-y-6 flex flex-col flex-1">
 		<ContentHeader :bg-src="linksCover" :title="$t('menu.friends')"
 			>👂👃👂</ContentHeader
 		>
@@ -39,7 +39,7 @@
 			</NuxtLink>
 		</div>
 
-		<div class="flex flex-wrap items-center justify-center gap-1 px-6">
+		<div class="flex flex-wrap items-center justify-center gap-1 px-6 mt-auto">
 			<SocialAuthStatusBar compact />
 			<UButton
 				color="primary"

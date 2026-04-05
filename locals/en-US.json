@@ -86,6 +86,12 @@
 		"githubProfile": "GitHub",
 		"miitRegistration": "ICP License"
 	},
+	"error": {
+		"pageTitle": "Error Page",
+		"accessError": "Access Error",
+		"backHome": "Back Home",
+		"backAbout": "Back to About"
+	},
 	"social": {
 		"actions": {
 			"close": "Close",
@@ -120,7 +126,7 @@
 		"message": {
 			"title": "Message Board",
 			"count": "{count}",
-			"placeholder": "Leave a message.",
+			"placeholder": "I will be deleting any negative comments.",
 			"replyPlaceholder": "Reply to {login}",
 			"loginRequiredTitle": "GitHub login is required",
 			"loginRequiredDesc": "You need to sign in before posting, replying, or liking messages.",
