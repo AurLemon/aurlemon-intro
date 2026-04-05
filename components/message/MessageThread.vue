@@ -170,8 +170,8 @@ const visibleReplies = computed(() =>
 const nextDepth = computed(() => Math.min(props.depth + 1, 1))
 const containerClass = computed(() =>
 	props.depth === 0
-		? 'space-y-4 rounded-2xl border border-slate-200/70 p-4 dark:border-slate-800'
-		: 'space-y-4 py-1',
+		? 'space-y-4 rounded-2xl border border-slate-200/70 p-4 dark:border-slate-800 mb-1'
+		: 'space-y-4 py-1 mb-1',
 )
 
 const formatTime = (value: string) => dayjs(value).format('YYYY-MM-DD HH:mm')
