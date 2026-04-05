@@ -133,6 +133,11 @@
 			"prevPage": "Previous",
 			"nextPage": "Next"
 		},
+		"tooltip": {
+			"messageBoard": "Message Board",
+			"siteLike": "Like",
+			"siteLiked": "Liked"
+		},
 		"feedback": {
 			"authTitle": "Login required",
 			"errorTitle": "Action not completed"

@@ -133,6 +133,11 @@
 			"prevPage": "上一页",
 			"nextPage": "下一页"
 		},
+		"tooltip": {
+			"messageBoard": "留言板",
+			"siteLike": "点赞",
+			"siteLiked": "已点赞"
+		},
 		"feedback": {
 			"authTitle": "需要登录",
 			"errorTitle": "操作未完成"
