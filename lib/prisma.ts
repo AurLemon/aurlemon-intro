@@ -34,7 +34,8 @@ const ensureSqliteDatabaseFile = (url: string | undefined) => {
 
 const prismaClientSingleton = () => {
 	const config = useRuntimeConfig()
-	const normalizedUrl = normalizeSqliteUrl(config.bdUrl)
+	const runtimeDatabaseUrl = process.env.DATABASE_URL ?? config.bdUrl
+	const normalizedUrl = normalizeSqliteUrl(runtimeDatabaseUrl)
 	ensureSqliteDatabaseFile(normalizedUrl)
 
 	// 神医：
