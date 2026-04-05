@@ -80,6 +80,15 @@
 			"line1": "Hey Codex、このページの内容を書いてくれませんか。",
 			"githubContributionsTitle": "GitHub Contributions",
 			"commitsInLastYear": "直近1年のコミット {count} 回"
+		},
+		"preference": {
+			"bangumiAnimeTitle": "Bangumi アニメ",
+			"bangumiBooksTitle": "Bangumi 書籍",
+			"bangumiWishCount": "見たい/読みたい {count}",
+			"bangumiDoneCount": "見た/読了 {count}",
+			"bangumiLoadFailed": "Bangumi データの読み込みに失敗しました。",
+			"bangumiRetry": "再試行",
+			"bangumiEmpty": "表示できる項目がありません。"
 		}
 	},
 	"footer": {

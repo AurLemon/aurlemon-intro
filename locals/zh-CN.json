@@ -80,6 +80,15 @@
 			"line1": "Hey Codex，帮我把这个页面的内容写一下。",
 			"githubContributionsTitle": "GitHub Contributions",
 			"commitsInLastYear": "近一年提交了 {count} 次"
+		},
+		"preference": {
+			"bangumiAnimeTitle": "Bangumi 番剧",
+			"bangumiBooksTitle": "Bangumi 书籍",
+			"bangumiWishCount": "想看/想读 {count}",
+			"bangumiDoneCount": "看过/读过 {count}",
+			"bangumiLoadFailed": "Bangumi 数据加载失败。",
+			"bangumiRetry": "重试",
+			"bangumiEmpty": "暂无可展示条目。"
 		}
 	},
 	"footer": {
