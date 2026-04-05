@@ -306,6 +306,7 @@ const refreshGithubContributionCache = async (options: {
 	username: string
 	from: Date
 	to: Date
+	silent?: boolean
 }): Promise<void> => {
 	const exists = githubContributionInFlight.get(options.cacheKey)
 	if (exists) {
@@ -324,7 +325,9 @@ const refreshGithubContributionCache = async (options: {
 				data: calendar,
 			})
 		} catch (error) {
-			console.error('[github-contributions] refresh failed', error)
+			if (!options.silent) {
+				console.error('[github-contributions] refresh failed', error)
+			}
 		} finally {
 			githubContributionInFlight.delete(options.cacheKey)
 		}
@@ -395,6 +398,7 @@ export const warmupGithubContributionCalendar = async (options?: {
 		username,
 		from,
 		to,
+		silent: true,
 	})
 }
 

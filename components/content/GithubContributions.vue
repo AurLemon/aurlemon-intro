@@ -2,93 +2,116 @@
 	<section
 		class="my-4 rounded-2xl border border-slate-200/80 p-4 dark:border-slate-700/80"
 	>
-		<div class="mb-1 flex flex-wrap items-start justify-between gap-3">
-			<div>
-				<p class="text-xs text-slate-500 dark:text-slate-400">
-					{{ t('main.project.githubContributionsTitle') }}
-				</p>
-				<p
-					class="font-(family-name:--font-family) text-xl font-semibold text-slate-900 dark:text-slate-100"
-				>
-					{{
-						t('main.project.commitsInLastYear', {
-							count: calendar?.totalContributions ?? 0,
-						})
-					}}
-				</p>
-			</div>
-			<UButton
-				v-if="calendar?.username"
-				class="font-mono"
-				:to="`https://github.com/${calendar.username}`"
-				target="_blank"
-				variant="link"
-				color="neutral"
-				size="xs"
-			>
-				@{{ calendar.username }}
-			</UButton>
-		</div>
-
-		<div
-			v-if="pending || isPlaceholder"
-			class="grid grid-flow-col auto-cols-[12px] gap-1 overflow-x-auto py-2"
-		>
-			<div
-				v-for="week in 20"
-				:key="`skeleton-week-${week}`"
-				class="grid grid-rows-7 gap-1"
-			>
-				<span
-					v-for="day in 7"
-					:key="`skeleton-day-${week}-${day}`"
-					class="size-3 rounded-sm bg-slate-200 dark:bg-slate-700"
-				/>
-			</div>
-		</div>
-
-		<div
-			v-else-if="error"
-			class="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-600 dark:border-rose-700/60 dark:bg-rose-900/20 dark:text-rose-300"
-		>
-			<p class="mb-2">Failed to load contribution calendar.</p>
-			<UButton size="xs" variant="soft" color="neutral" @click="refresh()">
-				Retry
-			</UButton>
-		</div>
-
-		<div
-			v-else-if="calendar"
-			class="grid grid-flow-col auto-cols-[12px] gap-1 overflow-x-auto py-2"
-		>
-			<div
-				v-for="(week, weekIndex) in calendar.weeks"
-				:key="`week-${weekIndex}-${week.firstDay}`"
-				class="grid gap-1"
-			>
-				<UTooltip
-					v-for="day in week.contributionDays"
-					:key="day.date"
-					:delay-duration="80"
-				>
-					<span
-						class="block size-3 rounded-[3px] border border-black/5 dark:border-white/10"
-						:style="{ backgroundColor: resolveDayColor(day) }"
+		<div v-if="isLoading" key="skeleton" class="space-y-1 animate-pulse">
+			<div class="flex w-full items-start justify-between gap-3">
+				<div class="flex flex-col gap-2">
+					<USkeleton
+						class="h-3 w-24 rounded-md bg-slate-200 dark:bg-slate-700"
 					/>
+					<USkeleton
+						class="h-6 w-32 rounded-md bg-slate-200 dark:bg-slate-700"
+					/>
+					<USkeleton
+						class="h-5 w-44 rounded-md bg-slate-200 dark:bg-slate-700"
+					/>
+				</div>
+				<USkeleton class="h-6 w-20 rounded-md bg-slate-200 dark:bg-slate-700" />
+			</div>
 
-					<template #content>
-						<div class="flex items-center gap-2 text-xs">
-							<UIcon name="i-lucide-calendar-days" class="size-3.5" />
-							<span class="tabular-nums">{{
-								formatTooltipDate(day.date)
-							}}</span>
-							<UIcon name="i-lucide-git-commit-horizontal" class="size-3.5" />
-							<span class="tabular-nums">{{ day.contributionCount }}</span>
-						</div>
-					</template>
-				</UTooltip>
+			<div
+				class="grid grid-flow-col auto-cols-[12px] gap-1 overflow-x-auto py-2"
+			>
+				<div
+					v-for="week in skeletonWeekCount"
+					:key="`skeleton-week-${week}`"
+					class="grid grid-rows-7 gap-1"
+				>
+					<USkeleton
+						v-for="day in 7"
+						:key="`skeleton-day-${week}-${day}`"
+						class="size-3 rounded-[3px] bg-slate-200 dark:bg-slate-700"
+					/>
+				</div>
 			</div>
 		</div>
+
+		<Transition v-else name="contrib-fade" mode="out-in">
+			<div
+				v-if="error"
+				key="error"
+				class="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-600 dark:border-rose-700/60 dark:bg-rose-900/20 dark:text-rose-300"
+			>
+				<p class="mb-2">Failed to load contribution calendar.</p>
+				<UButton size="xs" variant="soft" color="neutral" @click="refresh()">
+					Retry
+				</UButton>
+			</div>
+
+			<div v-else-if="calendar" key="content" class="space-y-1">
+				<div class="flex w-full items-start justify-between gap-3">
+					<div>
+						<p class="text-xs text-slate-500 dark:text-slate-400 mb-0.5">
+							{{ t('main.project.githubContributionsTitle') }}
+						</p>
+						<p
+							class="font-(family-name:--font-family) text-xl font-semibold text-slate-900 dark:text-slate-100"
+						>
+							{{
+								t('main.project.commitsInLastYear', {
+									count: calendar.totalContributions,
+								})
+							}}
+						</p>
+					</div>
+					<UButton
+						v-if="calendar.username"
+						class="font-mono"
+						:to="`https://github.com/${calendar.username}`"
+						target="_blank"
+						variant="link"
+						color="neutral"
+						size="xs"
+					>
+						@{{ calendar.username }}
+					</UButton>
+				</div>
+
+				<div
+					class="grid grid-flow-col auto-cols-[12px] gap-1 overflow-x-auto py-2"
+				>
+					<div
+						v-for="(week, weekIndex) in calendar.weeks"
+						:key="`week-${weekIndex}-${week.firstDay}`"
+						class="grid gap-1"
+					>
+						<UTooltip
+							v-for="day in week.contributionDays"
+							:key="day.date"
+							:delay-duration="80"
+						>
+							<span
+								class="block size-3 rounded-[3px] border border-black/5 dark:border-white/10"
+								:style="{ backgroundColor: resolveDayColor(day) }"
+							/>
+
+							<template #content>
+								<div class="flex items-center gap-2 text-xs">
+									<UIcon name="i-lucide-calendar-days" class="size-3.5" />
+									<span class="tabular-nums">{{
+										formatTooltipDate(day.date)
+									}}</span>
+									<UIcon
+										name="i-lucide-git-commit-horizontal"
+										class="size-3.5"
+									/>
+									<span class="tabular-nums">{{ day.contributionCount }}</span>
+								</div>
+							</template>
+						</UTooltip>
+					</div>
+				</div>
+			</div>
+		</Transition>
 	</section>
 </template>
 
@@ -111,6 +134,7 @@ const props = withDefaults(
 
 const colorMode = useColorMode()
 const { locale, t } = useI18n()
+const skeletonWeekCount = 53
 
 const key = computed(
 	() =>
@@ -122,7 +146,7 @@ const {
 	pending,
 	error,
 	refresh,
-} = await useAsyncData(
+} = useLazyAsyncData(
 	key,
 	() =>
 		$fetch<GithubContributionCalendar>('/api/github/contributions', {
@@ -137,6 +161,9 @@ const {
 )
 
 const isPlaceholder = computed(() => calendar.value?.isPlaceholder === true)
+const isLoading = computed(
+	() => pending.value || !calendar.value || isPlaceholder.value,
+)
 
 let placeholderRefreshTimer: ReturnType<typeof setInterval> | undefined
 
@@ -223,3 +250,15 @@ const resolveDayColor = (day: GithubContributionDay): string => {
 	return colors[levelToIndex(day.contributionLevel)] ?? colors[0] ?? '#9be9a8'
 }
 </script>
+
+<style scoped>
+.contrib-fade-enter-active,
+.contrib-fade-leave-active {
+	transition: opacity 180ms ease;
+}
+
+.contrib-fade-enter-from,
+.contrib-fade-leave-to {
+	opacity: 0;
+}
+</style>
