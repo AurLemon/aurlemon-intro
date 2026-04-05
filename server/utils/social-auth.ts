@@ -27,9 +27,7 @@ const buildCookieOptions = (maxAgeSeconds: number) => ({
 })
 
 export const getAdminGithubLogins = (): string[] => {
-	const config = useRuntimeConfig()
-
-	return config.adminGithubLogins
+	return (process.env.ADMIN_GITHUB_IDS ?? 'AurLemon')
 		.split(',')
 		.map((item: string) => item.trim())
 		.filter(Boolean)
@@ -44,9 +42,10 @@ export const buildGithubProfileUrl = (githubLogin: string): string => {
 }
 
 export const createGithubOAuthUrl = (event: H3Event): string => {
-	const config = useRuntimeConfig()
+	const githubClientId = process.env.GITHUB_CLIENT_ID ?? ''
+	const githubCallbackUrl = process.env.GITHUB_CALLBACK_URL ?? ''
 
-	if (!config.githubClientId || !config.githubCallbackUrl) {
+	if (!githubClientId || !githubCallbackUrl) {
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'GitHub OAuth is not configured.',
@@ -57,8 +56,8 @@ export const createGithubOAuthUrl = (event: H3Event): string => {
 	const state = crypto.randomUUID()
 	const authorizeUrl = new URL('https://github.com/login/oauth/authorize')
 
-	authorizeUrl.searchParams.set('client_id', config.githubClientId)
-	authorizeUrl.searchParams.set('redirect_uri', config.githubCallbackUrl)
+	authorizeUrl.searchParams.set('client_id', githubClientId)
+	authorizeUrl.searchParams.set('redirect_uri', githubCallbackUrl)
 	authorizeUrl.searchParams.set('scope', 'read:user')
 	authorizeUrl.searchParams.set('state', state)
 
@@ -77,13 +76,11 @@ export const createGithubOAuthUrl = (event: H3Event): string => {
 }
 
 export const exchangeGithubCode = async (code: string): Promise<string> => {
-	const config = useRuntimeConfig()
+	const githubClientId = process.env.GITHUB_CLIENT_ID ?? ''
+	const githubClientSecret = process.env.GITHUB_CLIENT_SECRET ?? ''
+	const githubCallbackUrl = process.env.GITHUB_CALLBACK_URL ?? ''
 
-	if (
-		!config.githubClientId ||
-		!config.githubClientSecret ||
-		!config.githubCallbackUrl
-	) {
+	if (!githubClientId || !githubClientSecret || !githubCallbackUrl) {
 		throw createError({
 			statusCode: 500,
 			statusMessage: 'GitHub OAuth is not configured.',
@@ -98,10 +95,10 @@ export const exchangeGithubCode = async (code: string): Promise<string> => {
 				accept: 'application/json',
 			},
 			body: {
-				client_id: config.githubClientId,
-				client_secret: config.githubClientSecret,
+				client_id: githubClientId,
+				client_secret: githubClientSecret,
 				code,
-				redirect_uri: config.githubCallbackUrl,
+				redirect_uri: githubCallbackUrl,
 			},
 		},
 	)
