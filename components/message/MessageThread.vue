@@ -76,7 +76,7 @@
 						@click="handleLike(item.id)"
 					>
 						<UIcon name="i-lucide-heart" class="h-4 w-4" />
-						<span>
+						<span class="leading-[normal]">
 							{{ t('social.message.likeCount', { count: item.likeCount }) }}
 						</span>
 					</UButton>
