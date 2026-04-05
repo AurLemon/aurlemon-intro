@@ -133,6 +133,11 @@
 			"prevPage": "前へ",
 			"nextPage": "次へ"
 		},
+		"tooltip": {
+			"messageBoard": "メッセージボード",
+			"siteLike": "いいね",
+			"siteLiked": "いいね済み"
+		},
 		"feedback": {
 			"authTitle": "ログインが必要です",
 			"errorTitle": "操作が完了しませんでした"

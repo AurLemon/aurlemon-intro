@@ -7,17 +7,19 @@
 				: 'opacity-0 translate-y-1 scale-95 pointer-events-none'
 		"
 	>
-		<UButton
-			:loading="loading"
-			:disabled="summary?.hasLiked"
-			color="error"
-			variant="link"
-			class="rounded-full"
-			@click="handleLike"
-		>
-			<UIcon name="i-lucide-heart" class="h-5 w-5" />
-			<span class="block text-base">{{ buttonLabel }}</span>
-		</UButton>
+		<UTooltip :text="tooltipLabel" :delay-duration="50">
+			<UButton
+				:loading="loading"
+				:disabled="summary?.hasLiked"
+				color="error"
+				variant="link"
+				class="rounded-full"
+				@click="handleLike"
+			>
+				<UIcon name="i-lucide-heart" class="h-5 w-5" />
+				<span class="block text-base">{{ buttonLabel }}</span>
+			</UButton>
+		</UTooltip>
 	</div>
 </template>
 
@@ -37,6 +39,12 @@ const buttonLabel = computed(() => {
 
 	return t('social.siteLike.count', { count: totalCount })
 })
+
+const tooltipLabel = computed(() =>
+	summary.value?.hasLiked
+		? t('social.tooltip.siteLiked')
+		: t('social.tooltip.siteLike'),
+)
 
 const loadSummary = async () => {
 	try {

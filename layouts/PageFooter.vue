@@ -2,24 +2,26 @@
 	<footer class="mx-auto max-w-4xl w-full px-6 md:px-0 my-6 mb-16 mt-auto">
 		<div class="mb-12 flex justify-center items-center gap-3">
 			<SiteLikeButton />
-			<div
-				class="transition-all duration-300 ease-out"
-				:class="
-					messageReady
-						? 'opacity-100 translate-y-0 scale-100'
-						: 'opacity-0 translate-y-1 scale-95 pointer-events-none'
-				"
-			>
-				<UButton
-					color="neutral"
-					variant="link"
-					class="rounded-full"
-					@click="messageOpen = true"
+			<UTooltip :text="messageTooltipLabel" :delay-duration="50">
+				<div
+					class="transition-all duration-300 ease-out"
+					:class="
+						messageReady
+							? 'opacity-100 translate-y-0 scale-100'
+							: 'opacity-0 translate-y-1 scale-95 pointer-events-none'
+					"
 				>
-					<UIcon name="i-lucide-messages-square" class="h-5 w-5" />
-					<span class="block text-base">{{ messageButtonLabel }}</span>
-				</UButton>
-			</div>
+					<UButton
+						color="neutral"
+						variant="link"
+						class="rounded-full"
+						@click="messageOpen = true"
+					>
+						<UIcon name="i-lucide-messages-square" class="h-5 w-5" />
+						<span class="block text-base">{{ messageButtonLabel }}</span>
+					</UButton>
+				</div>
+			</UTooltip>
 		</div>
 		<div class="w-full flex flex-col justify-between md:flex-row">
 			<SiteMark />
@@ -96,6 +98,8 @@ const countMessageItems = (items: MessageCommentItem[]): number =>
 const messageButtonLabel = computed(() =>
 	t('social.message.count', { count: messageCount.value }),
 )
+
+const messageTooltipLabel = computed(() => t('social.tooltip.messageBoard'))
 
 const loadMessageCount = async () => {
 	try {
