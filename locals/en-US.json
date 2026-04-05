@@ -112,7 +112,9 @@
 			"submitApplication": "Submit",
 			"approve": "Approve",
 			"createFriendLink": "Create Link",
-			"openSiteLikeList": "Site Like List"
+			"openSiteLikeList": "Site Like List",
+			"prevPage": "Previous",
+			"nextPage": "Next"
 		},
 		"feedback": {
 			"authTitle": "Login required",
@@ -133,12 +135,14 @@
 		"message": {
 			"title": "Message Board",
 			"count": "{count}",
+			"pageInfo": "{page}/{total}",
 			"placeholder": "I will be deleting any negative comments.",
 			"replyPlaceholder": "Reply to {login}",
 			"loginRequiredTitle": "GitHub login is required",
 			"loginRequiredDesc": "You need to sign in before posting, replying, or liking messages.",
 			"emptyTitle": "No messages yet",
 			"emptyDesc": "You can be the first one to leave a message.",
+			"replyTo": "Reply to {login}",
 			"likeCount": "{count}",
 			"likedCount": "{count}"
 		},

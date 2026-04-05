@@ -108,6 +108,7 @@ export interface PendingFriendLinkExpiredEvent {
 
 export interface MessageCommentItem {
 	id: string
+	floor: number
 	parentId: string | null
 	content: string
 	githubLogin: string
@@ -117,12 +118,25 @@ export interface MessageCommentItem {
 	likeCount: number
 	hasLiked: boolean
 	canEdit: boolean
+	replyToGithubLogin: string | null
+	isNestedReply: boolean
 	replies: MessageCommentItem[]
 }
 
 export interface MessageBoardResponse {
 	items: MessageCommentItem[]
+	pagination: MessageBoardPagination
 	currentUser: GithubAuthUser | null
+}
+
+export interface MessageBoardPagination {
+	page: number
+	pageSize: number
+	totalPages: number
+	totalRootCount: number
+	totalCommentCount: number
+	hasPrev: boolean
+	hasNext: boolean
 }
 
 export interface FriendLinkItem {

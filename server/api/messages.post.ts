@@ -2,11 +2,13 @@ import {
 	createMessageComment,
 	listMessageBoard,
 } from '~/server/services/message-board.service'
+import { parseMessageBoardPagination } from '~/server/utils/message-board-pagination'
 import { requireGithubSession } from '~/server/utils/social-auth'
 import { ensureNonEmptyString } from '~/server/utils/social-validators'
 
 export default defineEventHandler(async (event) => {
 	const currentUser = await requireGithubSession(event)
+	const paginationQuery = parseMessageBoardPagination(getQuery(event))
 	const body = await readBody(event)
 	const content = ensureNonEmptyString(
 		body?.content,
@@ -19,9 +21,11 @@ export default defineEventHandler(async (event) => {
 			: null
 
 	await createMessageComment(currentUser, content, parentId)
+	const board = await listMessageBoard(currentUser, paginationQuery)
 
 	return {
-		items: await listMessageBoard(currentUser),
+		items: board.items,
+		pagination: board.pagination,
 		currentUser,
 	}
 })

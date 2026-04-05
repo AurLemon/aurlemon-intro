@@ -28,6 +28,7 @@
 					v-if="!currentUser"
 					:title="t('social.friendLinks.loginRequiredTitle')"
 					:description="t('social.friendLinks.loginRequiredDesc')"
+					:show-login-button="false"
 				/>
 				<div v-else class="space-y-4">
 					<div class="space-y-2">

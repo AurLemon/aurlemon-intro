@@ -1,7 +1,5 @@
 <template>
-	<div
-		class="space-y-4 rounded-2xl border border-slate-200/70 p-4 dark:border-slate-800"
-	>
+	<div :class="containerClass">
 		<div class="flex items-start gap-3">
 			<img
 				:src="item.avatarUrl"
@@ -14,6 +12,9 @@
 						class="text-sm font-semibold text-slate-900 dark:text-slate-100"
 					>
 						{{ item.githubLogin }}
+					</span>
+					<span class="text-xs font-mono text-slate-500 dark:text-slate-400">
+						#{{ item.floor }}
 					</span>
 					<UButton
 						size="xs"
@@ -35,6 +36,14 @@
 					v-if="editingId !== item.id"
 					class="whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-200"
 				>
+					<span
+						v-if="item.isNestedReply && item.replyToGithubLogin"
+						class="mb-1 block text-xs text-slate-500 dark:text-slate-400"
+					>
+						{{
+							t('social.message.replyTo', { login: item.replyToGithubLogin })
+						}}
+					</span>
 					{{ item.content }}
 				</p>
 				<div v-else class="space-y-3">
@@ -101,9 +110,9 @@
 						{{ t('social.actions.delete') }}
 					</UButton>
 				</div>
-				<div v-if="item.replies.length" class="space-y-3">
+				<div v-if="visibleReplies.length" class="space-y-3">
 					<MessageThread
-						v-for="reply in item.replies"
+						v-for="reply in visibleReplies"
 						:key="reply.id"
 						:item="reply"
 						:replying-to-id="replyingToId"
@@ -112,6 +121,7 @@
 						:editing-loading="editingLoading"
 						:deleting-loading="deletingLoading"
 						:can-interact="canInteract"
+						:depth="nextDepth"
 						@like="$emit('like', $event)"
 						@reply="$emit('reply', $event)"
 						@cancel-reply="$emit('cancel-reply')"
@@ -147,9 +157,21 @@ const props = defineProps<{
 	editingLoading: boolean
 	deletingLoading: boolean
 	canInteract: boolean
+	depth: number
 }>()
 
 const { t } = useI18n()
+
+const visibleReplies = computed(() =>
+	props.depth >= 1 ? [] : props.item.replies,
+)
+
+const nextDepth = computed(() => Math.min(props.depth + 1, 1))
+const containerClass = computed(() =>
+	props.depth === 0
+		? 'space-y-4 rounded-2xl border border-slate-200/70 p-4 dark:border-slate-800'
+		: 'space-y-4 py-1',
+)
 
 const formatTime = (value: string) => dayjs(value).format('YYYY-MM-DD HH:mm')
 

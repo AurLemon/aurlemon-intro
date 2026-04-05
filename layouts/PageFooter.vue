@@ -99,7 +99,9 @@ const messageButtonLabel = computed(() =>
 const loadMessageCount = async () => {
 	try {
 		const response = await $fetch<MessageBoardResponse>('/api/messages')
-		messageCount.value = countMessageItems(response.items)
+		messageCount.value =
+			response.pagination?.totalCommentCount ??
+			countMessageItems(response.items)
 	} catch {
 		messageCount.value = 0
 	} finally {
