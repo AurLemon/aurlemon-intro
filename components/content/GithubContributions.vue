@@ -2,7 +2,7 @@
 	<section
 		class="my-4 rounded-2xl border border-slate-200/80 p-4 dark:border-slate-700/80"
 	>
-		<div class="mb-3 flex items-center justify-between gap-3">
+		<div class="mb-3 flex flex-wrap items-start justify-between gap-3">
 			<div>
 				<p class="text-xs text-slate-500 dark:text-slate-400">
 					{{ t('main.project.githubContributionsTitle') }}
@@ -32,7 +32,7 @@
 
 		<div
 			v-if="pending"
-			class="grid auto-cols-fr grid-flow-col gap-1 overflow-x-auto py-2"
+			class="grid grid-flow-col auto-cols-[12px] gap-1 overflow-x-auto py-2"
 		>
 			<div
 				v-for="week in 20"
@@ -59,7 +59,7 @@
 
 		<div
 			v-else-if="calendar"
-			class="grid auto-cols-fr grid-flow-col gap-1 overflow-x-auto py-2"
+			class="grid grid-flow-col auto-cols-[12px] gap-1 overflow-x-auto py-2"
 		>
 			<div
 				v-for="(week, weekIndex) in calendar.weeks"
