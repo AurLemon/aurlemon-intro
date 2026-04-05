@@ -5,7 +5,13 @@
 
 ## 发展路径
 
-我的常用语言是 TypeScript。尽管也写过 Python、Java 甚至 Rust，但 90% 以上都是 Agent 协助编写的，只是为了完成特定的业务，在这里就不作为常用语言列出了。我第一个系统学习的语言是 C（2021 年）。
+我的常用语言是 TypeScript。尽管也写过 Python、Java 甚至 Rust，但 90% 以上都是 Agent 协助编写的，只是为了完成特定的业务，就不当成熟悉掌握的语言列出了。我第一个系统学习的语言是 C（2021 年）。简单列一个掌握程度表：
+
+- T0（最熟悉的）：HTML、CSS、TypeScript（含 JavaScript）。
+- T1（比较熟悉）：Java、Python。
+- T2（看着眼熟）：Android 开发（上过一段时间的课，做过几个大作业）、Rust、C、C++。
+
+我 GitHub 上占比最高的应该是 Vue 和 TypeScript。
 
 我最早接触的开发领域是前端（这点在我的 [GitHub 主页](https://github.com/AurLemon)有提到），大概是 2022 年左右。至于后端，2024 年才第一次用 Nest 写了个 TS 的项目。也是从这时开始，才开始接触后端和 DevOps。
 
@@ -25,8 +31,8 @@
 
 1. [自己 Minecraft 服务器的 Wiki 和门户站](https://wiki.hydcraft.cn)（2022）。因为当时自己 MC 服务器有 MediaWiki 维护的需求，作为服主的我前前后后设计了很多版的首页 UI 方案。在设计的过程中，接触到了最基本的 HTML、CSS、JavaScript、PHP 技术。<br>在这之后的 2024 年 7 月，为了设计[服务器门户站](https://github.com/AurLemon/hydcraft-intro)，便第一次接触了 Vue 2。实现了我开发史中第一个标准的、基于包管理器的前端项目，不过这个项目后续没有上线。给自己服务器设计的过程中也被迫学习和接触了不少知识，除了前端还有一些网站运维和建站的知识。
 2. [中职时期给班上人和自己写的考试刷题系统](https://github.com/AurLemon/fjcpc-transfer-exam-practice-system)（2024），基于 Nest + Vue + TS 的前后端分离的 Web 项目。其实初版是传统 JavaScript + PHP 简易后端组成的，现在的这几个技术栈是后续开发中才选择的。网站一直更新到 2025 年中（下一届学弟学妹也要用，但学弟学妹没有下一届，所以就停更了），目前已经 Archive 了。这是我第一次接触了正经的后端架构，并从头到尾完整编写了一个带有完整功能的、并且写完了的项目。虽然目前回头看也有一点黑历史。
-3. [给 Wiki.js 写的覆盖 CSS](https://github.com/AurLemon/wikijs-citizen-styles)（2024），纯 SCSS 项目，GitHub Star 数最多的一个项目。技术上没有什么值得拿出来说的，放在这当个纪念。
-4. [自己的介绍网站](https://github.com/AurLemon/aurlemon-intro)（2024），也就是本站。第一次接触 Nuxt 全栈框架的项目，除此之外没有很出彩的地方。
+3. [给 Wiki.js 写的覆盖 CSS](https://github.com/AurLemon/wikijs-citizen-styles)（2024），纯 SCSS 项目，GitHub Star 数最多的一个项目。技术上没有什么值得拿出来说的，放在这当个纪念。或许这也是我最出名的项目，加我的蛮多 Coder 都是因为这个项目，也有一些是关于 Wiki.js 或者是 MediaWiki 部署的问题来的 —— 或许正在看这个页面的你也是从这里来的吧？
+4. [自己的介绍网站](https://github.com/AurLemon/aurlemon-intro)（2024），也就是本站。第一次接触 Nuxt 全栈框架后写的项目，不过除此之外并没有很出彩的地方。
 5. [自己 Minecraft 服务器的信息聚合站](https://github.com/Hydroline/hydroline-hydcraft-services)（2025），基于 Nest + Vue + TS 的前后端分离的 Web 项目。第一次上手配置了 GitHub Actions 推送到源站部署、且配置了 EdgeOne 及其周围规则的项目。从了解到上手实践的感受是截然不同的。在这期间还首次通过 DNS 解析、Cloudflare 解析等花活实现了以前没想过的操作。这可能是我第一个算得上「大」和「杂」的项目，现在还在写。Agent Coding 的正确范式现在还在探索…… 现在还在开发中。
 
 总结来看，我可能是把从 Web 诞生一直到现在的技术发展路径都大概走了个遍，以前我确实是写过在 HTML 文件之间切换、完全不依赖任何新的技术规范（比如 ES6）的项目，写起来极其痛苦。这样干有利于理解宏观结构，虽然从就业的角度来看其实学习速度还是有点慢，离毕业也没多少时间了…… 2025 年全忙着在学校里干活了，跟着老师做了几个项目，结果不太理想。到了 2026 年的现在，即便专升本已经结束，但后续的计划安排中大部分也是备考、备考、备考……
