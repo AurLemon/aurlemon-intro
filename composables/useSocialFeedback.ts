@@ -13,6 +13,19 @@ const ERROR_KEY_MAP: Record<string, string> = {
 	FRIEND_LINK_APPLICATION_NOT_FOUND:
 		'social.errors.friendLinkApplicationNotFound',
 	INVALID_GITHUB_OAUTH_STATE: 'social.errors.invalidGithubOauthState',
+	GITHUB_OAUTH_NOT_CONFIGURED: 'social.errors.githubOauthNotConfigured',
+	GITHUB_OAUTH_NETWORK_ERROR: 'social.errors.githubOauthNetworkError',
+	GITHUB_OAUTH_PROVIDER_ERROR: 'social.errors.githubOauthProviderError',
+	GITHUB_OAUTH_TOKEN_EXCHANGE_FAILED:
+		'social.errors.githubOauthTokenExchangeFailed',
+	GITHUB_OAUTH_USER_PAYLOAD_INVALID:
+		'social.errors.githubOauthUserPayloadInvalid',
+	GITHUB_OAUTH_CALLBACK_FAILED: 'social.errors.githubOauthCallbackFailed',
+	'GitHub OAuth is not configured.': 'social.errors.githubOauthNotConfigured',
+	'GitHub OAuth token exchange failed.':
+		'social.errors.githubOauthTokenExchangeFailed',
+	'GitHub OAuth user payload is invalid.':
+		'social.errors.githubOauthUserPayloadInvalid',
 	INVALID_COMMENT_CONTENT: 'social.errors.invalidCommentContent',
 	INVALID_FRIEND_LINK_NAME: 'social.errors.invalidFriendLinkName',
 	INVALID_FRIEND_LINK_URL: 'social.errors.invalidFriendLinkUrl',
@@ -44,7 +57,7 @@ export const resolveSocialErrorKey = (error: unknown): string => {
 
 export const useSocialFeedback = () => {
 	const toast = useToast()
-	const { t } = useI18n()
+	const { t } = useI18n({ useScope: 'global' })
 
 	const notify = (
 		titleKey: string,
