@@ -7,16 +7,25 @@ permissions:
   contents: read
 
 jobs:
-  build-and-deploy-backend:
+  build-and-deploy:
     runs-on: ubuntu-latest
     env:
       SSH_HOST: ${{ secrets.BACKEND_DEPLOY_HOST }}
       SSH_PORT: ${{ secrets.BACKEND_DEPLOY_SSH_PORT || '233' }}
       SSH_USER: ${{ secrets.BACKEND_DEPLOY_USER }}
-      BACKEND_SSH_KEY: ${{ secrets.BACKEND_DEPLOY_SSH_PRIVATE_KEY }}
+      DEPLOY_SSH_KEY: ${{ secrets.BACKEND_DEPLOY_SSH_PRIVATE_KEY }}
       REMOTE_DEPLOY_PATH: ${{ secrets.BACKEND_REMOTE_DEPLOY_PATH || '/www/wwwroot/aurlemon-intro' }}
-      REMOTE_TEMP_DIR: /tmp/backend-deploy-${{ github.run_id }}-${{ github.run_attempt }}
+      REMOTE_TEMP_DIR: /tmp/deploy-${{ github.run_id }}-${{ github.run_attempt }}
       PM2_APP_NAME: ${{ secrets.BACKEND_PM2_APP_NAME }}
+      # COS secrets example:
+      # ARTIFACT_BUCKET=aurintro-artifact-1254268741
+      # ARTIFACT_UPLOAD_ENDPOINT=cos.accelerate.myqcloud.com
+      # ARTIFACT_DOWNLOAD_ENDPOINT=cos.accelerate.myqcloud.com
+      # ARTIFACT_REGION=ap-guangzhou
+      # Notes:
+      # 1) endpoint must be host only (no protocol, no bucket prefix).
+      # 2) upload/download can be the same endpoint.
+      # 3) regional endpoint alternative: cos.ap-guangzhou.myqcloud.com
       ARTIFACT_BUCKET: ${{ secrets.ARTIFACT_BUCKET }}
       ARTIFACT_UPLOAD_ENDPOINT: ${{ secrets.ARTIFACT_UPLOAD_ENDPOINT }}
       ARTIFACT_DOWNLOAD_ENDPOINT: ${{ secrets.ARTIFACT_DOWNLOAD_ENDPOINT }}
@@ -51,16 +60,16 @@ jobs:
 
               pnpm build
 
-              rm -rf /app/backend-deploy
-              mkdir -p /app/backend-deploy
+              rm -rf /app/deploy-artifact
+              mkdir -p /app/deploy-artifact
 
               cp -R /app/.output/public \
                     /app/.output/server \
-                    /app/backend-deploy/
-              cp /app/.output/nitro.json /app/backend-deploy/nitro.json
+                    /app/deploy-artifact/
+              cp /app/.output/nitro.json /app/deploy-artifact/nitro.json
 
               if [ -f /app/.env ]; then
-                cp /app/.env /app/backend-deploy/.env
+                cp /app/.env /app/deploy-artifact/.env
               fi
             '
 
@@ -76,16 +85,16 @@ jobs:
       - name: Prepare SSH
         run: |
           mkdir -p ~/.ssh/cm
-          printf '%s\n' "$BACKEND_SSH_KEY" > ~/.ssh/backend_deploy_key
-          chmod 600 ~/.ssh/backend_deploy_key
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -p "$SSH_PORT" "$SSH_HOST" >> ~/.ssh/known_hosts
 
           cat >> ~/.ssh/config <<EOF
-          Host backend
+          Host deploy-host
             HostName $SSH_HOST
             User $SSH_USER
             Port $SSH_PORT
-            IdentityFile ~/.ssh/backend_deploy_key
+            IdentityFile ~/.ssh/deploy_key
             ControlMaster auto
             ControlPersist 5m
             ControlPath ~/.ssh/cm/%r@%h:%p
@@ -99,37 +108,42 @@ jobs:
       # --------------------
       - name: Warm up SSH connection
         run: |
-          ssh backend "echo SSH warmup OK"
+          ssh deploy-host "echo SSH warmup OK"
 
       # --------------------
       # Create remote temp dir
       # --------------------
       - name: Create remote temp dir
         run: |
-          ssh backend "mkdir -p '$REMOTE_TEMP_DIR'"
+          ssh deploy-host "mkdir -p '$REMOTE_TEMP_DIR'"
 
       # --------------------
-      # Pack backend artifact
+      # Pack deploy artifact
       # --------------------
-      - name: Pack backend artifact
+      - name: Pack deploy artifact
         run: |
-          tar -czf backend-deploy.tar.gz -C backend-deploy .
+          tar -czf deploy-artifact.tar.gz -C deploy-artifact .
 
       # --------------------
       # Upload to COS artifact bucket
       # --------------------
-      - name: Upload backend artifact
+      - name: Upload deploy artifact
         run: |
+          set -euo pipefail
+          echo "Configuring COS client..."
           coscmd config -a "$AWS_ACCESS_KEY_ID" -s "$AWS_SECRET_ACCESS_KEY" -b "$ARTIFACT_BUCKET" -e "$ARTIFACT_UPLOAD_ENDPOINT" -m 20 --retry 10 --timeout 120
-          coscmd delete -r --yes backend/
-          coscmd upload --yes backend-deploy.tar.gz "backend/backend-deploy-${{ github.run_id }}.tar.gz"
+          echo "Cleaning artifact prefix app/ ..."
+          coscmd delete -r --yes app/ || true
+          echo "Uploading deploy artifact to app/deploy-artifact-${{ github.run_id }}.tar.gz ..."
+          coscmd upload --yes deploy-artifact.tar.gz "app/deploy-artifact-${{ github.run_id }}.tar.gz"
+          echo "Upload finished."
 
       # --------------------
       # Deploy on remote
       # --------------------
-      - name: Deploy backend on remote host
+      - name: Deploy app on remote host
         run: |
-          ssh backend <<EOF
+          ssh deploy-host <<EOF
           set -euo pipefail
 
           export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
@@ -144,12 +158,12 @@ jobs:
           mkdir -p "$REMOTE_DEPLOY_PATH"
 
           coscmd config -a "$AWS_ACCESS_KEY_ID" -s "$AWS_SECRET_ACCESS_KEY" -b "$ARTIFACT_BUCKET" -e "$ARTIFACT_DOWNLOAD_ENDPOINT" -m 20 --retry 10 --timeout 120
-          rm -f "$REMOTE_TEMP_DIR/backend-deploy.tar.gz"
-          coscmd download -f "backend/backend-deploy-${{ github.run_id }}.tar.gz" "$REMOTE_TEMP_DIR/backend-deploy.tar.gz"
+          rm -f "$REMOTE_TEMP_DIR/deploy-artifact.tar.gz"
+          coscmd download -f "app/deploy-artifact-${{ github.run_id }}.tar.gz" "$REMOTE_TEMP_DIR/deploy-artifact.tar.gz"
 
           rm -rf "$REMOTE_TEMP_DIR/extracted"
           mkdir -p "$REMOTE_TEMP_DIR/extracted"
-          tar -xzf "$REMOTE_TEMP_DIR/backend-deploy.tar.gz" -C "$REMOTE_TEMP_DIR/extracted"
+          tar -xzf "$REMOTE_TEMP_DIR/deploy-artifact.tar.gz" -C "$REMOTE_TEMP_DIR/extracted"
 
           rsync -a --no-owner --no-group --delete --exclude='.env' --exclude='sqlite.db' \
             "$REMOTE_TEMP_DIR/extracted/" \
