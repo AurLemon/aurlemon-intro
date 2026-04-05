@@ -84,8 +84,8 @@
 		"preference": {
 			"bangumiAnimeTitle": "Bangumi Anime",
 			"bangumiBooksTitle": "Bangumi Books",
-			"bangumiAnimeSummary": "{wish} on wish list, {done} watched",
-			"bangumiBooksSummary": "{wish} on wish list, {done} read",
+			"bangumiAnimeSummary": "{doing} watching, {wish} on wish list, {done} watched",
+			"bangumiBooksSummary": "{doing} reading, {wish} on wish list, {done} read",
 			"bangumiAnimeStatusWish": "Wish",
 			"bangumiAnimeStatusDoing": "Watching",
 			"bangumiAnimeStatusDone": "Watched",

@@ -58,6 +58,7 @@
 						>
 							{{
 								t('main.preference.bangumiAnimeSummary', {
+									doing: animeDoingCount,
 									wish: section.wishCount,
 									done: section.doneCount,
 								})
@@ -160,6 +161,12 @@ const isPlaceholder = computed(() => section.value.isPlaceholder === true)
 const isLoading = computed(
 	() => pending.value || !data.value || isPlaceholder.value,
 )
+const animeDoingCount = computed(() => {
+	return section.value.items.reduce(
+		(total, item) => total + (item.collectionType === 3 ? 1 : 0),
+		0,
+	)
+})
 
 const resolveAnimeBadgeLabel = (collectionType: number): string => {
 	if (collectionType === 1) {
