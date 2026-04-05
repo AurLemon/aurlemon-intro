@@ -35,7 +35,12 @@
 			</div>
 		</div>
 
-		<Transition v-else name="contrib-fade" mode="out-in">
+		<Transition
+			v-else
+			name="contrib-fade"
+			mode="out-in"
+			@after-enter="scrollCalendarToLatest"
+		>
 			<div
 				v-if="error"
 				key="error"
@@ -77,6 +82,7 @@
 				</div>
 
 				<div
+					ref="calendarScrollRef"
 					class="grid grid-flow-col auto-cols-[12px] gap-1 overflow-x-auto py-2"
 				>
 					<div
@@ -135,6 +141,7 @@ const props = withDefaults(
 const colorMode = useColorMode()
 const { locale, t } = useI18n()
 const skeletonWeekCount = 53
+const calendarScrollRef = ref<HTMLElement | null>(null)
 
 const key = computed(
 	() =>
@@ -167,6 +174,39 @@ const isLoading = computed(
 
 let placeholderRefreshTimer: ReturnType<typeof setInterval> | undefined
 
+const waitForNextFrame = (): Promise<void> => {
+	return new Promise((resolve) => {
+		requestAnimationFrame(() => resolve())
+	})
+}
+
+const scrollCalendarToLatest = async (): Promise<void> => {
+	if (!import.meta.client) {
+		return
+	}
+
+	await nextTick()
+	await waitForNextFrame()
+	await waitForNextFrame()
+
+	const el = calendarScrollRef.value
+	if (!el) {
+		return
+	}
+
+	const lastWeek = el.lastElementChild as HTMLElement | null
+	lastWeek?.scrollIntoView({
+		block: 'nearest',
+		inline: 'end',
+		behavior: 'smooth',
+	})
+
+	el.scrollTo({
+		left: el.scrollWidth - el.clientWidth,
+		behavior: 'smooth',
+	})
+}
+
 watch(
 	isPlaceholder,
 	(value) => {
@@ -185,6 +225,18 @@ watch(
 			clearInterval(placeholderRefreshTimer)
 			placeholderRefreshTimer = undefined
 		}
+	},
+	{ immediate: true },
+)
+
+watch(
+	calendar,
+	(value) => {
+		if (!value || value.isPlaceholder) {
+			return
+		}
+
+		void scrollCalendarToLatest()
 	},
 	{ immediate: true },
 )
