@@ -83,17 +83,20 @@
 
 				<div
 					v-else
+					ref="cardsScrollRef"
 					class="grid grid-flow-col auto-cols-[130px] gap-1 overflow-x-auto pb-1"
 				>
 					<a
 						v-for="item in section.items"
 						:key="`anime-${item.subjectId}-${item.collectionType}`"
 						:href="item.url"
+						:data-card-key="getItemKey(item)"
+						:ref="(el) => setCardRef(el, getItemKey(item))"
 						target="_blank"
 						rel="noopener noreferrer"
 						class="w-full rounded-xl p-2 transition-colors hover:bg-slate-200/50 dark:hover:bg-slate-800/70"
 					>
-						<div class="relative">
+						<div class="relative h-40 w-30">
 							<UBadge
 								class="absolute left-1 top-1 z-10 !bg-slate-100/90 !text-slate-700 backdrop-blur-sm dark:!bg-slate-800/90 dark:!text-slate-200 font-(family-name:--font-family)"
 								size="sm"
@@ -103,21 +106,32 @@
 								{{ resolveAnimeBadgeLabel(item.collectionType) }}
 							</UBadge>
 
+							<USkeleton
+								v-if="
+									!item.coverUrl ||
+									hasImageError(getItemKey(item)) ||
+									!isImageLoaded(getItemKey(item))
+								"
+								class="absolute inset-0 rounded-lg bg-slate-200 dark:bg-slate-700"
+							/>
 							<img
-								v-if="item.coverUrl"
+								v-if="
+									item.coverUrl &&
+									shouldLoadImage(getItemKey(item)) &&
+									!hasImageError(getItemKey(item))
+								"
 								:src="item.coverUrl"
 								:alt="item.name"
-								class="h-40 w-30 rounded-lg object-cover"
+								class="absolute inset-0 h-full w-full rounded-lg object-cover transition-opacity duration-200"
+								:class="
+									isImageLoaded(getItemKey(item)) ? 'opacity-100' : 'opacity-0'
+								"
 								loading="lazy"
 								decoding="async"
 								referrerpolicy="no-referrer"
+								@load="markImageLoaded(getItemKey(item))"
+								@error="markImageError(getItemKey(item))"
 							/>
-							<div
-								v-else
-								class="flex h-40 w-30 items-center justify-center rounded-lg bg-slate-100 text-slate-400 dark:bg-slate-800"
-							>
-								<UIcon name="i-lucide-image-off" class="size-4" />
-							</div>
 						</div>
 						<p
 							class="mt-2 line-clamp-2 text-sm text-slate-700 dark:text-slate-200"
@@ -161,6 +175,136 @@ const isPlaceholder = computed(() => section.value.isPlaceholder === true)
 const isLoading = computed(
 	() => pending.value || !data.value || isPlaceholder.value,
 )
+const cardsScrollRef = ref<HTMLElement | null>(null)
+const cardElements = new Map<string, HTMLElement>()
+const imageVisibleState = reactive<Record<string, boolean>>({})
+const imageLoadedState = reactive<Record<string, boolean>>({})
+const imageErrorState = reactive<Record<string, boolean>>({})
+let cardVisibilityObserver: IntersectionObserver | undefined
+
+const getItemKey = (item: {
+	subjectId: number
+	collectionType: number
+}): string => {
+	return `${item.subjectId}-${item.collectionType}`
+}
+
+const shouldLoadImage = (key: string): boolean => {
+	return imageVisibleState[key] === true
+}
+
+const isImageLoaded = (key: string): boolean => {
+	return imageLoadedState[key] === true
+}
+
+const hasImageError = (key: string): boolean => {
+	return imageErrorState[key] === true
+}
+
+const markImageLoaded = (key: string): void => {
+	imageLoadedState[key] = true
+}
+
+const markImageError = (key: string): void => {
+	imageErrorState[key] = true
+}
+
+const setCardRef = (el: unknown, key: string): void => {
+	const previous = cardElements.get(key)
+	if (previous && previous !== el) {
+		cardVisibilityObserver?.unobserve(previous)
+		cardElements.delete(key)
+	}
+
+	if (el instanceof HTMLElement) {
+		cardElements.set(key, el)
+		if (!shouldLoadImage(key)) {
+			cardVisibilityObserver?.observe(el)
+		}
+	}
+}
+
+const resetImageState = (keys: Set<string>): void => {
+	for (const state of [imageVisibleState, imageLoadedState, imageErrorState]) {
+		for (const key of Object.keys(state)) {
+			if (!keys.has(key)) {
+				delete state[key]
+			}
+		}
+	}
+
+	for (const [key, element] of cardElements.entries()) {
+		if (!keys.has(key)) {
+			cardVisibilityObserver?.unobserve(element)
+			cardElements.delete(key)
+		}
+	}
+}
+
+const initCardVisibilityObserver = (): void => {
+	if (!import.meta.client) {
+		return
+	}
+
+	cardVisibilityObserver?.disconnect()
+
+	if (!cardsScrollRef.value) {
+		cardVisibilityObserver = undefined
+		return
+	}
+
+	cardVisibilityObserver = new IntersectionObserver(
+		(entries) => {
+			for (const entry of entries) {
+				if (!entry.isIntersecting) {
+					continue
+				}
+
+				const key = (entry.target as HTMLElement).dataset.cardKey
+				if (!key) {
+					continue
+				}
+
+				imageVisibleState[key] = true
+				cardVisibilityObserver?.unobserve(entry.target)
+			}
+		},
+		{
+			root: cardsScrollRef.value,
+			rootMargin: '0px 120px 0px 120px',
+			threshold: 0.01,
+		},
+	)
+
+	for (const [key, element] of cardElements.entries()) {
+		if (!shouldLoadImage(key)) {
+			cardVisibilityObserver.observe(element)
+		}
+	}
+}
+
+watch(
+	() => section.value.items,
+	(items) => {
+		const keys = new Set(items.map((item) => getItemKey(item)))
+		resetImageState(keys)
+		void nextTick().then(() => {
+			initCardVisibilityObserver()
+		})
+	},
+	{ immediate: true },
+)
+
+watch(cardsScrollRef, () => {
+	void nextTick().then(() => {
+		initCardVisibilityObserver()
+	})
+})
+
+onMounted(() => {
+	initCardVisibilityObserver()
+})
+
 const animeDoingCount = computed(() => {
 	return section.value.items.reduce(
 		(total, item) => total + (item.collectionType === 3 ? 1 : 0),
@@ -207,6 +351,9 @@ onBeforeUnmount(() => {
 		clearInterval(placeholderRefreshTimer)
 		placeholderRefreshTimer = undefined
 	}
+	cardVisibilityObserver?.disconnect()
+	cardVisibilityObserver = undefined
+	cardElements.clear()
 })
 </script>
 
