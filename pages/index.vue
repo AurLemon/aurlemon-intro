@@ -11,12 +11,20 @@
 				<img v-else :src="educationLogos[stage]" class="block" />
 			</template>
 		</div>
+
 		<!-- 顶部问候 -->
 		<div class="mx-2">
-			<img
-				src="~/assets/resources/sitemark/avatar_mark.jpg"
-				class="block rounded-full h-42 border-[#236F95] border-2 select-none shadow-[0_0_32px_rgba(190,215,212,0.6)] dark:shadow-[0_0_32px_rgba(190,215,212,0.1)]"
-			/>
+			<div class="relative h-42 w-42">
+				<USkeleton v-if="!avatarReady" class="absolute inset-0 rounded-full" />
+				<img
+					ref="avatarImgRef"
+					:src="avatarMark"
+					class="block h-full w-full rounded-full border-2 border-[#236F95] select-none shadow-[0_0_32px_rgba(190,215,212,0.6)] transition-opacity duration-200 dark:shadow-[0_0_32px_rgba(190,215,212,0.1)]"
+					:class="avatarReady ? 'opacity-100' : 'opacity-0'"
+					@load="avatarReady = true"
+					@error="avatarReady = true"
+				/>
+			</div>
 			<div
 				class="mt-6 text-4xl font-serif text-slate-900 dark:text-slate-100 font-medium leading-snug"
 			>
@@ -205,11 +213,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import dayjs from 'dayjs'
 import InfoCard from '~/components/cards/InfoCard.vue'
 
+import avatarMark from '~/assets/resources/sitemark/avatar_mark.jpg'
 import FPMLogo from '~/assets/resources/school_badge/FPM.png'
 import FEESLogo from '~/assets/resources/school_badge/FEES.png'
 import FJCCCLogo from '~/assets/resources/school_badge/FJCCC.png'
@@ -253,6 +262,8 @@ const educationStages: EducationStage[] = [
 ]
 const selectedEducationStage = ref<EducationStage>('specialty')
 const hoveredOnlineLink = ref<number | null>(null)
+const avatarReady = ref(false)
+const avatarImgRef = ref<HTMLImageElement | null>(null)
 
 const educationLogos: Record<EducationStage, any> = {
 	bachelor: XMTULogo,
@@ -294,4 +305,11 @@ const onlineLinkClass = (index: number) => [
 			? 'text-slate-800 dark:text-slate-200'
 			: 'text-slate-500 dark:text-slate-400',
 ]
+
+onMounted(async () => {
+	await nextTick()
+	if (avatarImgRef.value?.complete) {
+		avatarReady.value = true
+	}
+})
 </script>
