@@ -23,6 +23,32 @@ export const getSiteLikeSummary = async (fingerprint?: string) => {
 	}
 }
 
+const maskFingerprint = (fingerprint: string): string => {
+	if (fingerprint.length <= 8) {
+		return `${fingerprint.slice(0, 4)}***`
+	}
+
+	return `${fingerprint.slice(0, 8)}***${fingerprint.slice(-4)}`
+}
+
+export const listSiteLikes = async (limit = 100) => {
+	const safeLimit = Math.max(1, Math.min(limit, 200))
+	const likes = await prisma.like.findMany({
+		orderBy: {
+			timestamp: 'desc',
+		},
+		take: safeLimit,
+	})
+
+	return {
+		items: likes.map((like) => ({
+			likeId: like.id,
+			maskedFingerprint: maskFingerprint(like.fingerprint),
+			likedAt: like.timestamp.toISOString(),
+		})),
+	}
+}
+
 export const createSiteLike = async (
 	fingerprint: string,
 	ip: string,

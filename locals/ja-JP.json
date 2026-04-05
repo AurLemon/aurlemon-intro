@@ -111,7 +111,8 @@
 			"applyFriendLink": "相互リンク申請",
 			"submitApplication": "申請を送信",
 			"approve": "承認する",
-			"createFriendLink": "直接追加"
+			"createFriendLink": "直接追加",
+			"openSiteLikeList": "サイトいいね一覧"
 		},
 		"feedback": {
 			"authTitle": "ログインが必要です",
@@ -123,7 +124,11 @@
 		},
 		"siteLike": {
 			"count": "{count}",
-			"likedCount": "{count}"
+			"likedCount": "{count}",
+			"listTitle": "サイトいいね一覧",
+			"emptyTitle": "まだいいねはありません",
+			"emptyDesc": "最初のいいねを押してみてください。",
+			"likedAt": "いいね日時: {date}"
 		},
 		"message": {
 			"title": "メッセージボード",

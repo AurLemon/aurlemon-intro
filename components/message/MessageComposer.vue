@@ -29,6 +29,7 @@
 				>
 					{{ t('social.actions.cancelReply') }}
 				</UButton>
+				<slot name="before-submit" />
 				<UButton
 					:loading="loading"
 					:disabled="disabled"

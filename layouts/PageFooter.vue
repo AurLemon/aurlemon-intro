@@ -61,16 +61,21 @@
 				</NuxtLink>
 			</div>
 		</div>
-		<MessageBoardModal v-model:open="messageOpen" />
+		<MessageBoardModal
+			v-model:open="messageOpen"
+			@open-site-like-list="openSiteLikeListFromMessage"
+		/>
+		<SiteLikeListModal v-model:open="siteLikeListOpen" />
 	</footer>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 
 import SiteMark from '~/components/branding/AurLemon.vue'
 import SiteLikeButton from '~/components/footer/SiteLikeButton.vue'
 import MessageBoardModal from '~/components/message/MessageBoardModal.vue'
+import SiteLikeListModal from '~/components/message/SiteLikeListModal.vue'
 import type {
 	MessageBoardResponse,
 	MessageCommentItem,
@@ -80,6 +85,7 @@ const { t } = useI18n()
 const localePath = useLocalePath()
 const hoveredLink = ref<number | null>(null)
 const messageOpen = ref(false)
+const siteLikeListOpen = ref(false)
 const messageCount = ref(0)
 const messageReady = ref(false)
 
@@ -99,6 +105,12 @@ const loadMessageCount = async () => {
 	} finally {
 		messageReady.value = true
 	}
+}
+
+const openSiteLikeListFromMessage = async () => {
+	messageOpen.value = false
+	await nextTick()
+	siteLikeListOpen.value = true
 }
 
 const linkClass = (index: number) => [

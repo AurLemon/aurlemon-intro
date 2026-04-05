@@ -111,7 +111,8 @@
 			"applyFriendLink": "Apply Link Exchange",
 			"submitApplication": "Submit",
 			"approve": "Approve",
-			"createFriendLink": "Create Link"
+			"createFriendLink": "Create Link",
+			"openSiteLikeList": "Site Like List"
 		},
 		"feedback": {
 			"authTitle": "Login required",
@@ -123,7 +124,11 @@
 		},
 		"siteLike": {
 			"count": "{count}",
-			"likedCount": "{count}"
+			"likedCount": "{count}",
+			"listTitle": "Site Like List",
+			"emptyTitle": "No likes yet",
+			"emptyDesc": "Be the first to like this site.",
+			"likedAt": "Liked on: {date}"
 		},
 		"message": {
 			"title": "Message Board",
