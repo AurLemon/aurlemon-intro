@@ -2,7 +2,7 @@
 	<section
 		class="my-4 rounded-2xl border border-slate-200/80 p-4 dark:border-slate-700/80"
 	>
-		<div class="mb-3 flex flex-wrap items-start justify-between gap-3">
+		<div class="mb-1 flex flex-wrap items-start justify-between gap-3">
 			<div>
 				<p class="text-xs text-slate-500 dark:text-slate-400">
 					{{ t('main.project.githubContributionsTitle') }}
