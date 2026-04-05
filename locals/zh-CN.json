@@ -119,6 +119,7 @@
 		},
 		"message": {
 			"title": "留言板",
+			"count": "{count}",
 			"placeholder": "不好的评论我会删除。",
 			"replyPlaceholder": "回复 {login}",
 			"loginRequiredTitle": "留言需要 GitHub 登录",

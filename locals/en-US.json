@@ -119,6 +119,7 @@
 		},
 		"message": {
 			"title": "Message Board",
+			"count": "{count}",
 			"placeholder": "Leave a message.",
 			"replyPlaceholder": "Reply to {login}",
 			"loginRequiredTitle": "GitHub login is required",
