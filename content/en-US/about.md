@@ -8,9 +8,9 @@ So... I did something pretty bold (actually, really bold): I moved the Menu to t
 
 Another thing is that I used a serif typeface for the body this time, while the sans-serif face is used only for titles, buttons, the header, the footer, and other non-core text. I suspect I may be overusing the serif a bit, Source Han Serif, even though I personally think it looks beautiful. I hope people who dislike this pairing do not yell at me.
 
-As for the source of inspiration, Claude was actually what sparked it for me, though Anthropic banned me the next morning, ha. Setting Anthropic's habit of banning accounts aside, let's be fair. Claude's design is still quite distinctive: rounded sans-serif, a serious serif, a cool yellow theme color, and the simple line-art graphics around it. It perfectly captures Claude's core traits: aloof, restrained, mature.
+As for what inspired my serif usage, it actually came from using Claude, though Anthropic banned me the next morning, ha. Setting Anthropic's habit of banning accounts aside, let's be fair. Claude's design is still quite distinctive: rounded sans-serif, a serious serif, a cool yellow theme color, and the simple line-art graphics around it. It perfectly captures Claude's core traits: aloof, restrained, mature.
 
-OpenAI's design is also very minimal, with a strongly volumetric mixed-color background paired with restrained sans-serif text, which is also a solid UI practice. But text selection in Gemini still feels awkward, and Material Design's messy colors, shadows, and corner radii are just not my thing.
+The folks next door at OpenAI also have a very minimal design. A strongly volumetric mixed-color background paired with restrained sans-serif text is also a solid UI practice. But text selection in Gemini still feels awkward, and Material Design's messy colors, shadows, and corner radii are just not my thing.
 
 So if someone asks me what this site's style is, the first word that comes to mind is probably **restraint**. Even the primary color is just an accent at this point; black, gray, and white still do most of the heavy lifting. In short, no unnecessary design, _Less is More_.
 
