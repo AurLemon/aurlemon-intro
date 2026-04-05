@@ -100,7 +100,7 @@
 						{{ t('social.actions.edit') }}
 					</UButton>
 					<UButton
-						v-if="item.canEdit"
+						v-if="item.canDelete"
 						size="xs"
 						color="error"
 						variant="ghost"

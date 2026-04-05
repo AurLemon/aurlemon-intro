@@ -20,7 +20,11 @@
 			<div
 				class="mt-6 text-4xl font-serif text-slate-900 dark:text-slate-100 font-medium leading-snug"
 			>
-				{{ $t('main.index.line1') }}<br />
+				<span>{{ line1Parts[0] }}</span>
+				<span class="hidden sm:inline">{{ line1DesktopSeparator }}</span>
+				<br class="sm:hidden" />
+				<span>{{ line1Parts[1] }}</span>
+				<br />
 				<i18n-t keypath="main.index.line2" tag="span">
 					<template #age>{{ age }}</template>
 					<template #doubtful>
@@ -225,9 +229,21 @@ import languageAbilityCover from '~/assets/resources/homepage/language_ability_c
 
 type EducationStage = 'bachelor' | 'specialty' | 'highSchool' | 'juniorSchool'
 
-const { t, te } = useI18n()
+const { t, te, locale } = useI18n()
 
 const age = dayjs().diff('2006-05-18', 'year')
+
+const line1Parts = computed(() => {
+	const [first = '', second = ''] = String(t('main.index.line1'))
+		.split('/')
+		.map((part) => part.trim())
+
+	return [first, second]
+})
+
+const line1DesktopSeparator = computed(() =>
+	locale.value === 'en-US' ? ' ' : '',
+)
 
 const educationStages: EducationStage[] = [
 	'bachelor',
