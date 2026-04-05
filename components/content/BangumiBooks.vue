@@ -9,30 +9,28 @@
 						class="h-3 w-28 rounded-md bg-slate-200 dark:bg-slate-700"
 					/>
 					<USkeleton
-						class="h-6 w-36 rounded-md bg-slate-200 dark:bg-slate-700"
+						class="h-6 w-64 rounded-md bg-slate-200 dark:bg-slate-700"
 					/>
 				</div>
-				<div class="flex gap-2">
-					<USkeleton
-						class="h-6 w-16 rounded-full bg-slate-200 dark:bg-slate-700"
-					/>
-					<USkeleton
-						class="h-6 w-16 rounded-full bg-slate-200 dark:bg-slate-700"
-					/>
-				</div>
+				<USkeleton class="h-6 w-20 rounded-md bg-slate-200 dark:bg-slate-700" />
 			</div>
 
-			<div class="max-h-80 space-y-2 overflow-y-auto pr-1">
+			<div
+				class="grid grid-flow-col auto-cols-[130px] gap-1 overflow-x-auto pb-1"
+			>
 				<div
-					v-for="row in 6"
-					:key="`books-skeleton-row-${row}`"
-					class="flex items-center gap-3 rounded-xl border border-slate-100 p-2 dark:border-slate-800"
+					v-for="card in 8"
+					:key="`books-skeleton-card-${card}`"
+					class="space-y-2"
 				>
 					<USkeleton
-						class="h-14 w-10 rounded-md bg-slate-200 dark:bg-slate-700"
+						class="h-40 w-30 rounded-lg bg-slate-200 dark:bg-slate-700"
 					/>
 					<USkeleton
-						class="h-4 flex-1 rounded-md bg-slate-200 dark:bg-slate-700"
+						class="h-4 w-30 rounded-md bg-slate-200 dark:bg-slate-700"
+					/>
+					<USkeleton
+						class="h-4 w-20 rounded-md bg-slate-200 dark:bg-slate-700"
 					/>
 				</div>
 			</div>
@@ -53,65 +51,76 @@
 				<div class="flex items-start justify-between gap-3">
 					<div>
 						<p class="mb-0.5 text-xs text-slate-500 dark:text-slate-400">
-							Bangumi
-						</p>
-						<p
-							class="font-(family-name:--font-family) text-xl font-semibold text-slate-900 dark:text-slate-100"
-						>
 							{{ t('main.preference.bangumiBooksTitle') }}
 						</p>
-					</div>
-					<div class="flex gap-2">
-						<span
-							class="rounded-full bg-slate-100 px-2 py-1 text-xs tabular-nums text-slate-700 dark:bg-slate-800 dark:text-slate-200"
+						<p
+							class="font-(family-name:--font-family) text-lg font-semibold text-slate-900 dark:text-slate-100"
 						>
 							{{
-								t('main.preference.bangumiWishCount', {
-									count: section.wishCount,
+								t('main.preference.bangumiBooksSummary', {
+									wish: section.wishCount,
+									done: section.doneCount,
 								})
 							}}
-						</span>
-						<span
-							class="rounded-full bg-slate-100 px-2 py-1 text-xs tabular-nums text-slate-700 dark:bg-slate-800 dark:text-slate-200"
-						>
-							{{
-								t('main.preference.bangumiDoneCount', {
-									count: section.doneCount,
-								})
-							}}
-						</span>
+						</p>
 					</div>
+					<UButton
+						class="font-mono"
+						to="https://bgm.tv/user/aurlemon"
+						target="_blank"
+						variant="link"
+						color="neutral"
+						size="xs"
+					>
+						@aurlemon
+					</UButton>
 				</div>
 
 				<div v-if="section.items.length === 0" class="text-sm text-slate-500">
 					{{ t('main.preference.bangumiEmpty') }}
 				</div>
 
-				<div v-else class="max-h-80 space-y-2 overflow-y-auto pr-1">
+				<div
+					v-else
+					class="grid grid-flow-col auto-cols-[130px] gap-1 overflow-x-auto pb-1"
+				>
 					<a
 						v-for="item in section.items"
 						:key="`books-${item.subjectId}-${item.collectionType}`"
 						:href="item.url"
 						target="_blank"
 						rel="noopener noreferrer"
-						class="flex items-center gap-3 rounded-xl border border-slate-100 p-2 transition-colors hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-900/60"
+						class="w-full rounded-xl p-2 transition-colors hover:bg-slate-200/50 dark:hover:bg-slate-800/70"
 					>
-						<img
-							v-if="item.coverUrl"
-							:src="item.coverUrl"
-							:alt="item.name"
-							class="h-14 w-10 shrink-0 rounded-md object-cover"
-							loading="lazy"
-							decoding="async"
-							referrerpolicy="no-referrer"
-						/>
-						<div
-							v-else
-							class="flex h-14 w-10 shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-400 dark:bg-slate-800"
-						>
-							<UIcon name="i-lucide-image-off" class="size-4" />
+						<div class="relative">
+							<UBadge
+								class="absolute left-1 top-1 z-10 !bg-slate-100/90 !text-slate-700 backdrop-blur-sm dark:!bg-slate-800/90 dark:!text-slate-200 font-(family-name:--font-family)"
+								size="sm"
+								color="neutral"
+								variant="soft"
+							>
+								{{ resolveBooksBadgeLabel(item.collectionType) }}
+							</UBadge>
+
+							<img
+								v-if="item.coverUrl"
+								:src="item.coverUrl"
+								:alt="item.name"
+								class="h-40 w-30 rounded-lg object-cover"
+								loading="lazy"
+								decoding="async"
+								referrerpolicy="no-referrer"
+							/>
+							<div
+								v-else
+								class="flex h-40 w-30 items-center justify-center rounded-lg bg-slate-100 text-slate-400 dark:bg-slate-800"
+							>
+								<UIcon name="i-lucide-image-off" class="size-4" />
+							</div>
 						</div>
-						<p class="line-clamp-2 text-sm text-slate-700 dark:text-slate-200">
+						<p
+							class="mt-2 line-clamp-2 text-sm text-slate-700 dark:text-slate-200"
+						>
 							{{ item.name }}
 						</p>
 					</a>
@@ -151,6 +160,16 @@ const isPlaceholder = computed(() => section.value.isPlaceholder === true)
 const isLoading = computed(
 	() => pending.value || !data.value || isPlaceholder.value,
 )
+
+const resolveBooksBadgeLabel = (collectionType: number): string => {
+	if (collectionType === 1) {
+		return t('main.preference.bangumiBooksStatusWish')
+	}
+	if (collectionType === 2) {
+		return t('main.preference.bangumiBooksStatusDone')
+	}
+	return t('main.preference.bangumiBooksStatusDoing')
+}
 
 let placeholderRefreshTimer: ReturnType<typeof setInterval> | undefined
 
