@@ -228,7 +228,7 @@ const resetImageState = (keys: Set<string>): void => {
 	for (const state of [imageVisibleState, imageLoadedState, imageErrorState]) {
 		for (const key of Object.keys(state)) {
 			if (!keys.has(key)) {
-				delete state[key]
+				state[key] = false
 			}
 		}
 	}

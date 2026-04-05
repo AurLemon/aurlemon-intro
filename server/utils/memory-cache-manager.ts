@@ -36,7 +36,6 @@ interface ManagedCacheReadResult<T> {
 }
 
 declare global {
-	// eslint-disable-next-line no-var
 	var __managedMemoryCacheStore__: ManagedCacheStore | undefined
 }
 

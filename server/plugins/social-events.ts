@@ -5,7 +5,6 @@ import {
 } from '~/server/utils/social-events'
 
 declare global {
-	// eslint-disable-next-line no-var
 	var __socialListenersReady__: boolean | undefined
 }
 

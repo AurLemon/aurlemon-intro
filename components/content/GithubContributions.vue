@@ -135,6 +135,7 @@ const props = withDefaults(
 	}>(),
 	{
 		username: undefined,
+		days: undefined,
 	},
 )
 
