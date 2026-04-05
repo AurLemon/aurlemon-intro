@@ -112,7 +112,9 @@
 			"submitApplication": "提交申请",
 			"approve": "审批通过",
 			"createFriendLink": "直接新建友链",
-			"openSiteLikeList": "站点点赞列表"
+			"openSiteLikeList": "站点点赞列表",
+			"prevPage": "上一页",
+			"nextPage": "下一页"
 		},
 		"feedback": {
 			"authTitle": "需要登录",
@@ -133,12 +135,14 @@
 		"message": {
 			"title": "留言板",
 			"count": "{count}",
+			"pageInfo": "{page}/{total}",
 			"placeholder": "不好的评论我会删除。",
 			"replyPlaceholder": "回复 {login}",
 			"loginRequiredTitle": "留言需要 GitHub 登录",
 			"loginRequiredDesc": "登录后才能发表评论、回复别人以及点赞评论。",
 			"emptyTitle": "还没有留言",
 			"emptyDesc": "不好的评论已经被我删除了。",
+			"replyTo": "回复 {login}",
 			"likeCount": "{count}",
 			"likedCount": "{count}"
 		},

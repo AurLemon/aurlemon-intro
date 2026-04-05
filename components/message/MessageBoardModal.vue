@@ -3,7 +3,6 @@
 		v-model:open="open"
 		:title="t('social.message.title')"
 		class="max-w-lg"
-		scrollable
 		:ui="{
 			overlay: 'z-[43000]',
 			content: 'z-[43010]',
@@ -11,33 +10,67 @@
 	>
 		<template #body>
 			<div class="space-y-5">
-				<UAlert
-					v-if="!items.length"
-					color="neutral"
-					variant="soft"
-					:title="t('social.message.emptyTitle')"
-					:description="t('social.message.emptyDesc')"
-				/>
-				<div v-else class="space-y-4">
-					<MessageThread
-						v-for="item in items"
-						:key="item.id"
-						:item="item"
-						:replying-to-id="replyingToId"
-						:reply-loading="submitting"
-						:editing-id="editingId"
-						:editing-loading="editing"
-						:deleting-loading="deleting"
-						:can-interact="isLoggedIn"
-						@like="likeComment"
-						@reply="startReply"
-						@cancel-reply="cancelReply"
-						@submit-reply="submitReply"
-						@start-edit="startEdit"
-						@cancel-edit="cancelEdit"
-						@submit-edit="submitEdit"
-						@delete="deleteComment"
+				<div class="max-h-[56vh] overflow-y-auto space-y-4 pr-1">
+					<UAlert
+						v-if="!items.length"
+						color="neutral"
+						variant="soft"
+						:title="t('social.message.emptyTitle')"
+						:description="t('social.message.emptyDesc')"
 					/>
+					<div v-else class="space-y-4">
+						<MessageThread
+							v-for="item in items"
+							:key="item.id"
+							:item="item"
+							:replying-to-id="replyingToId"
+							:reply-loading="submitting"
+							:editing-id="editingId"
+							:editing-loading="editing"
+							:deleting-loading="deleting"
+							:can-interact="isLoggedIn"
+							:depth="0"
+							@like="likeComment"
+							@reply="startReply"
+							@cancel-reply="cancelReply"
+							@submit-reply="submitReply"
+							@start-edit="startEdit"
+							@cancel-edit="cancelEdit"
+							@submit-edit="submitEdit"
+							@delete="deleteComment"
+						/>
+					</div>
+				</div>
+				<div
+					v-if="pagination.totalPages > 1"
+					class="flex items-center justify-end gap-2"
+				>
+					<UButton
+						size="xs"
+						color="neutral"
+						variant="ghost"
+						:disabled="!pagination.hasPrev"
+						@click="goPrevPage"
+					>
+						{{ t('social.actions.prevPage') }}
+					</UButton>
+					<span class="text-xs text-slate-500 dark:text-slate-400">
+						{{
+							t('social.message.pageInfo', {
+								page: pagination.page,
+								total: pagination.totalPages,
+							})
+						}}
+					</span>
+					<UButton
+						size="xs"
+						color="neutral"
+						variant="ghost"
+						:disabled="!pagination.hasNext"
+						@click="goNextPage"
+					>
+						{{ t('social.actions.nextPage') }}
+					</UButton>
 				</div>
 				<MessageComposer
 					:loading="submitting"
@@ -50,11 +83,14 @@
 					<template #before-submit>
 						<UButton
 							color="neutral"
+							class="gap-1"
 							variant="link"
 							@click="emit('open-site-like-list')"
 						>
-							<UIcon name="i-lucide-heart" class="h-4 w-4" />
-							{{ t('social.actions.openSiteLikeList') }}
+							<UIcon name="i-lucide-heart" class="h-4.5 w-4.5" />
+							<span class="leading-[normal]">
+								{{ t('social.actions.openSiteLikeList') }}
+							</span>
 						</UButton>
 					</template>
 				</MessageComposer>
@@ -80,6 +116,17 @@ const auth = useGithubAuth()
 const { showError } = useSocialFeedback()
 
 const items = ref<MessageCommentItem[]>([])
+const currentPage = ref(1)
+const pageSize = 5
+const pagination = ref<MessageBoardResponse['pagination']>({
+	page: 1,
+	pageSize,
+	totalPages: 1,
+	totalRootCount: 0,
+	totalCommentCount: 0,
+	hasPrev: false,
+	hasNext: false,
+})
 const submitting = ref(false)
 const editing = ref(false)
 const deleting = ref(false)
@@ -89,12 +136,20 @@ const editingTarget = ref<MessageCommentItem | null>(null)
 const isLoggedIn = computed(() => auth.isLoggedIn.value)
 const replyingToId = computed(() => replyTarget.value?.id ?? null)
 const editingId = computed(() => editingTarget.value?.id ?? null)
+const boardQuery = computed(() => ({
+	page: currentPage.value,
+	pageSize,
+}))
 
 const refreshBoard = async () => {
 	try {
 		await auth.ensureReady()
-		const response = await $fetch<MessageBoardResponse>('/api/messages')
+		const response = await $fetch<MessageBoardResponse>('/api/messages', {
+			query: boardQuery.value,
+		})
 		items.value = response.items
+		pagination.value = response.pagination
+		currentPage.value = response.pagination.page
 		auth.user.value = response.currentUser
 	} catch (error) {
 		showError(error)
@@ -114,9 +169,12 @@ const runCommentMutation = async (payload: {
 	try {
 		const response = await $fetch<MessageBoardResponse>('/api/messages', {
 			method: 'POST',
+			query: boardQuery.value,
 			body: payload,
 		})
 		items.value = response.items
+		pagination.value = response.pagination
+		currentPage.value = response.pagination.page
 		auth.user.value = response.currentUser
 		replyTarget.value = null
 		editingTarget.value = null
@@ -176,12 +234,15 @@ const submitEdit = async (commentId: string, content: string) => {
 			`/api/messages/${commentId}`,
 			{
 				method: 'PATCH',
+				query: boardQuery.value,
 				body: {
 					content,
 				},
 			},
 		)
 		items.value = response.items
+		pagination.value = response.pagination
+		currentPage.value = response.pagination.page
 		auth.user.value = response.currentUser
 		editingTarget.value = null
 	} catch (error) {
@@ -201,9 +262,12 @@ const likeComment = async (commentId: string) => {
 			`/api/messages/${commentId}/like`,
 			{
 				method: 'POST',
+				query: boardQuery.value,
 			},
 		)
 		items.value = response.items
+		pagination.value = response.pagination
+		currentPage.value = response.pagination.page
 		auth.user.value = response.currentUser
 	} catch (error) {
 		showError(error)
@@ -222,9 +286,12 @@ const deleteComment = async (commentId: string) => {
 			`/api/messages/${commentId}`,
 			{
 				method: 'DELETE',
+				query: boardQuery.value,
 			},
 		)
 		items.value = response.items
+		pagination.value = response.pagination
+		currentPage.value = response.pagination.page
 		auth.user.value = response.currentUser
 		if (editingTarget.value?.id === commentId) {
 			editingTarget.value = null
@@ -237,6 +304,24 @@ const deleteComment = async (commentId: string) => {
 	} finally {
 		deleting.value = false
 	}
+}
+
+const goPrevPage = () => {
+	if (!pagination.value.hasPrev) {
+		return
+	}
+
+	currentPage.value -= 1
+	void refreshBoard()
+}
+
+const goNextPage = () => {
+	if (!pagination.value.hasNext) {
+		return
+	}
+
+	currentPage.value += 1
+	void refreshBoard()
 }
 
 watch(open, (value) => {

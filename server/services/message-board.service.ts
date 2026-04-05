@@ -3,14 +3,23 @@ import {
 	SOCIAL_EVENT_NAMES,
 	socialEventBus,
 } from '~/server/utils/social-events'
-import type { GithubAuthUser, MessageCommentItem } from '~/shared/types/social'
+import type {
+	GithubAuthUser,
+	MessageBoardPagination,
+	MessageCommentItem,
+} from '~/shared/types/social'
+import type { MessageBoardPaginationQuery } from '~/server/utils/message-board-pagination'
 
 const sortComments = (a: MessageCommentItem, b: MessageCommentItem) =>
 	new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
 
 export const listMessageBoard = async (
 	currentUser: GithubAuthUser | null,
-): Promise<MessageCommentItem[]> => {
+	options: MessageBoardPaginationQuery,
+): Promise<{
+	items: MessageCommentItem[]
+	pagination: MessageBoardPagination
+}> => {
 	const comments = await prisma.messageComment.findMany({
 		include: {
 			likes: true,
@@ -29,9 +38,10 @@ export const listMessageBoard = async (
 
 	const itemMap = new Map<string, MessageCommentItem>()
 
-	for (const comment of comments) {
+	comments.forEach((comment, index) => {
 		itemMap.set(comment.id, {
 			id: comment.id,
+			floor: index + 1,
 			parentId: comment.parentId,
 			content: comment.content,
 			githubLogin: comment.githubLogin,
@@ -41,9 +51,11 @@ export const listMessageBoard = async (
 			likeCount: comment.likes.length,
 			hasLiked: likedSet.has(comment.id),
 			canEdit: comment.githubLogin === currentUser?.githubLogin,
+			replyToGithubLogin: null,
+			isNestedReply: false,
 			replies: [],
 		})
-	}
+	})
 
 	const roots: MessageCommentItem[] = []
 
@@ -64,7 +76,58 @@ export const listMessageBoard = async (
 	}
 
 	walk(roots)
-	return roots
+
+	const flattenRepliesForRoot = (
+		rootId: string,
+		replyNodes: MessageCommentItem[],
+	): MessageCommentItem[] => {
+		const flattened: MessageCommentItem[] = []
+
+		const visit = (node: MessageCommentItem) => {
+			const parent = node.parentId ? itemMap.get(node.parentId) : null
+			node.replyToGithubLogin = parent?.githubLogin ?? null
+			node.isNestedReply = Boolean(node.parentId && node.parentId !== rootId)
+			const nested = node.replies
+			node.replies = []
+			flattened.push(node)
+
+			for (const child of nested) {
+				visit(child)
+			}
+		}
+
+		for (const reply of replyNodes) {
+			visit(reply)
+		}
+
+		return flattened
+	}
+
+	for (const root of roots) {
+		root.replyToGithubLogin = null
+		root.isNestedReply = false
+		root.replies = flattenRepliesForRoot(root.id, root.replies)
+	}
+
+	const totalRootCount = roots.length
+	const totalCommentCount = comments.length
+	const totalPages = Math.max(1, Math.ceil(totalRootCount / options.pageSize))
+	const page = Math.min(Math.max(1, options.page), totalPages)
+	const start = (page - 1) * options.pageSize
+	const items = roots.slice(start, start + options.pageSize)
+
+	return {
+		items,
+		pagination: {
+			page,
+			pageSize: options.pageSize,
+			totalPages,
+			totalRootCount,
+			totalCommentCount,
+			hasPrev: page > 1,
+			hasNext: page < totalPages,
+		},
+	}
 }
 
 export const createMessageComment = async (
