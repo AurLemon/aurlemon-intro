@@ -33,7 +33,7 @@
 								class="min-w-0 flex-1 flex flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
 							>
 								<div
-									class="min-w-0 flex items-center gap-2 flex-wrap sm:flex-nowrap"
+									class="min-w-0 flex items-center gap-x-2 flex-wrap sm:flex-nowrap"
 								>
 									<p class="truncate text-sm font-mono">
 										{{ item.maskedFingerprint }}
