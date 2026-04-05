@@ -110,6 +110,7 @@ import type {
 const open = defineModel<boolean>('open', { default: false })
 const emit = defineEmits<{
 	'open-site-like-list': []
+	'refresh-message-count': []
 }>()
 
 const { t } = useI18n()
@@ -179,6 +180,7 @@ const runCommentMutation = async (payload: {
 		auth.user.value = response.currentUser
 		replyTarget.value = null
 		editingTarget.value = null
+		emit('refresh-message-count')
 	} catch (error) {
 		showError(error)
 	} finally {
@@ -300,6 +302,7 @@ const deleteComment = async (commentId: string) => {
 		if (replyTarget.value?.id === commentId) {
 			replyTarget.value = null
 		}
+		emit('refresh-message-count')
 	} catch (error) {
 		showError(error)
 	} finally {

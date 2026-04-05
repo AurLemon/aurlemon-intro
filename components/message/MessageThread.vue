@@ -32,20 +32,21 @@
 						{{ formatTime(item.createdAt) }}
 					</span>
 				</div>
-				<p
-					v-if="editingId !== item.id"
-					class="whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-200"
-				>
-					<span
+				<div v-if="editingId !== item.id" class="space-y-1">
+					<div
 						v-if="item.isNestedReply && item.replyToGithubLogin"
-						class="mb-1 block text-xs text-slate-500 dark:text-slate-400"
+						class="text-xs text-slate-500 dark:text-slate-400"
 					>
 						{{
 							t('social.message.replyTo', { login: item.replyToGithubLogin })
 						}}
-					</span>
-					{{ item.content }}
-				</p>
+					</div>
+					<p
+						class="whitespace-pre-wrap text-sm text-slate-700 dark:text-slate-200"
+					>
+						{{ item.content }}
+					</p>
+				</div>
 				<div v-else class="space-y-3">
 					<UTextarea v-model="editingDraft" :rows="3" class="w-full" />
 					<div class="flex justify-end gap-2">
