@@ -11,9 +11,6 @@
 					<USkeleton
 						class="h-6 w-32 rounded-md bg-slate-200 dark:bg-slate-700"
 					/>
-					<USkeleton
-						class="h-5 w-44 rounded-md bg-slate-200 dark:bg-slate-700"
-					/>
 				</div>
 				<USkeleton class="h-6 w-20 rounded-md bg-slate-200 dark:bg-slate-700" />
 			</div>
@@ -97,7 +94,16 @@
 						>
 							<span
 								class="block size-3 rounded-[3px] border border-black/5 dark:border-white/10"
-								:style="{ backgroundColor: resolveDayColor(day) }"
+								:class="
+									day.contributionCount <= 0
+										? 'bg-slate-200 dark:bg-slate-700'
+										: ''
+								"
+								:style="
+									day.contributionCount > 0
+										? { backgroundColor: resolveDayColor(day) }
+										: undefined
+								"
 							/>
 
 							<template #content>
@@ -139,7 +145,6 @@ const props = withDefaults(
 	},
 )
 
-const colorMode = useColorMode()
 const { locale, t } = useI18n()
 const skeletonWeekCount = 53
 const calendarScrollRef = ref<HTMLElement | null>(null)
@@ -262,10 +267,6 @@ const formatTooltipDate = (isoDate: string): string => {
 }
 
 const resolveDayColor = (day: GithubContributionDay): string => {
-	if (day.contributionCount <= 0) {
-		return colorMode.value === 'dark' ? '#334155' : '#e2e8f0'
-	}
-
 	const fallback = [
 		'#ebedf0',
 		'#9be9a8',

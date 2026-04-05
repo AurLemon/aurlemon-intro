@@ -47,7 +47,7 @@
 		</div>
 
 		<!-- 信息卡片 -->
-		<div class="mt-10 pb-10 grid grid-cols-1 md:grid-cols-2 gap-5">
+		<div class="mt-16 pb-10 grid grid-cols-1 md:grid-cols-2 gap-5">
 			<div class="relative">
 				<InfoCard :background-src="currentEducationBg">
 					<template #logo>

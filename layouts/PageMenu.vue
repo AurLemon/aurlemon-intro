@@ -358,7 +358,7 @@ onBeforeUnmount(() => {
 	<aside>
 		<div
 			ref="fallbackMeasure"
-			class="pointer-events-none fixed left-0 top-0 -z-10 opacity-0 whitespace-nowrap rounded-full p-2 text-sm md:text-base leading-none font-semibold"
+			class="pointer-events-none fixed left-0 top-0 -z-10 opacity-0 whitespace-nowrap rounded-full p-2 text-base leading-none font-semibold"
 			aria-hidden="true"
 		>
 			{{ displayedFallback?.label ?? currentFallback?.label ?? '' }}
@@ -393,7 +393,7 @@ onBeforeUnmount(() => {
 						v-for="item in baseNavItems"
 						:key="item.key"
 						:to="resolveTo(item)"
-						class="menu-link rounded-full p-2 text-sm md:text-base leading-none whitespace-nowrap transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
+						class="menu-link rounded-full p-2 text-base leading-none whitespace-nowrap transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
 						:class="
 							isPathActive(item)
 								? 'menu-link--active font-semibold text-primary opacity-100 dark:text-sky-300'
@@ -415,7 +415,7 @@ onBeforeUnmount(() => {
 								v-if="displayedFallback"
 								:key="displayedFallback.to"
 								:to="resolveTo(displayedFallback)"
-								class="menu-link menu-link--active rounded-full p-2 text-sm md:text-base leading-none whitespace-nowrap font-semibold text-primary opacity-100 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] dark:text-sky-300"
+								class="menu-link menu-link--active rounded-full p-2 text-base leading-none whitespace-nowrap font-semibold text-primary opacity-100 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] dark:text-sky-300"
 								aria-current="page"
 							>
 								{{ displayedFallback.label }}
