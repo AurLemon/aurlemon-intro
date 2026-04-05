@@ -1,4 +1,9 @@
 import type { GithubContributionCalendar } from '~/shared/types/github-contributions'
+import {
+	cleanupManagedCache,
+	readManagedCache,
+	refreshManagedCache,
+} from '~/server/utils/memory-cache-manager'
 
 type ContributionLevel =
 	GithubContributionCalendar['weeks'][number]['contributionDays'][number]['contributionLevel']
@@ -6,24 +11,9 @@ type ContributionLevel =
 const DEFAULT_DAYS = 365
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000
 const MAX_CACHE_ENTRIES = 32
+const CACHE_NAMESPACE = 'github-contributions'
 const GITHUB_COLORS = ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39']
 const GITHUB_CONTRIBUTIONS_URL = 'https://github.com/users'
-
-interface ParsedContributionDay {
-	date: string
-	weekday: number
-	contributionLevel: ContributionLevel
-	contributionCount: number
-}
-
-interface GithubContributionCacheEntry {
-	expiresAt: number
-	data: GithubContributionCalendar
-}
-
-interface GithubContributionInFlight {
-	promise: Promise<void>
-}
 
 const resolveUsername = (explicitUsername?: string): string => {
 	if (explicitUsername) {
@@ -47,64 +37,6 @@ const clampDays = (days?: number): number => {
 	}
 
 	return Math.min(365, Math.max(30, Math.floor(days as number)))
-}
-
-declare global {
-	// eslint-disable-next-line no-var
-	var __githubContributionCache__:
-		| Map<string, GithubContributionCacheEntry>
-		| undefined
-	// eslint-disable-next-line no-var
-	var __githubContributionInFlight__:
-		| Map<string, GithubContributionInFlight>
-		| undefined
-	// eslint-disable-next-line no-var
-	var __githubContributionRefreshTimer__: NodeJS.Timeout | undefined
-}
-
-const githubContributionCache =
-	globalThis.__githubContributionCache__ ??
-	new Map<string, GithubContributionCacheEntry>()
-const githubContributionInFlight =
-	globalThis.__githubContributionInFlight__ ??
-	new Map<string, GithubContributionInFlight>()
-
-if (!globalThis.__githubContributionCache__) {
-	globalThis.__githubContributionCache__ = githubContributionCache
-}
-if (!globalThis.__githubContributionInFlight__) {
-	globalThis.__githubContributionInFlight__ = githubContributionInFlight
-}
-
-const cleanupGithubContributionCache = (options?: {
-	now?: number
-	keepKey?: string
-}): void => {
-	const now = options?.now ?? Date.now()
-	const keepKey = options?.keepKey
-
-	for (const [key, entry] of githubContributionCache.entries()) {
-		if (entry.expiresAt <= now && key !== keepKey) {
-			githubContributionCache.delete(key)
-		}
-	}
-
-	if (githubContributionCache.size <= MAX_CACHE_ENTRIES) {
-		return
-	}
-
-	const candidates = [...githubContributionCache.entries()]
-		.filter(([key]) => key !== keepKey)
-		.sort((a, b) => a[1].expiresAt - b[1].expiresAt)
-
-	const removeCount = githubContributionCache.size - MAX_CACHE_ENTRIES
-	for (let i = 0; i < removeCount; i++) {
-		const candidate = candidates[i]
-		if (!candidate) {
-			break
-		}
-		githubContributionCache.delete(candidate[0])
-	}
 }
 
 const buildCacheKey = (
@@ -186,6 +118,13 @@ const parseTooltipCount = (tooltip: string): number => {
 
 	const matched = tooltip.match(/(\d+)\s+contributions?/i)
 	return matched ? Number.parseInt(matched[1] ?? '0', 10) : 0
+}
+
+interface ParsedContributionDay {
+	date: string
+	weekday: number
+	contributionLevel: ContributionLevel
+	contributionCount: number
 }
 
 const parseContributionDays = (
@@ -340,36 +279,25 @@ const refreshGithubContributionCache = async (options: {
 	to: Date
 	silent?: boolean
 }): Promise<void> => {
-	cleanupGithubContributionCache({ keepKey: options.cacheKey })
-
-	const exists = githubContributionInFlight.get(options.cacheKey)
-	if (exists) {
-		return exists.promise
-	}
-
-	const promise = (async () => {
-		try {
-			const calendar = await fetchCalendarFromGithub({
-				username: options.username,
-				from: options.from,
-				to: options.to,
-			})
-			githubContributionCache.set(options.cacheKey, {
-				expiresAt: Date.now() + CACHE_TTL_MS,
-				data: calendar,
-			})
-			cleanupGithubContributionCache({ keepKey: options.cacheKey })
-		} catch (error) {
-			if (!options.silent) {
-				console.error('[github-contributions] refresh failed', error)
-			}
-		} finally {
-			githubContributionInFlight.delete(options.cacheKey)
+	try {
+		await refreshManagedCache({
+			namespace: CACHE_NAMESPACE,
+			key: options.cacheKey,
+			loader: () =>
+				fetchCalendarFromGithub({
+					username: options.username,
+					from: options.from,
+					to: options.to,
+				}),
+			ttlMs: CACHE_TTL_MS,
+			silent: true,
+			maxEntries: MAX_CACHE_ENTRIES,
+		})
+	} catch (error) {
+		if (!options.silent) {
+			console.error('[github-contributions] refresh failed', error)
 		}
-	})()
-
-	githubContributionInFlight.set(options.cacheKey, { promise })
-	return promise
+	}
 }
 
 export const fetchGithubContributionCalendar = async (options?: {
@@ -385,14 +313,23 @@ export const fetchGithubContributionCalendar = async (options?: {
 		useRecentYear ? 'recent-year' : 'days',
 	)
 	const now = Date.now()
-	cleanupGithubContributionCache({ now, keepKey: cacheKey })
-	const cached = githubContributionCache.get(cacheKey)
+	cleanupManagedCache({
+		namespace: CACHE_NAMESPACE,
+		now,
+		keepKey: cacheKey,
+		maxEntries: MAX_CACHE_ENTRIES,
+	})
+	const cached = readManagedCache<GithubContributionCalendar>({
+		namespace: CACHE_NAMESPACE,
+		key: cacheKey,
+		now,
+	})
 	const { from, to } = useRecentYear
 		? resolveRangeFromRecentYear()
 		: resolveRangeFromDays(days)
 
-	if (cached && cached.expiresAt > now) {
-		return cached.data
+	if (cached.isFresh && cached.entry) {
+		return cached.entry.data
 	}
 
 	void refreshGithubContributionCache({
@@ -400,10 +337,11 @@ export const fetchGithubContributionCalendar = async (options?: {
 		username,
 		from,
 		to,
+		silent: true,
 	})
 
-	if (cached) {
-		return cached.data
+	if (cached.entry) {
+		return cached.entry.data
 	}
 
 	return createPlaceholderCalendar({
@@ -436,6 +374,11 @@ export const warmupGithubContributionCalendar = async (options?: {
 		to,
 		silent: true,
 	})
+}
+
+declare global {
+	// eslint-disable-next-line no-var
+	var __githubContributionRefreshTimer__: NodeJS.Timeout | undefined
 }
 
 export const startGithubContributionAutoRefresh = (): void => {

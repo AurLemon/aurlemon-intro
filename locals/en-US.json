@@ -80,6 +80,15 @@
 			"line1": "Hey Codex, help me write the content for this page.",
 			"githubContributionsTitle": "GitHub Contributions",
 			"commitsInLastYear": "{count} commits in last year"
+		},
+		"preference": {
+			"bangumiAnimeTitle": "Bangumi Anime",
+			"bangumiBooksTitle": "Bangumi Books",
+			"bangumiWishCount": "Wish {count}",
+			"bangumiDoneCount": "Done {count}",
+			"bangumiLoadFailed": "Failed to load Bangumi data.",
+			"bangumiRetry": "Retry",
+			"bangumiEmpty": "No entries to display."
 		}
 	},
 	"footer": {

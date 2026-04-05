@@ -2,6 +2,9 @@ I do not go too deep into my preferences in public. Some things are better left 
 
 ## ACGN Works
 
+::BangumiAnime
+::
+
 Actually, in the past few years I have watched anime very rarely, let alone read physical books. Most of the physical books I have bought recently are exam-prep books for CET-4 and CET-6. Before November 2025, I had barely watched a single anime.
 
 The reason I suddenly started watching anime again, and even went looking at GL recently, is pretty odd. My current habit is to keep a small video window in the upper-right corner while coding, otherwise waiting for Agent replies is way too slow. In November 2025, by pure chance, I picked a soft yuri slice-of-life show, [Food for the Soul](https://bgm.tv/subject/531159), to watch.
@@ -9,6 +12,9 @@ The reason I suddenly started watching anime again, and even went looking at GL 
 After a few days, I thought it was pretty interesting, got a little hooked, accidentally watched it three or four more times, and even bought the manga in print.
 
 ## GL Works
+
+::BangumiBooks
+::
 
 Later, because of CET-6 on December 13, 2025, I took a one- or two-week break. After the exam, I went back to catching up on shows. I was just wondering whether I should try a true yuri work when Bilibili pushed a MAD for [There's No Freaking Way I'll be Your Lover! Unless...](https://bgm.tv/subject/524707). That was it. I completely fell into the GL world.
 
