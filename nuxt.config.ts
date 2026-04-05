@@ -77,6 +77,8 @@ export default defineNuxtConfig({
 				'lucide:check-circle-2',
 				'lucide:heart',
 				'lucide:messages-square',
+				'lucide:calendar-days',
+				'lucide:git-commit-horizontal',
 			],
 		},
 		serverBundle: {

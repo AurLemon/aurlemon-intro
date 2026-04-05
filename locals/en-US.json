@@ -77,7 +77,9 @@
 			}
 		},
 		"project": {
-			"line1": "Hey Codex, help me write the content for this page."
+			"line1": "Hey Codex, help me write the content for this page.",
+			"githubContributionsTitle": "GitHub Contributions",
+			"commitsInLastYear": "{count} commits in last year"
 		}
 	},
 	"footer": {
