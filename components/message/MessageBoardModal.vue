@@ -83,12 +83,13 @@
 					<template #before-submit>
 						<UButton
 							color="neutral"
-							class="gap-1"
+							class="gap-1 shrink-0"
 							variant="link"
+							:aria-label="t('social.actions.openSiteLikeList')"
 							@click="emit('open-site-like-list')"
 						>
 							<UIcon name="i-lucide-heart" class="h-4.5 w-4.5" />
-							<span class="leading-[normal]">
+							<span class="hidden leading-[normal] sm:inline">
 								{{ t('social.actions.openSiteLikeList') }}
 							</span>
 						</UButton>
