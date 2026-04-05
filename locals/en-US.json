@@ -14,7 +14,7 @@
 	},
 	"main": {
 		"index": {
-			"line1": "Friends usually call me LEMON🍋.",
+			"line1": "Friends usually/call me Lemon🍋.",
 			"line2": "Full-stack developer {doubtful}, from Fuzhou, {age} y.o., INF/TJ.",
 			"doubtful": "debatable",
 			"card": {

@@ -118,6 +118,7 @@ export interface MessageCommentItem {
 	likeCount: number
 	hasLiked: boolean
 	canEdit: boolean
+	canDelete: boolean
 	replyToGithubLogin: string | null
 	isNestedReply: boolean
 	replies: MessageCommentItem[]

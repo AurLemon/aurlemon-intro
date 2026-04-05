@@ -51,6 +51,9 @@ export const listMessageBoard = async (
 			likeCount: comment.likes.length,
 			hasLiked: likedSet.has(comment.id),
 			canEdit: comment.githubLogin === currentUser?.githubLogin,
+			canDelete:
+				comment.githubLogin === currentUser?.githubLogin ||
+				currentUser?.isAdmin === true,
 			replyToGithubLogin: null,
 			isNestedReply: false,
 			replies: [],
@@ -292,7 +295,7 @@ export const deleteMessageComment = async (
 		})
 	}
 
-	if (comment.githubLogin !== currentUser.githubLogin) {
+	if (comment.githubLogin !== currentUser.githubLogin && !currentUser.isAdmin) {
 		throw createError({
 			statusCode: 403,
 			statusMessage: 'COMMENT_DELETE_FORBIDDEN',
