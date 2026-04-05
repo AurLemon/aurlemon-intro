@@ -1,4 +1,5 @@
 import crypto from 'node:crypto'
+import { getDefaultResultOrder, promises as dnsPromises } from 'node:dns'
 import type { H3Event } from 'h3'
 import prisma from '~/lib/prisma'
 import type { GithubAuthUser } from '~/shared/types/social'
@@ -21,6 +22,24 @@ interface GithubUserResponse {
 const GITHUB_FETCH_TIMEOUT = 20_000
 const GITHUB_FETCH_RETRIES = 2
 const GITHUB_RETRY_DELAYS = [400, 1000]
+const GITHUB_OAUTH_DIAG_HOSTS = ['github.com', 'api.github.com'] as const
+const RETRYABLE_GITHUB_NETWORK_ERROR_NAMES = new Set([
+	'AbortError',
+	'TimeoutError',
+	'FetchError',
+	'TypeError',
+])
+const RETRYABLE_GITHUB_NETWORK_MESSAGE_PATTERNS = [
+	'fetch failed',
+	'timeout',
+	'timed out',
+	'network',
+	'socket',
+	'connect',
+	'reset',
+	'enotfound',
+	'eai_again',
+] as const
 const RETRYABLE_GITHUB_NETWORK_CODES = new Set([
 	'UND_ERR_CONNECT_TIMEOUT',
 	'UND_ERR_CONNECT_ERROR',
@@ -49,24 +68,136 @@ export const GITHUB_OAUTH_ERROR_CODES = {
 const retryDelay = (ms: number) =>
 	new Promise((resolve) => setTimeout(resolve, ms))
 
+interface GithubFetchErrorShape {
+	code?: string
+	name?: string
+	message?: string
+	cause?: {
+		code?: string
+		name?: string
+		message?: string
+	}
+}
+
+interface GithubLookupDiagnostic {
+	hostname: string
+	addresses?: {
+		address: string
+		family: number
+	}[]
+	lookupError?: {
+		code?: string
+		name?: string
+		message?: string
+	}
+}
+
+interface GithubNetworkDiagnostic {
+	dnsDefaultResultOrder?: string
+	lookups: GithubLookupDiagnostic[]
+}
+
 const getErrorCode = (error: unknown): string | undefined => {
 	if (!error || typeof error !== 'object') {
 		return undefined
 	}
 
-	const maybeError = error as {
-		code?: string
-		cause?: {
-			code?: string
-		}
-	}
+	const maybeError = error as GithubFetchErrorShape
 
 	return maybeError.cause?.code ?? maybeError.code
 }
 
+const getErrorName = (error: unknown): string | undefined => {
+	if (!error || typeof error !== 'object') {
+		return undefined
+	}
+
+	const maybeError = error as GithubFetchErrorShape
+
+	return maybeError.cause?.name ?? maybeError.name
+}
+
+const getErrorMessage = (error: unknown): string | undefined => {
+	if (!error || typeof error !== 'object') {
+		return undefined
+	}
+
+	const maybeError = error as GithubFetchErrorShape
+
+	return maybeError.cause?.message ?? maybeError.message
+}
+
+const toBasicErrorInfo = (error: unknown) => ({
+	code: getErrorCode(error),
+	name: getErrorName(error),
+	message: getErrorMessage(error),
+})
+
+const resolveLookupDiagnostic = async (
+	hostname: string,
+): Promise<GithubLookupDiagnostic> => {
+	try {
+		const addresses = await dnsPromises.lookup(hostname, { all: true })
+
+		return {
+			hostname,
+			addresses: addresses.map((item) => ({
+				address: item.address,
+				family: item.family,
+			})),
+		}
+	} catch (error) {
+		return {
+			hostname,
+			lookupError: toBasicErrorInfo(error),
+		}
+	}
+}
+
+const resolveGithubNetworkDiagnostic =
+	async (): Promise<GithubNetworkDiagnostic> => {
+		let dnsDefaultResultOrder: string | undefined
+
+		try {
+			dnsDefaultResultOrder = getDefaultResultOrder()
+		} catch {
+			dnsDefaultResultOrder = undefined
+		}
+
+		const lookups = await Promise.all(
+			GITHUB_OAUTH_DIAG_HOSTS.map((hostname) =>
+				resolveLookupDiagnostic(hostname),
+			),
+		)
+
+		return {
+			dnsDefaultResultOrder,
+			lookups,
+		}
+	}
+
 const isRetryableGithubNetworkError = (error: unknown): boolean => {
 	const code = getErrorCode(error)
-	return RETRYABLE_GITHUB_NETWORK_CODES.has(code ?? '')
+
+	if (RETRYABLE_GITHUB_NETWORK_CODES.has(code ?? '')) {
+		return true
+	}
+
+	const errorName = getErrorName(error)
+
+	if (RETRYABLE_GITHUB_NETWORK_ERROR_NAMES.has(errorName ?? '')) {
+		return true
+	}
+
+	const errorMessage = (getErrorMessage(error) ?? '').toLowerCase()
+
+	if (!errorMessage) {
+		return false
+	}
+
+	return RETRYABLE_GITHUB_NETWORK_MESSAGE_PATTERNS.some((pattern) =>
+		errorMessage.includes(pattern),
+	)
 }
 
 const resolveFetchErrorStatus = (error: unknown): number | undefined => {
@@ -220,13 +351,19 @@ export const exchangeGithubCode = async (code: string): Promise<string> => {
 		)
 	} catch (error) {
 		const errorCode = getErrorCode(error)
+		const errorName = getErrorName(error)
+		const errorMessage = getErrorMessage(error)
 		const upstreamStatus = resolveFetchErrorStatus(error)
 		const upstreamData = resolveFetchErrorData(error)
+		const networkDiagnostic = await resolveGithubNetworkDiagnostic()
 
 		if (isRetryableGithubNetworkError(error)) {
 			console.error('[auth/github] token exchange network error', {
 				errorCode,
+				errorName,
+				errorMessage,
 				upstreamStatus,
+				networkDiagnostic,
 			})
 
 			throw createError({
@@ -237,8 +374,11 @@ export const exchangeGithubCode = async (code: string): Promise<string> => {
 
 		console.error('[auth/github] token exchange provider error', {
 			errorCode,
+			errorName,
+			errorMessage,
 			upstreamStatus,
 			upstreamData,
+			networkDiagnostic,
 		})
 
 		throw createError({
@@ -275,13 +415,19 @@ export const fetchGithubUser = async (
 		)
 	} catch (error) {
 		const errorCode = getErrorCode(error)
+		const errorName = getErrorName(error)
+		const errorMessage = getErrorMessage(error)
 		const upstreamStatus = resolveFetchErrorStatus(error)
 		const upstreamData = resolveFetchErrorData(error)
+		const networkDiagnostic = await resolveGithubNetworkDiagnostic()
 
 		if (isRetryableGithubNetworkError(error)) {
 			console.error('[auth/github] user info network error', {
 				errorCode,
+				errorName,
+				errorMessage,
 				upstreamStatus,
+				networkDiagnostic,
 			})
 
 			throw createError({
@@ -292,8 +438,11 @@ export const fetchGithubUser = async (
 
 		console.error('[auth/github] user info provider error', {
 			errorCode,
+			errorName,
+			errorMessage,
 			upstreamStatus,
 			upstreamData,
+			networkDiagnostic,
 		})
 
 		throw createError({
