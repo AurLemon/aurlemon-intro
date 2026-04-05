@@ -1,15 +1,24 @@
 <template>
-	<UButton
-		:loading="loading"
-		:disabled="summary?.hasLiked"
-		color="error"
-		variant="link"
-		class="rounded-full"
-		@click="handleLike"
+	<div
+		class="transition-all duration-300 ease-out"
+		:class="
+			ready
+				? 'opacity-100 translate-y-0 scale-100'
+				: 'opacity-0 translate-y-1 scale-95 pointer-events-none'
+		"
 	>
-		<UIcon name="i-lucide-heart" class="h-5 w-5" />
-		<span class="block text-base">{{ buttonLabel }}</span>
-	</UButton>
+		<UButton
+			:loading="loading"
+			:disabled="summary?.hasLiked"
+			color="error"
+			variant="link"
+			class="rounded-full"
+			@click="handleLike"
+		>
+			<UIcon name="i-lucide-heart" class="h-5 w-5" />
+			<span class="block text-base">{{ buttonLabel }}</span>
+		</UButton>
+	</div>
 </template>
 
 <script setup lang="ts">
@@ -20,6 +29,7 @@ const { showError } = useSocialFeedback()
 const { ensureFingerprint } = useSiteFingerprint()
 
 const loading = ref(false)
+const ready = ref(false)
 const summary = ref<SiteLikeSummary | null>(null)
 
 const buttonLabel = computed(() => {
@@ -38,6 +48,8 @@ const loadSummary = async () => {
 		})
 	} catch (error) {
 		showError(error)
+	} finally {
+		ready.value = true
 	}
 }
 

@@ -119,6 +119,7 @@
 		},
 		"message": {
 			"title": "メッセージボード",
+			"count": "{count}",
 			"placeholder": "ひとこと残してください。",
 			"replyPlaceholder": "{login} に返信",
 			"loginRequiredTitle": "GitHub ログインが必要です",

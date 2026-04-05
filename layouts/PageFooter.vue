@@ -2,14 +2,24 @@
 	<footer class="mx-auto max-w-4xl w-full px-6 md:px-0 my-6 mb-16 mt-auto">
 		<div class="mb-12 flex justify-center items-center gap-3">
 			<SiteLikeButton />
-			<UButton
-				color="neutral"
-				variant="link"
-				class="rounded-full"
-				@click="messageOpen = true"
+			<div
+				class="transition-all duration-300 ease-out"
+				:class="
+					messageReady
+						? 'opacity-100 translate-y-0 scale-100'
+						: 'opacity-0 translate-y-1 scale-95 pointer-events-none'
+				"
 			>
-				<UIcon name="i-lucide-messages-square" class="h-5 w-5" />
-			</UButton>
+				<UButton
+					color="neutral"
+					variant="link"
+					class="rounded-full"
+					@click="messageOpen = true"
+				>
+					<UIcon name="i-lucide-messages-square" class="h-5 w-5" />
+					<span class="block text-base">{{ messageButtonLabel }}</span>
+				</UButton>
+			</div>
 		</div>
 		<div class="w-full flex flex-col justify-between md:flex-row">
 			<SiteMark />
@@ -56,15 +66,40 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import SiteMark from '~/components/branding/AurLemon.vue'
 import SiteLikeButton from '~/components/footer/SiteLikeButton.vue'
 import MessageBoardModal from '~/components/message/MessageBoardModal.vue'
+import type {
+	MessageBoardResponse,
+	MessageCommentItem,
+} from '~/shared/types/social'
 
+const { t } = useI18n()
 const localePath = useLocalePath()
 const hoveredLink = ref<number | null>(null)
 const messageOpen = ref(false)
+const messageCount = ref(0)
+const messageReady = ref(false)
+
+const countMessageItems = (items: MessageCommentItem[]): number =>
+	items.reduce((total, item) => total + 1 + countMessageItems(item.replies), 0)
+
+const messageButtonLabel = computed(() =>
+	t('social.message.count', { count: messageCount.value }),
+)
+
+const loadMessageCount = async () => {
+	try {
+		const response = await $fetch<MessageBoardResponse>('/api/messages')
+		messageCount.value = countMessageItems(response.items)
+	} catch {
+		messageCount.value = 0
+	} finally {
+		messageReady.value = true
+	}
+}
 
 const linkClass = (index: number) => [
 	'transition-colors',
@@ -74,4 +109,8 @@ const linkClass = (index: number) => [
 			? 'text-slate-800 dark:text-slate-200'
 			: 'text-slate-500 dark:text-slate-400',
 ]
+
+onMounted(() => {
+	void loadMessageCount()
+})
 </script>
