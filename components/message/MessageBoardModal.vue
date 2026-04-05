@@ -4,6 +4,10 @@
 		:title="t('social.message.title')"
 		class="max-w-lg"
 		scrollable
+		:ui="{
+			overlay: 'z-[43000]',
+			content: 'z-[43010]',
+		}"
 	>
 		<template #body>
 			<div class="space-y-5">
@@ -43,6 +47,16 @@
 					<template #leading>
 						<SocialAuthStatusBar compact />
 					</template>
+					<template #before-submit>
+						<UButton
+							color="neutral"
+							variant="link"
+							@click="emit('open-site-like-list')"
+						>
+							<UIcon name="i-lucide-heart" class="h-4 w-4" />
+							{{ t('social.actions.openSiteLikeList') }}
+						</UButton>
+					</template>
 				</MessageComposer>
 			</div>
 		</template>
@@ -57,6 +71,9 @@ import type {
 } from '~/shared/types/social'
 
 const open = defineModel<boolean>('open', { default: false })
+const emit = defineEmits<{
+	'open-site-like-list': []
+}>()
 
 const { t } = useI18n()
 const auth = useGithubAuth()

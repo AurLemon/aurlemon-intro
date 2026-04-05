@@ -111,7 +111,8 @@
 			"applyFriendLink": "申请友链",
 			"submitApplication": "提交申请",
 			"approve": "审批通过",
-			"createFriendLink": "直接新建友链"
+			"createFriendLink": "直接新建友链",
+			"openSiteLikeList": "站点点赞列表"
 		},
 		"feedback": {
 			"authTitle": "需要登录",
@@ -123,7 +124,11 @@
 		},
 		"siteLike": {
 			"count": "{count}",
-			"likedCount": "{count}"
+			"likedCount": "{count}",
+			"listTitle": "站点点赞列表",
+			"emptyTitle": "还没有点赞记录",
+			"emptyDesc": "等你来点第一个赞。",
+			"likedAt": "点赞日期：{date}"
 		},
 		"message": {
 			"title": "留言板",

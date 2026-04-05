@@ -10,6 +10,16 @@ export interface SiteLikeSummary {
 	hasLiked: boolean
 }
 
+export interface SiteLikeListItem {
+	likeId: number
+	maskedFingerprint: string
+	likedAt: string
+}
+
+export interface SiteLikeListResponse {
+	items: SiteLikeListItem[]
+}
+
 export interface SiteLikedEvent {
 	likeId: number
 	fingerprint: string
