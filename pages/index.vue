@@ -33,7 +33,11 @@
 				<br class="sm:hidden" />
 				<span>{{ line1Parts[1] }}</span>
 				<br />
-				<i18n-t keypath="main.index.line2" tag="span">
+				<i18n-t
+					keypath="main.index.line2"
+					tag="span"
+					class="block mt-3 md:mt-0 break-all"
+				>
 					<template #age>{{ age }}</template>
 					<template #doubtful>
 						<span class="text-xl italic">{{ $t('main.index.doubtful') }}</span>

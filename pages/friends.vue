@@ -67,11 +67,17 @@ import ContentHeader from '~/components/content/ContentHeader.vue'
 import SocialAuthStatusBar from '~/components/common/SocialAuthStatusBar.vue'
 import FriendLinkAdminModal from '~/components/friends/FriendLinkAdminModal.vue'
 import FriendLinkApplyModal from '~/components/friends/FriendLinkApplyModal.vue'
-import linksCover from '~/assets/resources/pages/links_cover.webp'
+import linksCoverLight from '~/assets/resources/pages/links_cover_light.webp'
+import linksCoverDark from '~/assets/resources/pages/links_cover_dark.webp'
 import type { FriendLinksResponse } from '~/shared/types/social'
 
 const applyOpen = ref(false)
 const adminOpen = ref(false)
+const colorMode = useColorMode()
+
+const linksCover = computed(() =>
+	colorMode.value === 'dark' ? linksCoverDark : linksCoverLight,
+)
 
 const openAdminFromApply = async () => {
 	applyOpen.value = false
