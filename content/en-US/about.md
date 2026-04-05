@@ -2,17 +2,19 @@ Recently, around April 2026, I spent some time rewriting the site. I tried a lot
 
 ## Rambling
 
-I have to admit that taste is subjective. But this is my own site, and I still do not want it to look like everyone else's. So... I very boldly, really very boldly, moved the Menu to the bottom of the page; kept the Header to the reading progress bar and a few action buttons; made the Footer a simple site logo plus non-core page links, external links, and the registration record; and added a Blur Mask to the Header and Menu so the text transitions smoothly while the page scrolls.
+I have to admit that taste is subjective. But this is my own site, and I still do not want it to look like everyone else's.
+
+So... I did something pretty bold (actually, really bold): I moved the Menu to the bottom of the page; kept the Header to the reading progress bar and a few action buttons; made the Footer a simple site logo plus non-core page links, external links, and the registration record; and added a Blur Mask to the Header and Menu so the text transitions smoothly while the page scrolls.
 
 Another thing is that I used a serif typeface for the body this time, while the sans-serif face is used only for titles, buttons, the header, the footer, and other non-core text. I suspect I may be overusing the serif a bit, Source Han Serif, even though I personally think it looks beautiful. I hope people who dislike this pairing do not yell at me.
 
 As for the source of inspiration, Claude was actually what sparked it for me, though Anthropic banned me the next morning, ha. Setting Anthropic's habit of banning accounts aside, let's be fair. Claude's design is still quite distinctive: rounded sans-serif, a serious serif, a cool yellow theme color, and the simple line-art graphics around it. It perfectly captures Claude's core traits: aloof, restrained, mature.
 
-OpenAI's design is also very minimal, with a strongly volumetric mixed-color background paired with restrained sans-serif text, which is also a solid UI practice. But Gemini cannot be selected, and Material Design's messy colors, shadows, and corner radii are just not my thing.
+OpenAI's design is also very minimal, with a strongly volumetric mixed-color background paired with restrained sans-serif text, which is also a solid UI practice. But text selection in Gemini still feels awkward, and Material Design's messy colors, shadows, and corner radii are just not my thing.
 
 So if someone asks me what this site's style is, the first word that comes to mind is probably **restraint**. Even the primary color is just an accent at this point; black, gray, and white still do most of the heavy lifting. In short, no unnecessary design, _Less is More_.
 
-Still, I should explain a bit more. I am not a designer, so all I can rely on is the "design instinct" I have built up from years of browsing websites while writing front end. I also found another problem. When I sketch prototypes, the moment I get specific about a card's details, shadow, font, layout, even how much text to put in it, I will spend ages agonizing over it, sometimes without coming up with anything at all. That is exactly why I know I am not suited to design. My engineering background is merely average, and my design ability is definitely even worse.
+Still, I should explain a bit more. I am not a designer, so all I can rely on is the "design instinct" I have built up from years of browsing websites while building front-end stuff. I also found another problem. When I sketch prototypes, the moment I get specific about a card's details, shadow, font, layout, even how much text to put in it, I will spend ages agonizing over it, sometimes without coming up with anything at all. That is exactly why I know I am not suited to design. My engineering background is merely average, and my design ability is definitely even worse.
 
 And only recently did I convince myself that not every card needs to be hand-written one-to-one in HTML. I used to hand-craft the background of my old personal intro card 1:1... extremely tedious, extremely disgusting. In practice, designing it properly in a UI/UX tool and then exporting the asset is the better way. Front end, after all, is not a dedicated design tool.
 
@@ -26,7 +28,7 @@ Not only was my self-awareness about my own ability severely off, I was also ful
 
 Fortunately, by the time you are reading this, I have already deleted those painful articles.
 
-One last disclaimer: this site only gets updated when I remember to update it, strictly speaking once every three or four months. In other words, when I do not remember, I barely touch it at all. If the font CDN blows up, which should not really happen to Google's CDN, I may not even know. That does not feel like a huge problem anyway, since I already turned on TypeScript strict mode. As long as the build passes, it is fine.
+One last disclaimer: this site only gets updated when I remember to update it, strictly speaking once every three or four months. In other words, when I do not remember, I barely touch it at all. If the font CDN blows up, which should not really happen to Google's CDN, I may not even know. Honestly, that is not a huge issue anyway.
 
 ## Tech
 

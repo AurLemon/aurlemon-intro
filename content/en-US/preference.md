@@ -5,7 +5,7 @@ I do not go too deep into my preferences in public. Some things are better left 
 ::BangumiAnime
 ::
 
-Actually, in the past few years I have watched anime very rarely, let alone read physical books. Most of the physical books I have bought recently are exam-prep books for CET-4 and CET-6. Before November 2025, I had barely watched a single anime.
+The list above shows the anime I have watched. Actually, in the past few years I have watched anime very rarely, let alone read physical books. Most of the physical books I have bought recently are exam-prep books for CET-4 and CET-6. Before November 2025, I had barely watched a single anime.
 
 The reason I suddenly started watching anime again, and even went looking at GL recently, is pretty odd. My current habit is to keep a small video window in the upper-right corner while coding, otherwise waiting for Agent replies is way too slow. In November 2025, by pure chance, I picked a soft yuri slice-of-life show, [Food for the Soul](https://bgm.tv/subject/531159), to watch.
 
@@ -16,17 +16,19 @@ After a few days, I thought it was pretty interesting, got a little hooked, acci
 ::BangumiBooks
 ::
 
-Later, because of CET-6 on December 13, 2025, I took a one- or two-week break. After the exam, I went back to catching up on shows. I was just wondering whether I should try a true yuri work when Bilibili pushed a MAD for [There's No Freaking Way I'll be Your Lover! Unless...](https://bgm.tv/subject/524707). That was it. I completely fell into the GL world.
+Even though this section is about GL, I already put the anime list above, so I might as well drop my light novel and manga logs here too. It fits what comes next anyway.
 
-But [There's No Freaking Way I'll be Your Lover! Unless...](https://bgm.tv/subject/524707) did not quite hit the spot. A few days after finishing it, the withdrawal feeling was already gone. What really still has me in withdrawal is an anime I had not finished back in middle school, [Adachi and Shimamura](https://bgm.tv/subject/282372) (October 2020). I pulled it out to watch again around New Year. Strangely enough, even though the story is very plain and has no especially explosive moments, after watching it, especially once I calmed down, it always left me feeling a little uneasy and uncomfortable. After rewatching it four or five times again and again, I was completely sunk into the story.
+Back to the point. Later, because of CET-6 on December 13, 2025, I took a one- or two-week break. After the exam, I went back to catching up on shows. I was just wondering whether I should try a true yuri work when Bilibili pushed a MAD for [There's No Freaking Way I'll be Your Lover! Unless...](https://bgm.tv/subject/524707). That was it. I completely fell into the GL world.
 
-After that, I spent two nights staying up to finish Moke Yuzuhara-sensei's manga. I am also almost done with the original novel now, too, though it has taken about four months because I read slowly. There really is a strange kind of magic in Hitoma Iruma's writing. The richest and most interesting part of Adachi and Shimamura is not the plot, but the psychological description. I think one of the big reasons I was drawn to it, besides the GL angle, is that the similar character backgrounds resonated with me.
+But [There's No Freaking Way I'll be Your Lover! Unless...](https://bgm.tv/subject/524707) did not quite hit the spot. A few days after finishing it, the withdrawal symptoms were already gone. What really still has me in withdrawal is an anime I had not finished back in middle school, [Adachi and Shimamura](https://bgm.tv/subject/282372) (October 2020). I pulled it out to watch again around New Year. Strangely enough, even though the story is very plain and has no especially explosive moments, after watching it, especially once I calmed down, it always left me feeling a little uneasy and uncomfortable. After rewatching it four or five times again and again, I was completely sunk into the story.
+
+After that, I spent two nights staying up to finish Moke Yuzuhara-sensei's manga. I am also almost done with the original novel now, too, though it has taken about four months because I read slowly; for detailed reading data, see above. There really is a strange kind of magic in Hitoma Iruma's writing. The richest and most interesting part of Adachi and Shimamura is not the plot, but the psychological description. I think one of the big reasons I was drawn to it, besides the GL angle, is that the character backgrounds felt close enough to mine to resonate.
 
 I recently ordered volume 8 of the Adachi and Shimamura manga, along with the Taiwanese edition that is about to be released, and I am looking forward to the books arriving. Every rewatch is a wash for my soul.
 
 Another title that kept me in withdrawal for quite a long time was [Cosmic Princess Kaguya](https://bgm.tv/subject/604826). The animation is smooth, and it tells a story properly. I also rewatch it often these days, and I have already ordered the artbook and the novel.
 
-My anime-watching updates are on [Bangumi](https://bgm.tv/user/aurlemon). This site will not be updated there very often.
+My anime-watching updates are on [Bangumi](https://bgm.tv/user/aurlemon). I do not mirror those updates on this site very often.
 
 ## Music
 
