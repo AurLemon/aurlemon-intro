@@ -168,10 +168,4 @@ export default defineNuxtConfig({
 		strict: true,
 		typeCheck: process.env.NODE_ENV === 'production',
 	},
-	runtimeConfig: {
-		public: {
-			baiduStatKey: process.env.BAIDU_STAT_KEY,
-			msClarityId: process.env.MS_CLARITY_ID,
-		},
-	},
 })
