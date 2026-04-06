@@ -129,6 +129,7 @@
 			"logout": "Sign out",
 			"refreshStatus": "Refresh status",
 			"openMessageBoard": "Message Board",
+			"openGithubLoginUserList": "GitHub signed-in user list",
 			"sendComment": "Post",
 			"reply": "Reply",
 			"cancelReply": "Cancel reply",
@@ -151,7 +152,8 @@
 		"tooltip": {
 			"messageBoard": "Message Board",
 			"siteLike": "Like",
-			"siteLiked": "Liked"
+			"siteLiked": "Liked",
+			"githubLoginUserCount": "GitHub signed-in users"
 		},
 		"feedback": {
 			"authTitle": "Login required",
@@ -168,6 +170,12 @@
 			"emptyTitle": "No likes yet",
 			"emptyDesc": "Be the first to like this site.",
 			"likedAt": "Liked on: {date}"
+		},
+		"githubLogin": {
+			"count": "{count}",
+			"listTitle": "GitHub Signed-in Users",
+			"emptyTitle": "No GitHub sign-ins yet",
+			"emptyDesc": "No one has signed in with GitHub yet."
 		},
 		"message": {
 			"title": "Message Board",

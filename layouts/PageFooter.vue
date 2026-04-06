@@ -1,7 +1,12 @@
 <template>
 	<footer class="mx-auto max-w-4xl w-full px-6 md:px-0 my-6 mb-16 mt-auto">
 		<div class="mb-12 flex justify-center items-center gap-3">
-			<SiteLikeButton />
+			<SiteLikeButton @summary-change="handleSiteLikeSummaryChange" />
+			<GithubLoginCountButton
+				:count="githubLoginUserCount"
+				:ready="githubLoginReady"
+				@open-list="githubLoginListOpen = true"
+			/>
 			<UTooltip :text="messageTooltipLabel" :delay-duration="50">
 				<div
 					class="transition-all duration-300 ease-out"
@@ -69,6 +74,7 @@
 			@refresh-message-count="loadMessageCount"
 		/>
 		<SiteLikeListModal v-model:open="siteLikeListOpen" />
+		<GithubLoginUserListModal v-model:open="githubLoginListOpen" />
 	</footer>
 </template>
 
@@ -76,12 +82,15 @@
 import { computed, nextTick, onMounted, ref } from 'vue'
 
 import SiteMark from '~/components/branding/AurLemon.vue'
+import GithubLoginCountButton from '~/components/footer/GithubLoginCountButton.vue'
 import SiteLikeButton from '~/components/footer/SiteLikeButton.vue'
+import GithubLoginUserListModal from '~/components/message/GithubLoginUserListModal.vue'
 import MessageBoardModal from '~/components/message/MessageBoardModal.vue'
 import SiteLikeListModal from '~/components/message/SiteLikeListModal.vue'
 import type {
 	MessageBoardResponse,
 	MessageCommentItem,
+	SiteLikeSummary,
 } from '~/shared/types/social'
 
 const { t } = useI18n()
@@ -89,8 +98,11 @@ const localePath = useLocalePath()
 const hoveredLink = ref<number | null>(null)
 const messageOpen = ref(false)
 const siteLikeListOpen = ref(false)
+const githubLoginListOpen = ref(false)
 const messageCount = ref(0)
 const messageReady = ref(false)
+const githubLoginUserCount = ref(0)
+const githubLoginReady = ref(false)
 
 const countMessageItems = (items: MessageCommentItem[]): number =>
 	items.reduce((total, item) => total + 1 + countMessageItems(item.replies), 0)
@@ -100,6 +112,11 @@ const messageButtonLabel = computed(() =>
 )
 
 const messageTooltipLabel = computed(() => t('social.tooltip.messageBoard'))
+
+const handleSiteLikeSummaryChange = (summary: SiteLikeSummary) => {
+	githubLoginUserCount.value = summary.githubLoginUserCount
+	githubLoginReady.value = true
+}
 
 const loadMessageCount = async () => {
 	try {

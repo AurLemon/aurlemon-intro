@@ -129,6 +129,7 @@
 			"logout": "退出登录",
 			"refreshStatus": "刷新状态",
 			"openMessageBoard": "留言板",
+			"openGithubLoginUserList": "GitHub 登录用户列表",
 			"sendComment": "发送留言",
 			"reply": "回复",
 			"cancelReply": "取消回复",
@@ -151,7 +152,8 @@
 		"tooltip": {
 			"messageBoard": "留言板",
 			"siteLike": "点赞",
-			"siteLiked": "已点赞"
+			"siteLiked": "已点赞",
+			"githubLoginUserCount": "GitHub 登录人数"
 		},
 		"feedback": {
 			"authTitle": "需要登录",
@@ -168,6 +170,12 @@
 			"emptyTitle": "还没有点赞记录",
 			"emptyDesc": "等你来点第一个赞。",
 			"likedAt": "点赞日期：{date}"
+		},
+		"githubLogin": {
+			"count": "{count}",
+			"listTitle": "GitHub 登录用户列表",
+			"emptyTitle": "暂无 GitHub 登录记录",
+			"emptyDesc": "还没有用户通过 GitHub 登录过。"
 		},
 		"message": {
 			"title": "留言板",

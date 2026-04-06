@@ -129,6 +129,7 @@
 			"logout": "ログアウト",
 			"refreshStatus": "状態を更新",
 			"openMessageBoard": "メッセージボード",
+			"openGithubLoginUserList": "GitHub ログインユーザー一覧",
 			"sendComment": "送信",
 			"reply": "返信",
 			"cancelReply": "返信をやめる",
@@ -151,7 +152,8 @@
 		"tooltip": {
 			"messageBoard": "メッセージボード",
 			"siteLike": "いいね",
-			"siteLiked": "いいね済み"
+			"siteLiked": "いいね済み",
+			"githubLoginUserCount": "GitHub ログイン人数"
 		},
 		"feedback": {
 			"authTitle": "ログインが必要です",
@@ -168,6 +170,12 @@
 			"emptyTitle": "まだいいねはありません",
 			"emptyDesc": "最初のいいねを押してみてください。",
 			"likedAt": "いいね日時: {date}"
+		},
+		"githubLogin": {
+			"count": "{count}",
+			"listTitle": "GitHub ログインユーザー一覧",
+			"emptyTitle": "GitHub ログイン履歴はまだありません",
+			"emptyDesc": "まだ GitHub でログインしたユーザーはいません。"
 		},
 		"message": {
 			"title": "メッセージボード",
