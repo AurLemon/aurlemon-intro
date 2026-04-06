@@ -1,6 +1,6 @@
 <template>
 	<footer class="mx-auto max-w-4xl w-full px-6 md:px-0 my-6 mb-16 mt-auto">
-		<div class="mb-12 flex justify-center items-center gap-3">
+		<div class="mb-12 flex justify-center items-center">
 			<SiteLikeButton @summary-change="handleSiteLikeSummaryChange" />
 			<UTooltip :text="messageTooltipLabel" :delay-duration="50">
 				<div
