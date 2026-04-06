@@ -194,7 +194,7 @@ export const listGithubLoginUsers = async (
 		displayLogin: canViewProfile
 			? item.githubLogin
 			: maskGithubLogin(item.githubLogin),
-		avatarUrl: canViewProfile ? item.avatarUrl : null,
+		avatarUrl: item.avatarUrl,
 		profileUrl: canViewProfile ? item.profileUrl : null,
 		createdAt: item.createdAt.toISOString(),
 		expiresAt: item.expiresAt.toISOString(),
