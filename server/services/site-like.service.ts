@@ -14,7 +14,7 @@ const GITHUB_SESSION_CLEANUP_COOLDOWN_MS = 60_000
 let lastGithubSessionCleanupAt = 0
 let githubSessionCleanupInFlight: Promise<void> | null = null
 
-const cleanupExpiredGithubSessions = async (): Promise<void> => {
+const cleanupExpiredDuplicateGithubSessions = async (): Promise<void> => {
 	const nowMs = Date.now()
 
 	if (nowMs - lastGithubSessionCleanupAt < GITHUB_SESSION_CLEANUP_COOLDOWN_MS) {
@@ -27,12 +27,52 @@ const cleanupExpiredGithubSessions = async (): Promise<void> => {
 	}
 
 	githubSessionCleanupInFlight = prisma.githubSession
-		.deleteMany({
-			where: {
-				expiresAt: {
-					lte: new Date(),
+		.findMany({
+			orderBy: [
+				{
+					githubLogin: 'asc',
 				},
+				{
+					createdAt: 'desc',
+				},
+				{
+					id: 'desc',
+				},
+			],
+			select: {
+				id: true,
+				githubLogin: true,
+				expiresAt: true,
 			},
+		})
+		.then(async (sessions) => {
+			const now = new Date()
+			const seenGithubLogins = new Set<string>()
+			const expiredDuplicateSessionIds: string[] = []
+
+			for (const session of sessions) {
+				if (!seenGithubLogins.has(session.githubLogin)) {
+					// Keep the newest session for each GitHub user.
+					seenGithubLogins.add(session.githubLogin)
+					continue
+				}
+
+				if (session.expiresAt <= now) {
+					expiredDuplicateSessionIds.push(session.id)
+				}
+			}
+
+			if (expiredDuplicateSessionIds.length === 0) {
+				return
+			}
+
+			await prisma.githubSession.deleteMany({
+				where: {
+					id: {
+						in: expiredDuplicateSessionIds,
+					},
+				},
+			})
 		})
 		.then(() => {
 			lastGithubSessionCleanupAt = Date.now()
@@ -45,7 +85,7 @@ const cleanupExpiredGithubSessions = async (): Promise<void> => {
 }
 
 export const getSiteLikeSummary = async (fingerprint?: string) => {
-	await cleanupExpiredGithubSessions()
+	await cleanupExpiredDuplicateGithubSessions()
 
 	const [totalCount, likedRecord, githubLoginGroups] = await Promise.all([
 		prisma.like.count(),
@@ -58,11 +98,6 @@ export const getSiteLikeSummary = async (fingerprint?: string) => {
 			: Promise.resolve(null),
 		prisma.githubSession.groupBy({
 			by: ['githubLogin'],
-			where: {
-				expiresAt: {
-					gt: new Date(),
-				},
-			},
 		}),
 	])
 
@@ -118,16 +153,11 @@ export const listGithubLoginUsers = async (
 	currentUser: GithubAuthUser | null,
 	limit = 100,
 ) => {
-	await cleanupExpiredGithubSessions()
+	await cleanupExpiredDuplicateGithubSessions()
 
 	const safeLimit = Math.max(1, Math.min(limit, 500))
 	const canViewProfile = currentUser?.isAdmin === true
 	const sessions = await prisma.githubSession.findMany({
-		where: {
-			expiresAt: {
-				gt: new Date(),
-			},
-		},
 		orderBy: {
 			createdAt: 'desc',
 		},
