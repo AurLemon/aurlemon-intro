@@ -85,7 +85,7 @@
 					<div
 						v-for="(week, weekIndex) in calendar.weeks"
 						:key="`week-${weekIndex}-${week.firstDay}`"
-						class="grid gap-1"
+						class="grid grid-rows-7 gap-1"
 					>
 						<UTooltip
 							v-for="day in week.contributionDays"
