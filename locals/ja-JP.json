@@ -142,7 +142,11 @@
 			"createFriendLink": "直接追加",
 			"openSiteLikeList": "サイトいいね一覧",
 			"prevPage": "前へ",
-			"nextPage": "次へ"
+			"nextPage": "次へ",
+			"sortLatest": "新しい順",
+			"sortEarliest": "古い順",
+			"pin": "固定",
+			"unpin": "固定解除"
 		},
 		"tooltip": {
 			"messageBoard": "メッセージボード",
@@ -175,6 +179,7 @@
 			"loginRequiredDesc": "投稿、返信、いいねには GitHub ログインが必要です。",
 			"emptyTitle": "まだメッセージはありません",
 			"emptyDesc": "最初のメッセージを残せます。",
+			"pinned": "固定",
 			"replyTo": "{login} に返信",
 			"likeCount": "{count}",
 			"likedCount": "{count}"
@@ -218,6 +223,8 @@
 			"commentDeleteForbidden": "自分のメッセージのみ削除できます。",
 			"commentNotFound": "メッセージが存在しないか削除されています。",
 			"commentParentNotFound": "返信先が見つかりません。",
+			"commentPinOnlyRoot": "固定できるのは親コメントのみです。",
+			"invalidCommentPinnedState": "固定状態の指定が不正です。",
 			"friendLinkAlreadyExists": "この相互リンクはすでに存在します。",
 			"friendLinkNotFound": "相互リンクが存在しないか削除されています。",
 			"friendLinkApplicationPending": "このサイトにはすでに承認待ち申請があります。",

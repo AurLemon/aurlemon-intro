@@ -142,7 +142,11 @@
 			"createFriendLink": "直接新建友链",
 			"openSiteLikeList": "站点点赞列表",
 			"prevPage": "上一页",
-			"nextPage": "下一页"
+			"nextPage": "下一页",
+			"sortLatest": "最新",
+			"sortEarliest": "最早",
+			"pin": "置顶",
+			"unpin": "取消置顶"
 		},
 		"tooltip": {
 			"messageBoard": "留言板",
@@ -175,6 +179,7 @@
 			"loginRequiredDesc": "登录后才能发表评论、回复别人以及点赞评论。",
 			"emptyTitle": "还没有留言",
 			"emptyDesc": "不好的评论已经被我删除了。",
+			"pinned": "置顶",
 			"replyTo": "回复 {login}",
 			"likeCount": "{count}",
 			"likedCount": "{count}"
@@ -218,6 +223,8 @@
 			"commentDeleteForbidden": "只能删除自己的留言。",
 			"commentNotFound": "留言不存在或已经被删除。",
 			"commentParentNotFound": "回复目标不存在。",
+			"commentPinOnlyRoot": "只有主楼留言可以置顶。",
+			"invalidCommentPinnedState": "置顶状态参数不合法。",
 			"friendLinkAlreadyExists": "这个友链已经存在。",
 			"friendLinkNotFound": "友链不存在或已删除。",
 			"friendLinkApplicationPending": "这个站点已经有待审批申请。",

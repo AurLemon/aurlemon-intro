@@ -7,11 +7,31 @@ import type {
 	GithubAuthUser,
 	MessageBoardPagination,
 	MessageCommentItem,
+	MessageBoardSortOrder,
 } from '~/shared/types/social'
 import type { MessageBoardPaginationQuery } from '~/server/utils/message-board-pagination'
 
-const sortComments = (a: MessageCommentItem, b: MessageCommentItem) =>
-	new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+const createCreatedAtSorter = (order: MessageBoardSortOrder) => {
+	if (order === 'earliest') {
+		return (a: MessageCommentItem, b: MessageCommentItem) =>
+			new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+	}
+
+	return (a: MessageCommentItem, b: MessageCommentItem) =>
+		new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+}
+
+const createRootSorter = (order: MessageBoardSortOrder) => {
+	const createdAtSorter = createCreatedAtSorter(order)
+
+	return (a: MessageCommentItem, b: MessageCommentItem) => {
+		if (a.isPinned !== b.isPinned) {
+			return a.isPinned ? -1 : 1
+		}
+
+		return createdAtSorter(a, b)
+	}
+}
 
 export const listMessageBoard = async (
 	currentUser: GithubAuthUser | null,
@@ -43,6 +63,7 @@ export const listMessageBoard = async (
 			id: comment.id,
 			floor: index + 1,
 			parentId: comment.parentId,
+			isPinned: comment.isPinned,
 			content: comment.content,
 			githubLogin: comment.githubLogin,
 			avatarUrl: comment.avatarUrl,
@@ -56,6 +77,7 @@ export const listMessageBoard = async (
 			canDelete:
 				comment.githubLogin === currentUser?.githubLogin ||
 				currentUser?.isAdmin === true,
+			canPin: currentUser?.isAdmin === true && comment.parentId === null,
 			replyToGithubLogin: null,
 			isNestedReply: false,
 			replies: [],
@@ -73,14 +95,18 @@ export const listMessageBoard = async (
 		roots.push(item)
 	}
 
+	const sortByCreatedAt = createCreatedAtSorter(options.sort)
+	const sortRootComments = createRootSorter(options.sort)
+
 	const walk = (items: MessageCommentItem[]) => {
-		items.sort(sortComments)
+		items.sort(sortByCreatedAt)
 		for (const item of items) {
 			walk(item.replies)
 		}
 	}
 
 	walk(roots)
+	roots.sort(sortRootComments)
 
 	const flattenRepliesForRoot = (
 		rootId: string,
@@ -114,12 +140,25 @@ export const listMessageBoard = async (
 		root.replies = flattenRepliesForRoot(root.id, root.replies)
 	}
 
-	const totalRootCount = roots.length
-	const totalCommentCount = comments.length
+	const filteredRoots =
+		options.pinFilter === 'pinned'
+			? roots.filter((root) => root.isPinned)
+			: options.pinFilter === 'unpinned'
+				? roots.filter((root) => !root.isPinned)
+				: roots
+
+	const countCommentItems = (items: MessageCommentItem[]): number =>
+		items.reduce(
+			(total, item) => total + 1 + countCommentItems(item.replies),
+			0,
+		)
+
+	const totalRootCount = filteredRoots.length
+	const totalCommentCount = countCommentItems(filteredRoots)
 	const totalPages = Math.max(1, Math.ceil(totalRootCount / options.pageSize))
 	const page = Math.min(Math.max(1, options.page), totalPages)
 	const start = (page - 1) * options.pageSize
-	const items = roots.slice(start, start + options.pageSize)
+	const items = filteredRoots.slice(start, start + options.pageSize)
 
 	return {
 		items,
@@ -133,6 +172,44 @@ export const listMessageBoard = async (
 			hasNext: page < totalPages,
 		},
 	}
+}
+
+export const setMessageCommentPinned = async (
+	commentId: string,
+	pinned: boolean,
+) => {
+	const comment = await prisma.messageComment.findUnique({
+		where: {
+			id: commentId,
+		},
+		select: {
+			id: true,
+			parentId: true,
+		},
+	})
+
+	if (!comment) {
+		throw createError({
+			statusCode: 404,
+			statusMessage: 'COMMENT_NOT_FOUND',
+		})
+	}
+
+	if (comment.parentId) {
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'COMMENT_PIN_ONLY_ROOT',
+		})
+	}
+
+	await prisma.messageComment.update({
+		where: {
+			id: commentId,
+		},
+		data: {
+			isPinned: pinned,
+		},
+	})
 }
 
 export const createMessageComment = async (

@@ -142,7 +142,11 @@
 			"createFriendLink": "Create Link",
 			"openSiteLikeList": "Site Like List",
 			"prevPage": "Previous",
-			"nextPage": "Next"
+			"nextPage": "Next",
+			"sortLatest": "Newest",
+			"sortEarliest": "Oldest",
+			"pin": "Pin",
+			"unpin": "Unpin"
 		},
 		"tooltip": {
 			"messageBoard": "Message Board",
@@ -175,6 +179,7 @@
 			"loginRequiredDesc": "You need to sign in before posting, replying, or liking messages.",
 			"emptyTitle": "No messages yet",
 			"emptyDesc": "You can be the first one to leave a message.",
+			"pinned": "Pinned",
 			"replyTo": "Reply to {login}",
 			"likeCount": "{count}",
 			"likedCount": "{count}"
@@ -218,6 +223,8 @@
 			"commentDeleteForbidden": "You can only delete your own message.",
 			"commentNotFound": "The message does not exist or has been removed.",
 			"commentParentNotFound": "The reply target does not exist.",
+			"commentPinOnlyRoot": "Only top-level messages can be pinned.",
+			"invalidCommentPinnedState": "The pinned state is invalid.",
 			"friendLinkAlreadyExists": "This friend link already exists.",
 			"friendLinkNotFound": "The friend link does not exist or was removed.",
 			"friendLinkApplicationPending": "There is already a pending request for this site.",

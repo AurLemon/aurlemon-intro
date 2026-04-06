@@ -2,6 +2,11 @@ import { PrismaClient } from '@prisma/client'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 
+const PRISMA_SCHEMA_DIR = resolve(process.cwd(), 'prisma')
+
+const resolveSqliteRelativePath = (dbPath: string): string =>
+	resolve(PRISMA_SCHEMA_DIR, dbPath)
+
 const normalizeSqliteUrl = (url: string | undefined): string | undefined => {
 	if (!url?.startsWith('file:')) {
 		return url
@@ -13,7 +18,7 @@ const normalizeSqliteUrl = (url: string | undefined): string | undefined => {
 		return url
 	}
 
-	return `file:${resolve(process.cwd(), dbPath)}`
+	return `file:${resolveSqliteRelativePath(dbPath)}`
 }
 
 const ensureSqliteDatabaseFile = (url: string | undefined) => {
@@ -22,7 +27,9 @@ const ensureSqliteDatabaseFile = (url: string | undefined) => {
 	}
 
 	const dbPath = url.slice('file:'.length)
-	const resolvedDbPath = resolve(process.cwd(), dbPath)
+	const resolvedDbPath = dbPath.startsWith('/')
+		? dbPath
+		: resolveSqliteRelativePath(dbPath)
 	const resolvedDir = dirname(resolvedDbPath)
 
 	mkdirSync(resolvedDir, { recursive: true })
@@ -33,7 +40,7 @@ const ensureSqliteDatabaseFile = (url: string | undefined) => {
 }
 
 const prismaClientSingleton = () => {
-	const databaseUrl = process.env.DATABASE_URL ?? 'file:./prisma/dev.db'
+	const databaseUrl = process.env.DATABASE_URL ?? 'file:./dev.db'
 	const normalizedUrl = normalizeSqliteUrl(databaseUrl)
 	ensureSqliteDatabaseFile(normalizedUrl)
 

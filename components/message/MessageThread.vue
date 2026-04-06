@@ -16,6 +16,13 @@
 					<span class="text-xs font-mono text-slate-500 dark:text-slate-400">
 						#{{ item.floor }}
 					</span>
+					<span
+						v-if="item.isPinned"
+						class="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-700 dark:bg-amber-500/20 dark:text-amber-200"
+					>
+						<UIcon name="i-lucide-pin" class="h-3 w-3" />
+						{{ t('social.message.pinned') }}
+					</span>
 					<UButton
 						size="xs"
 						color="neutral"
@@ -110,6 +117,18 @@
 					>
 						{{ t('social.actions.delete') }}
 					</UButton>
+					<UButton
+						v-if="item.canPin"
+						size="xs"
+						color="neutral"
+						variant="ghost"
+						:disabled="pinningLoading || editingLoading"
+						@click="handleTogglePin(item)"
+					>
+						{{
+							t(item.isPinned ? 'social.actions.unpin' : 'social.actions.pin')
+						}}
+					</UButton>
 				</div>
 				<div v-if="visibleReplies.length" class="space-y-3">
 					<MessageThread
@@ -120,6 +139,7 @@
 						:reply-loading="replyLoading"
 						:editing-id="editingId"
 						:editing-loading="editingLoading"
+						:pinning-loading="pinningLoading"
 						:deleting-loading="deletingLoading"
 						:can-interact="canInteract"
 						:depth="nextDepth"
@@ -130,6 +150,7 @@
 						@start-edit="$emit('start-edit', $event)"
 						@cancel-edit="$emit('cancel-edit')"
 						@submit-edit="forwardEdit"
+						@toggle-pin="forwardTogglePin"
 						@delete="$emit('delete', $event)"
 					/>
 				</div>
@@ -156,6 +177,7 @@ const props = defineProps<{
 	replyLoading: boolean
 	editingId: string | null
 	editingLoading: boolean
+	pinningLoading: boolean
 	deletingLoading: boolean
 	canInteract: boolean
 	depth: number
@@ -184,6 +206,7 @@ const emit = defineEmits<{
 	'start-edit': [item: MessageCommentItem]
 	'cancel-edit': []
 	'submit-edit': [id: string, content: string]
+	'toggle-pin': [id: string, pinned: boolean]
 	delete: [id: string]
 }>()
 
@@ -193,6 +216,10 @@ const forwardReply = (id: string, content: string) => {
 
 const forwardEdit = (id: string, content: string) => {
 	emit('submit-edit', id, content)
+}
+
+const forwardTogglePin = (id: string, pinned: boolean) => {
+	emit('toggle-pin', id, pinned)
 }
 
 const editingDraft = ref('')
@@ -234,6 +261,10 @@ const handleDelete = (id: string) => {
 	}
 
 	emit('delete', id)
+}
+
+const handleTogglePin = (item: MessageCommentItem) => {
+	emit('toggle-pin', item.id, !item.isPinned)
 }
 
 watch(

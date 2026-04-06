@@ -7,6 +7,8 @@ const ERROR_KEY_MAP: Record<string, string> = {
 	COMMENT_DELETE_FORBIDDEN: 'social.errors.commentDeleteForbidden',
 	COMMENT_NOT_FOUND: 'social.errors.commentNotFound',
 	COMMENT_PARENT_NOT_FOUND: 'social.errors.commentParentNotFound',
+	COMMENT_PIN_ONLY_ROOT: 'social.errors.commentPinOnlyRoot',
+	INVALID_COMMENT_PINNED_STATE: 'social.errors.invalidCommentPinnedState',
 	FRIEND_LINK_ALREADY_EXISTS: 'social.errors.friendLinkAlreadyExists',
 	FRIEND_LINK_NOT_FOUND: 'social.errors.friendLinkNotFound',
 	FRIEND_LINK_APPLICATION_PENDING: 'social.errors.friendLinkApplicationPending',
