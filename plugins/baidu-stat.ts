@@ -7,7 +7,7 @@ declare global {
 }
 
 export default defineNuxtPlugin(() => {
-	const baiduStatKey = process.env.BAIDU_STAT_KEY
+	const baiduStatKey = useRuntimeConfig().public.baiduStatKey
 
 	if (baiduStatKey) {
 		window._hmt = window._hmt || []
