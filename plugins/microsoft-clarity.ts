@@ -9,7 +9,7 @@ declare global {
 }
 
 export default defineNuxtPlugin(() => {
-	const clarityProjectId = useRuntimeConfig().public.msClarityId
+	const clarityProjectId = process.env.MS_CLARITY_ID
 
 	if (clarityProjectId) {
 		Clarity.init(clarityProjectId)
