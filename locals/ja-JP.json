@@ -195,6 +195,7 @@
 		"friendLinks": {
 			"applyTitle": "相互リンク申請",
 			"adminEntry": "管理",
+			"applyReminder": "申請を送信した後は、必ずメールで承認を促してください {mail}。このサイトはまだメール通知に対応していません。知らせてもらえないと、誰かが承認申請を出したかどうか分かりません。私はとてもフレンドリーなので、どうぞ安心してください🥹。",
 			"loginRequiredTitle": "GitHub ログインが必要です",
 			"loginRequiredDesc": "相互リンク申請には GitHub ログインが必要です。",
 			"adminTitle": "相互リンク管理",
@@ -204,7 +205,7 @@
 			"listTitle": "相互リンク一覧",
 			"pendingTitle": "承認待ち申請",
 			"pendingEmptyTitle": "承認待ち申請はありません",
-			"pendingEmptyDesc": "新しい申請はここに表示され、7日放置すると自動で解放されます。",
+			"pendingEmptyDesc": "新しい申請はここに表示され、30日放置すると自動で解放されます。",
 			"directCreateTitle": "相互リンクを直接追加",
 			"editTitle": "相互リンクを編集",
 			"status": {

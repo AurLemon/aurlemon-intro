@@ -195,6 +195,7 @@
 		"friendLinks": {
 			"applyTitle": "申请友链",
 			"adminEntry": "管理员管理",
+			"applyReminder": "申请提交后，请务必发邮件提醒我审批 {mail}。网站暂未接入邮件提醒，不提醒我我不知道是否有人提交审批。我很友好的，请放心🥹。",
 			"loginRequiredTitle": "申请友链需要 GitHub 登录",
 			"loginRequiredDesc": "登录后才能提交友链申请。",
 			"adminTitle": "友链管理",
@@ -204,7 +205,7 @@
 			"listTitle": "友链列表",
 			"pendingTitle": "待审批申请",
 			"pendingEmptyTitle": "暂无待审批申请",
-			"pendingEmptyDesc": "新的申请会在这里出现，7 天未处理会自动释放。",
+			"pendingEmptyDesc": "新的申请会在这里出现，30 天未处理会自动释放。",
 			"directCreateTitle": "直接新建友链",
 			"editTitle": "编辑友链",
 			"status": {
