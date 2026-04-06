@@ -1,6 +1,6 @@
 # aurlemon-intro
 
-> [ZH](README_zh.md).
+> [中文](README_zh.md)
 
 My personal website, built with Nuxt 4 and TypeScript. The site is organized into a few main sections:
 

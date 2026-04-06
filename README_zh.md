@@ -1,6 +1,6 @@
 # aurlemon-intro
 
-> [EN](README.md).
+> [English](README.md)
 
 我的个人网站，基于 Nuxt 4 + TypeScript。站点主要由几块内容组成：
 
