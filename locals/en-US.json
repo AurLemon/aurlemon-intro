@@ -195,6 +195,7 @@
 		"friendLinks": {
 			"applyTitle": "Apply for Link Exchange",
 			"adminEntry": "Admin",
+			"applyReminder": "After submitting, please be sure to email me to remind me to approve at {mail}. This site has not integrated email notifications yet. If you don't remind me, I don't know whether someone submitted for approval. I am very friendly, so please rest assured. 🥹",
 			"loginRequiredTitle": "GitHub login is required",
 			"loginRequiredDesc": "You need to sign in before submitting a link exchange request.",
 			"adminTitle": "Friend Link Admin",
@@ -204,7 +205,7 @@
 			"listTitle": "Friend Link List",
 			"pendingTitle": "Pending Requests",
 			"pendingEmptyTitle": "No pending requests",
-			"pendingEmptyDesc": "New requests will show up here and expire after 7 days if untouched.",
+			"pendingEmptyDesc": "New requests will show up here and expire after 30 days if untouched.",
 			"directCreateTitle": "Create Friend Link Directly",
 			"editTitle": "Edit Friend Link",
 			"status": {

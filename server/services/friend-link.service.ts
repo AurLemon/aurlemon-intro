@@ -21,6 +21,7 @@ const FALLBACK_COLORS = [
 ]
 
 let cleanupExpiredFriendLinkApplicationsInFlight: Promise<void> | null = null
+const FRIEND_LINK_APPLICATION_EXPIRES_IN_DAYS = 30
 
 const isUniqueConstraintError = (error: unknown): boolean => {
 	return (
@@ -200,7 +201,10 @@ export const submitFriendLinkApplication = async (
 			desc: payload.desc,
 			imageBase64: resolveFriendLinkImage(payload.name, payload.imageBase64),
 			applicantGithubLogin: currentUser.githubLogin,
-			expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
+			expiresAt: new Date(
+				Date.now() +
+					1000 * 60 * 60 * 24 * FRIEND_LINK_APPLICATION_EXPIRES_IN_DAYS,
+			),
 		},
 	})
 

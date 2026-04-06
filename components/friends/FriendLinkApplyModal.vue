@@ -31,6 +31,15 @@
 					:show-login-button="false"
 				/>
 				<div v-else class="space-y-4">
+					<p
+						class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-100"
+					>
+						{{
+							t('social.friendLinks.applyReminder', {
+								mail: reminderMail,
+							})
+						}}
+					</p>
 					<div class="space-y-2">
 						<label class="text-sm text-slate-700 dark:text-slate-300">
 							{{ t('social.friendLinks.fields.name') }}
@@ -128,7 +137,7 @@ const emit = defineEmits<{
 	'open-admin': []
 	submitted: []
 }>()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const auth = useGithubAuth()
 const { showAuthRequired, showError } = useSocialFeedback()
 const { normalizeImage } = useFriendLinkImage()
@@ -137,6 +146,11 @@ const submitting = ref(false)
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const selectedImageName = ref('')
 const currentUser = computed(() => auth.user.value)
+const reminderMail = computed(() =>
+	locale.value.toLowerCase().startsWith('zh')
+		? '2115386831@qq.com'
+		: 'aurlemoncn@gmail.com',
+)
 const form = reactive({
 	name: '',
 	url: '',
