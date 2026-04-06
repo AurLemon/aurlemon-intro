@@ -3,6 +3,17 @@
 		"siteName": "AurLemon Intro",
 		"switchLanguage": "Switch language"
 	},
+	"localeNotice": {
+		"title": "Your system language looks like {targetLanguage}",
+		"description": "This page is currently in {currentLanguage}. Switch to {targetLanguage}?",
+		"switchAction": "Switch to {targetLanguage}",
+		"keepAction": "Keep current language",
+		"localeNames": {
+			"zhCN": "Simplified Chinese",
+			"jaJP": "Japanese",
+			"enUS": "English"
+		}
+	},
 	"menu": {
 		"overview": "Overview",
 		"project": "Projects",

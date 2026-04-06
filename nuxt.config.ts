@@ -42,11 +42,7 @@ export default defineNuxtConfig({
 					{ code: 'ja-JP', name: '日本語', file: 'ja-JP.json' },
 					{ code: 'en-US', name: 'English', file: 'en-US.json' },
 				],
-				detectBrowserLanguage: {
-					useCookie: true,
-					cookieKey: 'i18n_redirected',
-					redirectOn: 'root',
-				},
+				detectBrowserLanguage: false,
 				vueI18n: './i18n.config.ts',
 			},
 		],

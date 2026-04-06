@@ -3,6 +3,17 @@
 		"siteName": "AurLemon Intro",
 		"switchLanguage": "言語を切り替え"
 	},
+	"localeNotice": {
+		"title": "システム言語は {targetLanguage} のようです",
+		"description": "現在のページ言語は {currentLanguage} です。{targetLanguage} に切り替えますか？",
+		"switchAction": "{targetLanguage} に切り替える",
+		"keepAction": "このままにする",
+		"localeNames": {
+			"zhCN": "簡体字中国語",
+			"jaJP": "日本語",
+			"enUS": "英語"
+		}
+	},
 	"menu": {
 		"overview": "概要",
 		"project": "プロジェクト",
