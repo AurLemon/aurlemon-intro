@@ -29,10 +29,11 @@
 								class="h-8 w-8 shrink-0 overflow-hidden rounded-full border border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800 flex items-center justify-center"
 							>
 								<img
-									v-if="item.canViewProfile && item.avatarUrl"
+									v-if="item.avatarUrl"
 									:src="item.avatarUrl"
 									:alt="item.displayLogin"
 									class="h-full w-full object-cover"
+									:class="item.canViewProfile ? '' : 'blur-[2px]'"
 								/>
 								<UIcon
 									v-else
