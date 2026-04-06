@@ -762,11 +762,31 @@ export const getGithubSession = async (
 		}
 
 		if (session) {
-			await prisma.githubSession.delete({
+			const latestSession = await prisma.githubSession.findFirst({
 				where: {
-					id: session.id,
+					githubLogin: session.githubLogin,
+				},
+				orderBy: [
+					{
+						createdAt: 'desc',
+					},
+					{
+						id: 'desc',
+					},
+				],
+				select: {
+					id: true,
 				},
 			})
+
+			// Keep the newest session record for each GitHub user.
+			if (latestSession && latestSession.id !== session.id) {
+				await prisma.githubSession.deleteMany({
+					where: {
+						id: session.id,
+					},
+				})
+			}
 		}
 
 		return null
