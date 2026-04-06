@@ -43,7 +43,7 @@
 							<div
 								class="min-w-0 flex-1 flex flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
 							>
-								<div class="min-w-0">
+								<div class="min-w-0 leading-none">
 									<NuxtLink
 										v-if="item.canViewProfile && item.profileUrl"
 										:to="item.profileUrl"
@@ -53,7 +53,7 @@
 									>
 										<UIcon
 											name="i-lucide-github"
-											class="h-3.5 w-3.5 shrink-0"
+											class="h-3.5 w-3.5 shrink-0 p-0"
 										/>
 										<span class="truncate">{{ item.displayLogin }}</span>
 									</NuxtLink>
