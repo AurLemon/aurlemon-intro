@@ -108,7 +108,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 const { locale, t } = useI18n()
@@ -155,10 +155,28 @@ const selectTheme = (mode: ThemeMode): void => {
 
 const selectedLocale = computed(() => locale.value as LocaleCode)
 
+const restoreScrollPosition = (savedY: number) => {
+	if (!import.meta.client) {
+		return
+	}
+
+	const restore = () => {
+		window.scrollTo({ top: savedY, behavior: 'auto' })
+	}
+
+	restore()
+	requestAnimationFrame(() => {
+		restore()
+		window.dispatchEvent(new Event('scroll'))
+	})
+}
+
 const selectLocale = async (value: LocaleCode): Promise<void> => {
 	if (!value || value === locale.value) {
 		return
 	}
+
+	const savedScrollY = import.meta.client ? window.scrollY : 0
 
 	const setLocale = (
 		nuxtApp.$i18n as { setLocale?: (code: LocaleCode) => Promise<void> }
@@ -166,10 +184,14 @@ const selectLocale = async (value: LocaleCode): Promise<void> => {
 
 	if (setLocale) {
 		await setLocale(value)
+		await nextTick()
+		restoreScrollPosition(savedScrollY)
 		return
 	}
 
 	locale.value = value
+	await nextTick()
+	restoreScrollPosition(savedScrollY)
 }
 </script>
 
