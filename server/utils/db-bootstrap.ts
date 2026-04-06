@@ -24,6 +24,7 @@ const BOOTSTRAP_STATEMENTS = [
 	`CREATE TABLE IF NOT EXISTS "MessageComment" (
 		"id" TEXT NOT NULL PRIMARY KEY,
 		"parentId" TEXT,
+		"isPinned" BOOLEAN NOT NULL DEFAULT false,
 		"content" TEXT NOT NULL,
 		"githubLogin" TEXT NOT NULL,
 		"avatarUrl" TEXT NOT NULL,
@@ -34,6 +35,7 @@ const BOOTSTRAP_STATEMENTS = [
 	)`,
 	`CREATE INDEX IF NOT EXISTS "MessageComment_parentId_idx" ON "MessageComment"("parentId")`,
 	`CREATE INDEX IF NOT EXISTS "MessageComment_createdAt_idx" ON "MessageComment"("createdAt")`,
+	`CREATE INDEX IF NOT EXISTS "MessageComment_isPinned_createdAt_idx" ON "MessageComment"("isPinned", "createdAt")`,
 	`CREATE TABLE IF NOT EXISTS "MessageCommentLike" (
 		"id" TEXT NOT NULL PRIMARY KEY,
 		"commentId" TEXT NOT NULL,
@@ -83,12 +85,37 @@ const hasBootstrapTables = async (): Promise<boolean> => {
 	return result.length > 0
 }
 
-export const ensureDatabaseBootstrap = async (): Promise<void> => {
-	if (await hasBootstrapTables()) {
+const ensureMessageCommentPinSchema = async (): Promise<void> => {
+	const tableResult = await prisma.$queryRawUnsafe<Array<{ name: string }>>(
+		`SELECT name FROM sqlite_master WHERE type='table' AND name='MessageComment' LIMIT 1`,
+	)
+
+	if (tableResult.length === 0) {
 		return
 	}
 
-	for (const statement of BOOTSTRAP_STATEMENTS) {
-		await prisma.$executeRawUnsafe(statement)
+	const columns = await prisma.$queryRawUnsafe<Array<{ name: string }>>(
+		`PRAGMA table_info("MessageComment")`,
+	)
+	const hasPinnedColumn = columns.some((column) => column.name === 'isPinned')
+
+	if (!hasPinnedColumn) {
+		await prisma.$executeRawUnsafe(
+			`ALTER TABLE "MessageComment" ADD COLUMN "isPinned" BOOLEAN NOT NULL DEFAULT false`,
+		)
 	}
+
+	await prisma.$executeRawUnsafe(
+		`CREATE INDEX IF NOT EXISTS "MessageComment_isPinned_createdAt_idx" ON "MessageComment"("isPinned", "createdAt")`,
+	)
+}
+
+export const ensureDatabaseBootstrap = async (): Promise<void> => {
+	if (!(await hasBootstrapTables())) {
+		for (const statement of BOOTSTRAP_STATEMENTS) {
+			await prisma.$executeRawUnsafe(statement)
+		}
+	}
+
+	await ensureMessageCommentPinSchema()
 }
