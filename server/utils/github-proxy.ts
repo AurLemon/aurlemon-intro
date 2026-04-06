@@ -39,6 +39,15 @@ const parseBooleanEnv = (value: string | undefined): boolean => {
 	return TRUE_ENV_VALUES.has(value.trim().toLowerCase())
 }
 
+const sanitizeProxyUrlForLog = (value: string): string => {
+	try {
+		const parsed = new URL(value)
+		return `${parsed.origin}${parsed.pathname}`
+	} catch {
+		return 'INVALID_URL'
+	}
+}
+
 const resolveProxyConfig = (): { url: string; handshakeKey: string } => {
 	return {
 		url: (process.env.GITHUB_PROXY_URL ?? '').trim(),
@@ -124,6 +133,22 @@ const normalizeEnvelope = (value: unknown): GithubProxyEnvelope => {
 
 export const isGithubProxyEnabled = (): boolean => {
 	return parseBooleanEnv(process.env.GITHUB_PROXY_ENABLED)
+}
+
+export interface GithubProxyLogMeta {
+	githubProxyEnabled: boolean
+	githubProxyConfigured: boolean
+	githubProxyUrl: string | null
+}
+
+export const getGithubProxyLogMeta = (): GithubProxyLogMeta => {
+	const { url, handshakeKey } = resolveProxyConfig()
+
+	return {
+		githubProxyEnabled: isGithubProxyEnabled(),
+		githubProxyConfigured: Boolean(url && handshakeKey),
+		githubProxyUrl: url ? sanitizeProxyUrlForLog(url) : null,
+	}
 }
 
 export const proxyGithubRequest = async (

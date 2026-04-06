@@ -83,13 +83,21 @@ const buildGithubRequestMeta = (
 	attemptCount: attempt + 1,
 	retryCount: attempt,
 	durationMs: Date.now() - startedAt,
+	transport: 'direct',
 })
 
-const buildProxyRequestMeta = (durationMs?: number): GithubRequestMeta => ({
-	attemptCount: 1,
-	retryCount: 0,
-	durationMs: Math.max(0, Math.floor(durationMs ?? 0)),
-})
+const buildProxyRequestMeta = (
+	durationMs?: number,
+	proxyRequestId?: string,
+): GithubRequestMeta => {
+	return {
+		attemptCount: 1,
+		retryCount: 0,
+		durationMs: Math.max(0, Math.floor(durationMs ?? 0)),
+		transport: 'proxy',
+		proxyRequestId,
+	}
+}
 
 interface GithubFetchErrorShape {
 	code?: string
@@ -124,6 +132,8 @@ interface GithubRequestMeta {
 	attemptCount: number
 	retryCount: number
 	durationMs: number
+	transport: 'direct' | 'proxy'
+	proxyRequestId?: string
 }
 
 interface FetchWithRetryResult<T> {
@@ -407,6 +417,7 @@ export const exchangeGithubCode = async (
 	}
 
 	let tokenExchangeResult: FetchWithRetryResult<GithubAccessTokenResponse>
+	const useProxy = isGithubProxyEnabled()
 	const tokenExchangeBody = new URLSearchParams({
 		client_id: githubClientId,
 		client_secret: githubClientSecret,
@@ -415,7 +426,7 @@ export const exchangeGithubCode = async (
 	}).toString()
 
 	try {
-		if (isGithubProxyEnabled()) {
+		if (useProxy) {
 			const proxyEnvelope = await proxyGithubRequest({
 				url: 'https://github.com/login/oauth/access_token',
 				method: 'POST',
@@ -433,6 +444,7 @@ export const exchangeGithubCode = async (
 
 				if (isGithubProxyTransportError(proxyEnvelope)) {
 					console.error('[auth/github] token exchange network error', {
+						transport: 'proxy',
 						upstreamStatus: proxyEnvelope.status,
 						errorMessage: proxyEnvelope.error,
 						proxyRequestId: proxyEnvelope.requestId,
@@ -446,6 +458,7 @@ export const exchangeGithubCode = async (
 				}
 
 				console.error('[auth/github] token exchange provider error', {
+					transport: 'proxy',
 					upstreamStatus: proxyEnvelope.status,
 					upstreamData: resolveGithubProxyBodyText(proxyEnvelope),
 					errorMessage: proxyEnvelope.error,
@@ -463,7 +476,10 @@ export const exchangeGithubCode = async (
 				data: resolveGithubProxyJsonBody<GithubAccessTokenResponse>(
 					proxyEnvelope,
 				),
-				requestMeta: buildProxyRequestMeta(proxyEnvelope.durationMs),
+				requestMeta: buildProxyRequestMeta(
+					proxyEnvelope.durationMs,
+					proxyEnvelope.requestId,
+				),
 			}
 		} else {
 			tokenExchangeResult = await fetchWithRetry<GithubAccessTokenResponse>(
@@ -481,11 +497,12 @@ export const exchangeGithubCode = async (
 	} catch (error) {
 		const statusMessage = resolveFetchErrorStatusMessage(error)
 
-		if (statusMessage === GITHUB_OAUTH_ERROR_CODES.NOT_CONFIGURED) {
-			throw createError({
-				statusCode: 500,
-				statusMessage,
-			})
+		if (
+			statusMessage === GITHUB_OAUTH_ERROR_CODES.NOT_CONFIGURED ||
+			statusMessage === GITHUB_OAUTH_ERROR_CODES.NETWORK_ERROR ||
+			statusMessage === GITHUB_OAUTH_ERROR_CODES.PROVIDER_ERROR
+		) {
+			throw error
 		}
 
 		const errorCode = getErrorCode(error)
@@ -497,6 +514,7 @@ export const exchangeGithubCode = async (
 
 		if (isRetryableGithubNetworkError(error)) {
 			console.error('[auth/github] token exchange network error', {
+				transport: useProxy ? 'proxy' : 'direct',
 				errorCode,
 				errorName,
 				errorMessage,
@@ -511,6 +529,7 @@ export const exchangeGithubCode = async (
 		}
 
 		console.error('[auth/github] token exchange provider error', {
+			transport: useProxy ? 'proxy' : 'direct',
 			errorCode,
 			errorName,
 			errorMessage,
@@ -544,9 +563,10 @@ export const fetchGithubUser = async (
 	accessToken: string,
 ): Promise<GithubUserFetchResult> => {
 	let githubUserResult: FetchWithRetryResult<GithubUserResponse>
+	const useProxy = isGithubProxyEnabled()
 
 	try {
-		if (isGithubProxyEnabled()) {
+		if (useProxy) {
 			const proxyEnvelope = await proxyGithubRequest({
 				url: 'https://api.github.com/user',
 				method: 'GET',
@@ -563,6 +583,7 @@ export const fetchGithubUser = async (
 
 				if (isGithubProxyTransportError(proxyEnvelope)) {
 					console.error('[auth/github] user info network error', {
+						transport: 'proxy',
 						upstreamStatus: proxyEnvelope.status,
 						errorMessage: proxyEnvelope.error,
 						proxyRequestId: proxyEnvelope.requestId,
@@ -576,6 +597,7 @@ export const fetchGithubUser = async (
 				}
 
 				console.error('[auth/github] user info provider error', {
+					transport: 'proxy',
 					upstreamStatus: proxyEnvelope.status,
 					upstreamData: resolveGithubProxyBodyText(proxyEnvelope),
 					errorMessage: proxyEnvelope.error,
@@ -591,7 +613,10 @@ export const fetchGithubUser = async (
 
 			githubUserResult = {
 				data: resolveGithubProxyJsonBody<GithubUserResponse>(proxyEnvelope),
-				requestMeta: buildProxyRequestMeta(proxyEnvelope.durationMs),
+				requestMeta: buildProxyRequestMeta(
+					proxyEnvelope.durationMs,
+					proxyEnvelope.requestId,
+				),
 			}
 		} else {
 			githubUserResult = await fetchWithRetry<GithubUserResponse>(
@@ -608,11 +633,12 @@ export const fetchGithubUser = async (
 	} catch (error) {
 		const statusMessage = resolveFetchErrorStatusMessage(error)
 
-		if (statusMessage === GITHUB_OAUTH_ERROR_CODES.NOT_CONFIGURED) {
-			throw createError({
-				statusCode: 500,
-				statusMessage,
-			})
+		if (
+			statusMessage === GITHUB_OAUTH_ERROR_CODES.NOT_CONFIGURED ||
+			statusMessage === GITHUB_OAUTH_ERROR_CODES.NETWORK_ERROR ||
+			statusMessage === GITHUB_OAUTH_ERROR_CODES.PROVIDER_ERROR
+		) {
+			throw error
 		}
 
 		const errorCode = getErrorCode(error)
@@ -624,6 +650,7 @@ export const fetchGithubUser = async (
 
 		if (isRetryableGithubNetworkError(error)) {
 			console.error('[auth/github] user info network error', {
+				transport: useProxy ? 'proxy' : 'direct',
 				errorCode,
 				errorName,
 				errorMessage,
@@ -638,6 +665,7 @@ export const fetchGithubUser = async (
 		}
 
 		console.error('[auth/github] user info provider error', {
+			transport: useProxy ? 'proxy' : 'direct',
 			errorCode,
 			errorName,
 			errorMessage,
