@@ -4,6 +4,11 @@ import {
 	readManagedCache,
 	refreshManagedCache,
 } from '~/server/utils/memory-cache-manager'
+import {
+	isGithubProxyEnabled,
+	proxyGithubRequest,
+	resolveGithubProxyBodyText,
+} from '~/server/utils/github-proxy'
 
 type ContributionLevel =
 	GithubContributionCalendar['weeks'][number]['contributionDays'][number]['contributionLevel']
@@ -228,18 +233,51 @@ const fetchCalendarFromGithub = async (options: {
 }): Promise<GithubContributionCalendar> => {
 	const segments = splitRangeByYear(options.from, options.to)
 	const parsedMap = new Map<string, ParsedContributionDay>()
+	const useProxy = isGithubProxyEnabled()
 
 	for (const segment of segments) {
 		const contributionsUrl =
 			`${GITHUB_CONTRIBUTIONS_URL}/${encodeURIComponent(options.username)}/contributions` +
 			`?from=${segment.fromDate}&to=${segment.toDate}`
-		const html = await $fetch<string>(contributionsUrl, {
-			headers: {
-				'User-Agent': 'Mozilla/5.0',
-			},
-			timeout: 10_000,
-			retry: 1,
-		})
+
+		let html = ''
+
+		if (useProxy) {
+			const proxyEnvelope = await proxyGithubRequest({
+				url: contributionsUrl,
+				method: 'GET',
+				headers: {
+					accept: 'text/html',
+					'user-agent': 'Mozilla/5.0',
+				},
+				timeoutMs: 10_000,
+			})
+
+			if (!proxyEnvelope.ok) {
+				console.error('[github-contributions] proxy request failed', {
+					upstreamStatus: proxyEnvelope.status,
+					errorMessage: proxyEnvelope.error,
+					proxyRequestId: proxyEnvelope.requestId,
+				})
+
+				throw createError({
+					statusCode: proxyEnvelope.status >= 400 ? proxyEnvelope.status : 502,
+					statusMessage:
+						'Failed to fetch GitHub public contributions via proxy.',
+				})
+			}
+
+			html = resolveGithubProxyBodyText(proxyEnvelope)
+		} else {
+			html = await $fetch<string>(contributionsUrl, {
+				headers: {
+					'User-Agent': 'Mozilla/5.0',
+				},
+				timeout: 10_000,
+				retry: 1,
+			})
+		}
+
 		const parsedDays = parseContributionDays(html, segment)
 		for (const day of parsedDays) {
 			parsedMap.set(day.date, day)
