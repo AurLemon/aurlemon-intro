@@ -2,11 +2,6 @@
 	<footer class="mx-auto max-w-4xl w-full px-6 md:px-0 my-6 mb-16 mt-auto">
 		<div class="mb-12 flex justify-center items-center gap-3">
 			<SiteLikeButton @summary-change="handleSiteLikeSummaryChange" />
-			<GithubLoginCountButton
-				:count="githubLoginUserCount"
-				:ready="githubLoginReady"
-				@open-list="githubLoginListOpen = true"
-			/>
 			<UTooltip :text="messageTooltipLabel" :delay-duration="50">
 				<div
 					class="transition-all duration-300 ease-out"
@@ -27,6 +22,11 @@
 					</UButton>
 				</div>
 			</UTooltip>
+			<GithubLoginCountButton
+				:count="githubLoginUserCount"
+				:ready="githubLoginReady"
+				@open-list="githubLoginListOpen = true"
+			/>
 		</div>
 		<div class="w-full flex flex-col justify-between md:flex-row">
 			<SiteMark />
