@@ -113,6 +113,7 @@ export interface MessageCommentItem {
 	id: string
 	floor: number
 	parentId: string | null
+	isPinned: boolean
 	content: string
 	githubLogin: string
 	avatarUrl: string
@@ -122,9 +123,21 @@ export interface MessageCommentItem {
 	hasLiked: boolean
 	canEdit: boolean
 	canDelete: boolean
+	canPin: boolean
 	replyToGithubLogin: string | null
 	isNestedReply: boolean
 	replies: MessageCommentItem[]
+}
+
+export type MessageBoardSortOrder = 'latest' | 'earliest'
+
+export type MessageBoardPinFilter = 'all' | 'pinned' | 'unpinned'
+
+export interface MessageBoardQuery {
+	page: number
+	pageSize: number
+	sort: MessageBoardSortOrder
+	pinFilter: MessageBoardPinFilter
 }
 
 export interface MessageBoardResponse {

@@ -5,12 +5,32 @@
 		class="max-w-lg"
 		:ui="{
 			overlay: 'z-[43000]',
-			content: 'z-[43010]',
+			content:
+				'z-[43010] max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-4rem)] overflow-hidden',
+			body: 'overflow-hidden',
 		}"
 	>
 		<template #body>
-			<div class="space-y-5">
-				<div class="max-h-[56vh] overflow-y-auto space-y-4 pr-1">
+			<div class="flex h-[min(78dvh,42rem)] flex-col gap-4">
+				<div class="flex items-center justify-end gap-2">
+					<UButton
+						size="xs"
+						color="neutral"
+						:variant="sortOrder === 'latest' ? 'solid' : 'ghost'"
+						@click="setSortOrder('latest')"
+					>
+						{{ t('social.actions.sortLatest') }}
+					</UButton>
+					<UButton
+						size="xs"
+						color="neutral"
+						:variant="sortOrder === 'earliest' ? 'solid' : 'ghost'"
+						@click="setSortOrder('earliest')"
+					>
+						{{ t('social.actions.sortEarliest') }}
+					</UButton>
+				</div>
+				<div class="min-h-0 flex-1 overflow-y-auto space-y-4 pr-1">
 					<UAlert
 						v-if="!items.length"
 						color="neutral"
@@ -27,6 +47,7 @@
 							:reply-loading="submitting"
 							:editing-id="editingId"
 							:editing-loading="editing"
+							:pinning-loading="pinning"
 							:deleting-loading="deleting"
 							:can-interact="isLoggedIn"
 							:depth="0"
@@ -37,6 +58,7 @@
 							@start-edit="startEdit"
 							@cancel-edit="cancelEdit"
 							@submit-edit="submitEdit"
+							@toggle-pin="togglePinComment"
 							@delete="deleteComment"
 						/>
 					</div>
@@ -105,6 +127,7 @@ import SocialAuthStatusBar from '~/components/common/SocialAuthStatusBar.vue'
 import type {
 	MessageBoardResponse,
 	MessageCommentItem,
+	MessageBoardSortOrder,
 } from '~/shared/types/social'
 
 const open = defineModel<boolean>('open', { default: false })
@@ -131,9 +154,11 @@ const pagination = ref<MessageBoardResponse['pagination']>({
 })
 const submitting = ref(false)
 const editing = ref(false)
+const pinning = ref(false)
 const deleting = ref(false)
 const replyTarget = ref<MessageCommentItem | null>(null)
 const editingTarget = ref<MessageCommentItem | null>(null)
+const sortOrder = ref<MessageBoardSortOrder>('latest')
 
 const isLoggedIn = computed(() => auth.isLoggedIn.value)
 const replyingToId = computed(() => replyTarget.value?.id ?? null)
@@ -141,7 +166,18 @@ const editingId = computed(() => editingTarget.value?.id ?? null)
 const boardQuery = computed(() => ({
 	page: currentPage.value,
 	pageSize,
+	sort: sortOrder.value,
 }))
+
+const setSortOrder = (next: MessageBoardSortOrder) => {
+	if (sortOrder.value === next) {
+		return
+	}
+
+	sortOrder.value = next
+	currentPage.value = 1
+	void refreshBoard()
+}
 
 const refreshBoard = async () => {
 	try {
@@ -274,6 +310,35 @@ const likeComment = async (commentId: string) => {
 		auth.user.value = response.currentUser
 	} catch (error) {
 		showError(error)
+	}
+}
+
+const togglePinComment = async (commentId: string, pinned: boolean) => {
+	if (!isLoggedIn.value || auth.user.value?.isAdmin !== true) {
+		return
+	}
+
+	pinning.value = true
+
+	try {
+		const response = await $fetch<MessageBoardResponse>(
+			`/api/messages/${commentId}/pin`,
+			{
+				method: 'PATCH',
+				query: boardQuery.value,
+				body: {
+					pinned,
+				},
+			},
+		)
+		items.value = response.items
+		pagination.value = response.pagination
+		currentPage.value = response.pagination.page
+		auth.user.value = response.currentUser
+	} catch (error) {
+		showError(error)
+	} finally {
+		pinning.value = false
 	}
 }
 

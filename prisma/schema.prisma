@@ -38,6 +38,7 @@ model GithubSession {
 model MessageComment {
   id          String               @id @default(cuid())
   parentId    String?
+  isPinned    Boolean              @default(false)
   content     String
   githubLogin String
   avatarUrl   String
@@ -50,6 +51,7 @@ model MessageComment {
 
   @@index([parentId])
   @@index([createdAt])
+  @@index([isPinned, createdAt])
 }
 
 model MessageCommentLike {
