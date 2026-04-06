@@ -8,9 +8,10 @@ import {
 	SOCIAL_EVENT_NAMES,
 	socialEventBus,
 } from '~/server/utils/social-events'
+import type { GithubAuthUser } from '~/shared/types/social'
 
 export const getSiteLikeSummary = async (fingerprint?: string) => {
-	const [totalCount, likedRecord] = await Promise.all([
+	const [totalCount, likedRecord, githubLoginGroups] = await Promise.all([
 		prisma.like.count(),
 		fingerprint
 			? prisma.like.findUnique({
@@ -19,11 +20,15 @@ export const getSiteLikeSummary = async (fingerprint?: string) => {
 					},
 				})
 			: Promise.resolve(null),
+		prisma.githubSession.groupBy({
+			by: ['githubLogin'],
+		}),
 	])
 
 	return {
 		totalCount,
 		hasLiked: Boolean(likedRecord),
+		githubLoginUserCount: githubLoginGroups.length,
 	}
 }
 
@@ -33,6 +38,14 @@ const maskFingerprint = (fingerprint: string): string => {
 	}
 
 	return `${fingerprint.slice(0, 8)}***${fingerprint.slice(-4)}`
+}
+
+const maskGithubLogin = (githubLogin: string): string => {
+	const chars = [...githubLogin]
+	const first = chars[0] ?? ''
+	const last = chars[chars.length - 1] ?? first
+
+	return `${first}***${last}`
 }
 
 export const listSiteLikes = async (limit = 100) => {
@@ -60,10 +73,69 @@ export const listSiteLikes = async (limit = 100) => {
 	}
 }
 
+export const listGithubLoginUsers = async (
+	currentUser: GithubAuthUser | null,
+	limit = 100,
+) => {
+	const safeLimit = Math.max(1, Math.min(limit, 500))
+	const canViewProfile = currentUser?.isAdmin === true
+	const sessions = await prisma.githubSession.findMany({
+		orderBy: {
+			createdAt: 'desc',
+		},
+		select: {
+			id: true,
+			githubLogin: true,
+			avatarUrl: true,
+			profileUrl: true,
+			createdAt: true,
+			expiresAt: true,
+		},
+	})
+
+	const userMap = new Map<
+		string,
+		{
+			id: string
+			githubLogin: string
+			avatarUrl: string
+			profileUrl: string
+			createdAt: Date
+			expiresAt: Date
+		}
+	>()
+
+	for (const session of sessions) {
+		if (!userMap.has(session.githubLogin)) {
+			userMap.set(session.githubLogin, session)
+		}
+	}
+
+	const items = [...userMap.values()].slice(0, safeLimit).map((item) => ({
+		id: item.id,
+		displayLogin: canViewProfile
+			? item.githubLogin
+			: maskGithubLogin(item.githubLogin),
+		avatarUrl: canViewProfile ? item.avatarUrl : null,
+		profileUrl: canViewProfile ? item.profileUrl : null,
+		createdAt: item.createdAt.toISOString(),
+		expiresAt: item.expiresAt.toISOString(),
+		canViewProfile,
+	}))
+
+	return {
+		items,
+	}
+}
+
 export const createSiteLike = async (
 	fingerprint: string,
 	ip: string,
-): Promise<{ totalCount: number; hasLiked: boolean }> => {
+): Promise<{
+	totalCount: number
+	hasLiked: boolean
+	githubLoginUserCount: number
+}> => {
 	const existingLike = await prisma.like.findUnique({
 		where: {
 			fingerprint,

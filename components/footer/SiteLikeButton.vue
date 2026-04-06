@@ -29,10 +29,24 @@ import type { SiteLikeSummary } from '~/shared/types/social'
 const { t } = useI18n()
 const { showError } = useSocialFeedback()
 const { ensureFingerprint } = useSiteFingerprint()
+const emit = defineEmits<{
+	(event: 'summary-change', summary: SiteLikeSummary): void
+}>()
 
 const loading = ref(false)
 const ready = ref(false)
 const summary = ref<SiteLikeSummary | null>(null)
+
+const EMPTY_SITE_LIKE_SUMMARY: SiteLikeSummary = {
+	totalCount: 0,
+	hasLiked: false,
+	githubLoginUserCount: 0,
+}
+
+const applySummary = (nextSummary: SiteLikeSummary | null) => {
+	summary.value = nextSummary
+	emit('summary-change', nextSummary ?? EMPTY_SITE_LIKE_SUMMARY)
+}
 
 const buttonLabel = computed(() => {
 	const totalCount = summary.value?.totalCount ?? 0
@@ -49,13 +63,16 @@ const tooltipLabel = computed(() =>
 const loadSummary = async () => {
 	try {
 		const fingerprint = await ensureFingerprint()
-		summary.value = await $fetch<SiteLikeSummary>('/api/site-like', {
-			query: {
-				fingerprint,
-			},
-		})
+		applySummary(
+			await $fetch<SiteLikeSummary>('/api/site-like', {
+				query: {
+					fingerprint,
+				},
+			}),
+		)
 	} catch (error) {
 		showError(error)
+		applySummary(null)
 	} finally {
 		ready.value = true
 	}
@@ -70,12 +87,14 @@ const handleLike = async () => {
 
 	try {
 		const fingerprint = await ensureFingerprint()
-		summary.value = await $fetch<SiteLikeSummary>('/api/site-like', {
-			method: 'POST',
-			body: {
-				fingerprint,
-			},
-		})
+		applySummary(
+			await $fetch<SiteLikeSummary>('/api/site-like', {
+				method: 'POST',
+				body: {
+					fingerprint,
+				},
+			}),
+		)
 	} catch (error) {
 		showError(error)
 	} finally {

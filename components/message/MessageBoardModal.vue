@@ -11,24 +11,32 @@
 		}"
 	>
 		<template #actions>
-			<UButton
-				size="xs"
-				color="neutral"
-				variant="link"
-				:class="sortOrder === 'latest' ? 'font-semibold' : 'opacity-80'"
-				@click="setSortOrder('latest')"
-			>
-				{{ t('social.actions.sortLatest') }}
-			</UButton>
-			<UButton
-				size="xs"
-				color="neutral"
-				variant="link"
-				:class="sortOrder === 'earliest' ? 'font-semibold' : 'opacity-80'"
-				@click="setSortOrder('earliest')"
-			>
-				{{ t('social.actions.sortEarliest') }}
-			</UButton>
+			<div class="flex items-center gap-0.5">
+				<UButton
+					size="xs"
+					color="neutral"
+					variant="link"
+					:class="[
+						'leading-[normal]',
+						sortOrder === 'latest' ? 'font-semibold' : 'opacity-80',
+					]"
+					@click="setSortOrder('latest')"
+				>
+					{{ t('social.actions.sortLatest') }}
+				</UButton>
+				<UButton
+					size="xs"
+					color="neutral"
+					variant="link"
+					:class="[
+						'leading-[normal]',
+						sortOrder === 'earliest' ? 'font-semibold' : 'opacity-80',
+					]"
+					@click="setSortOrder('earliest')"
+				>
+					{{ t('social.actions.sortEarliest') }}
+				</UButton>
+			</div>
 		</template>
 
 		<template #body>

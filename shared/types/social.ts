@@ -8,6 +8,7 @@ export interface GithubAuthUser {
 export interface SiteLikeSummary {
 	totalCount: number
 	hasLiked: boolean
+	githubLoginUserCount: number
 }
 
 export interface SiteLikeListItem {
@@ -21,6 +22,20 @@ export interface SiteLikeListItem {
 
 export interface SiteLikeListResponse {
 	items: SiteLikeListItem[]
+}
+
+export interface GithubLoginUserListItem {
+	id: string
+	displayLogin: string
+	avatarUrl: string | null
+	profileUrl: string | null
+	createdAt: string
+	expiresAt: string
+	canViewProfile: boolean
+}
+
+export interface GithubLoginUserListResponse {
+	items: GithubLoginUserListItem[]
 }
 
 export interface SiteLikedEvent {
