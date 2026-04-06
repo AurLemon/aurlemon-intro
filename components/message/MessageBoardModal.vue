@@ -10,26 +10,29 @@
 			body: 'overflow-hidden',
 		}"
 	>
+		<template #actions>
+			<UButton
+				size="xs"
+				color="neutral"
+				variant="link"
+				:class="sortOrder === 'latest' ? 'font-semibold' : 'opacity-80'"
+				@click="setSortOrder('latest')"
+			>
+				{{ t('social.actions.sortLatest') }}
+			</UButton>
+			<UButton
+				size="xs"
+				color="neutral"
+				variant="link"
+				:class="sortOrder === 'earliest' ? 'font-semibold' : 'opacity-80'"
+				@click="setSortOrder('earliest')"
+			>
+				{{ t('social.actions.sortEarliest') }}
+			</UButton>
+		</template>
+
 		<template #body>
 			<div class="flex h-[min(78dvh,42rem)] flex-col gap-4">
-				<div class="flex items-center justify-end gap-2">
-					<UButton
-						size="xs"
-						color="neutral"
-						:variant="sortOrder === 'latest' ? 'solid' : 'ghost'"
-						@click="setSortOrder('latest')"
-					>
-						{{ t('social.actions.sortLatest') }}
-					</UButton>
-					<UButton
-						size="xs"
-						color="neutral"
-						:variant="sortOrder === 'earliest' ? 'solid' : 'ghost'"
-						@click="setSortOrder('earliest')"
-					>
-						{{ t('social.actions.sortEarliest') }}
-					</UButton>
-				</div>
 				<div class="min-h-0 flex-1 overflow-y-auto space-y-4 pr-1">
 					<UAlert
 						v-if="!items.length"
