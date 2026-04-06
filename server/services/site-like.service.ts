@@ -10,7 +10,43 @@ import {
 } from '~/server/utils/social-events'
 import type { GithubAuthUser } from '~/shared/types/social'
 
+const GITHUB_SESSION_CLEANUP_COOLDOWN_MS = 60_000
+let lastGithubSessionCleanupAt = 0
+let githubSessionCleanupInFlight: Promise<void> | null = null
+
+const cleanupExpiredGithubSessions = async (): Promise<void> => {
+	const nowMs = Date.now()
+
+	if (nowMs - lastGithubSessionCleanupAt < GITHUB_SESSION_CLEANUP_COOLDOWN_MS) {
+		return
+	}
+
+	if (githubSessionCleanupInFlight) {
+		await githubSessionCleanupInFlight
+		return
+	}
+
+	githubSessionCleanupInFlight = prisma.githubSession
+		.deleteMany({
+			where: {
+				expiresAt: {
+					lte: new Date(),
+				},
+			},
+		})
+		.then(() => {
+			lastGithubSessionCleanupAt = Date.now()
+		})
+		.finally(() => {
+			githubSessionCleanupInFlight = null
+		})
+
+	await githubSessionCleanupInFlight
+}
+
 export const getSiteLikeSummary = async (fingerprint?: string) => {
+	await cleanupExpiredGithubSessions()
+
 	const [totalCount, likedRecord, githubLoginGroups] = await Promise.all([
 		prisma.like.count(),
 		fingerprint
@@ -22,6 +58,11 @@ export const getSiteLikeSummary = async (fingerprint?: string) => {
 			: Promise.resolve(null),
 		prisma.githubSession.groupBy({
 			by: ['githubLogin'],
+			where: {
+				expiresAt: {
+					gt: new Date(),
+				},
+			},
 		}),
 	])
 
@@ -77,9 +118,16 @@ export const listGithubLoginUsers = async (
 	currentUser: GithubAuthUser | null,
 	limit = 100,
 ) => {
+	await cleanupExpiredGithubSessions()
+
 	const safeLimit = Math.max(1, Math.min(limit, 500))
 	const canViewProfile = currentUser?.isAdmin === true
 	const sessions = await prisma.githubSession.findMany({
+		where: {
+			expiresAt: {
+				gt: new Date(),
+			},
+		},
 		orderBy: {
 			createdAt: 'desc',
 		},

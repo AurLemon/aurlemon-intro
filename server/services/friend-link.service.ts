@@ -1,4 +1,4 @@
-import { FriendLinkApplicationStatus } from '@prisma/client'
+import { FriendLinkApplicationStatus, Prisma } from '@prisma/client'
 import prisma from '~/lib/prisma'
 import {
 	SOCIAL_EVENT_NAMES,
@@ -19,6 +19,15 @@ const FALLBACK_COLORS = [
 	'#8b5cf6',
 	'#06b6d4',
 ]
+
+let cleanupExpiredFriendLinkApplicationsInFlight: Promise<void> | null = null
+
+const isUniqueConstraintError = (error: unknown): boolean => {
+	return (
+		error instanceof Prisma.PrismaClientKnownRequestError &&
+		error.code === 'P2002'
+	)
+}
 
 const getFallbackFriendLinkImage = (name: string): string => {
 	const seed = [...name].reduce((total, char) => total + char.charCodeAt(0), 0)
@@ -66,39 +75,55 @@ const mapApplication = (item: {
 })
 
 export const cleanupExpiredFriendLinkApplications = async (): Promise<void> => {
-	const expiredPending = await prisma.friendLinkApplication.findMany({
-		where: {
-			status: FriendLinkApplicationStatus.pending,
-			expiresAt: {
-				lte: new Date(),
-			},
-		},
-		select: {
-			id: true,
-		},
-	})
-
-	if (expiredPending.length === 0) {
+	if (cleanupExpiredFriendLinkApplicationsInFlight) {
+		await cleanupExpiredFriendLinkApplicationsInFlight
 		return
 	}
 
-	await prisma.friendLinkApplication.updateMany({
-		where: {
-			id: {
-				in: expiredPending.map((item) => item.id),
+	cleanupExpiredFriendLinkApplicationsInFlight = (async () => {
+		const now = new Date()
+		const expiredPending = await prisma.friendLinkApplication.findMany({
+			where: {
+				status: FriendLinkApplicationStatus.pending,
+				expiresAt: {
+					lte: now,
+				},
 			},
-		},
-		data: {
-			status: FriendLinkApplicationStatus.expired,
-		},
+			select: {
+				id: true,
+			},
+		})
+
+		if (expiredPending.length === 0) {
+			return
+		}
+
+		await prisma.friendLinkApplication.updateMany({
+			where: {
+				id: {
+					in: expiredPending.map((item) => item.id),
+				},
+				status: FriendLinkApplicationStatus.pending,
+				expiresAt: {
+					lte: now,
+				},
+			},
+			data: {
+				status: FriendLinkApplicationStatus.expired,
+			},
+		})
+
+		for (const item of expiredPending) {
+			socialEventBus.emit(SOCIAL_EVENT_NAMES.FRIEND_LINK_APPLICATION_EXPIRED, {
+				applicationId: item.id,
+				expiredAt: now.toISOString(),
+			})
+		}
+	})().finally(() => {
+		cleanupExpiredFriendLinkApplicationsInFlight = null
 	})
 
-	for (const item of expiredPending) {
-		socialEventBus.emit(SOCIAL_EVENT_NAMES.FRIEND_LINK_APPLICATION_EXPIRED, {
-			applicationId: item.id,
-			expiredAt: new Date().toISOString(),
-		})
-	}
+	await cleanupExpiredFriendLinkApplicationsInFlight
 }
 
 export const listActiveFriendLinks = async (): Promise<FriendLinkItem[]> => {
@@ -265,38 +290,33 @@ export const approveFriendLinkApplication = async (
 	currentUser: GithubAuthUser,
 ): Promise<void> => {
 	await cleanupExpiredFriendLinkApplications()
-
-	const application = await prisma.friendLinkApplication.findUnique({
+	const approvedAt = new Date()
+	const approveResult = await prisma.friendLinkApplication.updateMany({
 		where: {
 			id: applicationId,
+			status: FriendLinkApplicationStatus.pending,
+			expiresAt: {
+				gt: approvedAt,
+			},
+		},
+		data: {
+			status: FriendLinkApplicationStatus.approved,
+			approvedAt,
+			approvedByGithubLogin: currentUser.githubLogin,
 		},
 	})
 
-	if (
-		!application ||
-		application.status !== FriendLinkApplicationStatus.pending
-	) {
+	if (approveResult.count === 0) {
 		throw createError({
 			statusCode: 404,
 			statusMessage: 'FRIEND_LINK_APPLICATION_NOT_FOUND',
 		})
 	}
 
-	await prisma.friendLinkApplication.update({
-		where: {
-			id: applicationId,
-		},
-		data: {
-			status: FriendLinkApplicationStatus.approved,
-			approvedAt: new Date(),
-			approvedByGithubLogin: currentUser.githubLogin,
-		},
-	})
-
 	socialEventBus.emit(SOCIAL_EVENT_NAMES.FRIEND_LINK_APPLICATION_APPROVED, {
 		applicationId,
 		approvedByGithubLogin: currentUser.githubLogin,
-		approvedAt: new Date().toISOString(),
+		approvedAt: approvedAt.toISOString(),
 	})
 }
 
@@ -464,16 +484,28 @@ export const materializeApprovedFriendLink = async (
 		return
 	}
 
-	const friendLink = await prisma.friendLink.create({
-		data: {
-			name: application.name,
-			url: application.url,
-			desc: application.desc,
-			imageBase64: application.imageBase64,
-			createdByGithubLogin: application.applicantGithubLogin,
-			approvedByGithubLogin,
-		},
-	})
+	const friendLink = await prisma.friendLink
+		.create({
+			data: {
+				name: application.name,
+				url: application.url,
+				desc: application.desc,
+				imageBase64: application.imageBase64,
+				createdByGithubLogin: application.applicantGithubLogin,
+				approvedByGithubLogin,
+			},
+		})
+		.catch((error: unknown) => {
+			if (isUniqueConstraintError(error)) {
+				return null
+			}
+
+			throw error
+		})
+
+	if (!friendLink) {
+		return
+	}
 
 	socialEventBus.emit(SOCIAL_EVENT_NAMES.FRIEND_LINK_CREATED, {
 		friendLinkId: friendLink.id,
