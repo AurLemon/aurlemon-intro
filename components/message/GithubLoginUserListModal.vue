@@ -121,7 +121,10 @@ const loadItems = async () => {
 			'/api/site-like/github-logins',
 		)
 		items.value = response.items
-		avatarLoadedIds.value = {}
+		const nextIds = new Set(response.items.map((item) => item.id))
+		avatarLoadedIds.value = Object.fromEntries(
+			Object.entries(avatarLoadedIds.value).filter(([id]) => nextIds.has(id)),
+		)
 	} catch (error) {
 		showError(error)
 	} finally {
