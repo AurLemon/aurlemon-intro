@@ -96,21 +96,20 @@
 							</UButton>
 						</span>
 						<template #content>
-							<div class="max-w-56 space-y-1.5 text-xs">
-								<div class="space-y-0.5">
-									<div
+							<div class="max-w-56 text-xs leading-tight">
+								<div class="flex flex-wrap gap-x-1.5 gap-y-0.5">
+									<span
 										v-for="login in item.likedByGithubLogins.slice(0, 3)"
 										:key="login"
-										class="font-mono"
 									>
 										@{{ login }}
-									</div>
-									<div
+									</span>
+									<span
 										v-if="item.likedByGithubLogins.length > 3"
 										class="text-slate-400"
 									>
 										...
-									</div>
+									</span>
 								</div>
 							</div>
 						</template>
