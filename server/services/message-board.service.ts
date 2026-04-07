@@ -153,12 +153,20 @@ export const listMessageBoard = async (
 			0,
 		)
 
+	const pinnedRoots = filteredRoots.filter((root) => root.isPinned)
+	const unpinnedRoots = filteredRoots.filter((root) => !root.isPinned)
 	const totalRootCount = filteredRoots.length
 	const totalCommentCount = countCommentItems(filteredRoots)
-	const totalPages = Math.max(1, Math.ceil(totalRootCount / options.pageSize))
+	const totalPages = Math.max(
+		1,
+		Math.ceil(unpinnedRoots.length / options.pageSize),
+	)
 	const page = Math.min(Math.max(1, options.page), totalPages)
 	const start = (page - 1) * options.pageSize
-	const items = filteredRoots.slice(start, start + options.pageSize)
+	const items = [
+		...pinnedRoots,
+		...unpinnedRoots.slice(start, start + options.pageSize),
+	]
 
 	return {
 		items,
