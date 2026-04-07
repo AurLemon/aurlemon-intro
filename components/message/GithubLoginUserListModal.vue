@@ -26,14 +26,23 @@
 					<div v-for="item in items" :key="item.id">
 						<div class="flex items-center gap-3">
 							<div
-								class="h-8 w-8 shrink-0 overflow-hidden rounded-full border border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800 flex items-center justify-center"
+								class="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800"
 							>
+								<USkeleton
+									v-if="item.avatarUrl && !isAvatarLoaded(item.id)"
+									class="absolute inset-0 rounded-full"
+								/>
 								<img
 									v-if="item.avatarUrl"
 									:src="item.avatarUrl"
 									:alt="item.displayLogin"
-									class="h-full w-full object-cover"
-									:class="item.canViewProfile ? '' : 'blur-[2px]'"
+									class="h-full w-full object-cover transition-opacity duration-200"
+									:class="[
+										item.canViewProfile ? '' : 'blur-[2px]',
+										isAvatarLoaded(item.id) ? 'opacity-100' : 'opacity-0',
+									]"
+									@load="markAvatarLoaded(item.id)"
+									@error="markAvatarLoaded(item.id)"
 								/>
 								<UIcon
 									v-else
@@ -94,8 +103,15 @@ const { showError } = useSocialFeedback()
 const items = ref<GithubLoginUserListItem[]>([])
 const loading = ref(false)
 const listRef = ref<HTMLElement | null>(null)
+const avatarLoadedIds = ref<Record<string, boolean>>({})
 
 const formatTime = (value: string) => dayjs(value).format('YYYY-MM-DD HH:mm')
+
+const isAvatarLoaded = (id: string) => avatarLoadedIds.value[id] === true
+
+const markAvatarLoaded = (id: string) => {
+	avatarLoadedIds.value[id] = true
+}
 
 const loadItems = async () => {
 	loading.value = true
@@ -105,6 +121,7 @@ const loadItems = async () => {
 			'/api/site-like/github-logins',
 		)
 		items.value = response.items
+		avatarLoadedIds.value = {}
 	} catch (error) {
 		showError(error)
 	} finally {

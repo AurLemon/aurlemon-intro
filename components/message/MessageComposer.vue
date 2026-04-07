@@ -1,15 +1,11 @@
 <template>
 	<div class="space-y-3">
 		<UTextarea
-			class="w-full"
+			class="w-full resize-none"
 			v-model="draft"
-			:rows="replyingTo ? 3 : 4"
+			:rows="textareaRows"
 			:disabled="disabled"
-			:placeholder="
-				replyingTo
-					? t('social.message.replyPlaceholder', { login: replyingTo })
-					: t('social.message.placeholder')
-			"
+			:placeholder="placeholderText"
 		/>
 		<div
 			:class="[
@@ -53,6 +49,7 @@
 const props = defineProps<{
 	loading: boolean
 	replyingTo?: string | null
+	replyingToFloor?: number | null
 	disabled?: boolean
 }>()
 
@@ -63,6 +60,44 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const draft = ref('')
+const isMobile = ref(false)
+
+const textareaRows = computed(() => (isMobile.value ? 6 : 5))
+const placeholderText = computed(() => {
+	if (!props.replyingTo) {
+		return t('social.message.placeholder')
+	}
+
+	if (props.replyingToFloor !== null && props.replyingToFloor !== undefined) {
+		return t('social.message.replyPlaceholderWithFloor', {
+			login: props.replyingTo,
+			floor: props.replyingToFloor,
+		})
+	}
+
+	return t('social.message.replyPlaceholder', { login: props.replyingTo })
+})
+
+const syncViewportState = () => {
+	if (!import.meta.client) {
+		return
+	}
+
+	isMobile.value = window.innerWidth < 768
+}
+
+onMounted(() => {
+	syncViewportState()
+	window.addEventListener('resize', syncViewportState, { passive: true })
+})
+
+onBeforeUnmount(() => {
+	if (!import.meta.client) {
+		return
+	}
+
+	window.removeEventListener('resize', syncViewportState)
+})
 
 const submit = () => {
 	if (props.disabled) {

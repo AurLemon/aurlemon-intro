@@ -15,12 +15,12 @@
 			/>
 		</div>
 		<div
-			class="foreground relative z-1 flex gap-2 md:gap-4 justify-between md:justify-center items-center w-full h-full p-3"
+			class="foreground relative z-1 flex gap-2 lg:gap-4 justify-between lg:justify-center items-center w-full h-full p-3"
 		>
 			<div class="w-20 h-20 select-none">
 				<slot name="logo" />
 			</div>
-			<div class="text-center flex-1 md:flex-none">
+			<div class="text-center flex-1 lg:flex-none">
 				<div class="text-3xl font-medium text-slate-800 dark:text-slate-300">
 					<slot name="title" />
 				</div>
