@@ -3,6 +3,7 @@ import type {
 	CommentCreatedEvent,
 	CommentDeletedEvent,
 	CommentLikedEvent,
+	CommentUnlikedEvent,
 	CommentUpdatedEvent,
 	FriendLinkApplicationApprovedEvent,
 	FriendLinkApplicationSubmittedEvent,
@@ -17,6 +18,7 @@ export const SOCIAL_EVENT_NAMES = {
 	SITE_LIKED: 'site.liked',
 	COMMENT_CREATED: 'comment.created',
 	COMMENT_LIKED: 'comment.liked',
+	COMMENT_UNLIKED: 'comment.unliked',
 	COMMENT_UPDATED: 'comment.updated',
 	COMMENT_DELETED: 'comment.deleted',
 	FRIEND_LINK_APPLICATION_SUBMITTED: 'friend-link.application.submitted',
@@ -31,6 +33,7 @@ interface SocialEventMap {
 	[SOCIAL_EVENT_NAMES.SITE_LIKED]: SiteLikedEvent
 	[SOCIAL_EVENT_NAMES.COMMENT_CREATED]: CommentCreatedEvent
 	[SOCIAL_EVENT_NAMES.COMMENT_LIKED]: CommentLikedEvent
+	[SOCIAL_EVENT_NAMES.COMMENT_UNLIKED]: CommentUnlikedEvent
 	[SOCIAL_EVENT_NAMES.COMMENT_UPDATED]: CommentUpdatedEvent
 	[SOCIAL_EVENT_NAMES.COMMENT_DELETED]: CommentDeletedEvent
 	[SOCIAL_EVENT_NAMES.FRIEND_LINK_APPLICATION_SUBMITTED]: FriendLinkApplicationSubmittedEvent

@@ -63,6 +63,13 @@ export interface CommentLikedEvent {
 	createdAt: string
 }
 
+export interface CommentUnlikedEvent {
+	commentLikeId: string
+	commentId: string
+	githubLogin: string
+	removedAt: string
+}
+
 export interface CommentUpdatedEvent {
 	commentId: string
 	githubLogin: string
@@ -136,6 +143,7 @@ export interface MessageCommentItem {
 	createdAt: string
 	likeCount: number
 	hasLiked: boolean
+	likedByGithubLogins: string[]
 	canEdit: boolean
 	canDelete: boolean
 	canPin: boolean

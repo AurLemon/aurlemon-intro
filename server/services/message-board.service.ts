@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client'
 import prisma from '~/lib/prisma'
 import {
 	SOCIAL_EVENT_NAMES,
@@ -33,6 +34,10 @@ const createRootSorter = (order: MessageBoardSortOrder) => {
 	}
 }
 
+const isUniqueConstraintError = (error: unknown): boolean =>
+	error instanceof Prisma.PrismaClientKnownRequestError &&
+	error.code === 'P2002'
+
 export const listMessageBoard = async (
 	currentUser: GithubAuthUser | null,
 	options: MessageBoardPaginationQuery,
@@ -42,7 +47,15 @@ export const listMessageBoard = async (
 }> => {
 	const comments = await prisma.messageComment.findMany({
 		include: {
-			likes: true,
+			likes: {
+				select: {
+					commentId: true,
+					githubLogin: true,
+				},
+				orderBy: {
+					createdAt: 'asc',
+				},
+			},
 		},
 		orderBy: {
 			createdAt: 'asc',
@@ -71,6 +84,7 @@ export const listMessageBoard = async (
 			createdAt: comment.createdAt.toISOString(),
 			likeCount: comment.likes.length,
 			hasLiked: likedSet.has(comment.id),
+			likedByGithubLogins: comment.likes.map((like) => like.githubLogin),
 			canEdit:
 				comment.githubLogin === currentUser?.githubLogin ||
 				currentUser?.isAdmin === true,
@@ -264,7 +278,7 @@ export const createMessageComment = async (
 	})
 }
 
-export const likeMessageComment = async (
+export const toggleMessageCommentLike = async (
 	commentId: string,
 	currentUser: GithubAuthUser,
 ) => {
@@ -294,25 +308,71 @@ export const likeMessageComment = async (
 	})
 
 	if (existingLike) {
-		throw createError({
-			statusCode: 409,
-			statusMessage: 'COMMENT_ALREADY_LIKED',
+		const deleted = await prisma.messageCommentLike.deleteMany({
+			where: {
+				id: existingLike.id,
+			},
 		})
+
+		if (deleted.count > 0) {
+			socialEventBus.emit(SOCIAL_EVENT_NAMES.COMMENT_UNLIKED, {
+				commentLikeId: existingLike.id,
+				commentId,
+				githubLogin: currentUser.githubLogin,
+				removedAt: new Date().toISOString(),
+			})
+		}
+		return
 	}
 
-	const commentLike = await prisma.messageCommentLike.create({
-		data: {
+	try {
+		const commentLike = await prisma.messageCommentLike.create({
+			data: {
+				commentId,
+				githubLogin: currentUser.githubLogin,
+			},
+		})
+
+		socialEventBus.emit(SOCIAL_EVENT_NAMES.COMMENT_LIKED, {
+			commentLikeId: commentLike.id,
 			commentId,
 			githubLogin: currentUser.githubLogin,
-		},
-	})
+			createdAt: commentLike.createdAt.toISOString(),
+		})
+	} catch (error) {
+		if (!isUniqueConstraintError(error)) {
+			throw error
+		}
 
-	socialEventBus.emit(SOCIAL_EVENT_NAMES.COMMENT_LIKED, {
-		commentLikeId: commentLike.id,
-		commentId,
-		githubLogin: currentUser.githubLogin,
-		createdAt: commentLike.createdAt.toISOString(),
-	})
+		const existingLikeAfterConflict =
+			await prisma.messageCommentLike.findUnique({
+				where: {
+					commentId_githubLogin: {
+						commentId,
+						githubLogin: currentUser.githubLogin,
+					},
+				},
+			})
+
+		if (!existingLikeAfterConflict) {
+			return
+		}
+
+		const deleted = await prisma.messageCommentLike.deleteMany({
+			where: {
+				id: existingLikeAfterConflict.id,
+			},
+		})
+
+		if (deleted.count > 0) {
+			socialEventBus.emit(SOCIAL_EVENT_NAMES.COMMENT_UNLIKED, {
+				commentLikeId: existingLikeAfterConflict.id,
+				commentId,
+				githubLogin: currentUser.githubLogin,
+				removedAt: new Date().toISOString(),
+			})
+		}
+	}
 }
 
 export const updateMessageComment = async (
