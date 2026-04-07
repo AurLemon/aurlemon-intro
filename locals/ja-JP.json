@@ -190,7 +190,8 @@
 			"pinned": "固定",
 			"replyTo": "{login} に返信",
 			"likeCount": "{count}",
-			"likedCount": "{count}"
+			"likedCount": "{count}",
+			"noLikesYet": "まだいいねはありません"
 		},
 		"friendLinks": {
 			"applyTitle": "相互リンク申請",

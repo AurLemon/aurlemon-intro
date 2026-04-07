@@ -1,6 +1,6 @@
 import {
-	likeMessageComment,
 	listMessageBoard,
+	toggleMessageCommentLike,
 } from '~/server/services/message-board.service'
 import { parseMessageBoardPagination } from '~/server/utils/message-board-pagination'
 import { requireGithubSession } from '~/server/utils/social-auth'
@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
 		})
 	}
 
-	await likeMessageComment(commentId, currentUser)
+	await toggleMessageCommentLike(commentId, currentUser)
 	const board = await listMessageBoard(currentUser, paginationQuery)
 
 	return {

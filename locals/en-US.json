@@ -190,7 +190,8 @@
 			"pinned": "Pinned",
 			"replyTo": "Reply to {login}",
 			"likeCount": "{count}",
-			"likedCount": "{count}"
+			"likedCount": "{count}",
+			"noLikesYet": "No likes yet"
 		},
 		"friendLinks": {
 			"applyTitle": "Apply for Link Exchange",

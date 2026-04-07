@@ -190,7 +190,8 @@
 			"pinned": "置顶",
 			"replyTo": "回复 {login}",
 			"likeCount": "{count}",
-			"likedCount": "{count}"
+			"likedCount": "{count}",
+			"noLikesYet": "还没有人点赞"
 		},
 		"friendLinks": {
 			"applyTitle": "申请友链",
