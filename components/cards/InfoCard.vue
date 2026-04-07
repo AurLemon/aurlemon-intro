@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="border-6 border-slate-200 hover:border-slate-400/60 dark:border-slate-800 rounded-xl relative h-40 transition"
+		class="border-6 border-slate-200 hover:border-slate-400/60 dark:border-slate-800 rounded-xl relative h-32 lg:h-40 transition"
 	>
 		<div
 			class="background absolute -z-1 top-0 left-0 right-0 bottom-0 overflow-hidden"
@@ -17,14 +17,18 @@
 		<div
 			class="foreground relative z-1 flex gap-2 lg:gap-4 justify-between lg:justify-center items-center w-full h-full p-3"
 		>
-			<div class="w-20 h-20 select-none">
+			<div class="w-20 h-20 select-none shrink-0">
 				<slot name="logo" />
 			</div>
-			<div class="text-center flex-1 lg:flex-none">
-				<div class="text-3xl font-medium text-slate-800 dark:text-slate-300">
+			<div class="text-center flex-1 lg:flex-none min-w-0">
+				<div
+					class="text-3xl font-medium text-slate-800 dark:text-slate-300 truncate overflow-hidden line-clamp-1"
+				>
 					<slot name="title" />
 				</div>
-				<div class="text-base text-slate-700 dark:text-slate-400">
+				<div
+					class="text-base text-slate-700 dark:text-slate-400 truncate overflow-hidden line-clamp-1"
+				>
 					<slot name="subtitle" />
 				</div>
 			</div>

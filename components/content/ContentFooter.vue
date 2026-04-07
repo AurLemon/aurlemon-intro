@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 pt-6 text-sm font-(family-name:--font-family) text-slate-400 dark:border-slate-700 dark:text-slate-400"
+		class="flex flex-wrap justify-center items-center gap-x-4 lg:gap-x-6 gap-y-2 text-sm font-(family-name:--font-family) text-slate-400 dark:border-slate-700 dark:text-slate-400"
 	>
 		<p v-if="updatedText" class="flex items-center gap-1.5 leading-[normal]">
 			<UIcon
