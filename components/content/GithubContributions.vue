@@ -90,7 +90,7 @@
 						<UTooltip
 							v-for="day in week.contributionDays"
 							:key="day.date"
-							:delay-duration="80"
+							:delay-duration="50"
 						>
 							<span
 								class="block size-3 rounded-[3px] border border-black/5 dark:border-white/10"
@@ -107,16 +107,22 @@
 							/>
 
 							<template #content>
-								<div class="flex items-center gap-2 text-xs">
-									<UIcon name="i-lucide-calendar-days" class="size-3.5" />
-									<span class="tabular-nums">{{
-										formatTooltipDate(day.date)
-									}}</span>
-									<UIcon
-										name="i-lucide-git-commit-horizontal"
-										class="size-3.5"
-									/>
-									<span class="tabular-nums">{{ day.contributionCount }}</span>
+								<div class="flex items-center gap-1.5 text-xs leading-[normal]">
+									<span class="flex items-center gap-1">
+										<UIcon name="i-lucide-calendar-days" class="size-2.5" />
+										<span class="tabular-nums">{{
+											formatTooltipDate(day.date)
+										}}</span>
+									</span>
+									<span class="flex items-center gap-0.5">
+										<UIcon
+											name="i-lucide-git-commit-horizontal"
+											class="size-2.5"
+										/>
+										<span class="tabular-nums">{{
+											day.contributionCount
+										}}</span>
+									</span>
 								</div>
 							</template>
 						</UTooltip>
