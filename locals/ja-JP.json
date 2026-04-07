@@ -87,6 +87,10 @@
 				}
 			}
 		},
+		"contentFooter": {
+			"stats": "{count} 文字 / {minutes} 分",
+			"updatedAt": "{date}"
+		},
 		"project": {
 			"line1": "Hey Codex、このページの内容を書いてくれませんか。",
 			"githubContributionsTitle": "GitHub Contributions",
