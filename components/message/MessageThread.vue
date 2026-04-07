@@ -1,12 +1,18 @@
 <template>
 	<div :class="containerClass">
 		<div class="flex items-start gap-3">
-			<img
-				:src="item.avatarUrl"
-				:alt="item.githubLogin"
-				class="h-10 w-10 rounded-full object-cover"
-			/>
-			<div class="min-w-0 flex-1 space-y-3">
+			<div class="relative h-10 w-10 flex-shrink-0">
+				<USkeleton v-if="!avatarLoaded" class="absolute inset-0 rounded-full" />
+				<img
+					:src="item.avatarUrl"
+					:alt="item.githubLogin"
+					class="block h-10 w-10 rounded-full object-cover transition-opacity duration-200"
+					:class="avatarLoaded ? 'opacity-100' : 'opacity-0'"
+					@load="markAvatarLoaded"
+					@error="markAvatarLoaded"
+				/>
+			</div>
+			<div class="min-w-0 flex-1 space-y-2">
 				<div class="flex flex-wrap items-center gap-2">
 					<span
 						class="text-sm font-semibold text-slate-900 dark:text-slate-100"
@@ -39,13 +45,16 @@
 						{{ formatTime(item.createdAt) }}
 					</span>
 				</div>
-				<div v-if="editingId !== item.id" class="space-y-1">
+				<div v-if="editingId !== item.id" class="space-y-2">
 					<div
 						v-if="item.isNestedReply && item.replyToGithubLogin"
 						class="text-xs text-slate-500 dark:text-slate-400"
 					>
 						{{
-							t('social.message.replyTo', { login: item.replyToGithubLogin })
+							t('social.message.replyTo', {
+								login: item.replyToGithubLogin,
+								floor: item.replyToFloor,
+							})
 						}}
 					</div>
 					<p
@@ -86,7 +95,6 @@
 								size="xs"
 								color="neutral"
 								variant="ghost"
-								:disabled="!canInteract || editingId === item.id"
 								@click="handleLike(item.id)"
 							>
 								<UIcon name="i-lucide-heart" class="h-4 w-4" />
@@ -119,7 +127,6 @@
 						size="xs"
 						color="neutral"
 						variant="ghost"
-						:disabled="!canInteract || editingId === item.id"
 						@click="handleLike(item.id)"
 					>
 						<UIcon name="i-lucide-heart" class="h-4 w-4" />
@@ -131,7 +138,6 @@
 						size="xs"
 						color="neutral"
 						variant="ghost"
-						:disabled="!canInteract || editingId === item.id"
 						@click="handleReply(item)"
 					>
 						{{ t('social.actions.reply') }}
@@ -169,38 +175,121 @@
 						}}
 					</UButton>
 				</div>
-				<div v-if="visibleReplies.length" class="space-y-3">
-					<MessageThread
-						v-for="reply in visibleReplies"
-						:key="reply.id"
-						:item="reply"
-						:replying-to-id="replyingToId"
-						:reply-loading="replyLoading"
-						:editing-id="editingId"
-						:editing-loading="editingLoading"
-						:pinning-loading="pinningLoading"
-						:deleting-loading="deletingLoading"
-						:can-interact="canInteract"
-						:depth="nextDepth"
-						@like="$emit('like', $event)"
-						@reply="$emit('reply', $event)"
-						@cancel-reply="$emit('cancel-reply')"
-						@submit-reply="forwardReply"
-						@start-edit="$emit('start-edit', $event)"
-						@cancel-edit="$emit('cancel-edit')"
-						@submit-edit="forwardEdit"
-						@toggle-pin="forwardTogglePin"
-						@delete="$emit('delete', $event)"
+				<div
+					v-if="replyingToId === item.id && depth > 0"
+					ref="replyComposerRef"
+				>
+					<MessageComposer
+						:loading="replyLoading"
+						:disabled="!canInteract"
+						:replying-to="item.githubLogin"
+						:replying-to-floor="item.floor"
+						@cancel="$emit('cancel-reply')"
+						@submit="$emit('submit-reply', item.id, $event)"
 					/>
 				</div>
-				<MessageComposer
-					v-if="replyingToId === item.id"
-					:loading="replyLoading"
-					:disabled="!canInteract"
-					:replying-to="item.githubLogin"
-					@cancel="$emit('cancel-reply')"
-					@submit="$emit('submit-reply', item.id, $event)"
-				/>
+				<div
+					v-if="showReplyArea"
+					:style="replyAreaStyle"
+					class="overflow-hidden transition-[height,opacity] duration-300 ease-out"
+				>
+					<div ref="replyAreaRef" class="space-y-3 pt-1">
+						<div
+							v-if="replyingToId === item.id && depth === 0"
+							ref="replyComposerRef"
+						>
+							<MessageComposer
+								:loading="replyLoading"
+								:disabled="!canInteract"
+								:replying-to="item.githubLogin"
+								:replying-to-floor="item.floor"
+								@cancel="$emit('cancel-reply')"
+								@submit="$emit('submit-reply', item.id, $event)"
+							/>
+						</div>
+						<div v-if="visibleReplies.length" class="space-y-3">
+							<MessageThread
+								v-for="reply in visibleReplies"
+								:key="reply.id"
+								:item="reply"
+								:replying-to-id="replyingToId"
+								:reply-loading="replyLoading"
+								:editing-id="editingId"
+								:editing-loading="editingLoading"
+								:pinning-loading="pinningLoading"
+								:deleting-loading="deletingLoading"
+								:can-interact="canInteract"
+								:depth="nextDepth"
+								@like="$emit('like', $event)"
+								@reply="$emit('reply', $event)"
+								@cancel-reply="$emit('cancel-reply')"
+								@submit-reply="forwardReply"
+								@start-edit="$emit('start-edit', $event)"
+								@cancel-edit="$emit('cancel-edit')"
+								@submit-edit="forwardEdit"
+								@toggle-pin="forwardTogglePin"
+								@delete="$emit('delete', $event)"
+							/>
+						</div>
+						<div
+							v-if="showReplyPager"
+							class="flex flex-wrap items-center justify-between gap-2 pt-1"
+						>
+							<UButton
+								v-if="!replyExpanded"
+								size="xs"
+								color="neutral"
+								variant="ghost"
+								@click="expandReplies"
+							>
+								{{
+									t('social.actions.expandReplies', { count: hiddenReplyCount })
+								}}
+							</UButton>
+							<template v-else>
+								<div v-if="replyTotalPages > 1" class="flex items-center gap-2">
+									<UButton
+										size="xs"
+										color="neutral"
+										variant="ghost"
+										:disabled="replyPage <= 1"
+										@click="goPrevReplyPage"
+									>
+										{{ t('social.actions.prevPage') }}
+									</UButton>
+									<UButton
+										size="xs"
+										color="neutral"
+										variant="ghost"
+										:disabled="replyPage >= replyTotalPages"
+										@click="goNextReplyPage"
+									>
+										{{ t('social.actions.nextPage') }}
+									</UButton>
+								</div>
+								<UButton
+									size="xs"
+									color="neutral"
+									variant="ghost"
+									@click="collapseReplies"
+								>
+									{{ t('social.actions.collapseReplies') }}
+								</UButton>
+								<span
+									v-if="replyTotalPages > 1"
+									class="text-xs text-slate-500 dark:text-slate-400"
+								>
+									{{
+										t('social.message.replyPageInfo', {
+											page: replyPage,
+											total: replyTotalPages,
+										})
+									}}
+								</span>
+							</template>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -223,16 +312,67 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+const avatarLoaded = ref(false)
 
-const visibleReplies = computed(() =>
-	props.depth >= 1 ? [] : props.item.replies,
+const REPLY_PAGE_SIZE = 3
+const REPLY_PREVIEW_COUNT = 1
+const replyExpanded = ref(false)
+const replyPage = ref(1)
+const replyAreaRef = ref<HTMLElement | null>(null)
+const replyComposerRef = ref<HTMLElement | null>(null)
+const replyAreaHeight = ref('0px')
+
+const replyTotalPages = computed(() =>
+	Math.max(1, Math.ceil(props.item.replies.length / REPLY_PAGE_SIZE)),
 )
+
+const hiddenReplyCount = computed(() =>
+	Math.max(0, props.item.replies.length - REPLY_PREVIEW_COUNT),
+)
+
+const showReplyArea = computed(
+	() =>
+		props.depth === 0 &&
+		(props.item.replies.length > 0 ||
+			replyExpanded.value ||
+			props.item.id === props.replyingToId),
+)
+
+const visibleReplies = computed(() => {
+	if (props.depth >= 1) {
+		return []
+	}
+
+	if (!replyExpanded.value) {
+		return props.item.replies.slice(0, REPLY_PREVIEW_COUNT)
+	}
+
+	const start = (replyPage.value - 1) * REPLY_PAGE_SIZE
+	return props.item.replies.slice(start, start + REPLY_PAGE_SIZE)
+})
+
+const showReplyPager = computed(
+	() => props.depth === 0 && props.item.replies.length > REPLY_PREVIEW_COUNT,
+)
+
+const updateReplyAreaHeight = async () => {
+	if (!import.meta.client || !replyAreaRef.value) {
+		return
+	}
+
+	await nextTick()
+	replyAreaHeight.value = `${replyAreaRef.value.scrollHeight}px`
+}
+
+const replyAreaStyle = computed(() => ({
+	height: replyAreaHeight.value,
+}))
 
 const nextDepth = computed(() => Math.min(props.depth + 1, 1))
 const containerClass = computed(() =>
 	props.depth === 0
 		? 'space-y-4 rounded-2xl border border-slate-200/70 p-4 dark:border-slate-800 mb-2'
-		: 'space-y-4 py-1 mb-1',
+		: 'space-y-3 py-0',
 )
 
 const formatTime = (value: string) => dayjs(value).format('YYYY-MM-DD HH:mm')
@@ -306,6 +446,40 @@ const handleTogglePin = (item: MessageCommentItem) => {
 	emit('toggle-pin', item.id, !item.isPinned)
 }
 
+const markAvatarLoaded = () => {
+	avatarLoaded.value = true
+}
+
+const scrollReplyComposerIntoView = async () => {
+	if (!import.meta.client || !replyComposerRef.value) {
+		return
+	}
+
+	await nextTick()
+	replyComposerRef.value.scrollIntoView({
+		behavior: 'smooth',
+		block: 'center',
+	})
+}
+
+const expandReplies = () => {
+	replyExpanded.value = true
+	replyPage.value = 1
+}
+
+const collapseReplies = () => {
+	replyExpanded.value = false
+	replyPage.value = 1
+}
+
+const goPrevReplyPage = () => {
+	replyPage.value = Math.max(1, replyPage.value - 1)
+}
+
+const goNextReplyPage = () => {
+	replyPage.value = Math.min(replyTotalPages.value, replyPage.value + 1)
+}
+
 watch(
 	() => props.editingId,
 	(editingId) => {
@@ -314,4 +488,72 @@ watch(
 		}
 	},
 )
+
+watch(
+	() => props.item.avatarUrl,
+	() => {
+		avatarLoaded.value = false
+	},
+)
+
+let replyAreaObserver: ResizeObserver | null = null
+
+watch(
+	() => props.item.replies.length,
+	() => {
+		replyPage.value = Math.min(replyPage.value, replyTotalPages.value)
+		replyPage.value = Math.max(1, replyPage.value)
+		void updateReplyAreaHeight()
+	},
+)
+
+watch(
+	() => [
+		replyExpanded.value,
+		replyPage.value,
+		props.replyingToId,
+		props.item.replies.length,
+	],
+	() => {
+		void updateReplyAreaHeight()
+	},
+	{ flush: 'post' },
+)
+
+watch(
+	() => props.replyingToId === props.item.id,
+	(isReplying) => {
+		if (!isReplying) {
+			return
+		}
+
+		void scrollReplyComposerIntoView()
+	},
+	{ flush: 'post' },
+)
+
+watch(
+	() => replyAreaRef.value,
+	(element) => {
+		replyAreaObserver?.disconnect()
+		replyAreaObserver = null
+
+		if (!import.meta.client || !element) {
+			return
+		}
+
+		replyAreaObserver = new ResizeObserver(() => {
+			void updateReplyAreaHeight()
+		})
+
+		replyAreaObserver.observe(element)
+		void updateReplyAreaHeight()
+	},
+	{ flush: 'post', immediate: true },
+)
+
+onBeforeUnmount(() => {
+	replyAreaObserver?.disconnect()
+	replyAreaObserver = null
+})
 </script>

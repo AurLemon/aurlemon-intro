@@ -36,7 +36,7 @@
 				<i18n-t
 					keypath="main.index.line2"
 					tag="span"
-					class="block mt-3 md:mt-0 break-all"
+					class="block mt-3 lg:mt-0 break-all"
 				>
 					<template #age>{{ age }}</template>
 					<template #doubtful>
@@ -47,7 +47,7 @@
 		</div>
 
 		<!-- 信息卡片 -->
-		<div class="mt-16 pb-10 grid grid-cols-1 md:grid-cols-2 gap-5">
+		<div class="mt-16 pb-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
 			<div class="relative">
 				<InfoCard :background-src="currentEducationBg">
 					<template #logo>

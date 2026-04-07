@@ -6,8 +6,8 @@
 		:ui="{
 			overlay: 'z-[43000]',
 			content:
-				'z-[43010] max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-4rem)] overflow-hidden',
-			body: 'overflow-hidden',
+				'z-[43010] flex h-[calc(100dvh-2rem)] flex-col overflow-hidden sm:h-[calc(100dvh-4rem)]',
+			body: 'min-h-0 flex h-full flex-1 overflow-hidden',
 		}"
 	>
 		<template #actions>
@@ -40,8 +40,11 @@
 		</template>
 
 		<template #body>
-			<div class="flex h-[80dvh] md:h-[min(90dvh,46rem)] flex-col gap-4">
-				<div class="min-h-0 flex-1 overflow-y-auto space-y-4 pr-1">
+			<div class="flex min-h-0 h-full flex-1 flex-col gap-4 overflow-hidden">
+				<div
+					ref="commentsScrollRef"
+					class="min-h-0 flex-1 overflow-y-auto space-y-4 pr-1 scroll-smooth"
+				>
 					<UAlert
 						v-if="!items.length"
 						color="neutral"
@@ -174,11 +177,24 @@ const sortOrder = ref<MessageBoardSortOrder>('latest')
 const isLoggedIn = computed(() => auth.isLoggedIn.value)
 const replyingToId = computed(() => replyTarget.value?.id ?? null)
 const editingId = computed(() => editingTarget.value?.id ?? null)
+const commentsScrollRef = ref<HTMLElement | null>(null)
 const boardQuery = computed(() => ({
 	page: currentPage.value,
 	pageSize,
 	sort: sortOrder.value,
 }))
+
+const scrollCommentsToTop = async () => {
+	if (!import.meta.client) {
+		return
+	}
+
+	await nextTick()
+	commentsScrollRef.value?.scrollTo({
+		top: 0,
+		behavior: 'smooth',
+	})
+}
 
 const setSortOrder = (next: MessageBoardSortOrder) => {
 	if (sortOrder.value === next) {
@@ -200,6 +216,7 @@ const refreshBoard = async () => {
 		pagination.value = response.pagination
 		currentPage.value = response.pagination.page
 		auth.user.value = response.currentUser
+		void scrollCommentsToTop()
 	} catch (error) {
 		showError(error)
 	}
@@ -225,6 +242,7 @@ const runCommentMutation = async (payload: {
 		pagination.value = response.pagination
 		currentPage.value = response.pagination.page
 		auth.user.value = response.currentUser
+		void scrollCommentsToTop()
 		replyTarget.value = null
 		editingTarget.value = null
 		emit('refresh-message-count')
@@ -372,6 +390,7 @@ const deleteComment = async (commentId: string) => {
 		pagination.value = response.pagination
 		currentPage.value = response.pagination.page
 		auth.user.value = response.currentUser
+		void scrollCommentsToTop()
 		if (editingTarget.value?.id === commentId) {
 			editingTarget.value = null
 		}

@@ -148,6 +148,7 @@ export interface MessageCommentItem {
 	canDelete: boolean
 	canPin: boolean
 	replyToGithubLogin: string | null
+	replyToFloor: number | null
 	isNestedReply: boolean
 	replies: MessageCommentItem[]
 }

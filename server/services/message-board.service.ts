@@ -93,6 +93,7 @@ export const listMessageBoard = async (
 				currentUser?.isAdmin === true,
 			canPin: currentUser?.isAdmin === true && comment.parentId === null,
 			replyToGithubLogin: null,
+			replyToFloor: null,
 			isNestedReply: false,
 			replies: [],
 		})
@@ -131,6 +132,7 @@ export const listMessageBoard = async (
 		const visit = (node: MessageCommentItem) => {
 			const parent = node.parentId ? itemMap.get(node.parentId) : null
 			node.replyToGithubLogin = parent?.githubLogin ?? null
+			node.replyToFloor = parent?.floor ?? null
 			node.isNestedReply = Boolean(node.parentId && node.parentId !== rootId)
 			const nested = node.replies
 			node.replies = []
@@ -150,6 +152,7 @@ export const listMessageBoard = async (
 
 	for (const root of roots) {
 		root.replyToGithubLogin = null
+		root.replyToFloor = null
 		root.isNestedReply = false
 		root.replies = flattenRepliesForRoot(root.id, root.replies)
 	}

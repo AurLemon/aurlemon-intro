@@ -10,7 +10,7 @@
 			</div>
 		</div>
 
-		<div v-else class="grid gap-5 md:grid-cols-2 px-6">
+		<div v-else class="grid gap-5 lg:grid-cols-2 px-6">
 			<NuxtLink
 				v-for="friend in friends"
 				:key="friend.id"

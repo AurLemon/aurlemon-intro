@@ -1,5 +1,5 @@
 <template>
-	<footer class="mx-auto max-w-4xl w-full px-6 md:px-0 my-6 mb-16 mt-auto">
+	<footer class="mx-auto max-w-4xl w-full px-6 lg:px-0 my-6 mb-16 mt-auto">
 		<div class="mb-12 flex justify-center items-center">
 			<SiteLikeButton @summary-change="handleSiteLikeSummaryChange" />
 			<UTooltip :text="messageTooltipLabel" :delay-duration="50">
@@ -28,10 +28,10 @@
 				@open-list="githubLoginListOpen = true"
 			/>
 		</div>
-		<div class="w-full flex flex-col justify-between md:flex-row">
+		<div class="w-full flex flex-col justify-between lg:flex-row">
 			<SiteMark />
 			<div
-				class="mt-3 md:mt-0 break-all flex flex-wrap gap-x-2 md:items-center md:gap-x-4 text-[15px] text-slate-800 dark:text-slate-200 tracking-wide"
+				class="mt-3 lg:mt-0 break-all flex flex-wrap gap-x-2 lg:items-center lg:gap-x-4 text-[15px] text-slate-800 dark:text-slate-200 tracking-wide"
 				@mouseleave="hoveredLink = null"
 			>
 				<NuxtLink
