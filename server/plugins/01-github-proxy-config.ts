@@ -11,5 +11,8 @@ export default defineNitroPlugin(() => {
 
 	globalThis.__githubProxyConfigLogged__ = true
 
-	console.info('[network] github proxy config', getGithubProxyLogMeta())
+	const { githubProxyEnabled, githubProxyConfigured } = getGithubProxyLogMeta()
+	const proxyState = githubProxyEnabled && githubProxyConfigured ? 'on' : 'off'
+
+	console.info(`[network] github proxy=${proxyState}`)
 })
