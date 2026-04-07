@@ -1,11 +1,12 @@
 <template>
 	<div class="space-y-3">
 		<UTextarea
-			class="w-full resize-none"
+			class="w-full"
 			v-model="draft"
 			:rows="textareaRows"
 			:disabled="disabled"
 			:placeholder="placeholderText"
+			autoresize
 		/>
 		<div
 			:class="[
