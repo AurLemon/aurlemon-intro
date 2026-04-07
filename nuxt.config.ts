@@ -9,7 +9,6 @@ const prismaClientBrowserEntry = resolve(
 	dirname(require.resolve('@prisma/client/package.json')),
 	'../../.prisma/client/index-browser.js',
 )
-
 export default defineNuxtConfig({
 	compatibilityDate: '2024-04-03',
 	ssr: true,
@@ -35,7 +34,6 @@ export default defineNuxtConfig({
 		'@pinia/nuxt',
 		'@vesp/nuxt-fontawesome',
 		'nuxt-svgo',
-		'@nuxt/content',
 		[
 			'@nuxtjs/i18n',
 			{
@@ -52,8 +50,39 @@ export default defineNuxtConfig({
 				vueI18n: './i18n.config.ts',
 			},
 		],
+		[
+			'@nuxtjs/seo',
+			{
+				sitemap: {
+					autoLastmod: true,
+				},
+				robots: {
+					sitemap: '/sitemap.xml',
+					disallow: ['/api/**'],
+				},
+				linkChecker: {
+					failOnError: true,
+					fetchRemoteUrls: false,
+					excludeLinks: ['/api/**'],
+					excludePages: ['/api/**'],
+					report: {
+						html: true,
+						markdown: true,
+					},
+				},
+			},
+		],
+		'@nuxt/content',
 		'@nuxt/ui',
 	],
+	// @ts-expect-error nuxt-site-config injects the `site` config at runtime
+	site: {
+		url: process.env.NUXT_SITE_URL,
+		name: 'AurLemon Intro',
+		description:
+			'A personal site by AurLemon, built with Nuxt 4 and TypeScript, focused on profile, projects, and preferences.',
+		defaultLocale: 'zh-CN',
+	},
 	ui: {
 		fonts: false,
 		theme: {
