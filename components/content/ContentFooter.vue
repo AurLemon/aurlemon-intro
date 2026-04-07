@@ -2,19 +2,19 @@
 	<div
 		class="flex flex-wrap justify-center items-center gap-x-6 gap-y-2 pt-6 text-sm font-(family-name:--font-family) text-slate-400 dark:border-slate-700 dark:text-slate-400"
 	>
-		<p v-if="updatedText" class="flex items-center gap-1.5 leading-1">
+		<p v-if="updatedText" class="flex items-center gap-1.5 leading-[normal]">
 			<UIcon
 				name="i-lucide-history"
 				class="size-4 shrink-0 text-slate-400 dark:text-slate-500"
 			/>
 			<span>{{ updatedText }}</span>
 		</p>
-		<p v-if="statsText" class="flex items-center gap-1.5 leading-1">
+		<p v-if="statsText" class="flex items-center gap-1.5 leading-[normal]">
 			<UIcon
 				name="i-lucide-file-text"
 				class="size-4 shrink-0 text-slate-400 dark:text-slate-500"
 			/>
-			{{ statsText }}
+			<span>{{ statsText }}</span>
 		</p>
 	</div>
 </template>
