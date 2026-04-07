@@ -1,16 +1,16 @@
 ---
-updatedAt: 2026-04-06T04:00:49+08:00
+updatedAt: 2026-04-08T02:51:44+08:00
 ---
 
 Recently, around April 2026, I spent some time rewriting the site. I tried a lot of UI directions, and in the end I still went with this version. I originally planned to add a sidebar, but the overall look was just average, so I scrapped it. lol.
 
 ## Rambling
 
-I have to admit that taste is subjective. But this is my own site, and I still do not want it to look like everyone else's.
+I have to admit that taste is subjective. But this is my own site, so honestly, whatever goes. The core requirement is simply not to look like everyone else's site.
 
-So... I did something pretty bold (actually, really bold): I moved the Menu to the bottom of the page; kept the Header to the reading progress bar and a few action buttons; made the Footer a simple site logo plus non-core page links, external links, and the registration record; and added a Blur Mask to the Header and Menu so the text transitions smoothly while the page scrolls.
+So... I did something pretty bold (actually, really bold): I moved the Menu to the bottom of the page; kept the Header to the reading progress bar and a few action buttons; made the Footer a simple site logo plus non-core page links, external links, and the filing number; and added a Blur Mask to the Header and Menu so the text transitions smoothly while the page scrolls.
 
-Another thing is that I used a serif typeface for the body this time, while the sans-serif face is used only for titles, buttons, the header, the footer, and other non-core text. I suspect I may be overusing the serif a bit, Source Han Serif, even though I personally think it looks beautiful. I hope people who dislike this pairing do not yell at me.
+Another thing is that I used a serif typeface for the body this time, while the sans-serif face is used only for titles, buttons, the header, the footer, and other non-core text. I suspect I may be overusing the serif a bit, even with Source Han Serif, though I personally think it looks beautiful. I hope people who dislike this pairing do not yell at me.
 
 As for what inspired my serif usage, it actually came from using Claude, though Anthropic banned me the next morning, ha. Setting Anthropic's habit of banning accounts aside, let's be fair. Claude's design is still quite distinctive: rounded sans-serif, a serious serif, a cool yellow theme color, and the simple line-art graphics around it. It perfectly captures Claude's core traits: aloof, restrained, mature.
 
