@@ -74,9 +74,16 @@ import type { FriendLinksResponse } from '~/shared/types/social'
 const applyOpen = ref(false)
 const adminOpen = ref(false)
 const colorMode = useColorMode()
+const isMounted = ref(false)
+
+onMounted(() => {
+	isMounted.value = true
+})
 
 const linksCover = computed(() =>
-	colorMode.value === 'dark' ? linksCoverDark : linksCoverLight,
+	isMounted.value && colorMode.value === 'dark'
+		? linksCoverDark
+		: linksCoverLight,
 )
 
 const openAdminFromApply = async () => {

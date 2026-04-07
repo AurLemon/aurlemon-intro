@@ -14,8 +14,15 @@ import profileCoverLight from '~/assets/resources/pages/profile_cover_light.webp
 import profileCoverDark from '~/assets/resources/pages/profile_cover_dark.webp'
 
 const colorMode = useColorMode()
+const isMounted = ref(false)
+
+onMounted(() => {
+	isMounted.value = true
+})
 
 const profileCover = computed(() =>
-	colorMode.value === 'dark' ? profileCoverDark : profileCoverLight,
+	isMounted.value && colorMode.value === 'dark'
+		? profileCoverDark
+		: profileCoverLight,
 )
 </script>
