@@ -18,7 +18,7 @@ In November 2025, by pure chance, I picked a soft-yuri slice-of-life title, [Foo
 
 (Even though this part is about how I started watching GL and does not seem very related to books, I already put anime data in the previous section, so I might as well include my light novel and manga data here too. It roughly lines up with what comes next.)
 
-I originally thought this soft-yuri title would just be a brief detour. Watching anime still costs time and energy, so I did not think I would keep watching for long. Around that time, I had CET-6 (December 13, 2025). After the exam, and after finding out from the score breakdown in February that I failed (lol, 414, eleven points short of 425), I took a short break for a few days. Then I kept opening VSCode and pushing my project forward a little each day. Since VSCode was already open, the upper-right corner of my screen could not stay idle either, so I continued catching up on anime.
+I originally thought this soft-yuri title would just be a brief detour. Watching anime still costs time and energy, so I did not think I would keep watching for long. Around that time, I had CET-6 (December 13, 2025). After the exam, and after finding out from the score breakdown in February that I failed (lol, 414, eleven points short of 425), I took a short break for a few days. Then I kept opening VSCode and pushing my project forward a little each day. Since VSCode was already open, the upper-right corner of my screen could not stay idle either, so I kept catching up on anime.
 
 I had just started wondering whether to try a true yuri work when Bilibili pushed me a MAD for [There's No Freaking Way I'll be Your Lover! Unless...](https://bgm.tv/subject/524707). From there, things went completely out of hand, and I fully entered the GL world.
 
@@ -28,7 +28,7 @@ After I roughly finished the first watch, something strange happened. The story 
 
 After that, I spent two nights staying up to finish Moke Yuzuhara-sensei's manga. I am also almost done with the original novel now, too, though it has taken about four months because I read slowly; for detailed reading data, see above. There really is a strange kind of magic in Hitoma Iruma's writing. The richest and most interesting part of Adachi and Shimamura is not the plot, but the psychological description. I think one of the big reasons I was drawn to it, besides the GL angle, is that the character backgrounds felt close enough to mine to resonate.
 
-I recently ordered volume 8 of the Adachi and Shimamura manga, along with the Taiwanese edition that is about to be released, and I am looking forward to the books arriving. Every rewatch is a wash for my soul.
+I recently ordered volume 8 of the Adachi and Shimamura manga, along with the Taiwanese edition that is about to be released, and I am looking forward to the books arriving. Every rewatch is a cleansing for my soul!
 
 Another title that kept me in withdrawal for quite a long time was [Cosmic Princess Kaguya](https://bgm.tv/subject/604826). The animation is smooth, and it tells a story properly. I also rewatch it often these days, and I have already ordered the artbook and the novel.
 
@@ -47,7 +47,7 @@ As for Vocaloid, I do not have any fixed producer. I just listen to whatever the
 
 Other than that, I honestly cannot think of many hobbies worth talking about. Coding is actually not done by me; the Agent does the work, and I pressure it. If I really had to name another topic worth chatting about... maybe drinking Monster and sleeping? My phone is Xiaomi, my laptop is Mechanical Revolution, so yeah, value-for-money kings.
 
-I usually play [Minecraft](https://bgm.tv/subject/12596), and occasionally Bed Wars. I do not really play many other games; I am not even sure whether [Turing Complete](https://bgm.tv/subject/434205) counts. I once had a dream of switching tracks and going into hardware and embedded systems, but clearly that is not happening, haha.
+I usually play [Minecraft](https://bgm.tv/subject/12596) (Java Edition ID: _Aurora_Lemon_), and occasionally Bed Wars. I do not really play many other games; I am not even sure whether [Turing Complete](https://bgm.tv/subject/434205) counts. I once had a dream of switching tracks and going into hardware and embedded systems, but clearly that is not happening, haha.
 
 My daily schedule is fixed: asleep at 4 AM, up at 11 AM. Total night owl, and I am used to working at night. Anyway, my VSCode and Obsidian themes are always light. In VSCode, my favorites are the built-in Light Modern and GitHub Light, though GitHub Dark is also nice.
 

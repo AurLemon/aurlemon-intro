@@ -4,7 +4,7 @@
 
 👏 我叫**柠檬**（_AurLemon_），男，福建福州人，INF/TJ。2006 年生，目前是大二（2024 年入学），9 月专升本入学后是大三。软件工程（本科）在读，TypeScript 全栈开发。中文母语者，英语 CET-4 至 CET-6 水平，日语仅 JLPT N4 至 JLPT N3 水平。最近几个月在准备专科毕设和自己 MC 服务器的小项目。
 
-GL 看得多，目前如果要我列出最好的作品，我觉得是《[安达与岛村](https://bgm.tv/subject/81467)》。常听 J-POP 和 Vocaloid。游戏游玩时间最久的是 Minecraft（Java 版 ID 是 _Aurora_Lemon_），偶尔打打起床战争。夜猫子，习惯夜间工作。不常出门。UI 设计上偏好留白和卡片网格，最近比较喜欢用衬线体（比如现在、此时此刻的本站），偶尔会放点 Emoji 作为视觉锚点提升整体。VSCode 和 Obsidian 主题色永远是浅色（VSCode 的现代浅色和 GitHub Light 很好看）。
+GL 看得多，目前如果要我列出最好的作品，我觉得是《[安达与岛村](https://bgm.tv/subject/81467)》。常听 J-POP 和 Vocaloid。游戏游玩时间最久的是 Minecraft（Java 版 ID 是 _Aurora_Lemon_），偶尔打打起床战争。
 
 Agent 主力是 Codex 和 GitHub Copilot（Education Benefits）。代码有关的内容（代码仓库、关注的动态）基本都在我的 [GitHub](https://github.com/AurLemon)，具体参见项目页面。
 
