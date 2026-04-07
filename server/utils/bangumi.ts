@@ -63,6 +63,10 @@ const resolveBangumiUsername = (): string => {
 	return 'AurLemon'
 }
 
+const toErrorMessage = (error: unknown): string => {
+	return error instanceof Error ? error.message : String(error)
+}
+
 const profileUrlOf = (username: string): string => {
 	return `${BANGUMI_PROFILE_BASE}/${encodeURIComponent(username)}`
 }
@@ -210,17 +214,25 @@ const fetchStatusGroupSafely = async (options: {
 	subjectType: BangumiSubjectType
 	collectionType: BangumiCollectionType
 	label: string
+	reason: 'startup' | 'scheduled' | 'cache-miss'
 }): Promise<BangumiWorkItem[]> => {
 	try {
 		return await fetchStatusGroup(options)
 	} catch (error) {
-		console.error(`[bangumi] failed to fetch group ${options.label}`, error)
+		bangumiEventBus.emit(BANGUMI_EVENT_NAMES.GROUP_FAILED, {
+			username: options.username,
+			reason: options.reason,
+			label: options.label,
+			errorMessage: toErrorMessage(error),
+			at: new Date().toISOString(),
+		})
 		return []
 	}
 }
 
 const fetchBangumiSnapshot = async (
 	username: string,
+	reason: 'startup' | 'scheduled' | 'cache-miss',
 ): Promise<BangumiSnapshot> => {
 	const [booksDoing, booksWish, booksDone, animeDoing, animeWish, animeDone] =
 		await Promise.all([
@@ -229,36 +241,42 @@ const fetchBangumiSnapshot = async (
 				subjectType: 1,
 				collectionType: 3,
 				label: 'books.doing',
+				reason,
 			}),
 			fetchStatusGroupSafely({
 				username,
 				subjectType: 1,
 				collectionType: 1,
 				label: 'books.wish',
+				reason,
 			}),
 			fetchStatusGroupSafely({
 				username,
 				subjectType: 1,
 				collectionType: 2,
 				label: 'books.done',
+				reason,
 			}),
 			fetchStatusGroupSafely({
 				username,
 				subjectType: 2,
 				collectionType: 3,
 				label: 'anime.doing',
+				reason,
 			}),
 			fetchStatusGroupSafely({
 				username,
 				subjectType: 2,
 				collectionType: 1,
 				label: 'anime.wish',
+				reason,
 			}),
 			fetchStatusGroupSafely({
 				username,
 				subjectType: 2,
 				collectionType: 2,
 				label: 'anime.done',
+				reason,
 			}),
 		])
 
@@ -307,19 +325,18 @@ const createEmptySnapshot = (username: string): BangumiSnapshot => {
 }
 
 const refreshBangumiSnapshot = async (options: {
+	username: string
 	reason: 'startup' | 'scheduled' | 'cache-miss'
 	silent?: boolean
+	startedAt?: number
 }): Promise<void> => {
-	const username = resolveBangumiUsername()
-	bangumiEventBus.emit(BANGUMI_EVENT_NAMES.REFRESH_REQUESTED, {
-		reason: options.reason,
-		at: new Date().toISOString(),
-	})
+	const startedAt = options.startedAt ?? Date.now()
 
 	await refreshManagedCache({
 		namespace: BANGUMI_CACHE_NAMESPACE,
 		key: BANGUMI_CACHE_KEY,
-		loader: async () => await fetchBangumiSnapshot(username),
+		loader: async () =>
+			await fetchBangumiSnapshot(options.username, options.reason),
 		ttlMs: BANGUMI_CACHE_TTL_MS,
 		silent: options.silent,
 		maxEntries: BANGUMI_MAX_CACHE_ENTRIES,
@@ -330,14 +347,19 @@ const refreshBangumiSnapshot = async (options: {
 		key: BANGUMI_CACHE_KEY,
 	})
 	if (!cached.entry) {
-		return
+		throw createError({
+			statusCode: 502,
+			statusMessage: 'Failed to refresh Bangumi snapshot.',
+		})
 	}
 
 	const data = cached.entry.data
 	bangumiEventBus.emit(BANGUMI_EVENT_NAMES.REFRESH_SUCCEEDED, {
+		username: options.username,
 		reason: options.reason,
 		generatedAt: data.generatedAt,
 		nextRefreshAt: new Date(Date.now() + BANGUMI_CACHE_TTL_MS).toISOString(),
+		durationMs: Date.now() - startedAt,
 		anime: {
 			doing: data.anime.doing.length,
 			wish: data.anime.wish.length,
@@ -357,22 +379,35 @@ const refreshBangumiSnapshotWithRetry = async (options: {
 	silent?: boolean
 }): Promise<boolean> => {
 	let lastError: unknown = null
+	const username = resolveBangumiUsername()
+	const startedAt = Date.now()
+
+	bangumiEventBus.emit(BANGUMI_EVENT_NAMES.REFRESH_REQUESTED, {
+		username,
+		reason: options.reason,
+		at: new Date().toISOString(),
+	})
 
 	for (let attempt = 1; attempt <= options.maxAttempts; attempt++) {
+		const attemptStartedAt = Date.now()
 		try {
 			await refreshBangumiSnapshot({
+				username,
 				reason: options.reason,
 				silent: options.silent,
+				startedAt: attemptStartedAt,
 			})
 			return true
 		} catch (error) {
 			lastError = error
 			if (attempt < options.maxAttempts) {
 				bangumiEventBus.emit(BANGUMI_EVENT_NAMES.REFRESH_RETRIED, {
+					username,
 					reason: options.reason,
 					attempt,
 					maxAttempts: options.maxAttempts,
-					errorMessage: error instanceof Error ? error.message : String(error),
+					errorMessage: toErrorMessage(error),
+					durationMs: Date.now() - attemptStartedAt,
 					at: new Date().toISOString(),
 				})
 			}
@@ -380,14 +415,18 @@ const refreshBangumiSnapshotWithRetry = async (options: {
 	}
 
 	bangumiEventBus.emit(BANGUMI_EVENT_NAMES.REFRESH_FAILED, {
+		username,
 		reason: options.reason,
 		attempts: options.maxAttempts,
-		finalErrorMessage:
-			lastError instanceof Error ? lastError.message : String(lastError),
+		finalErrorMessage: toErrorMessage(lastError),
+		durationMs: Date.now() - startedAt,
 		at: new Date().toISOString(),
 	})
 	if (!options.silent) {
-		console.error('[bangumi] refresh failed after retries', lastError)
+		console.error(
+			'[bangumi] refresh failed after retries',
+			toErrorMessage(lastError),
+		)
 	}
 	return false
 }

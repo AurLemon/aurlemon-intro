@@ -5,26 +5,32 @@ export const BANGUMI_EVENT_NAMES = {
 	REFRESH_RETRIED: 'bangumi.refresh.retried',
 	REFRESH_SUCCEEDED: 'bangumi.refresh.succeeded',
 	REFRESH_FAILED: 'bangumi.refresh.failed',
+	GROUP_FAILED: 'bangumi.group.failed',
 	CACHE_MISS: 'bangumi.cache.miss',
 } as const
 
 export interface BangumiRefreshRequestedEvent {
+	username: string
 	reason: 'startup' | 'scheduled' | 'cache-miss'
 	at: string
 }
 
 export interface BangumiRefreshRetriedEvent {
+	username: string
 	reason: 'startup' | 'scheduled' | 'cache-miss'
 	attempt: number
 	maxAttempts: number
 	errorMessage: string
+	durationMs: number
 	at: string
 }
 
 export interface BangumiRefreshSucceededEvent {
+	username: string
 	reason: 'startup' | 'scheduled' | 'cache-miss'
 	generatedAt: string
 	nextRefreshAt: string
+	durationMs: number
 	anime: {
 		doing: number
 		wish: number
@@ -38,9 +44,19 @@ export interface BangumiRefreshSucceededEvent {
 }
 
 export interface BangumiRefreshFailedEvent {
+	username: string
 	reason: 'startup' | 'scheduled' | 'cache-miss'
 	attempts: number
 	finalErrorMessage: string
+	durationMs: number
+	at: string
+}
+
+export interface BangumiGroupFailedEvent {
+	username: string
+	reason: 'startup' | 'scheduled' | 'cache-miss'
+	label: string
+	errorMessage: string
 	at: string
 }
 
@@ -54,6 +70,7 @@ interface BangumiEventMap {
 	[BANGUMI_EVENT_NAMES.REFRESH_RETRIED]: BangumiRefreshRetriedEvent
 	[BANGUMI_EVENT_NAMES.REFRESH_SUCCEEDED]: BangumiRefreshSucceededEvent
 	[BANGUMI_EVENT_NAMES.REFRESH_FAILED]: BangumiRefreshFailedEvent
+	[BANGUMI_EVENT_NAMES.GROUP_FAILED]: BangumiGroupFailedEvent
 	[BANGUMI_EVENT_NAMES.CACHE_MISS]: BangumiCacheMissEvent
 }
 

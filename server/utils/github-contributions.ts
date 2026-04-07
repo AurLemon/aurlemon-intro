@@ -5,6 +5,10 @@ import {
 	refreshManagedCache,
 } from '~/server/utils/memory-cache-manager'
 import {
+	GITHUB_CONTRIBUTIONS_EVENT_NAMES,
+	githubContributionsEventBus,
+} from '~/server/utils/github-contributions-events'
+import {
 	isGithubProxyEnabled,
 	proxyGithubRequest,
 	resolveGithubProxyBodyText,
@@ -42,6 +46,10 @@ const clampDays = (days?: number): number => {
 	}
 
 	return Math.min(365, Math.max(30, Math.floor(days as number)))
+}
+
+const toErrorMessage = (error: unknown): string => {
+	return error instanceof Error ? error.message : String(error)
 }
 
 const buildCacheKey = (
@@ -230,6 +238,7 @@ const fetchCalendarFromGithub = async (options: {
 	username: string
 	from: Date
 	to: Date
+	transport: 'proxy' | 'direct'
 }): Promise<GithubContributionCalendar> => {
 	const segments = splitRangeByYear(options.from, options.to)
 	const parsedMap = new Map<string, ParsedContributionDay>()
@@ -254,12 +263,6 @@ const fetchCalendarFromGithub = async (options: {
 			})
 
 			if (!proxyEnvelope.ok) {
-				console.error('[github-contributions] proxy request failed', {
-					upstreamStatus: proxyEnvelope.status,
-					errorMessage: proxyEnvelope.error,
-					proxyRequestId: proxyEnvelope.requestId,
-				})
-
 				throw createError({
 					statusCode: proxyEnvelope.status >= 400 ? proxyEnvelope.status : 502,
 					statusMessage:
@@ -315,8 +318,20 @@ const refreshGithubContributionCache = async (options: {
 	username: string
 	from: Date
 	to: Date
+	reason: 'startup' | 'scheduled' | 'cache-miss'
 	silent?: boolean
 }): Promise<void> => {
+	const startedAt = Date.now()
+	githubContributionsEventBus.emit(
+		GITHUB_CONTRIBUTIONS_EVENT_NAMES.REFRESH_REQUESTED,
+		{
+			username: options.username,
+			reason: options.reason,
+			transport: isGithubProxyEnabled() ? 'proxy' : 'direct',
+			at: new Date().toISOString(),
+		},
+	)
+
 	try {
 		await refreshManagedCache({
 			namespace: CACHE_NAMESPACE,
@@ -326,14 +341,58 @@ const refreshGithubContributionCache = async (options: {
 					username: options.username,
 					from: options.from,
 					to: options.to,
+					transport: isGithubProxyEnabled() ? 'proxy' : 'direct',
 				}),
 			ttlMs: CACHE_TTL_MS,
 			silent: true,
 			maxEntries: MAX_CACHE_ENTRIES,
 		})
+
+		const cached = readManagedCache<GithubContributionCalendar>({
+			namespace: CACHE_NAMESPACE,
+			key: options.cacheKey,
+			now: Date.now(),
+		})
+		if (!cached.entry) {
+			throw createError({
+				statusCode: 502,
+				statusMessage: 'Failed to refresh GitHub public contributions.',
+			})
+		}
+
+		githubContributionsEventBus.emit(
+			GITHUB_CONTRIBUTIONS_EVENT_NAMES.REFRESH_SUCCEEDED,
+			{
+				username: options.username,
+				reason: options.reason,
+				transport: isGithubProxyEnabled() ? 'proxy' : 'direct',
+				from: options.from.toISOString(),
+				to: options.to.toISOString(),
+				totalContributions: cached.entry.data.totalContributions,
+				weeks: cached.entry.data.weeks.length,
+				durationMs: Date.now() - startedAt,
+				at: new Date().toISOString(),
+			},
+		)
 	} catch (error) {
+		githubContributionsEventBus.emit(
+			GITHUB_CONTRIBUTIONS_EVENT_NAMES.REFRESH_FAILED,
+			{
+				username: options.username,
+				reason: options.reason,
+				transport: isGithubProxyEnabled() ? 'proxy' : 'direct',
+				from: options.from.toISOString(),
+				to: options.to.toISOString(),
+				errorMessage: toErrorMessage(error),
+				durationMs: Date.now() - startedAt,
+				at: new Date().toISOString(),
+			},
+		)
 		if (!options.silent) {
-			console.error('[github-contributions] refresh failed', error)
+			console.error(
+				'[github-contributions] refresh failed',
+				toErrorMessage(error),
+			)
 		}
 	}
 }
@@ -375,6 +434,7 @@ export const fetchGithubContributionCalendar = async (options?: {
 		username,
 		from,
 		to,
+		reason: cached.entry ? 'scheduled' : 'cache-miss',
 		silent: true,
 	})
 
@@ -392,6 +452,7 @@ export const fetchGithubContributionCalendar = async (options?: {
 export const warmupGithubContributionCalendar = async (options?: {
 	username?: string
 	days?: number
+	reason?: 'startup' | 'scheduled' | 'cache-miss'
 }): Promise<void> => {
 	const username = resolveUsername(options?.username)
 	const useRecentYear = !Number.isFinite(options?.days)
@@ -410,6 +471,7 @@ export const warmupGithubContributionCalendar = async (options?: {
 		username,
 		from,
 		to,
+		reason: options?.reason ?? 'startup',
 		silent: true,
 	})
 }
@@ -425,6 +487,6 @@ export const startGithubContributionAutoRefresh = (): void => {
 
 	void warmupGithubContributionCalendar()
 	globalThis.__githubContributionRefreshTimer__ = setInterval(() => {
-		void warmupGithubContributionCalendar()
+		void warmupGithubContributionCalendar({ reason: 'scheduled' })
 	}, CACHE_TTL_MS)
 }
