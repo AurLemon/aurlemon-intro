@@ -81,6 +81,8 @@ export default defineNuxtConfig({
 				'lucide:messages-square',
 				'lucide:calendar-days',
 				'lucide:git-commit-horizontal',
+				'lucide:file-text',
+				'lucide:history',
 			],
 		},
 		serverBundle: {

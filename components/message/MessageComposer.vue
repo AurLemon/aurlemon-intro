@@ -1,7 +1,7 @@
 <template>
 	<div class="space-y-3">
 		<UTextarea
-			class="w-full"
+			class="w-full text-sm!"
 			v-model="draft"
 			:rows="textareaRows"
 			:disabled="disabled"

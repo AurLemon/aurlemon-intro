@@ -1,3 +1,7 @@
+---
+updatedAt: 2026-04-07T17:58:28+08:00
+---
+
 Although I have already written my basic information on the home page, this is a "personal statement," so I will write it again. It seems that most programmers like writing blogs. Although I do have a [Cnblogs blog](https://cnblogs.com/AurLemon), I have not maintained it for a long time, and I do not have the habit of blogging regularly. Similar to blogs, I do write notes, but all my notes are in Obsidian and are not very suitable for publishing. That is also why this site is an Intro rather than a Blog.
 
 ## Current Status

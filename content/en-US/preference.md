@@ -1,3 +1,7 @@
+---
+updatedAt: 2026-04-07T17:58:28+08:00
+---
+
 I do not go too deep into my preferences in public. Some things are better left to a smaller circle. Here are a few random points.
 
 ## ACGN Works

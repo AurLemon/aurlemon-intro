@@ -87,6 +87,10 @@
 				}
 			}
 		},
+		"contentFooter": {
+			"stats": "{count} 字 / {minutes} 分钟",
+			"updatedAt": "{date}"
+		},
 		"project": {
 			"line1": "Hey Codex，帮我把这个页面的内容写一下。",
 			"githubContributionsTitle": "GitHub Contributions",
