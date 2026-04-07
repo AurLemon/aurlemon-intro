@@ -16,6 +16,24 @@ export default defineNitroPlugin(() => {
 	globalThis.__socialListenersReady__ = true
 
 	socialEventBus.on(
+		SOCIAL_EVENT_NAMES.FRIEND_LINK_APPLICATION_SUBMITTED,
+		(payload) => {
+			console.info(
+				`[friend-link] application submitted id=${payload.applicationId} applicant=${payload.applicantGithubLogin} name=${payload.name}`,
+			)
+		},
+	)
+
+	socialEventBus.on(
+		SOCIAL_EVENT_NAMES.FRIEND_LINK_APPLICATION_EXPIRED,
+		(payload) => {
+			console.info(
+				`[friend-link] application expired id=${payload.applicationId} at=${payload.expiredAt}`,
+			)
+		},
+	)
+
+	socialEventBus.on(
 		SOCIAL_EVENT_NAMES.FRIEND_LINK_APPLICATION_APPROVED,
 		async (payload) => {
 			await materializeApprovedFriendLink(

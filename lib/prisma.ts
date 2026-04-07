@@ -6,7 +6,6 @@ const PRISMA_SCHEMA_PATH = resolve(process.cwd(), 'prisma/schema.prisma')
 const SQLITE_RELATIVE_BASE_DIR = existsSync(PRISMA_SCHEMA_PATH)
 	? dirname(PRISMA_SCHEMA_PATH)
 	: process.cwd()
-let hasLoggedSqliteDatasourcePath = false
 
 const resolveSqliteRelativePath = (dbPath: string): string =>
 	resolve(SQLITE_RELATIVE_BASE_DIR, dbPath)
@@ -43,21 +42,10 @@ const ensureSqliteDatabaseFile = (url: string | undefined) => {
 	}
 }
 
-const logSqliteDatasourcePath = (url: string | undefined) => {
-	if (hasLoggedSqliteDatasourcePath || !url?.startsWith('file:')) {
-		return
-	}
-
-	hasLoggedSqliteDatasourcePath = true
-	const dbPath = url.slice('file:'.length)
-	console.info(`[prisma] SQLite datasource path: ${dbPath}`)
-}
-
 const prismaClientSingleton = () => {
 	const databaseUrl = process.env.DATABASE_URL ?? 'file:./dev.db'
 	const normalizedUrl = normalizeSqliteUrl(databaseUrl)
 	ensureSqliteDatabaseFile(normalizedUrl)
-	logSqliteDatasourcePath(normalizedUrl)
 
 	// 神医：
 	// https://stackoverflow.com/questions/78550989/tables-do-not-exist-in-prisma-database-after-nuxt-app-deployment
