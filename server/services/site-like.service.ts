@@ -8,7 +8,11 @@ import {
 	SOCIAL_EVENT_NAMES,
 	socialEventBus,
 } from '~/server/utils/social-events'
-import type { GithubAuthUser } from '~/shared/types/social'
+import type {
+	GithubAuthUser,
+	GithubLoginUserListPagination,
+	SiteLikeListPagination,
+} from '~/shared/types/social'
 
 const GITHUB_SESSION_CLEANUP_COOLDOWN_MS = 60_000
 let lastGithubSessionCleanupAt = 0
@@ -124,13 +128,21 @@ const maskGithubLogin = (githubLogin: string): string => {
 	return `${first}***${last}`
 }
 
-export const listSiteLikes = async (limit = 100) => {
-	const safeLimit = Math.max(1, Math.min(limit, 200))
+export const listSiteLikes = async (options: {
+	page: number
+	pageSize: number
+}) => {
+	const safePageSize = Math.max(1, Math.min(options.pageSize, 200))
+	const totalCount = await prisma.like.count()
+	const totalPages = Math.max(1, Math.ceil(totalCount / safePageSize))
+	const page = Math.min(Math.max(1, options.page), totalPages)
+	const skip = (page - 1) * safePageSize
 	const likes = await prisma.like.findMany({
 		orderBy: {
 			timestamp: 'desc',
 		},
-		take: safeLimit,
+		skip,
+		take: safePageSize,
 	})
 
 	const items = await Promise.all(
@@ -146,16 +158,27 @@ export const listSiteLikes = async (limit = 100) => {
 
 	return {
 		items,
+		pagination: {
+			page,
+			pageSize: safePageSize,
+			totalPages,
+			totalCount,
+			hasPrev: page > 1,
+			hasNext: page < totalPages,
+		} satisfies SiteLikeListPagination,
 	}
 }
 
 export const listGithubLoginUsers = async (
 	currentUser: GithubAuthUser | null,
-	limit = 100,
+	options: {
+		page: number
+		pageSize: number
+	},
 ) => {
 	await cleanupExpiredDuplicateGithubSessions()
 
-	const safeLimit = Math.max(1, Math.min(limit, 500))
+	const safePageSize = Math.max(1, Math.min(options.pageSize, 500))
 	const canViewProfile = currentUser?.isAdmin === true
 	const sessions = await prisma.githubSession.findMany({
 		orderBy: {
@@ -189,7 +212,13 @@ export const listGithubLoginUsers = async (
 		}
 	}
 
-	const items = [...userMap.values()].slice(0, safeLimit).map((item) => ({
+	const users = [...userMap.values()]
+	const totalCount = users.length
+	const totalPages = Math.max(1, Math.ceil(totalCount / safePageSize))
+	const page = Math.min(Math.max(1, options.page), totalPages)
+	const start = (page - 1) * safePageSize
+
+	const items = users.slice(start, start + safePageSize).map((item) => ({
 		id: item.id,
 		displayLogin: canViewProfile
 			? item.githubLogin
@@ -200,9 +229,18 @@ export const listGithubLoginUsers = async (
 		expiresAt: item.expiresAt.toISOString(),
 		canViewProfile,
 	}))
+	const pagination: GithubLoginUserListPagination = {
+		page,
+		pageSize: safePageSize,
+		totalPages,
+		totalCount,
+		hasPrev: page > 1,
+		hasNext: page < totalPages,
+	}
 
 	return {
 		items,
+		pagination,
 	}
 }
 

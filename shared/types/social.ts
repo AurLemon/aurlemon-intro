@@ -20,8 +20,18 @@ export interface SiteLikeListItem {
 	likedAt: string
 }
 
+export interface SiteLikeListPagination {
+	page: number
+	pageSize: number
+	totalPages: number
+	totalCount: number
+	hasPrev: boolean
+	hasNext: boolean
+}
+
 export interface SiteLikeListResponse {
 	items: SiteLikeListItem[]
+	pagination: SiteLikeListPagination
 }
 
 export interface GithubLoginUserListItem {
@@ -34,8 +44,18 @@ export interface GithubLoginUserListItem {
 	canViewProfile: boolean
 }
 
+export interface GithubLoginUserListPagination {
+	page: number
+	pageSize: number
+	totalPages: number
+	totalCount: number
+	hasPrev: boolean
+	hasNext: boolean
+}
+
 export interface GithubLoginUserListResponse {
 	items: GithubLoginUserListItem[]
+	pagination: GithubLoginUserListPagination
 }
 
 export interface SiteLikedEvent {
