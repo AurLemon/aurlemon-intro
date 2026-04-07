@@ -4,7 +4,7 @@
 
 👏 私の名前は **柠檬**（_AurLemon_）。男性、福建・福州出身、INF/TJ。2006 年生まれで、今は大学 2 年生（2024 年入学）。9 月に専升本で入学してからは 3 年生だ。ソフトウェア工学（学部）を専攻中で、TypeScript のフルスタック開発をしている。中国語ネイティブ、英語は CET-4 から CET-6 くらい、日本語は JLPT N4 から JLPT N3 くらい。ここ数か月は、専科の卒業制作と、自分の MC サーバーの小さな案件を準備していた。
 
-GL はかなり見ている。今、もし最良の作品を一つ挙げろと言われたら、私は《[安達としまむら](https://bgm.tv/subject/81467)》だと思う。J-POP と Vocaloid をよく聴く。いちばん長く遊んでいるゲームは Minecraft だ（Java 版 ID は _Aurora_Lemon_）。たまに Bed Wars もやる。夜型で、夜間作業に慣れている。あまり外には出ない。UI デザインでは余白とカードグリッドが好みで、最近はセリフ体を使うのがかなり好きだ（たとえば今、このサイトそのもの）。たまに Emoji を視覚的なアンカーとして入れて、全体の印象を少し上げることもある。VSCode と Obsidian のテーマ色はずっとライト系で、VSCode の Modern Light と GitHub Light はかなり綺麗だ。
+GL はかなり見ている。今、もし最良の作品を一つ挙げろと言われたら、私は《[安達としまむら](https://bgm.tv/subject/81467)》だと思う。J-POP と Vocaloid をよく聴く。いちばん長く遊んでいるゲームは Minecraft だ（Java 版 ID は _Aurora_Lemon_）。たまに Bed Wars もやる。
 
 Agent の主力は Codex と GitHub Copilot（Education Benefits）だ。コードに関する内容（コードリポジトリ、注目している動向）は基本的に私の [GitHub](https://github.com/AurLemon) にあるので、詳細はプロジェクトページを見てほしい。
 
