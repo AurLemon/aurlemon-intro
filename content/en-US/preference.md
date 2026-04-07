@@ -1,5 +1,5 @@
 ---
-updatedAt: 2026-04-07T17:58:28+08:00
+updatedAt: 2026-04-08T02:53:22+08:00
 ---
 
 I do not go too deep into my preferences in public. Some things are better left to a smaller circle. Here are a few random points.
@@ -22,9 +22,9 @@ In November 2025, by pure chance, I picked a soft-yuri slice-of-life title, [Foo
 
 (Even though this part is about how I started watching GL and does not seem very related to books, I already put anime data in the previous section, so I might as well include my light novel and manga data here too. It roughly lines up with what comes next.)
 
-I originally thought this soft-yuri title would just be a brief detour. Watching anime still costs time and energy, so I did not think I would keep watching for long. Around that time, I had CET-6 (December 13, 2025). After the exam, and after finding out from the score breakdown in February that I failed (lol, 414, eleven points short of 425), I took a short break for a few days. Then I kept opening VSCode and pushing my project forward a little each day. Since VSCode was already open, the upper-right corner of my screen could not stay idle either, so I kept catching up on anime.
+I originally thought this soft-yuri title would just be a brief detour. Watching anime still costs time and energy, so I did not think I would keep watching for long. Around that time, I had CET-6 (December 13, 2025). After the exam, and after finding out from the score breakdown in February that I failed (lol, 414, eleven points short of 425), I took a short break for a few days. Then I kept opening VSCode and working on my own project, pushing a little progress every day. Since VSCode was already open, the upper-right corner of my screen could not stay idle either, so I kept catching up on anime.
 
-I had just started wondering whether to try a true yuri work when Bilibili pushed me a MAD for [There's No Freaking Way I'll be Your Lover! Unless...](https://bgm.tv/subject/524707). From there, things went completely out of hand, and I fully entered the GL world.
+At that moment I was just wondering whether to try a true yuri work when Bilibili pushed me a MAD for [There's No Freaking Way I'll be Your Lover! Unless...](https://bgm.tv/subject/524707). From there, things went completely out of hand, and I fully entered the GL world.
 
 But [There's No Freaking Way I'll be Your Lover! Unless...](https://bgm.tv/subject/524707) did not quite hit the spot. A few days after finishing it, the withdrawal symptoms were gone. What has kept me in withdrawal until now is [Adachi and Shimamura](https://bgm.tv/subject/282372) (October 2020), an anime I had not finished back in middle school. Around New Year, I planned to pull it out and properly catch up.
 
