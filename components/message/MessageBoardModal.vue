@@ -40,7 +40,7 @@
 		</template>
 
 		<template #body>
-			<div class="flex h-[min(78dvh,42rem)] flex-col gap-4">
+			<div class="flex h-[80dvh] md:h-[min(90dvh,46rem)] flex-col gap-4">
 				<div class="min-h-0 flex-1 overflow-y-auto space-y-4 pr-1">
 					<UAlert
 						v-if="!items.length"
@@ -153,7 +153,7 @@ const { showError } = useSocialFeedback()
 
 const items = ref<MessageCommentItem[]>([])
 const currentPage = ref(1)
-const pageSize = 5
+const pageSize = 6
 const pagination = ref<MessageBoardResponse['pagination']>({
 	page: 1,
 	pageSize,

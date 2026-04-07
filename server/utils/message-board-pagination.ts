@@ -11,8 +11,8 @@ export interface MessageBoardPaginationQuery {
 }
 
 const DEFAULT_PAGE = 1
-const DEFAULT_PAGE_SIZE = 5
-const MAX_PAGE_SIZE = 50
+const DEFAULT_PAGE_SIZE = 6
+const MAX_PAGE_SIZE = 6
 const DEFAULT_SORT: MessageBoardSortOrder = 'latest'
 const DEFAULT_PIN_FILTER: MessageBoardPinFilter = 'all'
 
