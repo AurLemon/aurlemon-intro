@@ -14,8 +14,9 @@ import {
 	resolveGithubProxyBodyText,
 } from '~/server/utils/github-proxy'
 
-type ContributionLevel =
-	GithubContributionCalendar['weeks'][number]['contributionDays'][number]['contributionLevel']
+type ContributionLevel = NonNullable<
+	GithubContributionCalendar['weeks'][number]['contributionDays'][number]
+>['contributionLevel']
 
 const DEFAULT_DAYS = 365
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000
@@ -202,14 +203,17 @@ const toCalendarWeeks = (
 	return [...weekMap.entries()]
 		.sort((a, b) => a[0].localeCompare(b[0]))
 		.map(([weekKey, days]) => {
-			const contributionDays = days
-				.sort((a, b) => a.weekday - b.weekday)
-				.map((day) => ({
+			const contributionDays: GithubContributionCalendar['weeks'][number]['contributionDays'] =
+				Array.from({ length: 7 }, () => null)
+
+			for (const day of days) {
+				contributionDays[day.weekday] = {
 					date: day.date,
 					weekday: day.weekday,
 					contributionCount: day.contributionCount,
 					contributionLevel: day.contributionLevel,
-				}))
+				}
+			}
 
 			return {
 				firstDay: weekKey,

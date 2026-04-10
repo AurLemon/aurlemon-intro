@@ -3,7 +3,7 @@
 		class="border-6 border-slate-200 hover:border-slate-400/60 dark:border-slate-800 rounded-xl relative h-40 transition"
 	>
 		<div
-			class="background absolute -z-1 top-0 left-0 right-0 bottom-0 overflow-hidden"
+			class="background absolute z-0 top-0 left-0 right-0 bottom-0 overflow-hidden"
 			:style="backgroundStyle"
 		>
 			<img
