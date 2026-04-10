@@ -223,9 +223,9 @@ import dayjs from 'dayjs'
 import InfoCard from '~/components/cards/InfoCard.vue'
 
 import avatarMark from '~/assets/resources/sitemark/avatar_mark.jpg'
-import FPMLogo from '~/assets/resources/school_badge/FPM.png'
-import FEESLogo from '~/assets/resources/school_badge/FEES.png'
-import FJCCCLogo from '~/assets/resources/school_badge/FJCCC.png'
+import FPMLogo from '~/assets/resources/school_badge/FPM.webp'
+import FEESLogo from '~/assets/resources/school_badge/FEES.webp'
+import FJCCCLogo from '~/assets/resources/school_badge/FJCCC.webp'
 import XMTULogo from '~/assets/resources/school_badge/XMTU.svg'
 
 import educationBg from '~/assets/resources/homepage/education_bg.webp'
