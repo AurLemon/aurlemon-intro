@@ -1,8 +1,14 @@
 ---
-updatedAt: 2026-04-08T02:51:44+08:00
+updatedAt: 2026-04-10T13:36:50+08:00
 ---
 
 Recently, around April 2026, I spent some time rewriting the site. I tried a lot of UI directions, and in the end I still went with this version. I originally planned to add a sidebar, but the overall look was just average, so I scrapped it. lol.
+
+## Agent Use
+
+Strictly speaking, every piece of content on this site, including the docs, code, and motion, was tuned by me 1:1. Saying I made it with AI is an **insult**. I still have the original Instant Design source files. Sure, my little essays may sound a bit machine-like, but that does not mean the whole thing was run by AI. Do not insult me.
+
+There are definitely features completed with Agent help. Yes. But I was the instructor. The Blur + Mask on the header was something I tested in the browser and then hand-rolled into TailwindCSS. Please do not insult me, especially my UI and CSS skills. I picked every font on this site from Google Fonts myself, let alone every feature.
 
 ## Rambling
 
