@@ -7,6 +7,10 @@ declare global {
 }
 
 export default defineNuxtPlugin(() => {
+	if (import.meta.dev) {
+		return
+	}
+
 	const baiduStatKey = useRuntimeConfig().public.baiduStatKey
 
 	if (baiduStatKey) {

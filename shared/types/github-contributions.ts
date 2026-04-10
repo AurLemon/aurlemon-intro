@@ -12,7 +12,7 @@ export interface GithubContributionDay {
 
 export interface GithubContributionWeek {
 	firstDay: string
-	contributionDays: GithubContributionDay[]
+	contributionDays: Array<GithubContributionDay | null>
 }
 
 export interface GithubContributionCalendar {

@@ -9,6 +9,13 @@ const prismaClientBrowserEntry = resolve(
 	dirname(require.resolve('@prisma/client/package.json')),
 	'../../.prisma/client/index-browser.js',
 )
+const analyticsPlugins =
+	process.env.NODE_ENV === 'production'
+		? [
+				{ src: '~/plugins/baidu-stat.ts', mode: 'client' as const },
+				{ src: '~/plugins/microsoft-clarity.ts', mode: 'client' as const },
+			]
+		: []
 
 export default defineNuxtConfig({
 	compatibilityDate: '2024-04-03',
@@ -26,10 +33,7 @@ export default defineNuxtConfig({
 			pathPrefix: false,
 		},
 	],
-	plugins: [
-		{ src: '~/plugins/baidu-stat.ts', mode: 'client' },
-		{ src: '~/plugins/microsoft-clarity.ts', mode: 'client' },
-	],
+	plugins: [...analyticsPlugins],
 	modules: [
 		'@nuxt/eslint',
 		'@pinia/nuxt',

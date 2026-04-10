@@ -87,45 +87,54 @@
 						:key="`week-${weekIndex}-${week.firstDay}`"
 						class="grid grid-rows-7 gap-1"
 					>
-						<UTooltip
-							v-for="day in week.contributionDays"
-							:key="day.date"
-							:delay-duration="50"
+						<template
+							v-for="(day, dayIndex) in week.contributionDays"
+							:key="day?.date ?? `empty-${weekIndex}-${dayIndex}`"
 						>
-							<span
-								class="block size-3 rounded-[3px] border border-black/5 dark:border-white/10"
-								:class="
-									day.contributionCount <= 0
-										? 'bg-slate-200 dark:bg-slate-700'
-										: ''
-								"
-								:style="
-									day.contributionCount > 0
-										? { backgroundColor: resolveDayColor(day) }
-										: undefined
-								"
-							/>
+							<UTooltip v-if="day" :delay-duration="50">
+								<span
+									class="block size-3 rounded-[3px] border border-black/5 dark:border-white/10"
+									:class="
+										day.contributionCount <= 0
+											? 'bg-slate-200 dark:bg-slate-700'
+											: ''
+									"
+									:style="
+										day.contributionCount > 0
+											? { backgroundColor: resolveDayColor(day) }
+											: undefined
+									"
+								/>
 
-							<template #content>
-								<div class="flex items-center gap-1.5 text-xs leading-[normal]">
-									<span class="flex items-center gap-1">
-										<UIcon name="i-lucide-calendar-days" class="size-2.5" />
-										<span class="tabular-nums">{{
-											formatTooltipDate(day.date)
-										}}</span>
-									</span>
-									<span class="flex items-center gap-0.5">
-										<UIcon
-											name="i-lucide-git-commit-horizontal"
-											class="size-2.5"
-										/>
-										<span class="tabular-nums">{{
-											day.contributionCount
-										}}</span>
-									</span>
-								</div>
-							</template>
-						</UTooltip>
+								<template #content>
+									<div
+										class="flex items-center gap-1.5 text-xs leading-[normal]"
+									>
+										<span class="flex items-center gap-1">
+											<UIcon name="i-lucide-calendar-days" class="size-2.5" />
+											<span class="tabular-nums">{{
+												formatTooltipDate(day.date)
+											}}</span>
+										</span>
+										<span class="flex items-center gap-0.5">
+											<UIcon
+												name="i-lucide-git-commit-horizontal"
+												class="size-2.5"
+											/>
+											<span class="tabular-nums">{{
+												day.contributionCount
+											}}</span>
+										</span>
+									</div>
+								</template>
+							</UTooltip>
+
+							<span
+								v-else
+								class="block size-3 rounded-[3px] opacity-0"
+								aria-hidden="true"
+							/>
+						</template>
 					</div>
 				</div>
 			</div>
