@@ -226,7 +226,8 @@ import avatarMark from '~/assets/resources/sitemark/avatar_mark.jpg'
 import FPMLogo from '~/assets/resources/school_badge/FPM.webp'
 import FEESLogo from '~/assets/resources/school_badge/FEES.webp'
 import FJCCCLogo from '~/assets/resources/school_badge/FJCCC.webp'
-import XMTULogo from '~/assets/resources/school_badge/XMTU.svg'
+import XMUTLogo from '~/assets/resources/school_badge/XMUT.svg'
+import FJUTLogo from '~/assets/resources/school_badge/FJUT.webp'
 
 import educationBg from '~/assets/resources/homepage/education_bg.webp'
 import techCover from '~/assets/resources/homepage/tech_cover.svg'
@@ -270,7 +271,7 @@ const avatarReady = ref(false)
 const avatarImgRef = ref<HTMLImageElement | null>(null)
 
 const educationLogos: Record<EducationStage, any> = {
-	bachelor: XMTULogo,
+	bachelor: XMUTLogo,
 	specialty: FJCCCLogo,
 	highSchool: FEESLogo,
 	juniorSchool: FPMLogo,
