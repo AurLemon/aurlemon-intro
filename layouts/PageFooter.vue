@@ -31,20 +31,17 @@
 		<div class="w-full flex flex-col justify-between lg:flex-row">
 			<SiteMark />
 			<div
-				class="mt-3 lg:mt-0 break-all flex flex-wrap gap-x-2 lg:items-center lg:gap-x-4 text-[15px] text-slate-800 dark:text-slate-200 tracking-wide"
-				@mouseleave="hoveredLink = null"
+				class="group mt-3 lg:mt-0 break-all flex flex-wrap gap-x-2 lg:items-center lg:gap-x-4 text-[15px] text-slate-800 dark:text-slate-200 tracking-wide"
 			>
 				<NuxtLink
 					:to="localePath('/about')"
-					:class="linkClass(0)"
-					@mouseenter="hoveredLink = 0"
+					class="transition-colors text-slate-800 dark:text-slate-200 group-hover:text-slate-500 dark:group-hover:text-slate-400 hover:!text-slate-800 dark:hover:!text-slate-200"
 				>
 					{{ $t('footer.aboutSite') }}
 				</NuxtLink>
 				<NuxtLink
 					:to="localePath('/friends')"
-					:class="linkClass(1)"
-					@mouseenter="hoveredLink = 1"
+					class="transition-colors text-slate-800 dark:text-slate-200 group-hover:text-slate-500 dark:group-hover:text-slate-400 hover:!text-slate-800 dark:hover:!text-slate-200"
 				>
 					{{ $t('footer.friendLink') }}
 				</NuxtLink>
@@ -52,8 +49,7 @@
 					to="https://github.com/AurLemon"
 					target="_blank"
 					rel="noopener noreferrer"
-					:class="linkClass(2)"
-					@mouseenter="hoveredLink = 2"
+					class="transition-colors text-slate-800 dark:text-slate-200 group-hover:text-slate-500 dark:group-hover:text-slate-400 hover:!text-slate-800 dark:hover:!text-slate-200"
 				>
 					{{ $t('footer.githubProfile') }}
 				</NuxtLink>
@@ -61,8 +57,7 @@
 					to="https://beian.miit.gov.cn"
 					target="_blank"
 					rel="noopener noreferrer"
-					:class="linkClass(3)"
-					@mouseenter="hoveredLink = 3"
+					class="transition-colors text-slate-800 dark:text-slate-200 group-hover:text-slate-500 dark:group-hover:text-slate-400 hover:!text-slate-800 dark:hover:!text-slate-200"
 				>
 					{{ $t('footer.miitRegistration') }}
 				</NuxtLink>
@@ -95,7 +90,6 @@ import type {
 
 const { t } = useI18n()
 const localePath = useLocalePath()
-const hoveredLink = ref<number | null>(null)
 const messageOpen = ref(false)
 const siteLikeListOpen = ref(false)
 const githubLoginListOpen = ref(false)
@@ -136,15 +130,6 @@ const openSiteLikeListFromMessage = async () => {
 	await nextTick()
 	siteLikeListOpen.value = true
 }
-
-const linkClass = (index: number) => [
-	'transition-colors',
-	hoveredLink.value === null
-		? 'text-slate-800 dark:text-slate-200'
-		: hoveredLink.value === index
-			? 'text-slate-800 dark:text-slate-200'
-			: 'text-slate-500 dark:text-slate-400',
-]
 
 onMounted(() => {
 	void loadMessageCount()
