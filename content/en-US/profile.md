@@ -1,5 +1,5 @@
 ---
-updatedAt: 2026-04-10T13:36:50+08:00
+updatedAt: 2026-04-18T11:47:51+08:00
 ---
 
 Although I have already written my basic information on the home page, since this is a "personal statement," I will write it again. It seems that most programmers like writing blogs, but I do not have that habit. Although I do have a [Cnblogs blog](https://cnblogs.com/AurLemon), it has not seen a new post in a long time.
@@ -22,13 +22,15 @@ My main Agents are Codex and GitHub Copilot (Education Benefits). Anything relat
 
 ## Education
 
-The question I get most often from people who know me is, "Why is your junior college only two years?" I will explain my education history here briefly.
+The questions I get most often from people who know me are, "Why is your junior college only two years?" and "How did you end up in junior college?" I will explain my education history here briefly.
 
 1. Middle school at **Fuzhou Pingdong Middle School** (2018 - 2021).
 2. After the entrance exam, I was admitted to the 3+2 **five-year vocational track** at Fujian Chuanzheng Communications College. My high-school and junior-college years were spent at **Fujian Engineering & Economics School** (2021 - 2024) and **Fujian Chuanzheng Communications College** (2024 - 2026).
-3. The admission result for my transfer-to-undergraduate is still pending. For the undergraduate stage (2026 - 2028), I am leaving a placeholder here for now.
+3. For the undergraduate stage (2026 - 2028), I am leaving a placeholder here for now. The transfer-to-undergraduate admission result is still pending. I am probably choosing between Fujian University of Technology (Artificial Intelligence) and Xiamen University of Technology (Software Engineering). If the ordinary admission round works out, I would rather get in earlier; my raw score should be enough. The merit-based round only starts in August, which is too late.
 
-Why I went through the five-year vocational track is a long story, so I will not get into it here.
+When I was in middle school, I was still pretty naive and only cared about playing around. I did not realize until the admissions were over that I was really heading to vocational school. After that, I just stumbled my way to where I am now. Since I was already at the bottom, any direction I take is progress compared with before, haha.
+
+Knowing your own limits is pretty important, no matter whether the result is something you can accept or not. The facts are the facts, and "studying" is genuinely hard. My dream is to get into a non-Double-First-Class graduate program. I do not ask for much, and I hope the me in 2028 can make it happen.
 
 ## Main Experience
 
@@ -36,4 +38,4 @@ I have almost no real experience or awards worth showing off, so I will force ou
 
 1. On the code side, I rarely do old-school manual programming now, aside from the occasional hand-tuned CSS. Almost 98% of my work is done by Agents... I also keep wondering what my way forward is. I know that controlling the whole system matters, but how to get that control is the problem. My grasp of design patterns, algorithms, and data structures is still not enough.
 2. I have a small Minecraft server (2018 -). I basically chat in the player group every day, and there is a group of very familiar old players in it!
-3. Third prize in the 2025 World Vocational College Skills Competition qualifier. That was a result from my junior-college years, and it mainly came from the school's resources and the instructors' hard work.
+3. Third prize in the 2025 World Vocational College Skills Competition qualifier. That was a result from my junior-college years, and it mainly came from the school's resources and the instructors' hard work. I really did not expect that I would end up being recognized as a transfer-to-undergraduate award candidate.
