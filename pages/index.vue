@@ -157,16 +157,12 @@
 				</template>
 				<template #title>{{ $t('main.index.card.online.title') }}</template>
 				<template #subtitle>
-					<span
-						class="inline-flex flex-wrap items-center"
-						@mouseleave="hoveredOnlineLink = null"
-					>
+					<span class="group inline-flex flex-wrap items-center">
 						<NuxtLink
 							to="https://space.bilibili.com/204271518"
 							target="_blank"
 							rel="noopener noreferrer"
-							:class="onlineLinkClass(0)"
-							@mouseenter="hoveredOnlineLink = 0"
+							class="transition-colors text-slate-800 dark:text-slate-200 group-hover:text-slate-500 dark:group-hover:text-slate-400 hover:!text-slate-800 dark:hover:!text-slate-200"
 						>
 							{{ $t('main.index.card.online.bilibili') }}
 						</NuxtLink>
@@ -175,8 +171,7 @@
 							to="https://xhslink.com/m/9tlfAIy8eAJ"
 							target="_blank"
 							rel="noopener noreferrer"
-							:class="onlineLinkClass(1)"
-							@mouseenter="hoveredOnlineLink = 1"
+							class="transition-colors text-slate-800 dark:text-slate-200 group-hover:text-slate-500 dark:group-hover:text-slate-400 hover:!text-slate-800 dark:hover:!text-slate-200"
 						>
 							{{ $t('main.index.card.online.xiaohongshu') }}
 						</NuxtLink>
@@ -185,8 +180,7 @@
 							to="https://github.com/AurLemon"
 							target="_blank"
 							rel="noopener noreferrer"
-							:class="onlineLinkClass(2)"
-							@mouseenter="hoveredOnlineLink = 2"
+							class="transition-colors text-slate-800 dark:text-slate-200 group-hover:text-slate-500 dark:group-hover:text-slate-400 hover:!text-slate-800 dark:hover:!text-slate-200"
 						>
 							{{ $t('main.index.card.online.github') }}
 						</NuxtLink>
@@ -226,7 +220,6 @@ import avatarMark from '~/assets/resources/sitemark/avatar_mark.jpg'
 import FPMLogo from '~/assets/resources/school_badge/FPM.webp'
 import FEESLogo from '~/assets/resources/school_badge/FEES.webp'
 import FJCCCLogo from '~/assets/resources/school_badge/FJCCC.webp'
-import XMUTLogo from '~/assets/resources/school_badge/XMUT.svg'
 import FJUTLogo from '~/assets/resources/school_badge/FJUT.webp'
 
 import educationBg from '~/assets/resources/homepage/education_bg.webp'
@@ -265,8 +258,10 @@ const educationStages: EducationStage[] = [
 	'highSchool',
 	'juniorSchool',
 ]
-const selectedEducationStage = ref<EducationStage>('specialty')
-const hoveredOnlineLink = ref<number | null>(null)
+const selectedEducationStage = useState<EducationStage>(
+	'home-selected-education-stage',
+	() => 'specialty',
+)
 const avatarReady = ref(false)
 const avatarImgRef = ref<HTMLImageElement | null>(null)
 
@@ -301,15 +296,6 @@ const currentEducationLogoIsComponent = computed(
 const currentEducationBg = educationBg
 
 const isLogoComponent = (logo: any) => typeof logo !== 'string'
-
-const onlineLinkClass = (index: number) => [
-	'transition-colors',
-	hoveredOnlineLink.value === null
-		? 'text-slate-800 dark:text-slate-200'
-		: hoveredOnlineLink.value === index
-			? 'text-slate-800 dark:text-slate-200'
-			: 'text-slate-500 dark:text-slate-400',
-]
 
 onMounted(async () => {
 	await nextTick()
