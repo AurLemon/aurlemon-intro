@@ -271,7 +271,7 @@ const avatarReady = ref(false)
 const avatarImgRef = ref<HTMLImageElement | null>(null)
 
 const educationLogos: Record<EducationStage, any> = {
-	bachelor: XMUTLogo,
+	bachelor: FJUTLogo,
 	specialty: FJCCCLogo,
 	highSchool: FEESLogo,
 	juniorSchool: FPMLogo,
