@@ -731,11 +731,32 @@ export const clearGithubSession = async (event: H3Event): Promise<void> => {
 	const sessionToken = getCookie(event, SESSION_COOKIE_NAME)
 
 	if (sessionToken) {
-		await prisma.githubSession.deleteMany({
+		const session = await prisma.githubSession.findUnique({
 			where: {
 				sessionToken,
 			},
+			select: {
+				githubLogin: true,
+			},
 		})
+
+		if (session) {
+			const sessionCount = await prisma.githubSession.count({
+				where: {
+					githubLogin: session.githubLogin,
+				},
+			})
+
+			// Keep one persisted session record per GitHub login so the footer
+			// statistics still reflect that the account has logged in before.
+			if (sessionCount > 1) {
+				await prisma.githubSession.deleteMany({
+					where: {
+						sessionToken,
+					},
+				})
+			}
+		}
 	}
 
 	deleteCookie(event, SESSION_COOKIE_NAME, { path: '/' })
