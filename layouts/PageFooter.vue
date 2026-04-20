@@ -1,7 +1,10 @@
 <template>
 	<footer class="mx-auto max-w-4xl w-full px-6 lg:px-0 my-6 mb-16 mt-auto">
 		<div class="mb-12 flex justify-center items-center">
-			<SiteLikeButton @summary-change="handleSiteLikeSummaryChange" />
+			<SiteLikeButton
+				:refresh-signal="socialSummaryRefreshSignal"
+				@summary-change="handleSiteLikeSummaryChange"
+			/>
 			<UTooltip :text="messageTooltipLabel" :delay-duration="50">
 				<div
 					class="transition-all duration-300 ease-out"
@@ -73,8 +76,14 @@
 			@open-site-like-list="openSiteLikeListFromMessage"
 			@refresh-message-count="loadMessageCount"
 		/>
-		<SiteLikeListModal v-model:open="siteLikeListOpen" />
-		<GithubLoginUserListModal v-model:open="githubLoginListOpen" />
+		<SiteLikeListModal
+			v-model:open="siteLikeListOpen"
+			@refresh-summary="refreshSocialSummary"
+		/>
+		<GithubLoginUserListModal
+			v-model:open="githubLoginListOpen"
+			@refresh-summary="refreshSocialSummary"
+		/>
 	</footer>
 </template>
 
@@ -103,6 +112,7 @@ const messageCount = ref(0)
 const messageReady = ref(false)
 const githubLoginUserCount = ref(0)
 const githubLoginReady = ref(false)
+const socialSummaryRefreshSignal = ref(0)
 
 const countMessageItems = (items: MessageCommentItem[]): number =>
 	items.reduce((total, item) => total + 1 + countMessageItems(item.replies), 0)
@@ -116,6 +126,10 @@ const messageTooltipLabel = computed(() => t('social.tooltip.messageBoard'))
 const handleSiteLikeSummaryChange = (summary: SiteLikeSummary) => {
 	githubLoginUserCount.value = summary.githubLoginUserCount
 	githubLoginReady.value = true
+}
+
+const refreshSocialSummary = () => {
+	socialSummaryRefreshSignal.value += 1
 }
 
 const loadMessageCount = async () => {
