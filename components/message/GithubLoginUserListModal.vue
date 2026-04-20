@@ -136,6 +136,9 @@ import type {
 } from '~/shared/types/social'
 
 const open = defineModel<boolean>('open', { default: false })
+const emit = defineEmits<{
+	'refresh-summary': []
+}>()
 
 const { t } = useI18n()
 const { showError } = useSocialFeedback()
@@ -243,6 +246,7 @@ watch(open, async (value) => {
 	contentHeight.value = null
 	currentPage.value = 1
 	await loadItems()
+	emit('refresh-summary')
 	await nextTick()
 	if (import.meta.client) {
 		requestAnimationFrame(() => {

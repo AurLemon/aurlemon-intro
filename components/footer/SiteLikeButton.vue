@@ -26,6 +26,13 @@
 <script setup lang="ts">
 import type { SiteLikeSummary } from '~/shared/types/social'
 
+interface Props {
+	refreshSignal?: number
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	refreshSignal: 0,
+})
 const { t } = useI18n()
 const { showError } = useSocialFeedback()
 const { ensureFingerprint } = useSiteFingerprint()
@@ -105,4 +112,11 @@ const handleLike = async () => {
 onMounted(() => {
 	void loadSummary()
 })
+
+watch(
+	() => props.refreshSignal,
+	() => {
+		void loadSummary()
+	},
+)
 </script>

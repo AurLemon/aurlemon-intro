@@ -423,9 +423,12 @@ const goNextPage = () => {
 	void refreshBoard()
 }
 
-watch(open, (value) => {
-	if (value) {
-		void refreshBoard()
+watch(open, async (value) => {
+	if (!value) {
+		return
 	}
+
+	await refreshBoard()
+	emit('refresh-message-count')
 })
 </script>

@@ -233,7 +233,7 @@
 						</div>
 						<div
 							v-if="showReplyPager"
-							class="flex flex-wrap items-center justify-between gap-2 pt-1"
+							class="flex flex-wrap items-center gap-2 pt-1"
 						>
 							<UButton
 								v-if="!replyExpanded"
@@ -247,7 +247,10 @@
 								}}
 							</UButton>
 							<template v-else>
-								<div v-if="replyTotalPages > 1" class="flex items-center gap-2">
+								<div
+									v-if="replyTotalPages > 1"
+									class="flex flex-wrap items-center gap-2"
+								>
 									<UButton
 										size="xs"
 										color="neutral"
@@ -257,6 +260,16 @@
 									>
 										{{ t('social.actions.prevPage') }}
 									</UButton>
+									<span
+										class="text-xs text-slate-500 dark:text-slate-400 tabular-nums"
+									>
+										{{
+											t('social.message.replyPageInfo', {
+												page: replyPage,
+												total: replyTotalPages,
+											})
+										}}
+									</span>
 									<UButton
 										size="xs"
 										color="neutral"
@@ -271,21 +284,11 @@
 									size="xs"
 									color="neutral"
 									variant="ghost"
+									class="ml-auto"
 									@click="collapseReplies"
 								>
 									{{ t('social.actions.collapseReplies') }}
 								</UButton>
-								<span
-									v-if="replyTotalPages > 1"
-									class="text-xs text-slate-500 dark:text-slate-400"
-								>
-									{{
-										t('social.message.replyPageInfo', {
-											page: replyPage,
-											total: replyTotalPages,
-										})
-									}}
-								</span>
 							</template>
 						</div>
 					</div>
