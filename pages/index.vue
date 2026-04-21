@@ -304,13 +304,16 @@ const currentEducationBg = educationBg
 
 const isLogoComponent = (logo: any) => typeof logo !== 'string'
 
+const ONLINE_LINK_BASE_CLASS = 'text-slate-700 dark:text-slate-400'
+const ONLINE_LINK_DIM_CLASS = 'text-slate-700/60 dark:text-slate-400/60'
+
 const onlineLinkClass = (index: number) => [
 	'transition-colors',
 	hoveredOnlineLink.value === null
-		? 'text-slate-800 dark:text-slate-200'
+		? ONLINE_LINK_BASE_CLASS
 		: hoveredOnlineLink.value === index
-			? 'text-slate-800 dark:text-slate-200'
-			: 'text-slate-500 dark:text-slate-400',
+			? ONLINE_LINK_BASE_CLASS
+			: ONLINE_LINK_DIM_CLASS,
 ]
 
 onMounted(async () => {
