@@ -1,5 +1,5 @@
 ---
-updatedAt: 2026-04-18T11:47:51+08:00
+updatedAt: 2026-04-27T17:21:09+08:00
 ---
 
 Although I have already written my basic information on the home page, since this is a "personal statement," I will write it again. It seems that most programmers like writing blogs, but I do not have that habit. Although I do have a [Cnblogs blog](https://cnblogs.com/AurLemon), it has not seen a new post in a long time.
@@ -25,8 +25,8 @@ My main Agents are Codex and GitHub Copilot (Education Benefits). Anything relat
 The questions I get most often from people who know me are, "Why is your junior college only two years?" and "How did you end up in junior college?" I will explain my education history here briefly.
 
 1. Middle school at **Fuzhou Pingdong Middle School** (2018 - 2021).
-2. After the entrance exam, I was admitted to the 3+2 **five-year vocational track** at Fujian Chuanzheng Communications College. My high-school and junior-college years were spent at **Fujian Engineering & Economics School** (2021 - 2024) and **Fujian Chuanzheng Communications College** (2024 - 2026).
-3. For the undergraduate stage (2026 - 2028), I am leaving a placeholder here for now. The transfer-to-undergraduate admission result is still pending. I am probably choosing between Fujian University of Technology (Artificial Intelligence) and Xiamen University of Technology (Software Engineering). If the ordinary admission round works out, I would rather get in earlier; my raw score should be enough. The merit-based round only starts in August, which is too late.
+2. After the high school entrance exam, I was admitted to the 3+2 **five-year vocational program** at Fujian Chuanzheng Communications College, majoring in Computer Application Technology. My high-school and junior-college years were spent at **Fujian Engineering & Economics School** (2021 - 2024) and **Fujian Chuanzheng Communications College** (2024 - 2026).
+3. Through the transfer-to-undergraduate admission route, I was admitted to **Fujian University of Technology** for Artificial Intelligence (2026 - 2028). Since my score was high enough, I went through the ordinary admission round earlier and did not use the merit-based round.
 
 When I was in middle school, I was still pretty naive and only cared about playing around. I did not realize until the admissions were over that I was really heading to vocational school. After that, I just stumbled my way to where I am now. Since I was already at the bottom, any direction I take is progress compared with before, haha.
 

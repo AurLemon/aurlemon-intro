@@ -266,7 +266,7 @@ const educationStages: EducationStage[] = [
 ]
 const selectedEducationStage = useState<EducationStage>(
 	'home-selected-education-stage',
-	() => 'specialty',
+	() => 'bachelor',
 )
 const hoveredOnlineLink = ref<number | null>(null)
 const avatarReady = ref(false)
