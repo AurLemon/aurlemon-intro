@@ -1,42 +1,30 @@
 ---
-updatedAt: 2026-04-10T13:36:50+08:00
+updatedAt: 2026-05-31T04:55:36+08:00
 ---
 
 I do not go too deep into my preferences in public. Some things are better left to a smaller circle. Here are a few random points.
 
-## ACGN Works
+## Animes
 
 ::BangumiAnime
 ::
 
-The list above shows the anime I have watched. Actually, in the past few years I have watched anime very rarely, let alone read physical books. Most of the physical books I have bought recently are exam-prep books for CET-4 and CET-6. Before November 2025, I had barely watched a single anime.
-
-The reason I suddenly started watching anime again, and even ended up diving into GL recently (to be fair, GL has indeed been one of my most frequent themes lately, though that is not too different from before: mostly soft yuri + slice of life + BG), is pretty odd. I have a habit: while coding, I keep a small video window in the upper-right corner to kill time, otherwise waiting for Agent replies feels too slow.
-
-In November 2025, by pure chance, I picked the soft-yuri slice-of-life anime [Food for the Soul](https://bgm.tv/subject/531159) (PA Meshi) and started watching it. After a few days, I found it surprisingly fun and got mildly hooked. I accidentally rewatched it three or four times and even bought a physical manga volume.
-
-## GL Works
-
 ::BangumiBooks
 ::
 
-(Even though this part is about how I started watching GL and does not seem very related to books, I already put anime data in the previous section, so I might as well include my light novel and manga data here too. It roughly lines up with what comes next.)
+The anime and books listed above are the ones I have watched or read before. To be honest, I have watched very little anime in the past few years, let alone physical books. Even the physical books I bought over the past year were mostly study materials for the CET-4 and CET-6 exams.
 
-I originally thought PA Meshi would just be a brief detour. Watching anime still costs time and energy, so I did not think I would keep watching for long. Around that time, I had CET-6 (December 13, 2025). After the exam, and after finding out from the score breakdown in February that I failed (lol, 414, eleven points short of 425), I took a short break for a few days. Then I kept opening VSCode and working on my own project, pushing a little progress every day. Since VSCode was already open, the upper-right corner of my screen could not stay idle either, so I kept catching up on anime.
+If you asked me what I watch these days, I would have to think for a moment: yuri, light yuri, slice-of-life, and that is basically it. I used to watch some BG works as well, and it is not that I no longer watch them at all. I just do not watch them very often anymore.
 
-At that moment I was just wondering whether to try a true yuri work when Bilibili pushed me a MAD for [There's No Freaking Way I'll be Your Lover! Unless...](https://bgm.tv/subject/524707). From there, things went completely out of hand, and I fully entered the GL world.
+As for why I suddenly started watching anime again recently, around November 2025, and even began looking into GL works, the reason was actually quite accidental. I have this habit of playing a video in a small window at the top-right corner of my screen while coding, almost like background noise. Otherwise, waiting for the Agent to respond can feel painfully slow. Of course, I am not really watching it attentively; I am mostly just listening to it. Constantly switching my eyes between the code and the video would be too exhausting.
 
-But [There's No Freaking Way I'll be Your Lover! Unless...](https://bgm.tv/subject/524707) did not quite hit the spot. A few days after finishing it, the withdrawal symptoms were gone. What has kept me in withdrawal until now is [Adachi and Shimamura](https://bgm.tv/subject/282372) (October 2020), an anime I had not finished back in middle school. Around New Year, I planned to pull it out and properly catch up.
+At first, I just randomly picked [Food for the Soul](https://bgm.tv/subject/531159), a soft-yuri slice-of-life anime. I did not expect it to fit my taste that well. So how did I fall into GL? Later I came across a MAD for [There's No Freaking Way I'll be Your Lover! Unless...](https://bgm.tv/subject/524707), and after that came [Adachi and Shimamura](https://bgm.tv/subject/282372). I have to say, Adachi and Shimamura really is a masterpiece, but since I cannot quite explain what makes it so good, I will not force myself to write something awkward here and delete it the next morning. It did resonate with me, though.
 
-After I roughly finished the first watch, something strange happened. The story is calm and does not really have explosive moments, but every time I sat down and thought through its scenes, I felt this uncomfortable and restless itch in my chest. How did I deal with that withdrawal? Rewatch it more. So after looping it four or five times, I was completely submerged in the story.
+The story of Adachi and Shimamura is actually very calm, without many explosive moments. But it is very good at writing the state of "nothing seems to have happened, yet the characters have already traveled a long way inside." That kind of distant, awkward, but sincere relationship resonates with me more than simple plot highs. Moke Yuzuhara-sensei's manga volume 8 arrived a few days ago, on May 30, and the little couple is sweet sweet sweet. I also bought the Taiwanese editions of the manga and novel SS2 on Taobao, though I have no idea when they will arrive.
 
-After that, I spent two nights staying up to finish Moke Yuzuhara-sensei's manga. I am also almost done with the original novel now, too, though it has taken about four months because I read slowly; for detailed reading data, see above. There really is a strange kind of magic in Hitoma Iruma's writing. The richest and most interesting part of Adachi and Shimamura is not the plot, but the psychological description. I think one of the big reasons I was drawn to it, besides the GL angle, is that the character backgrounds felt close enough to mine to resonate.
+If I had to choose my favorite GL work among the ones I have watched, it would probably still be Adachi and Shimamura. Every rewatch is a cleansing for my soul! Another title that left a deep impression on me is [Cosmic Princess Kaguya](https://bgm.tv/subject/604826). Excellent animation, a smooth story line, and it made me feel great and tear up at the same time. I still rewatch it when I have time, though I do not have much free time now.
 
-I recently ordered volume 8 of the Adachi and Shimamura manga, along with the Taiwanese edition that is about to be released, and I am looking forward to the books arriving. Every rewatch is a cleansing for my soul!
-
-Another title that kept me in withdrawal for quite a long time was [Cosmic Princess Kaguya](https://bgm.tv/subject/604826). The animation is smooth, and it tells a story properly. I also rewatch it often these days, and I have already ordered the artbook and the novel.
-
-My anime-watching updates are on [Bangumi](https://bgm.tv/user/aurlemon). I do not mirror those updates on this site very often.
+BTW, from the end of 2025 to the beginning of 2026, I only watched anime when I had nothing else to do. After April, I barely watched much anymore. Anyway, the most recent ACGN-related things I bought are all Adachi and Shimamura or Cosmic Princess Kaguya stuff.
 
 ## Music
 
