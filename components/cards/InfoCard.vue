@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="border-6 border-slate-200 hover:border-slate-400/60 dark:border-slate-800 rounded-xl relative h-40 transition"
+		class="border-6 border-slate-200 hover:border-slate-400/60 dark:border-slate-800 rounded-xl relative h-40 transition duration-80"
 	>
 		<div
 			class="background absolute z-0 top-0 left-0 right-0 bottom-0 overflow-hidden"
