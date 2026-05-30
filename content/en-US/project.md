@@ -1,5 +1,5 @@
 ---
-updatedAt: 2026-04-10T13:36:50+08:00
+updatedAt: 2026-04-28T02:11:32+08:00
 ---
 
 ::GithubContributions
@@ -57,7 +57,9 @@ I genuinely used to believe (subconsciously, and only after thinking carefully d
 
 But once I got into real scenarios, like building a full front-end/back-end separated architecture from scratch, handling CI/CD workflows, or even just migrating a project's storage layer from SQLite to PostgreSQL during refactoring, I slowly realized syntax is only a wrench. The core skill is control over the whole system. A fancier term would be "engineering intuition" or "awareness of system boundaries."
 
-This fixed way of thinking even extended to language learning. I used to think grammar and vocabulary were the true essence of learning English. But exam scores did not buy that narrative. Without summarizing my own problems, writing down every thought process during reading, and debugging, there is simply no way to identify issues.
+Even now, I still cannot understand why my past self followed such an illogical learning pattern. Looking at it carefully, it was actually completely unreasonable. Maybe only now do I finally have the time and energy to summarize and review it properly. I also used to be annoyingly arrogant and liked looking down on other people's projects... When I was full of myself, everything looked simple, and I felt I could do it too. Luckily, I have already hidden all those embarrassing comments and long posts.
+
+This learning pattern without review also extended to language learning. I used to think grammar and vocabulary were the true essence of learning English. But exam scores did not buy that narrative. Without summarizing my own problems, writing down every thought process during reading, and debugging, there is simply no way to identify issues.
 
 I also spent a long time ruminating over unstable reading accuracy in CET-4/CET-6, wondering whether the problem was unknown words or careless reading. None of those reasons were convincing. They were far too subjective.
 
