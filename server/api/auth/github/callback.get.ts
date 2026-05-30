@@ -6,7 +6,7 @@ import {
 	fetchGithubUser,
 	GITHUB_OAUTH_ERROR_CODES,
 } from '~/server/utils/social-auth'
-import { getGithubProxyLogMeta } from '~/server/utils/github-proxy'
+import { getIntroProxyLogMeta } from '~/server/utils/intro-proxy'
 
 const OAUTH_STATE_ERROR_CODE = 'INVALID_GITHUB_OAUTH_STATE'
 
@@ -75,7 +75,7 @@ const withAuthErrorQuery = (
 
 export default defineEventHandler(async (event) => {
 	const redirectPath = consumeGithubOAuthRedirect(event)
-	const githubProxyLogMeta = getGithubProxyLogMeta()
+	const introProxyLogMeta = getIntroProxyLogMeta()
 	const query = getQuery(event)
 	const code = typeof query.code === 'string' ? query.code : ''
 	const state = typeof query.state === 'string' ? query.state : ''
@@ -101,7 +101,7 @@ export default defineEventHandler(async (event) => {
 		console.info('[auth/github/callback] GitHub OAuth callback succeeded', {
 			githubLogin: sessionUser.githubLogin,
 			redirectPath,
-			...githubProxyLogMeta,
+			...introProxyLogMeta,
 			tokenTransport: tokenExchange.requestMeta.transport,
 			userTransport: githubUserFetch.requestMeta.transport,
 			tokenProxyRequestId: tokenExchange.requestMeta.proxyRequestId ?? null,
@@ -123,7 +123,7 @@ export default defineEventHandler(async (event) => {
 			statusCode,
 			errorCode,
 			redirectPath,
-			...githubProxyLogMeta,
+			...introProxyLogMeta,
 			durationMs: Date.now() - callbackStartedAt,
 		})
 
