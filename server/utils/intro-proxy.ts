@@ -49,9 +49,13 @@ const sanitizeProxyUrlForLog = (value: string): string => {
 	}
 }
 
+const resolveProxyUrl = (): string => {
+	return (process.env.INTRO_PROXY_URL ?? '').trim()
+}
+
 const resolveProxyConfig = (): { url: string; handshakeKey: string } => {
 	return {
-		url: (process.env.INTRO_PROXY_URL ?? '').trim(),
+		url: resolveProxyUrl(),
 		handshakeKey: (process.env.INTRO_PROXY_HANDSHAKE_KEY ?? '').trim(),
 	}
 }
@@ -188,6 +192,23 @@ export const proxyIntroRequest = async (
 	})
 
 	return normalizeEnvelope(response)
+}
+
+export const resolveBangumiImageProxyUrl = (imageUrl: string): string => {
+	const trimmedImageUrl = imageUrl.trim()
+	const proxyUrl = resolveProxyUrl()
+
+	if (!trimmedImageUrl || !proxyUrl) {
+		return trimmedImageUrl
+	}
+
+	try {
+		const proxiedUrl = new URL('/bangumi/image', proxyUrl)
+		proxiedUrl.searchParams.set('url', trimmedImageUrl)
+		return proxiedUrl.toString()
+	} catch {
+		return trimmedImageUrl
+	}
 }
 
 export const isIntroProxyTransportError = (

@@ -18,6 +18,7 @@ import {
 import {
 	isBangumiProxyEnabled,
 	proxyIntroRequest,
+	resolveBangumiImageProxyUrl,
 	resolveIntroProxyJsonBody,
 } from '~/server/utils/intro-proxy'
 
@@ -87,14 +88,19 @@ const normalizeCover = (images?: Partial<BangumiCoverSet>): BangumiCoverSet => {
 }
 
 const resolveCoverUrl = (cover: BangumiCoverSet): string => {
-	return (
+	const url =
 		cover.common ||
 		cover.medium ||
 		cover.large ||
 		cover.small ||
 		cover.grid ||
 		''
-	)
+
+	if (!url || !isBangumiProxyEnabled()) {
+		return url
+	}
+
+	return resolveBangumiImageProxyUrl(url)
 }
 
 const normalizeCollectionItem = (
