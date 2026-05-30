@@ -15,6 +15,11 @@ import {
 	readManagedCache,
 	refreshManagedCache,
 } from '~/server/utils/memory-cache-manager'
+import {
+	isBangumiProxyEnabled,
+	proxyIntroRequest,
+	resolveIntroProxyJsonBody,
+} from '~/server/utils/intro-proxy'
 
 const BANGUMI_API_BASE = 'https://api.bgm.tv/v0'
 const BANGUMI_PROFILE_BASE = 'https://bgm.tv/user'
@@ -153,6 +158,40 @@ const fetchBangumiCollectionPage = async (options: {
 	limit: number
 }): Promise<BangumiRawCollectionResponse> => {
 	const path = `/users/${encodeURIComponent(options.username)}/collections`
+	const query = {
+		subject_type: options.subjectType,
+		type: options.collectionType,
+		limit: options.limit,
+		offset: options.offset,
+	}
+	const url = new URL(`${BANGUMI_API_BASE}${path}`)
+
+	for (const [key, value] of Object.entries(query)) {
+		url.searchParams.set(key, String(value))
+	}
+
+	if (isBangumiProxyEnabled()) {
+		const envelope = await proxyIntroRequest({
+			url: url.toString(),
+			method: 'GET',
+			headers: {
+				Accept: 'application/json',
+				'User-Agent': 'AurLemonIntro/1.0',
+			},
+			timeoutMs: 12_000,
+			notConfiguredStatusMessage: 'BANGUMI_PROXY_NOT_CONFIGURED',
+		})
+
+		if (!envelope.ok) {
+			throw createError({
+				statusCode: envelope.status || 502,
+				statusMessage: envelope.error || 'BANGUMI_PROXY_UPSTREAM_FAILED',
+			})
+		}
+
+		return resolveIntroProxyJsonBody<BangumiRawCollectionResponse>(envelope)
+	}
+
 	return await $fetch<BangumiRawCollectionResponse>(
 		`${BANGUMI_API_BASE}${path}`,
 		{
@@ -160,12 +199,7 @@ const fetchBangumiCollectionPage = async (options: {
 				Accept: 'application/json',
 				'User-Agent': 'AurLemonIntro/1.0',
 			},
-			query: {
-				subject_type: options.subjectType,
-				type: options.collectionType,
-				limit: options.limit,
-				offset: options.offset,
-			},
+			query,
 			timeout: 12_000,
 			retry: 1,
 		},

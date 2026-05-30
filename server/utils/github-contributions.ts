@@ -10,9 +10,9 @@ import {
 } from '~/server/utils/github-contributions-events'
 import {
 	isGithubProxyEnabled,
-	proxyGithubRequest,
-	resolveGithubProxyBodyText,
-} from '~/server/utils/github-proxy'
+	proxyIntroRequest,
+	resolveIntroProxyBodyText,
+} from '~/server/utils/intro-proxy'
 
 type ContributionLevel = NonNullable<
 	GithubContributionCalendar['weeks'][number]['contributionDays'][number]
@@ -256,7 +256,7 @@ const fetchCalendarFromGithub = async (options: {
 		let html = ''
 
 		if (useProxy) {
-			const proxyEnvelope = await proxyGithubRequest({
+			const proxyEnvelope = await proxyIntroRequest({
 				url: contributionsUrl,
 				method: 'GET',
 				headers: {
@@ -274,7 +274,7 @@ const fetchCalendarFromGithub = async (options: {
 				})
 			}
 
-			html = resolveGithubProxyBodyText(proxyEnvelope)
+			html = resolveIntroProxyBodyText(proxyEnvelope)
 		} else {
 			html = await $fetch<string>(contributionsUrl, {
 				headers: {

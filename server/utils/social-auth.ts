@@ -4,11 +4,11 @@ import type { H3Event } from 'h3'
 import prisma from '~/lib/prisma'
 import {
 	isGithubProxyEnabled,
-	isGithubProxyTransportError,
-	proxyGithubRequest,
-	resolveGithubProxyBodyText,
-	resolveGithubProxyJsonBody,
-} from '~/server/utils/github-proxy'
+	isIntroProxyTransportError,
+	proxyIntroRequest,
+	resolveIntroProxyBodyText,
+	resolveIntroProxyJsonBody,
+} from '~/server/utils/intro-proxy'
 import type { GithubAuthUser } from '~/shared/types/social'
 
 const SESSION_COOKIE_NAME = 'aurlemon_session'
@@ -427,7 +427,7 @@ export const exchangeGithubCode = async (
 
 	try {
 		if (useProxy) {
-			const proxyEnvelope = await proxyGithubRequest({
+			const proxyEnvelope = await proxyIntroRequest({
 				url: 'https://github.com/login/oauth/access_token',
 				method: 'POST',
 				headers: {
@@ -437,12 +437,13 @@ export const exchangeGithubCode = async (
 				bodyType: 'raw',
 				body: tokenExchangeBody,
 				timeoutMs: GITHUB_PROXY_FETCH_TIMEOUT,
+				notConfiguredStatusMessage: GITHUB_OAUTH_ERROR_CODES.NOT_CONFIGURED,
 			})
 
 			if (!proxyEnvelope.ok) {
 				const networkDiagnostic = await resolveGithubNetworkDiagnostic()
 
-				if (isGithubProxyTransportError(proxyEnvelope)) {
+				if (isIntroProxyTransportError(proxyEnvelope)) {
 					console.error('[auth/github] token exchange network error', {
 						transport: 'proxy',
 						upstreamStatus: proxyEnvelope.status,
@@ -460,7 +461,7 @@ export const exchangeGithubCode = async (
 				console.error('[auth/github] token exchange provider error', {
 					transport: 'proxy',
 					upstreamStatus: proxyEnvelope.status,
-					upstreamData: resolveGithubProxyBodyText(proxyEnvelope),
+					upstreamData: resolveIntroProxyBodyText(proxyEnvelope),
 					errorMessage: proxyEnvelope.error,
 					proxyRequestId: proxyEnvelope.requestId,
 					networkDiagnostic,
@@ -473,7 +474,7 @@ export const exchangeGithubCode = async (
 			}
 
 			tokenExchangeResult = {
-				data: resolveGithubProxyJsonBody<GithubAccessTokenResponse>(
+				data: resolveIntroProxyJsonBody<GithubAccessTokenResponse>(
 					proxyEnvelope,
 				),
 				requestMeta: buildProxyRequestMeta(
@@ -567,7 +568,7 @@ export const fetchGithubUser = async (
 
 	try {
 		if (useProxy) {
-			const proxyEnvelope = await proxyGithubRequest({
+			const proxyEnvelope = await proxyIntroRequest({
 				url: 'https://api.github.com/user',
 				method: 'GET',
 				headers: {
@@ -576,12 +577,13 @@ export const fetchGithubUser = async (
 					'user-agent': 'AurLemon-Intro',
 				},
 				timeoutMs: GITHUB_PROXY_FETCH_TIMEOUT,
+				notConfiguredStatusMessage: GITHUB_OAUTH_ERROR_CODES.NOT_CONFIGURED,
 			})
 
 			if (!proxyEnvelope.ok) {
 				const networkDiagnostic = await resolveGithubNetworkDiagnostic()
 
-				if (isGithubProxyTransportError(proxyEnvelope)) {
+				if (isIntroProxyTransportError(proxyEnvelope)) {
 					console.error('[auth/github] user info network error', {
 						transport: 'proxy',
 						upstreamStatus: proxyEnvelope.status,
@@ -599,7 +601,7 @@ export const fetchGithubUser = async (
 				console.error('[auth/github] user info provider error', {
 					transport: 'proxy',
 					upstreamStatus: proxyEnvelope.status,
-					upstreamData: resolveGithubProxyBodyText(proxyEnvelope),
+					upstreamData: resolveIntroProxyBodyText(proxyEnvelope),
 					errorMessage: proxyEnvelope.error,
 					proxyRequestId: proxyEnvelope.requestId,
 					networkDiagnostic,
@@ -612,7 +614,7 @@ export const fetchGithubUser = async (
 			}
 
 			githubUserResult = {
-				data: resolveGithubProxyJsonBody<GithubUserResponse>(proxyEnvelope),
+				data: resolveIntroProxyJsonBody<GithubUserResponse>(proxyEnvelope),
 				requestMeta: buildProxyRequestMeta(
 					proxyEnvelope.durationMs,
 					proxyEnvelope.requestId,

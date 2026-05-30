@@ -3,28 +3,29 @@ import { createError } from 'h3'
 const TRUE_ENV_VALUES = new Set(['1', 'true', 'yes', 'on'])
 const DEFAULT_PROXY_TIMEOUT_MS = 14_000
 
-type GithubProxyRequestBodyType = 'raw' | 'json' | 'base64'
+type IntroProxyRequestBodyType = 'raw' | 'json' | 'base64'
 
-export type GithubProxyResponseBodyType = 'json' | 'text' | 'binary' | 'empty'
+export type IntroProxyResponseBodyType = 'json' | 'text' | 'binary' | 'empty'
 
-export interface GithubProxyEnvelope {
+export interface IntroProxyEnvelope {
 	ok: boolean
 	status: number
 	headers?: Record<string, string>
-	bodyType: GithubProxyResponseBodyType
+	bodyType: IntroProxyResponseBodyType
 	body: string | null
 	error?: string
 	requestId?: string
 	durationMs?: number
 }
 
-interface GithubProxyRequestPayload {
+interface IntroProxyRequestPayload {
 	url: string
 	method?: string
 	headers?: Record<string, string>
-	bodyType?: GithubProxyRequestBodyType
+	bodyType?: IntroProxyRequestBodyType
 	body?: unknown
 	timeoutMs?: number
+	notConfiguredStatusMessage?: string
 }
 
 const isRecord = (value: unknown): value is Record<string, unknown> => {
@@ -50,8 +51,8 @@ const sanitizeProxyUrlForLog = (value: string): string => {
 
 const resolveProxyConfig = (): { url: string; handshakeKey: string } => {
 	return {
-		url: (process.env.GITHUB_PROXY_URL ?? '').trim(),
-		handshakeKey: (process.env.GITHUB_PROXY_HANDSHAKE_KEY ?? '').trim(),
+		url: (process.env.INTRO_PROXY_URL ?? '').trim(),
+		handshakeKey: (process.env.INTRO_PROXY_HANDSHAKE_KEY ?? '').trim(),
 	}
 }
 
@@ -73,9 +74,9 @@ const normalizeProxyTimeout = (timeoutMs?: number): number => {
 	return parsed
 }
 
-const normalizeEnvelope = (value: unknown): GithubProxyEnvelope => {
+const normalizeEnvelope = (value: unknown): IntroProxyEnvelope => {
 	if (!isRecord(value)) {
-		throw new Error('GitHub proxy returned invalid envelope.')
+		throw new Error('Intro proxy returned invalid envelope.')
 	}
 
 	const ok = value.ok
@@ -84,11 +85,11 @@ const normalizeEnvelope = (value: unknown): GithubProxyEnvelope => {
 	const body = value.body
 
 	if (typeof ok !== 'boolean') {
-		throw new Error('GitHub proxy envelope is missing ok flag.')
+		throw new Error('Intro proxy envelope is missing ok flag.')
 	}
 
 	if (typeof status !== 'number' || !Number.isFinite(status)) {
-		throw new Error('GitHub proxy envelope is missing status code.')
+		throw new Error('Intro proxy envelope is missing status code.')
 	}
 
 	if (
@@ -97,11 +98,11 @@ const normalizeEnvelope = (value: unknown): GithubProxyEnvelope => {
 		bodyType !== 'binary' &&
 		bodyType !== 'empty'
 	) {
-		throw new Error('GitHub proxy envelope has unsupported bodyType.')
+		throw new Error('Intro proxy envelope has unsupported bodyType.')
 	}
 
 	if (body !== null && typeof body !== 'string') {
-		throw new Error('GitHub proxy envelope has unsupported body payload.')
+		throw new Error('Intro proxy envelope has unsupported body payload.')
 	}
 
 	const headers = isRecord(value.headers)
@@ -135,31 +136,38 @@ export const isGithubProxyEnabled = (): boolean => {
 	return parseBooleanEnv(process.env.GITHUB_PROXY_ENABLED)
 }
 
-export interface GithubProxyLogMeta {
-	githubProxyEnabled: boolean
-	githubProxyConfigured: boolean
-	githubProxyUrl: string | null
+export const isBangumiProxyEnabled = (): boolean => {
+	return parseBooleanEnv(process.env.BANGUMI_PROXY_ENABLED)
 }
 
-export const getGithubProxyLogMeta = (): GithubProxyLogMeta => {
+export interface IntroProxyLogMeta {
+	introProxyConfigured: boolean
+	introProxyUrl: string | null
+	githubProxyEnabled: boolean
+	bangumiProxyEnabled: boolean
+}
+
+export const getIntroProxyLogMeta = (): IntroProxyLogMeta => {
 	const { url, handshakeKey } = resolveProxyConfig()
 
 	return {
+		introProxyConfigured: Boolean(url && handshakeKey),
+		introProxyUrl: url ? sanitizeProxyUrlForLog(url) : null,
 		githubProxyEnabled: isGithubProxyEnabled(),
-		githubProxyConfigured: Boolean(url && handshakeKey),
-		githubProxyUrl: url ? sanitizeProxyUrlForLog(url) : null,
+		bangumiProxyEnabled: isBangumiProxyEnabled(),
 	}
 }
 
-export const proxyGithubRequest = async (
-	payload: GithubProxyRequestPayload,
-): Promise<GithubProxyEnvelope> => {
+export const proxyIntroRequest = async (
+	payload: IntroProxyRequestPayload,
+): Promise<IntroProxyEnvelope> => {
 	const { url, handshakeKey } = resolveProxyConfig()
 
 	if (!url || !handshakeKey) {
 		throw createError({
 			statusCode: 500,
-			statusMessage: 'GITHUB_OAUTH_NOT_CONFIGURED',
+			statusMessage:
+				payload.notConfiguredStatusMessage ?? 'INTRO_PROXY_NOT_CONFIGURED',
 		})
 	}
 
@@ -182,8 +190,8 @@ export const proxyGithubRequest = async (
 	return normalizeEnvelope(response)
 }
 
-export const isGithubProxyTransportError = (
-	envelope: GithubProxyEnvelope,
+export const isIntroProxyTransportError = (
+	envelope: IntroProxyEnvelope,
 ): boolean => {
 	if (envelope.ok) {
 		return false
@@ -201,8 +209,8 @@ export const isGithubProxyTransportError = (
 	return false
 }
 
-export const resolveGithubProxyBodyText = (
-	envelope: GithubProxyEnvelope,
+export const resolveIntroProxyBodyText = (
+	envelope: IntroProxyEnvelope,
 ): string => {
 	if (typeof envelope.body === 'string') {
 		return envelope.body
@@ -211,18 +219,18 @@ export const resolveGithubProxyBodyText = (
 	return ''
 }
 
-export const resolveGithubProxyJsonBody = <T>(
-	envelope: GithubProxyEnvelope,
+export const resolveIntroProxyJsonBody = <T>(
+	envelope: IntroProxyEnvelope,
 ): T => {
-	const raw = resolveGithubProxyBodyText(envelope)
+	const raw = resolveIntroProxyBodyText(envelope)
 
 	if (!raw) {
-		throw new Error('GitHub proxy response body is empty.')
+		throw new Error('Intro proxy response body is empty.')
 	}
 
 	try {
 		return JSON.parse(raw) as T
 	} catch {
-		throw new Error('GitHub proxy response body is not valid JSON.')
+		throw new Error('Intro proxy response body is not valid JSON.')
 	}
 }
