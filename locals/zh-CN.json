@@ -20,7 +20,7 @@
 		"profile": "个人自述",
 		"preference": "个人偏好",
 		"about": "关于本站",
-		"friends": "友好链接",
+		"friends": "友情链接",
 		"currentPage": "当前页"
 	},
 	"main": {
@@ -116,7 +116,7 @@
 	},
 	"footer": {
 		"aboutSite": "关于本站",
-		"friendLink": "友好链接",
+		"friendLink": "友情链接",
 		"githubProfile": "GitHub",
 		"miitRegistration": "闽ICP备2023007345号-3"
 	},
