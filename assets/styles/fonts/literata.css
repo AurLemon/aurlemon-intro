@@ -1,0 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&display=swap');
+
+@font-face {
+	font-family: 'Literata Local';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('../../fonts/Literata/Literata.woff2') format('woff2-variations');
+}
+
+@font-face {
+	font-family: 'Literata Local';
+	font-style: italic;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('../../fonts/Literata/Literata_Italic.woff2')
+		format('woff2-variations');
+}

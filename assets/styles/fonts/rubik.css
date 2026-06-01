@@ -1,0 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+@font-face {
+	font-family: 'Rubik Local';
+	font-style: normal;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('../../fonts/Rubik/Rubik.woff2') format('woff2-variations');
+}
+
+@font-face {
+	font-family: 'Rubik Local';
+	font-style: italic;
+	font-weight: 100 900;
+	font-display: swap;
+	src: url('../../fonts/Rubik/Rubik_Italic.woff2') format('woff2-variations');
+}
