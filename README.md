@@ -26,7 +26,7 @@ root
 
 ## Tech Stack
 
-- Nuxt 3 + TypeScript
+- Nuxt 4 + TypeScript
 - Nuxt UI + TailwindCSS + Motion-V
 - MiSans + Rubik / Source Han Serif + Literata
 - GitHub Actions + Tencent Cloud EdgeOne

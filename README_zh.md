@@ -26,7 +26,7 @@ root
 
 ## 技术栈
 
-- Nuxt 3 + TypeScript
+- Nuxt 4 + TypeScript
 - Nuxt UI + TailwindCSS + Motion-V
 - MiSans + Rubik / 思源宋体 + Literata
 - GitHub Actions + 腾讯云 EdgeOne

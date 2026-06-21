@@ -44,7 +44,7 @@ updatedAt: 2026-05-31T03:33:33+08:00
 
 项目仓库[在这](https://github.com/AurLemon/aurlemon-intro)，本站基于 Nuxt 框架开发。字体是我在 Google Fonts 上挑的。
 
-- Nuxt 3 + TypeScript
+- Nuxt 4 + TypeScript
 - Nuxt UI + TailwindCSS + Motion-V
 - MiSans + Rubik / 思源宋体 + Literata
 - GitHub Actions + 腾讯云 EdgeOne

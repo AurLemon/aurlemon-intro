@@ -44,7 +44,7 @@ Agent の助けを借りて完成した機能は、**もちろんある！** だ
 
 リポジトリは[こちら](https://github.com/AurLemon/aurlemon-intro)。このサイトは Nuxt で作っている。フォントは Google Fonts で自分が選んだものだ。
 
-- Nuxt 3 + TypeScript
+- Nuxt 4 + TypeScript
 - Nuxt UI + TailwindCSS + Motion-V
 - MiSans + Rubik / Source Han Serif + Literata
 - GitHub Actions + Tencent Cloud EdgeOne
