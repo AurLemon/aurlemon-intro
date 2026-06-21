@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 
 const props = withDefaults(
 	defineProps<{
@@ -16,6 +16,8 @@ const props = withDefaults(
 )
 
 const progress = ref(0)
+const progressMeasureRef = ref<HTMLElement | null>(null)
+const progressTextWidth = ref<number | null>(null)
 
 let targetElement: HTMLElement | null = null
 let animationFrameId: number | null = null
@@ -119,6 +121,30 @@ onUnmounted(() => {
 // 计算 SVG 环形进度
 const circleRadius = 10
 const circleCircumference = 2 * Math.PI * circleRadius
+const digitCharacters = Array.from({ length: 10 }, (_, index) => `${index}`)
+const digitStepEm = 1.2
+const progressText = computed(() => `${progress.value}%`)
+const progressDigits = computed(() => String(progress.value).split(''))
+
+const updateProgressTextWidth = async (): Promise<void> => {
+	await nextTick()
+
+	const width = progressMeasureRef.value?.getBoundingClientRect().width
+
+	if (!width) {
+		return
+	}
+
+	progressTextWidth.value = Math.ceil(width)
+}
+
+watch(progressText, () => {
+	void updateProgressTextWidth()
+})
+
+onMounted(() => {
+	void updateProgressTextWidth()
+})
 </script>
 
 <template>
@@ -157,12 +183,108 @@ const circleCircumference = 2 * Math.PI * circleRadius
 					/>
 				</svg>
 			</div>
-			<!-- 百分比数字 -->
 			<span
-				class="text-lg font-medium text-slate-800 dark:text-slate-300 w-8 tracking-wide"
+				class="progress-text overflow-hidden text-lg leading-none font-medium tracking-wide text-slate-800 transition-[width] duration-220 ease-out dark:text-slate-300"
+				:style="
+					progressTextWidth === null
+						? undefined
+						: { width: `${progressTextWidth}px` }
+				"
 			>
-				{{ progress }}%
+				<span class="progress-text__inner" :aria-label="progressText">
+					<span
+						v-for="(digit, index) in progressDigits"
+						:key="`${progressDigits.length}-${index}`"
+						class="digit-flip"
+						aria-hidden="true"
+					>
+						<span
+							class="digit-flip__reel transition-transform duration-150 ease-out"
+							:style="{
+								transform: `translate3d(0, -${Number(digit) * digitStepEm}em, 0)`,
+							}"
+						>
+							<span
+								v-for="digitCharacter in digitCharacters"
+								:key="digitCharacter"
+								class="digit-flip__digit"
+							>
+								{{ digitCharacter }}
+							</span>
+						</span>
+					</span>
+					<span class="progress-percent" aria-hidden="true">%</span>
+				</span>
+			</span>
+			<span
+				ref="progressMeasureRef"
+				class="progress-text pointer-events-none fixed top-0 left-0 -z-10 opacity-0 text-lg leading-none font-medium tracking-wide"
+				aria-hidden="true"
+			>
+				<span class="progress-text__inner">
+					<span
+						v-for="(digit, index) in progressDigits"
+						:key="`measure-${progressDigits.length}-${index}`"
+						class="digit-flip"
+					>
+						{{ digit }}
+					</span>
+					<span class="progress-percent">%</span>
+				</span>
 			</span>
 		</div>
 	</ClientOnly>
 </template>
+
+<style scoped>
+.digit-flip {
+	display: inline-block;
+	width: 0.62em;
+	height: 1.2em;
+	overflow: hidden;
+	overflow: clip;
+	clip-path: inset(0);
+	contain: paint;
+	line-height: 1.2em;
+	text-align: center;
+	font-variant-numeric: tabular-nums;
+	vertical-align: -0.16em;
+}
+
+.digit-flip__reel {
+	display: flex;
+	flex-direction: column;
+	line-height: 1.2em;
+	will-change: transform;
+}
+
+.digit-flip__digit {
+	display: block;
+	width: 100%;
+	height: 1.2em;
+	line-height: 1.2em;
+	text-align: center;
+}
+
+.progress-text {
+	line-height: 1;
+	font-variant-numeric: tabular-nums;
+	font-feature-settings: 'tnum';
+}
+
+.progress-text__inner {
+	display: inline-block;
+	width: max-content;
+	height: 1.2em;
+	line-height: 1.2em;
+	transform: translateY(-0.12em);
+	white-space: nowrap;
+}
+
+.progress-percent {
+	display: inline-block;
+	height: 1.2em;
+	line-height: 1.2em;
+	vertical-align: -0.16em;
+}
+</style>
