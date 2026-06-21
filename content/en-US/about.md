@@ -44,7 +44,7 @@ One last disclaimer: this site only gets updated when I remember to update it, s
 
 The repo is [here](https://github.com/AurLemon/aurlemon-intro), and the site is built with Nuxt. The fonts were picked by me on Google Fonts.
 
-- Nuxt 3 + TypeScript
+- Nuxt 4 + TypeScript
 - Nuxt UI + TailwindCSS + Motion-V
 - MiSans + Rubik / Source Han Serif + Literata
 - GitHub Actions + Tencent Cloud EdgeOne
