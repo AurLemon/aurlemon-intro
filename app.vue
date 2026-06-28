@@ -286,6 +286,7 @@ if (import.meta.client) {
 		{ immediate: true },
 	)
 }
+
 </script>
 
 <template>

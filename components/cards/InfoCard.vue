@@ -6,12 +6,13 @@
 			class="background absolute z-0 top-0 left-0 right-0 bottom-0 overflow-hidden"
 			:style="backgroundStyle"
 		>
-			<img
+			<SkeletonImage
 				:src="backgroundSrc"
-				:class="[
-					'w-full h-full block object-cover select-none',
-					darkInvert ? 'dark:filter-[invert(1)]' : '',
-				]"
+				alt=""
+				class="h-full w-full"
+				image-class="w-full h-full block object-cover select-none"
+				skeleton-class="h-full w-full"
+				:class="darkInvert ? 'dark:filter-[invert(1)]' : ''"
 			/>
 		</div>
 		<div

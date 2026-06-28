@@ -2,14 +2,12 @@
 	<div :class="containerClass">
 		<div class="flex items-start gap-3">
 			<div class="relative h-10 w-10 flex-shrink-0">
-				<USkeleton v-if="!avatarLoaded" class="absolute inset-0 rounded-full" />
-				<img
+				<SkeletonImage
 					:src="item.avatarUrl"
 					:alt="item.githubLogin"
-					class="block h-10 w-10 rounded-full object-cover transition-opacity duration-200"
-					:class="avatarLoaded ? 'opacity-100' : 'opacity-0'"
-					@load="markAvatarLoaded"
-					@error="markAvatarLoaded"
+					class="block h-10 w-10"
+					image-class="block h-10 w-10 rounded-full object-cover"
+					skeleton-class="rounded-full"
 				/>
 			</div>
 			<div class="min-w-0 flex-1 space-y-2">
@@ -315,7 +313,6 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
-const avatarLoaded = ref(false)
 
 const REPLY_PAGE_SIZE = 3
 const REPLY_PREVIEW_COUNT = 1
@@ -449,10 +446,6 @@ const handleTogglePin = (item: MessageCommentItem) => {
 	emit('toggle-pin', item.id, !item.isPinned)
 }
 
-const markAvatarLoaded = () => {
-	avatarLoaded.value = true
-}
-
 const scrollReplyComposerIntoView = async () => {
 	if (!import.meta.client || !replyComposerRef.value) {
 		return
@@ -489,13 +482,6 @@ watch(
 		if (editingId !== props.item.id) {
 			editingDraft.value = ''
 		}
-	},
-)
-
-watch(
-	() => props.item.avatarUrl,
-	() => {
-		avatarLoaded.value = false
 	},
 )
 
