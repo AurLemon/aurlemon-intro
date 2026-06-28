@@ -39,12 +39,11 @@ onMounted(() => {
 	transition:
 		opacity 560ms cubic-bezier(0.22, 1, 0.36, 1),
 		transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
-	will-change: opacity, transform;
 }
 
 .page-container-shell--ready {
 	opacity: 1;
-	transform: translate3d(0, 0, 0);
+	transform: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
