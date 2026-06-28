@@ -1,7 +1,11 @@
 <template>
 	<div
-		class="border-6 border-slate-200 hover:border-slate-400/60 dark:border-slate-800 rounded-xl relative h-40 transition duration-80"
+		class="group relative h-40 rounded-xl border-6 border-slate-200 dark:border-slate-800"
 	>
+		<div
+			class="pointer-events-none absolute inset-[-6px] z-2 rounded-xl border-6 border-slate-400/60 opacity-0 transition-opacity duration-120 group-hover:opacity-100 dark:border-slate-700/80"
+			aria-hidden="true"
+		/>
 		<div
 			class="background absolute z-0 top-0 left-0 right-0 bottom-0 overflow-hidden"
 			:style="backgroundStyle"

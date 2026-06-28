@@ -28,7 +28,6 @@ const MOBILE_BREAKPOINT = 1024
 const BOTTOM_HIDE_DELAY = 180
 const BOTTOM_SHOW_DELAY = 120
 let resizeObserver: ResizeObserver | null = null
-let fallbackLeaveTimer: ReturnType<typeof setTimeout> | null = null
 let bottomHideTimer: ReturnType<typeof setTimeout> | null = null
 let bottomShowTimer: ReturnType<typeof setTimeout> | null = null
 let scrollRaf = 0
@@ -250,11 +249,6 @@ const onResize = () => {
 watch(
 	currentFallback,
 	async (next) => {
-		if (fallbackLeaveTimer) {
-			clearTimeout(fallbackLeaveTimer)
-			fallbackLeaveTimer = null
-		}
-
 		if (next) {
 			displayedFallback.value = next
 			fallbackSlotVisible.value = true
@@ -268,13 +262,9 @@ watch(
 			return
 		}
 
-		await measureFallbackWidth()
 		fallbackSlotWidth.value = 0
 		displayedFallback.value = null
-		fallbackLeaveTimer = setTimeout(() => {
-			fallbackSlotVisible.value = false
-			fallbackLeaveTimer = null
-		}, 350)
+		fallbackSlotVisible.value = false
 	},
 	{ immediate: true },
 )
@@ -338,10 +328,6 @@ onBeforeUnmount(() => {
 	if (scrollRaf) {
 		window.cancelAnimationFrame(scrollRaf)
 		scrollRaf = 0
-	}
-	if (fallbackLeaveTimer) {
-		clearTimeout(fallbackLeaveTimer)
-		fallbackLeaveTimer = null
 	}
 	if (bottomHideTimer) {
 		clearTimeout(bottomHideTimer)
@@ -410,17 +396,15 @@ onBeforeUnmount(() => {
 						class="overflow-hidden transition-[width] duration-350 ease-out"
 						:style="{ width: `${fallbackSlotWidth}px` }"
 					>
-						<Transition name="menu-fallback" mode="out-in" appear>
-							<NuxtLink
-								v-if="displayedFallback"
-								:key="displayedFallback.to"
-								:to="resolveTo(displayedFallback)"
-								class="menu-link menu-link--active rounded-full p-2 text-base leading-none whitespace-nowrap font-semibold text-primary opacity-100 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] dark:text-sky-300"
-								aria-current="page"
-							>
-								{{ displayedFallback.label }}
-							</NuxtLink>
-						</Transition>
+						<NuxtLink
+							v-if="displayedFallback"
+							:key="displayedFallback.to"
+							:to="resolveTo(displayedFallback)"
+							class="menu-link menu-link--active rounded-full p-2 text-base leading-none whitespace-nowrap font-semibold text-primary opacity-100 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] dark:text-sky-300"
+							aria-current="page"
+						>
+							{{ displayedFallback.label }}
+						</NuxtLink>
 					</div>
 				</div>
 			</nav>
@@ -488,26 +472,5 @@ onBeforeUnmount(() => {
 .menu-link--active::before {
 	opacity: 1;
 	transform: translateX(-50%) translateY(0) scaleY(1);
-}
-
-.menu-fallback-enter-active,
-.menu-fallback-leave-active {
-	transition: opacity 250ms ease-out;
-}
-
-.menu-fallback-enter-from {
-	opacity: 0;
-}
-
-.menu-fallback-enter-to {
-	opacity: 1;
-}
-
-.menu-fallback-leave-from {
-	opacity: 1;
-}
-
-.menu-fallback-leave-to {
-	opacity: 0;
 }
 </style>
