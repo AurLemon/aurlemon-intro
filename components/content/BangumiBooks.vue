@@ -16,7 +16,7 @@
 			</div>
 
 			<div
-				class="grid grid-flow-col auto-cols-[130px] gap-1 overflow-x-auto pb-1"
+				class="grid grid-flow-col auto-cols-[136px] gap-1 overflow-x-auto pb-1"
 			>
 				<div
 					v-for="card in 8"
@@ -84,7 +84,7 @@
 				<div
 					v-else
 					ref="cardsScrollRef"
-					class="grid grid-flow-col auto-cols-[130px] gap-1 overflow-x-auto pb-1"
+					class="grid grid-flow-col auto-cols-[136px] gap-1 overflow-x-auto pb-1"
 				>
 					<a
 						v-for="item in section.items"
@@ -92,7 +92,7 @@
 						:href="item.url"
 						target="_blank"
 						rel="noopener noreferrer"
-						class="w-full rounded-xl p-2 transition-colors hover:bg-slate-200/50 dark:hover:bg-slate-800/70"
+						class="w-[136px] rounded-xl p-2 transition-colors hover:bg-slate-200/50 dark:hover:bg-slate-800/70"
 					>
 						<div class="relative h-40 w-30">
 							<UBadge
