@@ -45,7 +45,7 @@ export default defineNuxtConfig({
 				defaultLocale: 'zh-CN',
 				strategy: 'prefix_except_default',
 				lazy: true,
-				langDir: '../locals',
+				langDir: '../locales',
 				locales: [
 					{ code: 'zh-CN', name: '简体中文', file: 'zh-CN.json' },
 					{ code: 'ja-JP', name: '日本語', file: 'ja-JP.json' },
@@ -121,6 +121,9 @@ export default defineNuxtConfig({
 				'lucide:git-commit-horizontal',
 				'lucide:file-text',
 				'lucide:history',
+				'lucide:x',
+				'lucide:chevron-left',
+				'lucide:chevron-right',
 			],
 		},
 		serverBundle: {

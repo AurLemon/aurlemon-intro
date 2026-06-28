@@ -15,14 +15,12 @@
 		<!-- 顶部问候 -->
 		<div class="mx-2">
 			<div class="relative h-42 w-42">
-				<USkeleton v-if="!avatarReady" class="absolute inset-0 rounded-full" />
-				<img
-					ref="avatarImgRef"
+				<SkeletonImage
 					:src="avatarMark"
-					class="block h-full w-full rounded-full border-2 border-[#236F95] select-none shadow-[0_0_32px_rgba(190,215,212,0.6)] transition-opacity duration-200 dark:shadow-[0_0_32px_rgba(190,215,212,0.1)]"
-					:class="avatarReady ? 'opacity-100' : 'opacity-0'"
-					@load="avatarReady = true"
-					@error="avatarReady = true"
+					alt="AurLemon avatar"
+					class="block h-full w-full rounded-full border-2 border-[#236F95] shadow-[0_0_32px_rgba(190,215,212,0.6)] dark:shadow-[0_0_32px_rgba(190,215,212,0.1)]"
+					image-class="block h-full w-full rounded-full select-none"
+					skeleton-class="rounded-full"
 				/>
 			</div>
 			<div
@@ -51,12 +49,15 @@
 			<div class="relative">
 				<InfoCard :background-src="currentEducationBg">
 					<template #logo>
-						<component
-							v-if="currentEducationLogoIsComponent"
-							:is="currentEducationLogo"
-							class="block"
+						<SkeletonImage
+							v-if="!currentEducationLogoIsComponent"
+							:src="String(currentEducationLogo)"
+							:alt="currentEducationStage.title"
+							class="block h-full w-full"
+							image-class="block h-full w-full rounded-lg object-cover"
+							skeleton-class="rounded-lg"
 						/>
-						<img v-else :src="currentEducationLogo" class="block" />
+						<component v-else :is="currentEducationLogo" class="block" />
 					</template>
 					<template #title>{{ currentEducationStage.title }}</template>
 					<template #subtitle>{{ currentEducationStage.subtitle }}</template>
@@ -119,7 +120,13 @@
 
 			<InfoCard :background-src="techBg" :darkInvert="true">
 				<template #logo>
-					<techCover class="block rounded-lg" />
+					<SkeletonImage
+						:src="techCoverUrl"
+						:alt="$t('main.index.card.tech.title')"
+						class="block h-full w-full"
+						image-class="block h-full w-full rounded-lg object-cover"
+						skeleton-class="rounded-lg"
+					/>
 				</template>
 				<template #title>{{ $t('main.index.card.tech.title') }}</template>
 				<template #subtitle>{{ $t('main.index.card.tech.subtitle') }}</template>
@@ -128,7 +135,13 @@
 
 			<InfoCard :background-src="acgPreferenceBg">
 				<template #logo>
-					<img :src="acgPreferenceCover" class="block rounded-lg" />
+					<SkeletonImage
+						:src="acgPreferenceCover"
+						:alt="$t('main.index.card.acg.title')"
+						class="block h-full w-full"
+						image-class="block h-full w-full rounded-lg object-cover"
+						skeleton-class="rounded-lg"
+					/>
 				</template>
 				<template #title>{{ $t('main.index.card.acg.title') }}</template>
 				<template #subtitle>{{ $t('main.index.card.acg.subtitle') }}</template>
@@ -137,9 +150,12 @@
 
 			<InfoCard :background-src="musicPreferenceBg">
 				<template #logo>
-					<img
+					<SkeletonImage
 						:src="musicPreferenceCover"
-						class="block rounded-lg border border-slate-300/60"
+						:alt="$t('main.index.card.music.title')"
+						class="block h-full w-full rounded-lg border border-slate-300/60"
+						image-class="block h-full w-full rounded-lg object-cover"
+						skeleton-class="rounded-lg"
 					/>
 				</template>
 				<template #title>{{ $t('main.index.card.music.title') }}</template>
@@ -151,8 +167,12 @@
 
 			<InfoCard :background-src="onlineBg" :darkInvert="true">
 				<template #logo>
-					<onlineCover
-						class="block bg-slate-200/60 dark:bg-slate-800/60 rounded-lg border border-slate-300/60 dark:border-slate-800/60 backdrop-blur-xl"
+					<SkeletonImage
+						:src="onlineCoverUrl"
+						:alt="$t('main.index.card.online.title')"
+						class="block h-full w-full rounded-lg border border-slate-300/60 bg-slate-200/60 backdrop-blur-xl dark:border-slate-800/60 dark:bg-slate-800/60"
+						image-class="block h-full w-full rounded-lg object-cover"
+						skeleton-class="rounded-lg"
 					/>
 				</template>
 				<template #title>{{ $t('main.index.card.online.title') }}</template>
@@ -201,9 +221,12 @@
 				:backgroundBlur="2"
 			>
 				<template #logo>
-					<img
+					<SkeletonImage
 						:src="languageAbilityCover"
-						class="block bg-slate-200/60 dark:bg-slate-800/60 rounded-lg border border-slate-300/60 dark:border-slate-800/60 backdrop-blur-xl"
+						:alt="$t('main.index.card.language.title')"
+						class="block h-full w-full rounded-lg border border-slate-300/60 bg-slate-200/60 backdrop-blur-xl dark:border-slate-800/60 dark:bg-slate-800/60"
+						image-class="block h-full w-full rounded-lg object-cover"
+						skeleton-class="rounded-lg"
 					/>
 				</template>
 				<template #title>{{ $t('main.index.card.language.title') }}</template>
@@ -217,7 +240,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import dayjs from 'dayjs'
 import InfoCard from '~/components/cards/InfoCard.vue'
@@ -229,14 +252,14 @@ import FJCCCLogo from '~/assets/resources/school_badge/FJCCC.webp'
 import FJUTLogo from '~/assets/resources/school_badge/FJUT.webp'
 
 import educationBg from '~/assets/resources/homepage/education_bg.webp'
-import techCover from '~/assets/resources/homepage/tech_cover.svg'
+import techCoverUrl from '~/assets/resources/homepage/tech_cover.svg?url'
 import techBg from '~/assets/resources/homepage/tech_bg.webp'
 import acgPreferenceBg from '~/assets/resources/homepage/acg_preference_bg.webp'
 import acgPreferenceCover from '~/assets/resources/homepage/acg_preference_cover.webp'
 import musicPreferenceBg from '~/assets/resources/homepage/music_preference_bg.webp'
 import musicPreferenceCover from '~/assets/resources/homepage/music_preference_cover.webp'
 import onlineBg from '~/assets/resources/homepage/online_bg.webp'
-import onlineCover from '~/assets/resources/homepage/online_cover.svg'
+import onlineCoverUrl from '~/assets/resources/homepage/online_cover.svg?url'
 import languageAbilityBg from '~/assets/resources/homepage/language_ability_bg.webp'
 import languageAbilityCover from '~/assets/resources/homepage/language_ability_cover.webp'
 
@@ -269,8 +292,6 @@ const selectedEducationStage = useState<EducationStage>(
 	() => 'bachelor',
 )
 const hoveredOnlineLink = ref<number | null>(null)
-const avatarReady = ref(false)
-const avatarImgRef = ref<HTMLImageElement | null>(null)
 
 const educationLogos: Record<EducationStage, any> = {
 	bachelor: FJUTLogo,
@@ -315,11 +336,4 @@ const onlineLinkClass = (index: number) => [
 			? ONLINE_LINK_BASE_CLASS
 			: ONLINE_LINK_DIM_CLASS,
 ]
-
-onMounted(async () => {
-	await nextTick()
-	if (avatarImgRef.value?.complete) {
-		avatarReady.value = true
-	}
-})
 </script>

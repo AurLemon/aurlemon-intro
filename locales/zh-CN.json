@@ -17,8 +17,8 @@
 	"menu": {
 		"overview": "概览",
 		"project": "项目",
-		"profile": "个人自述",
-		"preference": "个人偏好",
+		"profile": "自述",
+		"preference": "偏好",
 		"about": "关于本站",
 		"friends": "友情链接",
 		"currentPage": "当前页"
@@ -112,6 +112,19 @@
 			"bangumiLoadFailed": "Bangumi 数据加载失败。",
 			"bangumiRetry": "重试",
 			"bangumiEmpty": "暂无可展示条目。"
+		}
+	},
+	"content": {
+		"imageGrid": {
+			"openPreview": "打开图片预览：{alt}"
+		},
+		"imageCarousel": {
+			"openPreview": "打开图片预览：{alt}",
+			"scrollLeft": "向左滚动图片",
+			"scrollRight": "向右滚动图片"
+		},
+		"imageLightbox": {
+			"closePreview": "关闭图片预览"
 		}
 	},
 	"footer": {

@@ -18,7 +18,7 @@
 root
 ├── app/              # 应用级组件与路由
 ├── content/          # 本地化内容页
-├── locals/           # i18n 文案文件
+├── locales/          # i18n 文案文件
 ├── plugins/          # 客户端插件与接入层
 ├── server/           # API 路由与服务端工具
 └── prisma/           # 数据库 schema 与迁移

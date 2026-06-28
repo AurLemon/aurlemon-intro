@@ -18,7 +18,7 @@ This repository uses a monolithic Nuxt application structure.
 root
 ├── app/              # Application-level components and routes
 ├── content/          # Localized content pages
-├── locals/           # i18n message files
+├── locales/          # i18n message files
 ├── plugins/          # Client-side plugins and integration layer
 ├── server/           # API routes and server utilities
 └── prisma/           # Database schema and migrations

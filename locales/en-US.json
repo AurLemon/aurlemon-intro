@@ -114,6 +114,19 @@
 			"bangumiEmpty": "No entries to display."
 		}
 	},
+	"content": {
+		"imageGrid": {
+			"openPreview": "Open image preview: {alt}"
+		},
+		"imageCarousel": {
+			"openPreview": "Open image preview: {alt}",
+			"scrollLeft": "Scroll images left",
+			"scrollRight": "Scroll images right"
+		},
+		"imageLightbox": {
+			"closePreview": "Close image preview"
+		}
+	},
 	"footer": {
 		"aboutSite": "About",
 		"friendLink": "Links",
