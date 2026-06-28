@@ -1,48 +1,42 @@
 ---
-updatedAt: 2026-05-31T03:33:33+08:00
+updatedAt: 2026-06-29T01:50:11+08:00
 ---
 
-Recently, around April 2026, I spent some time rewriting the site. I tried a lot of UI directions, and in the end I still went with this version. I originally planned to add a sidebar, but the overall look was just average, so I scrapped it. lol.
+Around April 2026, I spent some time refactoring this site. The old content was too messy, and I did not feel there was any need to expose that much about myself. Anyway, I tried a lot of UI directions, and after several iterations this is where it landed. I even planned to add a sidebar at first, but the overall look was just mediocre, so I removed it. Better to stay restrained.
 
-## Statement
+## Where The Content Comes From
 
-Every piece of content on this site, including the docs, code, and motion, was tuned by me 1:1. Saying I made it with AI is an **insult**. I still have the original Instant Design source files. Sure, my little essays may sound a bit machine-like, but that does not mean the article was run by AI. Do not insult me.
+Everything on this site, including the writing, code, and motion, was tuned by me bit by bit. Sure, I can say AI helped. These days the people who do not use Agents are probably the minority anyway. I made that statistic up, by the way. But please do not turn around and say the whole thing is AIGC. Do not insult my taste or my UI ability, limited as it may be. I still have the original Instant Design files.
 
-Are there any features completed with Agent help? **Definitely!** But I was the instructor. The Blur + Mask on the header was something I tested in the browser and then hand-rolled into TailwindCSS. Please do not insult me, especially my UI and CSS skills. I picked every font on this site from Google Fonts myself, let alone every feature.
+Maybe some of my writing feels a little machine-like, or maybe it gives off some other kind of vibe, but I genuinely do not feel that way myself. So let me explain what I actually used AIGC for. Overall, I was the Instructor. The Blur + Mask effect in the header was something I tested directly in the browser and then hand-built with TailwindCSS. I picked every font on this site one by one from Google Fonts, not to mention every individual feature.
 
-## Rambling
+## Design Direction
 
-I have to admit that taste is subjective. But this is my own site, so honestly, whatever goes. The core requirement is simply not to look like everyone else's site.
+First of all, I should admit that taste is deeply subjective. But this is my own site, so yes, it is entirely built around what I like. My core requirement was simply not to end up with a site that looks like everyone else's. So I made a pretty bold decision, honestly a very bold one, and moved the Menu to the very bottom of the page. The Header only keeps the reading progress bar and a few action buttons. The Footer is just a simple site logo, links to non-core pages, external links, and the filing number. I also added Blur Masks to the Header and Menu so text can transition more smoothly while the page scrolls.
 
-So... I did something pretty bold (actually, really bold): I moved the Menu to the bottom of the page; kept the Header to the reading progress bar and a few action buttons; made the Footer a simple site logo plus non-core page links, external links, and the filing number; and added a Blur Mask to the Header and Menu so the text transitions smoothly while the page scrolls.
+Another point is that this time I used a serif face in the main body, while the sans-serif face is reserved for titles, buttons, the header, the footer, and other non-core text. I suspect I may be overusing the serif face a little, specifically Source Han Serif, even though I still think it looks beautiful. I just hope people who dislike this pairing do not start yelling at me. As for the inspiration behind using serif type, it actually came from Claude. Anthropic banned me the next morning, though. Funny.
 
-Another thing is that I used a serif typeface for the body this time, while the sans-serif face is used only for titles, buttons, the header, the footer, and other non-core text. I suspect I may be overusing the serif a bit, even with Source Han Serif, though I personally think it looks beautiful. I hope people who dislike this pairing do not yell at me.
+Putting Anthropic's account bans aside for a second, let us be fair. Claude's design really is distinctive: rounded sans-serif, serious serif, a cold yellow theme color, plus the minimal line-based graphics around it. Together they express Claude's core character extremely well: aloof, restrained, mature. OpenAI's design is also minimal in a good way. The strongly volumetric blended backgrounds paired with restrained sans-serif typography are solid UI practice too. But Gemini still makes text selection awkward, and Material Design's messy colors, shadows, and rounded corners are just not my thing.
 
-As for what inspired my serif usage, it actually came from using Claude, though Anthropic banned me the next morning, ha. Setting Anthropic's habit of banning accounts aside, let's be fair. Claude's design is still quite distinctive: rounded sans-serif, a serious serif, a cool yellow theme color, and the simple line-art graphics around it. It perfectly captures Claude's core traits: aloof, restrained, mature.
+So if someone asks what this site's design style is, the first word that comes to mind is probably **restraint**. Even the primary color is just an accent. Most of the page is still black, gray, and white. In short: no unnecessary design, _Less is More_.
 
-The folks next door at OpenAI also have a very minimal design. A strongly volumetric mixed-color background paired with restrained sans-serif text is also a solid UI practice. But text selection in Gemini still feels awkward, and Material Design's messy colors, shadows, and corner radii are just not my thing.
+That said, I should still explain a bit more. I am not trained in design, so all I really have is the "design instinct" I picked up from years of looking at websites and writing front end. I also noticed a problem with myself. Whenever I work on a prototype and start getting specific about a card's shadows, fonts, layout, or even how much text should go into it, I can get stuck for a very long time, or come up with nothing at all. That is exactly why I know I am not suited for design. My engineering ability is average, but my design ability is definitely even lower.
 
-So if someone asks me what this site's style is, the first word that comes to mind is probably **restraint**. Even the primary color is just an accent at this point; black, gray, and white still do most of the heavy lifting. In short, no unnecessary design, _Less is More_.
+Added again in June 2026: Anthropic banned me one more time. What can I say?
 
-Still, I should explain a bit more. I am not a designer, so all I can rely on is the "design instinct" I have built up from years of browsing websites while building front-end stuff. I also found another problem. When I sketch prototypes, the moment I get specific about a card's details, shadow, font, layout, even how much text to put in it, I will spend ages agonizing over it, sometimes without coming up with anything at all. That is exactly why I know I am not suited to design. My engineering background is merely average, and my design ability is definitely even worse.
+## Main Content
 
-And only recently did I convince myself that not every card needs to be hand-written one-to-one in HTML. I used to hand-craft the background of my old personal intro card 1:1... extremely tedious, extremely disgusting. In practice, designing it properly in a UI/UX tool and then exporting the asset is the better way. Front end, after all, is not a dedicated design tool.
+Now that I have finished praising this excellent UI design, some reader might ask: what is this site actually about? Great question. I have no idea either. I just write whatever comes to mind.
 
-## Me
+Still, let me explain why I suddenly updated my personal site around April 2026. The main reason was simple: I really could not stand the cringe-soaked writing I had produced when I had just entered university. I did not realize I used to be that unhinged. Not only was my understanding of my own ability seriously off, those old texts were also full of weird self-indulgence, preachiness, and fantasy. On top of that, all the flag planting was bizarrely funny. I really thought that writing goals in public would create some kind of social commitment, but the final result was just quietly deleting them in embarrassment. No wonder first-year students are called freshmen. Then again, sophomore is not exactly much better.
 
-Having finished talking about good UI design, what is the main content of this site? That question gets right to the point - I have no idea either. Who told me to write whatever comes to mind?
+Fortunately, by the time you are reading this, I have already deleted those painful articles. And one last disclaimer: this site is only updated when I happen to remember it exists. Strictly speaking, that means once every three or four months. More strictly speaking, it means random updates. If I do not think of it, I barely touch it at all. If the font CDN somehow breaks, though Google's CDN probably will not, I might not even notice. To be fair, that would not be a huge problem anyway.
 
-Also, one reason I suddenly updated my site recently, around April 2026, is that I really could not stand the cringe-soaked text I wrote when I first entered university as a freshman. I did not realize I used to be this unhinged.
+If you like my writing, or if you suddenly feel like you understand me, feel free to leave a comment or get to know me. I may not always have time to reply. Leave a trace, if you will.
 
-Not only was my self-awareness about my own ability severely off, I was also full of strange self-satisfaction, lecturing, and fantasy... and the flag planting was bizarrely funny! I once imagined that putting goals in public would somehow create social commitment, but the end result was only me quietly deleting them in embarrassment. No wonder first-year students are called freshmen, though sophomore is not much better.
+## Tech Stack
 
-Fortunately, by the time you are reading this, I have already deleted those painful articles.
-
-One last disclaimer: this site only gets updated when I remember to update it, strictly speaking once every three or four months. In other words, when I do not remember, I barely touch it at all. If the font CDN blows up, which should not really happen to Google's CDN, I may not even know. Honestly, that is not a huge issue anyway.
-
-## Tech
-
-The repo is [here](https://github.com/AurLemon/aurlemon-intro), and the site is built with Nuxt. The fonts were picked by me on Google Fonts.
+The repository is [here](https://github.com/AurLemon/aurlemon-intro). This site is built with Nuxt, and the fonts were all chosen by me on Google Fonts.
 
 - Nuxt 4 + TypeScript
 - Nuxt UI + TailwindCSS + Motion-V
