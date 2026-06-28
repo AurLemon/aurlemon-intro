@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="lg:px-6 py-6 pb-16 text-[18px] font-serif font-medium text-slate-900 dark:text-slate-100"
+		class="mx-auto w-full max-w-4xl min-w-0 py-6 pb-16 text-[18px] font-serif font-medium text-slate-900 dark:text-slate-100 lg:px-6"
 	>
 		<ContentRenderer v-if="doc" :value="doc" />
 		<ContentFooter v-if="doc" class="mt-14" :doc="doc" />
