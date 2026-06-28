@@ -17,8 +17,12 @@
 				:to="friend.url"
 				target="_blank"
 				rel="noopener noreferrer"
-				class="group border-6 border-slate-200 hover:border-slate-400/60 dark:border-slate-800 rounded-xl relative transition p-3 duration-80"
+				class="group relative rounded-xl border-6 border-slate-200 p-3 dark:border-slate-800"
 			>
+				<div
+					class="pointer-events-none absolute inset-[-6px] rounded-xl border-6 border-slate-400/60 opacity-0 transition-opacity duration-120 group-hover:opacity-100 dark:border-slate-700/80"
+					aria-hidden="true"
+				/>
 				<div class="flex items-center gap-4">
 					<img
 						:src="friend.icon"
