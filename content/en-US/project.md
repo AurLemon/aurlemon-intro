@@ -1,5 +1,5 @@
 ---
-updatedAt: 2026-06-29T01:50:11+08:00
+updatedAt: 2026-06-30T01:42:14+08:00
 ---
 
 ::GithubContributions
@@ -23,11 +23,11 @@ I have heard that sentence in many places, but the people saying it are not nece
 
 > Should I switch over to embedded systems or hardware development?
 
-An older student from junior college once told me, "If I switch into embedded, other people are full-stack, but I am someone who can do everything." A few months ago I really was wondering whether I should seriously think about that route, so I even chose an embedded implementation for my graduation project. But after finishing the project, reality told me very clearly that I cannot do that. There is no real need, either. Switching to a new track from scratch requires far more time to build up. Maybe all I would end up doing is having the Agent write firmware while I flash it onto the board.
+A senior from junior college once casually told me, "If I switch into embedded, other people are full-stack, but I am someone who can do everything." A few months ago I really was wondering whether I should seriously think about that route, so I deliberately chose a graduation project that included an embedded implementation. But after finishing the project, reality told me very clearly that I cannot do that. Switching to a new track from scratch requires far more time to build up. Maybe all I would end up doing is having the Agent write firmware while I just click a button and flash it onto the board.
 
-Based on what I understood from doing that graduation project, embedded work requires more than code. It also demands the ability to solve electrical or physical problems in the real world. Is the wire inserted firmly? Is the air too humid? Is static electricity causing trouble? Why is the light not turning on? Why is data not coming through the serial port? Did I connect the GPIO pins backward? These were all real problems I ran into during the graduation project, and building that kind of experience from scratch feels exhausting.
+Embedded work requires more than code. It also demands the ability to solve electrical or physical problems in the real world. Is the wire inserted firmly? Is the air too humid? Is static electricity causing trouble? Why is the light not turning on? Why is data not coming through the serial port? Did I connect the GPIO pins backward? These were all real problems I ran into during the graduation project, and building that kind of experience from scratch feels exhausting.
 
-Other than that, I truly do not know what else my core ability is supposed to be. So I can only pin the "full-stack" tag onto myself. GPT comforted me by saying that "being able to handle the last mile well is also a kind of ability." Hopefully that is true. If I can pass the civil service exam or get into graduate school in the future, that would naturally be even better. Lately I sometimes also imagine what I would look like in some completely different industry. Salesman Lemon? Electrician Lemon?
+Because of that, I truly do not know what else my core ability is supposed to be. So I can only pin the "full-stack" tag onto myself. GPT comforted me by saying that "being able to handle the last mile well is also a kind of ability." Hopefully that is true. If I can pass the civil service exam or get into graduate school in the future, that would naturally be even better. Lately I sometimes also imagine what I would look like in some completely different industry. Salesman Lemon? Electrician Lemon?
 
 ## Milestones
 
@@ -37,9 +37,7 @@ Let me list a few projects that feel milestone-like to me, though there are not 
 2. [The exam practice system I wrote for my classmates and myself during vocational school](https://github.com/AurLemon/fjcpc-transfer-exam-practice-system) (2024), a front-end/back-end separated Web project based on Nest + Vue + TS. The very first version actually used a traditional JavaScript plus PHP mini back end. The Nest stack only came later during the summer 2024 refactor.<br>The site kept being updated until mid-2025 because the younger students still needed it, though eventually there was no next cohort after them, so updates stopped. It is now Public Archive.<br>Still, this was the first time I used a serious back-end framework to write a proper standard back-end project. I also went through the whole chain from implementation to deployment to testing to user feedback, meaning feedback from classmates and younger students. Looking back now, parts of it do feel like black history.
 3. [The CSS overrides I wrote for Wiki.js](https://github.com/AurLemon/wikijs-citizen-styles) (2024), a pure SCSS project, and also the repository with my highest GitHub star count. There is not much technically worth pulling out and talking about here. I keep it mainly as a memorial. Maybe it is also my best-known project. Quite a few coders added me because of it, and some others came to ask about Wiki.js or MediaWiki deployment issues. Maybe you are reading this page because of that project too.
 4. [My own intro site](https://github.com/AurLemon/aurlemon-intro) (2024), which is this site. It was the project I wrote after first touching the Nuxt full-stack framework. Beyond that there is not anything overwhelmingly dazzling about it. Well, actually there is: my unbelievably genius UI design. Seriously. I am quite satisfied with it. Do not say it was written by Agents. Agents only handle the parts I have already thought through. Every piece of UI on this site was tuned bit by bit by me. If you want to insult me, just call me stupid directly, but do not trash my project. Thank you.
-5. [The portal site for my own Minecraft server](https://github.com/AurLemon/hydcraft-portal) (2025), a Nuxt-based Web project. There was actually a failed predecessor project before it. Once I finish it properly later, I will come back and add a fuller description. Treat this as a placeholder for now.
-
-Looking at it all together, my comfort zone is completely Web.
+5. [The portal site for my own Minecraft server](https://github.com/AurLemon/hydcraft-portal) (2026), a Nuxt-based Web project. There was actually a failed predecessor project before it. Once I finish it properly later, I will come back and add a fuller description. Treat this as a placeholder for now.
 
 ## Learning Paradigm
 

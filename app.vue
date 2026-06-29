@@ -216,6 +216,7 @@ const pageTitle = computed(() => {
 	const routeToLabelKey: Record<string, string> = {
 		'/project': 'menu.project',
 		'/profile': 'menu.profile',
+		'/journey': 'menu.journey',
 		'/preference': 'menu.preference',
 		'/about': 'menu.about',
 		'/friends': 'menu.friends',
