@@ -1,5 +1,5 @@
 <template>
-	<div class="my-6 w-[min(calc(100vw-2rem),48rem)] max-w-full min-w-0">
+	<div class="my-6 max-w-full min-w-0">
 		<div :class="containerClass" v-bind="gridAttrs">
 			<figure
 				v-for="(image, index) in normalizedImages"
@@ -11,7 +11,7 @@
 				<button
 					type="button"
 					class="block w-full cursor-zoom-in overflow-hidden rounded-2xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-sky-400"
-					:style="{ height: image.height }"
+					:style="getButtonStyle(image)"
 					:aria-label="t('content.imageGrid.openPreview', { alt: image.alt })"
 					@click="openPreview(index)"
 				>
@@ -19,8 +19,8 @@
 						:src="image.src"
 						:alt="image.alt"
 						root-margin="180px 0px"
-						class="h-full w-full"
-						image-class="block h-full w-full object-cover"
+						class="w-full"
+						:image-class="getImageClass()"
 					/>
 				</button>
 				<figcaption
@@ -47,6 +47,7 @@ import {
 	normalizeContentImage,
 	parseContentImages,
 	type ContentImageItem,
+	type NormalizedContentImageItem,
 } from './utils/content-image'
 
 defineOptions({
@@ -57,12 +58,14 @@ interface ContentImageGridProps {
 	images?: string | Array<string | ContentImageItem>
 	defaultWidth?: string
 	defaultHeight?: string
+	heightMode?: 'fixed' | 'auto'
 }
 
 const props = withDefaults(defineProps<ContentImageGridProps>(), {
 	images: () => [],
 	defaultWidth: '100%',
 	defaultHeight: '13rem',
+	heightMode: 'fixed',
 })
 
 const { t } = useI18n()
@@ -106,11 +109,28 @@ const itemClass = computed(() =>
 	hasExplicitSizing.value ? 'flex-none' : 'w-full',
 )
 
+const isAutoHeight = computed(() => props.heightMode === 'auto')
+
 const gridAttrs = computed(() => {
 	const { class: _class, ...restAttrs } = attrs
 
 	return restAttrs
 })
+
+const getButtonStyle = (
+	image: NormalizedContentImageItem,
+): { height?: string } => {
+	if (isAutoHeight.value) {
+		return {}
+	}
+
+	return { height: image.height }
+}
+
+const getImageClass = (): string =>
+	isAutoHeight.value
+		? 'block h-auto w-full'
+		: 'block h-full w-full object-cover'
 
 const openPreview = (index: number): void => {
 	activeImageIndex.value = index

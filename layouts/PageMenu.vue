@@ -36,6 +36,7 @@ const baseNavItems = computed<MenuItem[]>(() => [
 	{ key: 'overview', label: t('menu.overview'), to: '/' },
 	{ key: 'project', label: t('menu.project'), to: '/project' },
 	{ key: 'profile', label: t('menu.profile'), to: '/profile' },
+	{ key: 'journey', label: t('menu.journey'), to: '/journey' },
 	{ key: 'preference', label: t('menu.preference'), to: '/preference' },
 ])
 
@@ -71,6 +72,7 @@ const currentFallback = computed<MenuItem | null>(() => {
 		'/': 'menu.overview',
 		'/project': 'menu.project',
 		'/profile': 'menu.profile',
+		'/journey': 'menu.journey',
 		'/preference': 'menu.preference',
 		'/about': 'menu.about',
 		'/friends': 'menu.friends',

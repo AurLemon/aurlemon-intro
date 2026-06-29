@@ -1,5 +1,5 @@
 <template>
-	<div class="relative my-6 w-[min(calc(100vw-2rem),48rem)] max-w-full min-w-0">
+	<div class="relative my-6 max-w-full min-w-0">
 		<div
 			ref="scrollContainer"
 			class="skeleton-image-carousel-scroll relative z-0 overflow-x-auto overflow-y-hidden"
