@@ -1,5 +1,5 @@
 ---
-updatedAt: 2026-06-29T01:50:11+08:00
+updatedAt: 2026-07-02T04:16:59+08:00
 ---
 
 I will not dissect my preferences too carefully in public. When people talk about preferences, they usually end up talking about anime and similar things anyway. Some interests are better enjoyed within a smaller circle. So I will just write whatever comes to mind here.
@@ -18,11 +18,17 @@ As for why I suddenly started watching anime again, and even got into GL around 
 
 At first I randomly picked [Food for the Soul](https://bgm.tv/subject/531159), a light-yuri slice-of-life show. I did not expect it to fit my taste that well. So how did I fall into GL? Later I came across a MAD for [There's No Freaking Way I'll be Your Lover! Unless...](https://bgm.tv/subject/524707), and after that came [Adachi and Shimamura](https://bgm.tv/subject/282372). I have to admit Adachi and Shimamura really is a masterpiece, but since I do not think I can even explain exactly why, I would rather not write something awkward here and delete it the next morning. But yes, it genuinely resonated with me.
 
+::image-carousel{height="20rem" width-mode="auto" mobile-height="16rem" images='[{"src":"adachi_and_shimamura_manga_jp_8.webp","caption":"Adachi and Shimamura manga Japanese edition volume 8"},{"src":"adachi_and_shimamura_manga_tw_1_and_2.webp","caption":"Adachi and Shimamura manga Taiwanese edition volumes 1 and 2"}]'}
+::
+
 The story of Adachi and Shimamura is actually very plain on the surface. Nothing especially explosive happens. But it is incredibly good at writing that state where "nothing seems to happen, yet the characters have already traveled very far inside." That sense of distance, awkwardness, and sincerity resonates with me more than simple dramatic peaks ever could. A few days ago, on May 30, volume 8 of Moke Yuzuhara's manga adaptation arrived. The little couple is sweet, sweet, sweet. I also bought the Taiwanese editions of the manga and the novel SS2 on Taobao, though who knows when they will actually arrive.
 
 If I had to pick a favorite GL work among everything I have seen, it would still probably be Adachi and Shimamura. Every reread feels like a cleansing of my soul. Another work that left a deep impression on me is [Cosmic Princess Kaguya](https://bgm.tv/subject/604826). Great animation, a smooth story line, and it made me both thrilled and tear up. I still revisit it whenever I have time, though these days I rarely have that kind of spare time.
 
 By the way, from late 2025 to early 2026 I mostly watched anime only when I had nothing else to do, and after April I barely watched much at all. Anyway, the most recent ACGN-related things I bought are all merchandise or books related to Adachi and Shimamura or Cosmic Princess Kaguya. Watching anime still takes time and attention if you actually want to understand the plot, and I feel like I have gradually been losing that kind of enthusiasm.
+
+::image-carousel{height="20rem" width-mode="auto" mobile-height="16rem" caption="The little couple is sweet, sweet, sweet" images='[{"src":"adachi_and_shimamura_manga_chapter_58_1.webp"},{"src":"adachi_and_shimamura_manga_chapter_58_2.webp"}]'}
+::
 
 So yes, the most recent thing is that I have already caught up with the latest chapter of the Adachi and Shimamura manga. Congratulations to Tarumi for successfully exiting the stage, I guess.
 
