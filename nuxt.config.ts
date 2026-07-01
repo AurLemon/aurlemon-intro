@@ -1,6 +1,8 @@
 import { dirname, resolve } from 'node:path'
 import { createRequire } from 'node:module'
 import tailwindcss from '@tailwindcss/vite'
+import rehypeKatex from 'rehype-katex'
+import remarkMath from 'remark-math'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
@@ -138,6 +140,24 @@ export default defineNuxtConfig({
 		experimental: {
 			sqliteConnector: 'native',
 		},
+		build: {
+			markdown: {
+				remarkPlugins: {
+					'remark-math': {
+						instance: remarkMath,
+					},
+				},
+				rehypePlugins: {
+					'rehype-katex': {
+						instance: rehypeKatex,
+						options: {
+							strict: 'ignore',
+							throwOnError: false,
+						},
+					},
+				},
+			},
+		},
 	},
 	svgo: {
 		global: false,
@@ -173,6 +193,7 @@ export default defineNuxtConfig({
 		'~/assets/styles/fonts/index.css',
 		'~/assets/styles/base/main.css',
 		'~/assets/styles/base/tailwind.css',
+		'katex/dist/katex.min.css',
 	],
 	vite: {
 		plugins: [tailwindcss()],
