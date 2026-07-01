@@ -2,48 +2,36 @@
 	<div
 		class="mx-auto w-full max-w-4xl min-w-0 py-6 pb-16 text-[18px] font-serif font-medium text-slate-900 dark:text-slate-100 lg:px-6"
 	>
-		<ContentRenderer v-if="doc" :value="doc" />
-		<ContentFooter v-if="doc" class="mt-14" :doc="doc" />
+		<ContentRenderer v-if="resolvedDoc" :value="resolvedDoc" />
+		<ContentFooter v-if="resolvedDoc" class="mt-14" :doc="resolvedDoc" />
 	</div>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-
 const props = withDefaults(
 	defineProps<{
 		page: string
 		fallbackLocale?: string
+		doc?: {
+			body?: unknown
+			updatedAt?: string
+		} | null
 	}>(),
 	{
 		fallbackLocale: 'zh-cn',
+		doc: undefined,
 	},
 )
 
-const { locale } = useI18n()
+const localizedContentState =
+	props.doc === undefined
+		? await useLocalizedContentDoc(
+				() => props.page,
+				() => props.fallbackLocale,
+			)
+		: { data: ref(null) }
 
-const normalizedPage = computed(() => props.page.replace(/^\/+|\/+$/g, ''))
-
-const { data: doc } = await useAsyncData(
-	() => `content-${normalizedPage.value}-${locale.value}`,
-	async () => {
-		const localizedPath = `/${locale.value.toLowerCase()}/${normalizedPage.value}`
-		const localizedDoc = await queryCollection('content')
-			.path(localizedPath)
-			.first()
-
-		if (localizedDoc) {
-			return localizedDoc
-		}
-
-		if (locale.value.toLowerCase() !== props.fallbackLocale) {
-			return await queryCollection('content')
-				.path(`/${props.fallbackLocale}/${normalizedPage.value}`)
-				.first()
-		}
-
-		return null
-	},
-	{ watch: [locale, normalizedPage] },
+const resolvedDoc = computed(
+	() => props.doc ?? localizedContentState.data.value,
 )
 </script>

@@ -30,6 +30,12 @@
 		>
 			{{ title }}
 		</h1>
+		<p
+			v-if="statsText"
+			class="mt-3 text-center text-sm font-(family-name:--font-family) text-slate-500 dark:text-slate-400"
+		>
+			{{ statsText }}
+		</p>
 	</div>
 </template>
 
@@ -37,6 +43,7 @@
 defineProps<{
 	bgSrc: string
 	title: string
+	statsText?: string
 	enableOpacity?: boolean
 	useCleanSlot?: boolean
 }>()
