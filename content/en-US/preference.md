@@ -1,5 +1,5 @@
 ---
-updatedAt: 2026-07-02T04:16:59+08:00
+updatedAt: 2026-07-02T05:55:47+08:00
 ---
 
 I will not dissect my preferences too carefully in public. When people talk about preferences, they usually end up talking about anime and similar things anyway. Some interests are better enjoyed within a smaller circle. So I will just write whatever comes to mind here.
@@ -36,7 +36,7 @@ So yes, the most recent thing is that I have already caught up with the latest c
 
 As for music, I mostly listen to J-POP and Vocaloid. If I had to name a genre I especially like, maybe math rock. But when it comes to music, I really cannot say anything too sophisticated. NetEase Cloud's genre summary probably describes it better than I can. Art has always been one of those fields I struggle to understand. Speaking of J-POP, I have to mention Yorushika and Zutomayo. I have been a fan of n-buna and ACAne for a long time. Do you know? I got into both in 2021.
 
-As for Vocaloid, I do not really follow any fixed producer. I just listen to whatever the recommendation feed gives me. Let me also share two math-rock-plus-Vocaloid songs I really like here: [夏末递归定义](https://music.163.com/song?id=2097125583) and [星期零](https://music.163.com/song?id=2650358037).
+As for Vocaloid, I do not really follow any fixed producer. I just listen to whatever the recommendation feed gives me. Let me also share three math-rock-plus-Vocaloid songs I really like here: [夏末递归定义](https://music.163.com/song?id=2097125583), [星期零](https://music.163.com/song?id=2650358037), and [樱花雨](https://music.163.com/song?id=3378731532).
 
 ## UI
 
