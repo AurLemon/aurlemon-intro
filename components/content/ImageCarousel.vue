@@ -16,7 +16,7 @@
 					<figure
 						v-for="(image, index) in carouselImages"
 						:key="`${image.src}-${image.sourceIndex}-${index}`"
-						class="m-0 shrink-0"
+						class="m-0 flex min-w-0 shrink-0 flex-col"
 						:class="getFigureClass()"
 						:style="getFigureStyle(image)"
 					>
@@ -40,7 +40,7 @@
 						</button>
 						<figcaption
 							v-if="!caption && !isLoopDecorationItem(index) && image.caption"
-							class="mt-2 text-center text-sm leading-6 text-slate-500 dark:text-slate-400"
+							class="mt-2 w-0 min-w-full text-center text-sm leading-6 text-slate-500 break-words [overflow-wrap:anywhere] dark:text-slate-400"
 						>
 							{{ image.caption }}
 						</figcaption>
@@ -294,10 +294,12 @@ const getImageWrapperClass = (): string =>
 
 .content-image-width-bound {
 	width: var(--content-image-width);
+	flex: 0 0 var(--content-image-width);
 }
 
 .content-image-auto-width-bound {
 	width: var(--content-image-width);
+	flex: 0 0 var(--content-image-width);
 }
 
 .content-image-height-bound {
@@ -317,10 +319,12 @@ const getImageWrapperClass = (): string =>
 @media (max-width: 767.98px) {
 	.content-image-width-bound {
 		width: var(--content-image-mobile-width, var(--content-image-width));
+		flex-basis: var(--content-image-mobile-width, var(--content-image-width));
 	}
 
 	.content-image-auto-width-bound {
 		width: var(--content-image-mobile-width, var(--content-image-width));
+		flex-basis: var(--content-image-mobile-width, var(--content-image-width));
 	}
 
 	.content-image-height-bound {
