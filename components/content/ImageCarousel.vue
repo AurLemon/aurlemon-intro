@@ -188,13 +188,7 @@ const getButtonStyle = (
 	if (isAutoWidth.value) {
 		const aspectRatio = getImageAspectRatio(image)
 
-		style.width = `calc(var(--content-image-height) * ${aspectRatio})`
 		style.aspectRatio = `${aspectRatio}`
-
-		if (props.mobileHeight) {
-			style['--content-image-mobile-width'] =
-				`calc(var(--content-image-mobile-height) * ${aspectRatio})`
-		}
 	}
 
 	return style
