@@ -1,5 +1,5 @@
 ---
-updatedAt: 2026-07-02T05:56:32+08:00
+updatedAt: 2026-07-02T14:36:00+08:00
 ---
 
 This page is called Journey, but most of it is really my own black history. Some parts may feel bleak or heavy. So I want to say this up front: my life is not made only of bad things. I am only selecting a part of it here to remind myself.
@@ -464,4 +464,4 @@ I only just realized that I have written twenty thousand words. Anyone who has m
 
 Because I knew the overall tone could get heavy, I inserted some images here and there to lighten the atmosphere. Reading nothing but text is tiring too. It is true that technical secondary school and junior college could feel oppressive, but they were not all bad either. Junior college actually had fun moments and happy moments too. I only noticed the oppressive side in hindsight. Back then I could not even describe what felt wrong, nor did I know where the problem was. After writing everything out this time, it all became much clearer.
 
-This whole article was revised and cut gradually, so there may still be typos or awkward sentences. The awkwardness mostly comes from places where I merged or edited sentences and missed something. If you spot those, feel free to point them out directly in the guestbook. I will reply when I see them. The guestbook does not have notifications, though, so it might take me a while.
+This whole article was revised little by little, so there may still be typos or awkward sentences. The awkward parts mostly come from places where I merged or edited sentences and accidentally left something out. Feel free to point them out directly in the guestbook. I will reply when I see them. The guestbook has no way to notify me, though, so it may take a while before I notice.
