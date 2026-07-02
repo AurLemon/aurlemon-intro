@@ -30,6 +30,7 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 	const loopSyncFrameId = ref<number | null>(null)
 	const resizeFrameId = ref<number | null>(null)
 	const settleFrameId = ref<number | null>(null)
+	const scrollSettleTimeoutId = ref<number | null>(null)
 	const settleTimeoutIds = new Set<number>()
 	let carouselResizeObserver: ResizeObserver | null = null
 
@@ -197,6 +198,28 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 			: 0
 	}
 
+	const getNearestItemIndex = (
+		container: HTMLDivElement,
+		itemElements: HTMLElement[],
+	): number => {
+		const itemScrollOffsets = getItemScrollOffsets(container, itemElements)
+		const viewportCenter = container.scrollLeft + container.clientWidth / 2
+
+		return itemElements.reduce((bestIndex, element, index) => {
+			const bestElement = itemElements[bestIndex]
+			const currentStart = itemScrollOffsets[index] ?? 0
+			const bestStart = itemScrollOffsets[bestIndex] ?? 0
+			const currentDistance = Math.abs(
+				currentStart + element.offsetWidth / 2 - viewportCenter,
+			)
+			const bestDistance = Math.abs(
+				bestStart + (bestElement?.offsetWidth ?? 0) / 2 - viewportCenter,
+			)
+
+			return currentDistance < bestDistance ? index : bestIndex
+		}, 0)
+	}
+
 	const updateScrollState = (): void => {
 		const container = scrollContainer.value
 
@@ -263,7 +286,10 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		currentImageIndex.value = nearestRealIndex
 	}
 
-	const syncLoopPosition = (): void => {
+	const syncLoopPosition = (
+		behavior: ScrollBehavior = 'smooth',
+		forceRealItem = false,
+	): void => {
 		const container = scrollContainer.value
 
 		if (
@@ -276,34 +302,27 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		}
 
 		const itemElements = getCarouselItemElements(container)
+
+		if (!itemElements.length) {
+			return
+		}
+
 		const realItemStartIndex = getRealItemStartIndex()
 		const itemScrollOffsets = getItemScrollOffsets(container, itemElements)
-		const middleViewportCenter =
-			container.scrollLeft + container.clientWidth / 2
-		const itemCenters = itemElements.map((element, index) => {
-			const itemStart = itemScrollOffsets[index] ?? 0
-
-			return itemStart + element.offsetWidth / 2
-		})
-		const nearestItemIndex = itemCenters.reduce((bestIndex, center, index) => {
-			const bestCenter = itemCenters[bestIndex] ?? 0
-
-			return Math.abs(center - middleViewportCenter) <
-				Math.abs(bestCenter - middleViewportCenter)
-				? index
-				: bestIndex
-		}, 0)
+		const nearestItemIndex = getNearestItemIndex(container, itemElements)
 
 		if (
+			!forceRealItem &&
 			nearestItemIndex >= realItemStartIndex &&
 			nearestItemIndex <= realItemStartIndex + normalizedImages.value.length - 1
 		) {
 			return
 		}
 
-		const targetIndex = hasUserNavigated.value
-			? realItemStartIndex + (nearestItemIndex % normalizedImages.value.length)
-			: realItemStartIndex
+		const targetSourceIndex = hasUserNavigated.value
+			? (carouselImages.value[nearestItemIndex]?.sourceIndex ?? 0)
+			: 0
+		const targetIndex = realItemStartIndex + targetSourceIndex
 		const targetElement = itemElements[targetIndex]
 		const targetItemStart = itemScrollOffsets[targetIndex]
 
@@ -317,22 +336,46 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 			targetItemStart,
 		)
 		isAdjustingLoopPosition.value = true
-		setScrollPosition(targetScrollLeft, 'auto')
+		setScrollPosition(targetScrollLeft, behavior)
 		requestAnimationFrame(() => {
 			isAdjustingLoopPosition.value = false
+			currentImageIndex.value = targetSourceIndex
 			updateScrollState()
 		})
 	}
 
-	const queueLoopPositionSync = (): void => {
+	const queueLoopPositionSync = (
+		behavior: ScrollBehavior = 'smooth',
+		forceRealItem = false,
+	): void => {
 		if (loopSyncFrameId.value !== null) {
 			window.cancelAnimationFrame(loopSyncFrameId.value)
 		}
 
 		loopSyncFrameId.value = window.requestAnimationFrame(() => {
 			loopSyncFrameId.value = null
-			syncLoopPosition()
+			syncLoopPosition(behavior, forceRealItem)
 		})
+	}
+
+	const clearScrollSettleTimeout = (): void => {
+		if (scrollSettleTimeoutId.value !== null) {
+			clearTimeout(scrollSettleTimeoutId.value)
+			scrollSettleTimeoutId.value = null
+		}
+	}
+
+	const scheduleScrollSettle = (): void => {
+		clearScrollSettleTimeout()
+		scrollSettleTimeoutId.value = window.setTimeout(() => {
+			scrollSettleTimeoutId.value = null
+
+			if (!cycleEnabled.value || isAdjustingLoopPosition.value) {
+				return
+			}
+
+			queueLoopPositionSync('smooth', true)
+		}, 140)
 	}
 
 	const handleScroll = (): void => {
@@ -345,7 +388,7 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		}
 
 		if (cycleEnabled.value) {
-			queueLoopPositionSync()
+			scheduleScrollSettle()
 		}
 
 		updateScrollState()
@@ -409,6 +452,7 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		currentImageIndex.value = 0
 		centerImageAtIndex(0)
 		handleScroll()
+		queueLoopPositionSync('auto', true)
 	}
 
 	const scheduleInitialPositionSettle = (): void => {
@@ -487,6 +531,7 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		)
 		setScrollPosition(targetScrollLeft, 'auto')
 		handleScroll()
+		queueLoopPositionSync('auto', true)
 		scheduleInitialPositionSettle()
 	}
 
@@ -602,6 +647,7 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		carouselResizeObserver?.disconnect()
 		carouselResizeObserver = null
 		clearInitialSettleTasks()
+		clearScrollSettleTimeout()
 
 		if (loopSyncFrameId.value !== null) {
 			window.cancelAnimationFrame(loopSyncFrameId.value)
