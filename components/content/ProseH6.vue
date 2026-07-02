@@ -6,7 +6,7 @@
 			props.class,
 		]"
 	>
-		<a v-if="id && generate" :href="`#${id}`">
+		<a v-if="id && generate" :href="`#${id}`" @click="handleAnchorClick">
 			<slot />
 		</a>
 		<slot v-else />
@@ -28,4 +28,5 @@ const generate = computed(
 			? headings.anchorLinks
 			: headings?.anchorLinks?.h6),
 )
+const { handleAnchorClick } = useAnchorScroll(id)
 </script>

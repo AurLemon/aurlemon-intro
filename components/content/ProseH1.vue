@@ -10,6 +10,7 @@
 			v-if="id && generate"
 			:href="`#${id}`"
 			class="inline-flex items-center gap-2"
+			@click="handleAnchorClick"
 		>
 			<slot />
 		</a>
@@ -32,4 +33,5 @@ const generate = computed(
 			? headings.anchorLinks
 			: headings?.anchorLinks?.h1),
 )
+const { handleAnchorClick } = useAnchorScroll(id)
 </script>

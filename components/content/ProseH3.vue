@@ -10,6 +10,7 @@
 			v-if="id && generate"
 			:href="`#${id}`"
 			class="group lg:ps-2 lg:-ms-2 [&>code]:border-dashed hover:[&>code]:border-primary hover:[&>code]:text-primary [&>code]:text-lg/6 [&>code]:font-medium [&>code]:transition-colors"
+			@click="handleAnchorClick"
 		>
 			<span
 				class="absolute -ms-8 top-0.5 hidden rounded-md bg-elevated p-1 text-muted opacity-0 transition group-hover:opacity-100 group-focus:opacity-100 hover:text-primary lg:flex"
@@ -38,4 +39,5 @@ const generate = computed(
 			? headings.anchorLinks
 			: headings?.anchorLinks?.h3),
 )
+const { handleAnchorClick } = useAnchorScroll(id)
 </script>
