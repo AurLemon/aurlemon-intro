@@ -245,7 +245,7 @@ import { useI18n } from 'vue-i18n'
 import dayjs from 'dayjs'
 import InfoCard from '~/components/cards/InfoCard.vue'
 
-import avatarMark from '~/assets/resources/sitemark/avatar_mark.jpg'
+import avatarMark from '~/assets/resources/sitemark/avatar_mark.webp'
 import FPMLogo from '~/assets/resources/school_badge/FPM.webp'
 import FEESLogo from '~/assets/resources/school_badge/FEES.webp'
 import FJCCCLogo from '~/assets/resources/school_badge/FJCCC.webp'
