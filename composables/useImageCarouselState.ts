@@ -30,6 +30,7 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 	const loopSyncFrameId = ref<number | null>(null)
 	const resizeFrameId = ref<number | null>(null)
 	const settleFrameId = ref<number | null>(null)
+	const programmaticScrollResetTimeoutId = ref<number | null>(null)
 	const scrollSettleTimeoutId = ref<number | null>(null)
 	const settleTimeoutIds = new Set<number>()
 	let carouselResizeObserver: ResizeObserver | null = null
@@ -162,6 +163,21 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 			left,
 			behavior,
 		})
+	}
+
+	const clearProgrammaticScrollResetTimeout = (): void => {
+		if (programmaticScrollResetTimeoutId.value !== null) {
+			clearTimeout(programmaticScrollResetTimeoutId.value)
+			programmaticScrollResetTimeoutId.value = null
+		}
+	}
+
+	const scheduleProgrammaticScrollReset = (): void => {
+		clearProgrammaticScrollResetTimeout()
+		programmaticScrollResetTimeoutId.value = window.setTimeout(() => {
+			programmaticScrollResetTimeoutId.value = null
+			isProgrammaticScroll.value = false
+		}, 180)
 	}
 
 	const getItemScrollOffsets = (
@@ -319,10 +335,10 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 			return
 		}
 
-		const targetSourceIndex = hasUserNavigated.value
-			? (carouselImages.value[nearestItemIndex]?.sourceIndex ?? 0)
+		const targetOrderedIndex = hasUserNavigated.value
+			? nearestItemIndex % normalizedImages.value.length
 			: 0
-		const targetIndex = realItemStartIndex + targetSourceIndex
+		const targetIndex = realItemStartIndex + targetOrderedIndex
 		const targetElement = itemElements[targetIndex]
 		const targetItemStart = itemScrollOffsets[targetIndex]
 
@@ -339,7 +355,7 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		setScrollPosition(targetScrollLeft, behavior)
 		requestAnimationFrame(() => {
 			isAdjustingLoopPosition.value = false
-			currentImageIndex.value = targetSourceIndex
+			currentImageIndex.value = targetOrderedIndex
 			updateScrollState()
 		})
 	}
@@ -379,15 +395,19 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 	}
 
 	const handleScroll = (): void => {
+		const isLoopAdjustmentScroll = isAdjustingLoopPosition.value
+		const isInternalScroll =
+			isLoopAdjustmentScroll || isProgrammaticScroll.value
+
 		if (isProgrammaticScroll.value) {
-			window.requestAnimationFrame(() => {
-				isProgrammaticScroll.value = false
-			})
-		} else {
+			scheduleProgrammaticScrollReset()
+		}
+
+		if (!isInternalScroll) {
 			hasUserNavigated.value = true
 		}
 
-		if (cycleEnabled.value) {
+		if (cycleEnabled.value && !isLoopAdjustmentScroll) {
 			scheduleScrollSettle()
 		}
 
@@ -595,10 +615,12 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 			targetIndex = direction === 'left' ? itemElements.length - 2 : 1
 		}
 
-		const targetSourceIndex =
-			carouselImages.value[targetIndex]?.sourceIndex ?? currentImageIndex.value
+		const targetOrderedIndex =
+			targetIndex >= 0
+				? targetIndex % normalizedImages.value.length
+				: currentImageIndex.value
 
-		currentImageIndex.value = targetSourceIndex
+		currentImageIndex.value = targetOrderedIndex
 		const targetElement = itemElements[targetIndex]
 		const targetScrollLeft = targetElement
 			? getCenteredScrollLeft(
@@ -610,10 +632,7 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 				? 0
 				: maxScrollLeft
 
-		container.scrollTo({
-			left: targetScrollLeft,
-			behavior: 'smooth',
-		})
+		setScrollPosition(targetScrollLeft, 'smooth')
 	}
 
 	const openPreview = (sourceIndex: number, displayIndex: number): void => {
@@ -647,6 +666,7 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		carouselResizeObserver?.disconnect()
 		carouselResizeObserver = null
 		clearInitialSettleTasks()
+		clearProgrammaticScrollResetTimeout()
 		clearScrollSettleTimeout()
 
 		if (loopSyncFrameId.value !== null) {
