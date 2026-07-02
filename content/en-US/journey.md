@@ -1,5 +1,5 @@
 ---
-updatedAt: 2026-07-02T14:36:00+08:00
+updatedAt: 2026-07-03T02:10:30+08:00
 ---
 
 This page is called Journey, but most of it is really my own black history. Some parts may feel bleak or heavy. So I want to say this up front: my life is not made only of bad things. I am only selecting a part of it here to remind myself.
@@ -357,7 +357,9 @@ On June 30, 2026, I received my junior-college graduation certificate, though no
 
 In June, I finished CET-6 again. This time I did twenty days of last-minute preparation, went through the process and my mistakes, and although I did not produce any dramatic breakthrough or moment of revelation, the result seems at least fine. Judging by my estimated score, I almost certainly passed. In June, I also kept building projects for my MC server. But even without Hydroline, I would probably still have stepped into many of the same pits. At least I have already fallen into them once. I really have grown something through all this friction. Even now, I am still writing things with AI, and I am still constantly anxious about the future. What kind of people will I meet during my undergraduate years? Will there be restless people who manufacture anxiety for me? Will I still meet close friends? Everything keeps spiraling upward. Everything is still moving forward.
 
-Realization and change often happen in a single instant. But behind them is change repeated day after day. If I had not chatted with AI every day and vented all my bitterness to it, I probably would not have been able to write these stories this calmly now. I would only have talked with AI about technology. I lacked logic. I would still only be dumping emotion frantically, trying to cram everything in and trying to make everyone understand how I felt. But very often, knowing how to give some things up and do subtraction matters more than addition.
+Keep moving. Keep moving matters more than anything else. Action comes before understanding. Do not be anxious about things you have never done before. If you do not even know how to do them yet, why be anxious? You should almost feel relieved instead. For the things you do choose to do, you should have a fairly solid grasp of them. "Think everything through before acting" is a false proposition. Reality is a black box. If you never press the button, you will never know what is inside. Since plans will always fail to keep up with change, you might as well treat change itself as part of the plan. Move first. Put the improvised stage together first, and patch the holes when something goes wrong. After doing it a few more times, reviewing it, and sorting out the experience, many things will suddenly become clear. Start moving with incomplete understanding, then adjust as you move.
+
+In the process of action, realization and change often happen in a single instant. Quantitative change becomes qualitative change, but behind that lies day after day of change. If I had not chatted with AI every day and vented all my bitterness to it, I probably would not have been able to write these stories this calmly now. I would only have talked with AI about technology. I lacked logic. I would still only be dumping emotion frantically, trying to cram everything in and trying to make everyone understand how I felt. But very often, knowing how to give some things up and do subtraction matters more than addition.
 
 If I had never built that question-practice system, then the teacher might never have noticed me. Everyone has their own life and their own road. The seniors who kept testing each other over small technical things, the person who contacted me about a project, the two teachers who brought me in and took me to competition, the senior who made me uncomfortable during the class-committee campaign, the online friends who were ecstatic after seeing my score, all of them have their own stories. I already feel very lucky to have made it this far. I do not regret the road I am on now.
 
@@ -373,7 +375,7 @@ Everything is still proceeding in an orderly way. The sun rises as usual.
 
 What's Next? I do not know. I do not know what stories I will encounter during my undergraduate years, because they have not even started yet.
 
-Adachi and Shimamura is my favorite work. Not only is its writing delicate, more importantly, it feels like a complete universe. It is still being updated even now. The main storyline, the confession, was actually finished long ago. What is being updated now is the mainline and side stories, the story of their everyday life. Maybe the most romantic thing in the world is long companionship. After all the grand drama, life returns to the ordinary, just like $x → \infty$.
+Adachi and Shimamura is my favorite work. Not only is its writing delicate, more importantly, it feels like a complete universe. It is still being updated even now. The main storyline, the confession, was actually finished long ago. What is being updated now is the mainline and side stories, the story of their everyday life. Maybe the most romantic thing in the world is long companionship. After all the grand drama comes an ordinary, quiet everyday life, like $x → \infty$.
 
 Just like junior college, undergraduate study will only last two years. I hope that the version of me in 2028 can hand in an answer sheet he does not regret. The next story is the story of me and my MC server.
 
@@ -419,6 +421,16 @@ I used to waver badly here. On one hand, familiar relationships cannot be allowe
 
 Only later did I slowly realize that familiar relationships are not immunity, and contribution is not proof of eternal correctness either. The old me also had muddy, awkward, twisted emotions and would avoid things like a normal person. To be honest, I still do a little. And being able to deconstruct these things thoroughly does not mean I now have the ability to solve them. The metric is different. It is like the competition in September 2025. I also tried to avoid going on stage and speaking, but it did not help. A long-term community can have feelings, but those feelings cannot be allowed to swallow the boundaries. Otherwise, what gets injured in the end is not only one person, but the whole community's trust in fairness.
 
+> Some people are more proactive, while others are quieter. The proactive ones gradually gain more voice, and the quieter ones gradually become marginalized.
+>
+> People with shared experiences naturally form tighter relationships, while newcomers need time before they can really blend in. That is the embryonic form of a clique.
+>
+> When resources are limited, whether map space, decision-making power, or attention, competition appears. That competition can be constructive, or it can become destructive.
+>
+> When someone leaves or a conflict breaks out, the people who remain automatically readjust their positions and form a new balance.
+
+These are common traits of all human communities. As soon as more than three people are together, these things start happening naturally. It is unavoidable. Relying only on systems or institutions does not really solve it either. The trust foundation of a small group is built on relationships, not process, unless the community becomes very large.
+
 ### The Position of the Server Owner
 
 Small-group problems are the same. Normal friendships and building teams are naturally part of a server's vitality. If every familiar relationship is treated as a clique, then what remains is only the manager's own obsession with purity. But if you ignore everything completely, then some relationships slowly turn into exclusion, factional alignment, step-on culture, and pressure from public opinion. The hardest part is not deciding whether "they are friends." It is judging whether that relationship has started to affect other people's normal participation, whether it has made some people afraid to speak, afraid to build, afraid to enter a certain circle.
@@ -441,7 +453,7 @@ Technical problems are actually easier than that. When technology goes wrong, at
 
 That is why I increasingly feel that managing a community is like maintaining a system with no clear documentation. This system has state, inputs and outputs, thresholds, misjudgments, and failure paths. Rules are necessary, but they are not omnipotent. Rules can tell everyone where the bottom line is, but they cannot make judgments on behalf of the manager.
 
-HydCraft is not only about how to run a server, write code, or build a website. It is also this: people grow closer because of relationships, and they get hurt because of relationships too. Groups generate enthusiasm, but also inertia. Systems can protect people, but they can also be turned into weapons. And the more a manager wants to satisfy everyone, the more likely it becomes that in the end they protect nobody at all.
+HydCraft is not only about how to run a server, write code, or build a website. In the past, I had a hard time accepting departures too, the departure of friends, the departure of players. But people grow closer because of relationships, and they get hurt because of relationships too. Groups generate enthusiasm, but also inertia. Systems can protect people, but they can also be turned into weapons. And the more a manager wants to satisfy everyone, the more likely it becomes that in the end they protect nobody at all.
 
 ### Restraint
 
