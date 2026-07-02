@@ -1,6 +1,6 @@
 <template>
 	<footer class="mx-auto max-w-4xl w-full px-6 lg:px-0 my-6 mb-16 mt-auto">
-		<div class="mb-12 flex justify-center items-center">
+		<div class="mb-16 flex justify-center items-center">
 			<SiteLikeButton
 				:refresh-signal="socialSummaryRefreshSignal"
 				@summary-change="handleSiteLikeSummaryChange"

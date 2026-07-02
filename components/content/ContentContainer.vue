@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="mx-auto w-full max-w-4xl min-w-0 py-6 pb-16 text-[18px] font-serif font-medium text-slate-900 dark:text-slate-100 lg:px-6"
+		class="mx-auto w-full max-w-4xl min-w-0 py-6 text-[18px] font-serif font-medium text-slate-900 dark:text-slate-100 lg:px-6"
 	>
 		<ContentRenderer v-if="resolvedDoc" :value="resolvedDoc" />
 		<ContentFooter v-if="resolvedDoc" class="mt-14" :doc="resolvedDoc" />
