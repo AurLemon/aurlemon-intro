@@ -59,8 +59,9 @@
 
 			<button
 				type="button"
-				class="absolute top-1/2 left-3 z-20 flex h-10 w-10 -translate-y-1/2 touch-manipulation items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-lg ring-1 ring-slate-200/80 backdrop-blur transition duration-200 hover:bg-white hover:text-slate-950 dark:bg-slate-950/80 dark:text-slate-300 dark:ring-white/10 dark:hover:bg-slate-950 dark:hover:text-slate-50"
-				:class="leftButtonClass"
+				class="absolute left-3 z-20 flex h-10 w-10 -translate-y-1/2 touch-manipulation items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-lg ring-1 ring-slate-200/80 backdrop-blur transition duration-200 hover:bg-white hover:text-slate-950 dark:bg-slate-950/80 dark:text-slate-300 dark:ring-white/10 dark:hover:bg-slate-950 dark:hover:text-slate-50"
+				:class="[navigationButtonClass, leftButtonClass]"
+				:style="navigationButtonStyle"
 				:aria-label="t('content.imageCarousel.scrollLeft')"
 				@click.stop="scrollImages('left')"
 			>
@@ -68,8 +69,9 @@
 			</button>
 			<button
 				type="button"
-				class="absolute top-1/2 right-3 z-20 flex h-10 w-10 -translate-y-1/2 touch-manipulation items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-lg ring-1 ring-slate-200/80 backdrop-blur transition duration-200 hover:bg-white hover:text-slate-950 dark:bg-slate-950/80 dark:text-slate-300 dark:ring-white/10 dark:hover:bg-slate-950 dark:hover:text-slate-50"
-				:class="rightButtonClass"
+				class="absolute right-3 z-20 flex h-10 w-10 -translate-y-1/2 touch-manipulation items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-lg ring-1 ring-slate-200/80 backdrop-blur transition duration-200 hover:bg-white hover:text-slate-950 dark:bg-slate-950/80 dark:text-slate-300 dark:ring-white/10 dark:hover:bg-slate-950 dark:hover:text-slate-50"
+				:class="[navigationButtonClass, rightButtonClass]"
+				:style="navigationButtonStyle"
 				:aria-label="t('content.imageCarousel.scrollRight')"
 				@click.stop="scrollImages('right')"
 			>
@@ -275,6 +277,26 @@ const getImageWrapperClass = (): string =>
 		: isAutoWidth.value
 			? 'h-full w-full'
 			: 'h-full w-full'
+
+const navigationButtonClass = computed(() =>
+	isAutoHeight.value ? 'top-1/2' : 'content-image-carousel-nav-button',
+)
+
+const navigationButtonStyle = computed<ResponsiveImageStyle>(() => {
+	if (isAutoHeight.value) {
+		return {}
+	}
+
+	const style: ResponsiveImageStyle = {
+		'--content-image-nav-height': resolvedDefaultHeight.value,
+	}
+
+	if (props.mobileHeight) {
+		style['--content-image-nav-mobile-height'] = props.mobileHeight
+	}
+
+	return style
+})
 </script>
 
 <style scoped>
@@ -310,7 +332,18 @@ const getImageWrapperClass = (): string =>
 	filter: grayscale(0.22) saturate(0.72) brightness(0.9);
 }
 
+.content-image-carousel-nav-button {
+	top: calc(var(--content-image-nav-height) / 2);
+}
+
 @media (max-width: 767.98px) {
+	.content-image-carousel-nav-button {
+		top: calc(
+			var(--content-image-nav-mobile-height, var(--content-image-nav-height)) /
+				2
+		);
+	}
+
 	.content-image-width-bound {
 		width: var(--content-image-mobile-width, var(--content-image-width));
 		flex-basis: var(--content-image-mobile-width, var(--content-image-width));
