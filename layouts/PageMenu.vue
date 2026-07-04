@@ -27,9 +27,11 @@ const MOBILE_SIDE_GUTTER = 12
 const MOBILE_BREAKPOINT = 1024
 const BOTTOM_HIDE_DELAY = 180
 const BOTTOM_SHOW_DELAY = 120
+const FALLBACK_SLOT_TRANSITION_MS = 350
 let resizeObserver: ResizeObserver | null = null
 let bottomHideTimer: ReturnType<typeof setTimeout> | null = null
 let bottomShowTimer: ReturnType<typeof setTimeout> | null = null
+let fallbackLeaveTimer: ReturnType<typeof setTimeout> | null = null
 let scrollRaf = 0
 
 const baseNavItems = computed<MenuItem[]>(() => [
@@ -251,6 +253,11 @@ const onResize = () => {
 watch(
 	currentFallback,
 	async (next) => {
+		if (fallbackLeaveTimer) {
+			clearTimeout(fallbackLeaveTimer)
+			fallbackLeaveTimer = null
+		}
+
 		if (next) {
 			displayedFallback.value = next
 			fallbackSlotVisible.value = true
@@ -265,8 +272,12 @@ watch(
 		}
 
 		fallbackSlotWidth.value = 0
-		displayedFallback.value = null
-		fallbackSlotVisible.value = false
+		void syncShellWidth()
+		fallbackLeaveTimer = setTimeout(() => {
+			displayedFallback.value = null
+			fallbackSlotVisible.value = false
+			fallbackLeaveTimer = null
+		}, FALLBACK_SLOT_TRANSITION_MS)
 	},
 	{ immediate: true },
 )
@@ -338,6 +349,10 @@ onBeforeUnmount(() => {
 	if (bottomShowTimer) {
 		clearTimeout(bottomShowTimer)
 		bottomShowTimer = null
+	}
+	if (fallbackLeaveTimer) {
+		clearTimeout(fallbackLeaveTimer)
+		fallbackLeaveTimer = null
 	}
 })
 </script>
