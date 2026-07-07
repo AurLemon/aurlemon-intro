@@ -2,6 +2,12 @@ name: Build & Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      baseline_existing_db:
+        description: 'Mark existing migrations as already applied before deploy (use only for the first deploy to an existing database)'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -9,6 +15,7 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 25
     env:
       SSH_HOST: ${{ secrets.BACKEND_DEPLOY_HOST }}
       SSH_PORT: ${{ secrets.BACKEND_DEPLOY_SSH_PORT || '233' }}
@@ -63,6 +70,8 @@ jobs:
               rm -rf /app/deploy-artifact
               mkdir -p /app/deploy-artifact
 
+              cp /app/package.json /app/pnpm-lock.yaml /app/deploy-artifact/
+              cp -R /app/prisma /app/deploy-artifact/prisma
               cp -R /app/.output/public \
                     /app/.output/server \
                     /app/deploy-artifact/
@@ -73,6 +82,13 @@ jobs:
               if [ -f /app/.env ]; then
                 cp /app/.env /app/deploy-artifact/.env
               fi
+
+              pnpm install --prod --frozen-lockfile --dir /app/deploy-artifact
+
+              test -f /app/deploy-artifact/package.json
+              test -f /app/deploy-artifact/prisma/schema.prisma
+              test -f /app/deploy-artifact/prisma/migrations/migration_lock.toml
+              test -f /app/deploy-artifact/node_modules/.bin/prisma
             '
 
       # --------------------
@@ -145,18 +161,18 @@ jobs:
       # --------------------
       - name: Deploy app on remote host
         run: |
-          ssh deploy-host <<EOF
+          ssh deploy-host \
+            "export AWS_ACCESS_KEY_ID='$AWS_ACCESS_KEY_ID' \
+            AWS_SECRET_ACCESS_KEY='$AWS_SECRET_ACCESS_KEY' \
+            ARTIFACT_BUCKET='$ARTIFACT_BUCKET' \
+            ARTIFACT_DOWNLOAD_ENDPOINT='$ARTIFACT_DOWNLOAD_ENDPOINT' \
+            ARTIFACT_REGION='$ARTIFACT_REGION' \
+            REMOTE_DEPLOY_PATH='$REMOTE_DEPLOY_PATH' \
+            REMOTE_TEMP_DIR='$REMOTE_TEMP_DIR' \
+            PM2_APP_NAME='$PM2_APP_NAME' \
+            DEPLOY_RUNTIME_ENV='$DEPLOY_RUNTIME_ENV' \
+            BASELINE_EXISTING_DB='${{ github.event.inputs.baseline_existing_db || 'false' }}'; bash -s" <<'EOF'
           set -euo pipefail
-
-          export AWS_ACCESS_KEY_ID="$AWS_ACCESS_KEY_ID"
-          export AWS_SECRET_ACCESS_KEY="$AWS_SECRET_ACCESS_KEY"
-          export ARTIFACT_BUCKET="$ARTIFACT_BUCKET"
-          export ARTIFACT_DOWNLOAD_ENDPOINT="$ARTIFACT_DOWNLOAD_ENDPOINT"
-          export ARTIFACT_REGION="$ARTIFACT_REGION"
-          export REMOTE_DEPLOY_PATH="$REMOTE_DEPLOY_PATH"
-          export REMOTE_TEMP_DIR="$REMOTE_TEMP_DIR"
-          export PM2_APP_NAME="$PM2_APP_NAME"
-          export DEPLOY_RUNTIME_ENV="$DEPLOY_RUNTIME_ENV"
 
           mkdir -p "$REMOTE_DEPLOY_PATH"
 
@@ -183,6 +199,14 @@ jobs:
             source <(sed 's/\r$//' ./.env)
             set +a
           fi
+
+          if [ "$BASELINE_EXISTING_DB" = "true" ]; then
+            pnpm prisma migrate resolve --applied 20250202232641_init
+            pnpm prisma migrate resolve --applied 20260405000000_social_features
+            pnpm prisma migrate resolve --applied 20260406132000_message_comment_pin
+          fi
+
+          pnpm db:migrate:deploy
 
           if pm2 describe "$PM2_APP_NAME" >/dev/null 2>&1; then
             pm2 restart "$PM2_APP_NAME" --update-env
