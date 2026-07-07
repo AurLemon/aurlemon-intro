@@ -156,6 +156,7 @@ jobs:
           export REMOTE_DEPLOY_PATH="$REMOTE_DEPLOY_PATH"
           export REMOTE_TEMP_DIR="$REMOTE_TEMP_DIR"
           export PM2_APP_NAME="$PM2_APP_NAME"
+          export DEPLOY_RUNTIME_ENV="$DEPLOY_RUNTIME_ENV"
 
           mkdir -p "$REMOTE_DEPLOY_PATH"
 
@@ -167,12 +168,27 @@ jobs:
           mkdir -p "$REMOTE_TEMP_DIR/extracted"
           tar -xzf "$REMOTE_TEMP_DIR/deploy-artifact.tar.gz" -C "$REMOTE_TEMP_DIR/extracted"
 
+          if [ -n "$DEPLOY_RUNTIME_ENV" ]; then
+            printf "%s\n" "$DEPLOY_RUNTIME_ENV" > "$REMOTE_DEPLOY_PATH/.env"
+          fi
+
           rsync -a --no-owner --no-group --delete --exclude='.env' --exclude='sqlite.db' \
             "$REMOTE_TEMP_DIR/extracted/" \
             "$REMOTE_DEPLOY_PATH/"
 
-          pm2 stop "$PM2_APP_NAME" || true
-          pm2 start "$PM2_APP_NAME"
+          cd "$REMOTE_DEPLOY_PATH"
+
+          if [ -f ./.env ]; then
+            set -a
+            source <(sed 's/\r$//' ./.env)
+            set +a
+          fi
+
+          if pm2 describe "$PM2_APP_NAME" >/dev/null 2>&1; then
+            pm2 restart "$PM2_APP_NAME" --update-env
+          else
+            pm2 start "$REMOTE_DEPLOY_PATH/.output/server/index.mjs" --name "$PM2_APP_NAME" --cwd "$REMOTE_DEPLOY_PATH"
+          fi
 
           rm -rf "$REMOTE_TEMP_DIR"
           EOF
