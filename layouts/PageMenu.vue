@@ -37,6 +37,7 @@ let fallbackLeaveTimer: ReturnType<typeof setTimeout> | null = null
 let scrollRaf = 0
 let activeItemScrollRaf = 0
 let activeItemScrollTimer: ReturnType<typeof setTimeout> | null = null
+let activeItemFollowupScrollTimer: ReturnType<typeof setTimeout> | null = null
 
 const baseNavItems = computed<MenuItem[]>(() => [
 	{ key: 'overview', label: t('menu.overview'), to: '/' },
@@ -340,6 +341,24 @@ const scheduleScrollActiveItemIntoView = (
 	run()
 }
 
+const scheduleFollowupScrollActiveItemIntoView = (
+	behavior: ScrollBehavior = 'smooth',
+	delay = MENU_SHELL_TRANSITION_MS,
+) => {
+	if (!import.meta.client) {
+		return
+	}
+
+	if (activeItemFollowupScrollTimer) {
+		clearTimeout(activeItemFollowupScrollTimer)
+	}
+
+	activeItemFollowupScrollTimer = setTimeout(() => {
+		activeItemFollowupScrollTimer = null
+		scheduleScrollActiveItemIntoView(behavior)
+	}, delay)
+}
+
 watch(
 	currentFallback,
 	async (next) => {
@@ -353,7 +372,7 @@ watch(
 			fallbackSlotVisible.value = true
 			await syncFallbackWidth()
 			scheduleScrollActiveItemIntoView('smooth')
-			scheduleScrollActiveItemIntoView('smooth', MENU_SHELL_TRANSITION_MS)
+			scheduleFollowupScrollActiveItemIntoView('smooth')
 			return
 		}
 
@@ -442,6 +461,10 @@ onBeforeUnmount(() => {
 	if (activeItemScrollTimer) {
 		clearTimeout(activeItemScrollTimer)
 		activeItemScrollTimer = null
+	}
+	if (activeItemFollowupScrollTimer) {
+		clearTimeout(activeItemFollowupScrollTimer)
+		activeItemFollowupScrollTimer = null
 	}
 	if (bottomHideTimer) {
 		clearTimeout(bottomHideTimer)
