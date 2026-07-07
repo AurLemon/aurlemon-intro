@@ -1,5 +1,5 @@
 ---
-updatedAt: 2026-07-04T01:38:50+08:00
+updatedAt: 2026-07-07T23:35:41+08:00
 ---
 
 This page is called Journey, but most of it is really my own black history. Some parts may feel bleak or heavy. So I want to say this up front: my life is not made only of bad things. I am only selecting a part of it here to remind myself.
@@ -328,7 +328,7 @@ So it turns out that making some small thing can also bring me a pure kind of jo
 
 AI gave me an illusion, the illusion that I could do everything. After the transfer exam, I began to doubt that whole illusion. Building projects depends on the field. The difference between doing something once and doing it countless times is huge. There are many things I had not even done once. I had only skimmed a few introductory concepts in forums and communities and started feeling smug. So why did having AI suddenly make me so confident that I knew how to do them? Hydroline was the first project of that scale I had ever made. It matters to me. It has milestone value. Learning subtraction is more important than learning addition. Stay restrained. Restraint.
 
-Liz and the Blue Bird taught me that letting go is also a form of love. Maybe I need to learn to let go of some meaningless things as well. Not because I will never do them, but because the time has not come yet.
+Liz and the Blue Bird taught me that letting go is also a form of love. Maybe I need to learn to let go of some meaningless things as well. The old me worried about everything and felt anxious about everything. I was desperate to prove myself, and I wanted to cram everything in. Reality taught me that it is not that I should never do those things, only that their time has not come yet.
 
 ::image-carousel{height="20rem" width-mode="auto" mobile-height="10rem" images='[{"src":"hydroline_screenshots.webp","caption":"Hydroline screenshots."},{"src":"graduation_design_1.webp","caption":"The first version of my graduation project, a failed little car."},{"src":"graduation_design_2.webp","caption":"The second version of my graduation project, something barely acceptable to submit."},{"src":"graduation_design_3.webp","caption":"The Electron program paired with the graduation project."}]'}
 ::
