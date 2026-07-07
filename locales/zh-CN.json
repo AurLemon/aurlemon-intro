@@ -26,8 +26,12 @@
 	},
 	"main": {
 		"index": {
-			"line1": "朋友们/一般叫我柠檬🍋。",
-			"line2": "全栈开发者{doubtful}，福建福州人，{age} 岁，INF/TJ。",
+			"line1BeforeEmoji": "朋友们/一般叫我柠檬",
+			"line1AfterEmoji": "",
+			"line1Tail": "。",
+			"lemonEmoji": "🍋",
+			"line2BeforeDoubtful": "全栈开发者",
+			"line2AfterDoubtful": "，福建福州人，{age} 岁，INF/TJ。",
 			"doubtful": "存疑",
 			"card": {
 				"education": {

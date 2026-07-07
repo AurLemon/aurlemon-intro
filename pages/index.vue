@@ -29,13 +29,15 @@
 				<span>{{ line1Parts[0] }}</span>
 				<span class="hidden sm:inline">{{ line1DesktopSeparator }}</span>
 				<br class="sm:hidden" />
-				<span>{{ line1Parts[1] }}</span>
+				<span>{{ line1Parts[1] }}</span
+				><span class="text-xl">{{ $t('main.index.lemonEmoji') }}</span
+				><span>{{ line1Tail }}</span>
 				<br />
-				<span class="block mt-3 lg:mt-0 break-all">
-					{{ line2Parts.before }}
-					<span class="text-xl italic">{{ $t('main.index.doubtful') }}</span>
-					{{ line2Parts.after }}
-				</span>
+				<span class="block mt-3 lg:mt-0 break-all"
+					>{{ line2Parts.before
+					}}<span class="text-xl italic">{{ $t('main.index.doubtful') }}</span
+					>{{ line2Parts.after }}</span
+				>
 			</div>
 		</div>
 
@@ -271,24 +273,22 @@ const { t, te, locale } = useI18n({ useScope: 'global' })
 const age = dayjs().diff('2006-05-18', 'year')
 
 const line1Parts = computed(() => {
-	const [first = '', second = ''] = String(t('main.index.line1'))
-		.split('/')
-		.map((part) => part.trim())
+	const line1 = `${String(t('main.index.line1BeforeEmoji'))}${String(t('main.index.line1AfterEmoji'))}`
+	const [first = '', second = ''] = line1.split('/').map((part) => part.trim())
 
 	return [first, second]
 })
+
+const line1Tail = computed(() => String(t('main.index.line1Tail')))
 
 const line1DesktopSeparator = computed(() =>
 	locale.value === 'en-US' ? ' ' : '',
 )
 
 const line2Parts = computed(() => {
-	const line2 = String(t('main.index.line2', { age }))
-	const [before = '', after = ''] = line2.split('{doubtful}')
-
 	return {
-		before,
-		after,
+		before: String(t('main.index.line2BeforeDoubtful')),
+		after: String(t('main.index.line2AfterDoubtful', { age })),
 	}
 })
 

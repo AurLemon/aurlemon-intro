@@ -26,8 +26,12 @@
 	},
 	"main": {
 		"index": {
-			"line1": "皆は大体私を/レモン🍋って呼びます。",
-			"line2": "フルスタック開発者{doubtful}、福州市出身、{age}歳、INF/TJ。",
+			"line1BeforeEmoji": "皆は大体私を/レモン",
+			"line1AfterEmoji": "",
+			"line1Tail": "って呼びます。",
+			"lemonEmoji": "🍋",
+			"line2BeforeDoubtful": "フルスタック開発者",
+			"line2AfterDoubtful": "、福州市出身、{age}歳、INF/TJ。",
 			"doubtful": "かも",
 			"card": {
 				"education": {
