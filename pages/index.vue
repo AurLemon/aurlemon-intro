@@ -181,7 +181,7 @@
 				<template #title>{{ $t('main.index.card.online.title') }}</template>
 				<template #subtitle>
 					<span
-						class="inline-flex flex-wrap items-center"
+						class="inline-flex flex-nowrap items-center"
 						@mouseleave="hoveredOnlineLink = null"
 					>
 						<NuxtLink
