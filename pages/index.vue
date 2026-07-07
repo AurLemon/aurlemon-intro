@@ -47,15 +47,21 @@
 		<!-- 信息卡片 -->
 		<div class="mt-16 pb-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
 			<div class="relative">
-				<InfoCard :background-src="currentEducationBg">
+				<InfoCard
+					:background-src="currentEducationBg"
+					:content-key="selectedEducationStage"
+				>
 					<template #logo>
 						<SkeletonImage
 							v-if="!currentEducationLogoIsComponent"
 							:src="String(currentEducationLogo)"
 							:alt="currentEducationStage.title"
+							:show-skeleton="!hasEducationLogoSettled"
 							class="block h-full w-full"
 							image-class="block h-full w-full rounded-lg object-cover"
 							skeleton-class="rounded-lg"
+							loading="eager"
+							@ready="handleEducationLogoReady"
 						/>
 						<component v-else :is="currentEducationLogo" class="block" />
 					</template>
@@ -291,6 +297,7 @@ const selectedEducationStage = useState<EducationStage>(
 	'home-selected-education-stage',
 	() => 'bachelor',
 )
+const hasEducationLogoSettled = ref(false)
 const hoveredOnlineLink = ref<number | null>(null)
 
 const educationLogos: Record<EducationStage, any> = {
@@ -324,6 +331,10 @@ const currentEducationLogoIsComponent = computed(
 const currentEducationBg = educationBg
 
 const isLogoComponent = (logo: any) => typeof logo !== 'string'
+
+const handleEducationLogoReady = (): void => {
+	hasEducationLogoSettled.value = true
+}
 
 const ONLINE_LINK_BASE_CLASS = 'text-slate-700 dark:text-slate-400'
 const ONLINE_LINK_DIM_CLASS = 'text-slate-700/60 dark:text-slate-400/60'
