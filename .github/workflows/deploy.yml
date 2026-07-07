@@ -211,19 +211,6 @@ jobs:
             hash -r
           fi
 
-          if ! command -v pnpm >/dev/null 2>&1; then
-            if command -v corepack >/dev/null 2>&1; then
-              corepack enable
-              corepack prepare pnpm@10.14.0 --activate
-            elif command -v npm >/dev/null 2>&1; then
-              npm install -g pnpm@10.14.0
-            else
-              echo "DEPLOY_RUNTIME_MISSING_PNPM: neither corepack nor npm is available on remote host" >&2
-              exit 1
-            fi
-            hash -r
-          fi
-
           coscmd config -a "$AWS_ACCESS_KEY_ID" -s "$AWS_SECRET_ACCESS_KEY" -b "$ARTIFACT_BUCKET" -e "$ARTIFACT_DOWNLOAD_ENDPOINT" -m 20 --retry 10 --timeout 120
           rm -f "$REMOTE_TEMP_DIR/deploy-artifact.tar.gz"
           coscmd download -f "aurlemon-intro/deploy-artifact-${{ github.run_id }}.tar.gz" "$REMOTE_TEMP_DIR/deploy-artifact.tar.gz"
@@ -248,13 +235,18 @@ jobs:
             set +a
           fi
 
-          if [ "$BASELINE_EXISTING_DB" = "true" ]; then
-            pnpm prisma migrate resolve --applied 20250202232641_init
-            pnpm prisma migrate resolve --applied 20260405000000_social_features
-            pnpm prisma migrate resolve --applied 20260406132000_message_comment_pin
+          if [ ! -x "./node_modules/.bin/prisma" ]; then
+            echo "DEPLOY_RUNTIME_MISSING_PRISMA: deploy artifact does not contain Prisma CLI" >&2
+            exit 1
           fi
 
-          pnpm db:migrate:deploy
+          if [ "$BASELINE_EXISTING_DB" = "true" ]; then
+            ./node_modules/.bin/prisma migrate resolve --applied 20250202232641_init
+            ./node_modules/.bin/prisma migrate resolve --applied 20260405000000_social_features
+            ./node_modules/.bin/prisma migrate resolve --applied 20260406132000_message_comment_pin
+          fi
+
+          ./node_modules/.bin/prisma migrate deploy
 
           if pm2 describe "$PM2_APP_NAME" >/dev/null 2>&1; then
             pm2 restart "$PM2_APP_NAME" --update-env
