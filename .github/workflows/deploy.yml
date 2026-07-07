@@ -16,6 +16,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    environment: production
     env:
       SSH_HOST: ${{ secrets.BACKEND_DEPLOY_HOST }}
       SSH_PORT: ${{ secrets.BACKEND_DEPLOY_SSH_PORT || '233' }}
@@ -150,10 +151,10 @@ jobs:
           set -euo pipefail
           echo "Configuring COS client..."
           coscmd config -a "$AWS_ACCESS_KEY_ID" -s "$AWS_SECRET_ACCESS_KEY" -b "$ARTIFACT_BUCKET" -e "$ARTIFACT_UPLOAD_ENDPOINT" -m 20 --retry 10 --timeout 120
-          echo "Cleaning artifact prefix app/ ..."
-          coscmd delete -r --yes app/ || true
-          echo "Uploading deploy artifact to app/deploy-artifact-${{ github.run_id }}.tar.gz ..."
-          coscmd upload --yes deploy-artifact.tar.gz "app/deploy-artifact-${{ github.run_id }}.tar.gz"
+          echo "Cleaning artifact prefix aurlemon-intro/ ..."
+          coscmd delete -r --yes aurlemon-intro/ || true
+          echo "Uploading deploy artifact to aurlemon-intro/deploy-artifact-${{ github.run_id }}.tar.gz ..."
+          coscmd upload --yes deploy-artifact.tar.gz "aurlemon-intro/deploy-artifact-${{ github.run_id }}.tar.gz"
           echo "Upload finished."
 
       # --------------------
@@ -173,12 +174,57 @@ jobs:
             DEPLOY_RUNTIME_ENV='$DEPLOY_RUNTIME_ENV' \
             BASELINE_EXISTING_DB='${{ github.event.inputs.baseline_existing_db || 'false' }}'; bash -s" <<'EOF'
           set -euo pipefail
+          export PATH="$HOME/.local/bin:$PATH"
+          export DEPLOY_TOOL_ROOT="$HOME/.local/share/aurlemon-intro-deploy"
+          export COSCMD_VENV="$DEPLOY_TOOL_ROOT/coscmd-venv"
 
           mkdir -p "$REMOTE_DEPLOY_PATH"
+          mkdir -p "$REMOTE_TEMP_DIR"
+          mkdir -p "$DEPLOY_TOOL_ROOT"
+
+          if ! command -v node >/dev/null 2>&1; then
+            echo "DEPLOY_RUNTIME_MISSING_NODE: node is required on remote host" >&2
+            exit 1
+          fi
+
+          if ! command -v python3 >/dev/null 2>&1; then
+            echo "DEPLOY_RUNTIME_MISSING_PYTHON3: python3 is required on remote host" >&2
+            exit 1
+          fi
+
+          if ! command -v pip3 >/dev/null 2>&1; then
+            python3 -m ensurepip --upgrade >/dev/null 2>&1 || true
+          fi
+
+          if ! command -v coscmd >/dev/null 2>&1; then
+            if [ ! -x "$COSCMD_VENV/bin/coscmd" ]; then
+              if ! python3 -m venv --help >/dev/null 2>&1; then
+                echo "DEPLOY_RUNTIME_MISSING_VENV: python3-venv is required to bootstrap coscmd" >&2
+                exit 1
+              fi
+              python3 -m venv "$COSCMD_VENV"
+              "$COSCMD_VENV/bin/pip" install -U pip coscmd
+            fi
+            export PATH="$COSCMD_VENV/bin:$PATH"
+            hash -r
+          fi
+
+          if ! command -v pnpm >/dev/null 2>&1; then
+            if command -v corepack >/dev/null 2>&1; then
+              corepack enable
+              corepack prepare pnpm@10.14.0 --activate
+            elif command -v npm >/dev/null 2>&1; then
+              npm install -g pnpm@10.14.0
+            else
+              echo "DEPLOY_RUNTIME_MISSING_PNPM: neither corepack nor npm is available on remote host" >&2
+              exit 1
+            fi
+            hash -r
+          fi
 
           coscmd config -a "$AWS_ACCESS_KEY_ID" -s "$AWS_SECRET_ACCESS_KEY" -b "$ARTIFACT_BUCKET" -e "$ARTIFACT_DOWNLOAD_ENDPOINT" -m 20 --retry 10 --timeout 120
           rm -f "$REMOTE_TEMP_DIR/deploy-artifact.tar.gz"
-          coscmd download -f "app/deploy-artifact-${{ github.run_id }}.tar.gz" "$REMOTE_TEMP_DIR/deploy-artifact.tar.gz"
+          coscmd download -f "aurlemon-intro/deploy-artifact-${{ github.run_id }}.tar.gz" "$REMOTE_TEMP_DIR/deploy-artifact.tar.gz"
 
           rm -rf "$REMOTE_TEMP_DIR/extracted"
           mkdir -p "$REMOTE_TEMP_DIR/extracted"
@@ -213,6 +259,8 @@ jobs:
           else
             pm2 start "$REMOTE_DEPLOY_PATH/.output/server/index.mjs" --name "$PM2_APP_NAME" --cwd "$REMOTE_DEPLOY_PATH"
           fi
+
+          pm2 save
 
           rm -rf "$REMOTE_TEMP_DIR"
           EOF
