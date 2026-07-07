@@ -18,8 +18,8 @@ jobs:
     env:
       DATABASE_URL: 'file:./prisma/ci.db'
       GITHUB_TOKEN: 'github_pat'
-      BAIDU_STAT_KEY: ''
-      MS_CLARITY_ID: ''
+      NUXT_PUBLIC_BAIDU_STAT_KEY: ''
+      NUXT_PUBLIC_MS_CLARITY_ID: ''
     steps:
       - uses: actions/checkout@v4
 
