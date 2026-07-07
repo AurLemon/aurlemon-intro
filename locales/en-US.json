@@ -26,8 +26,12 @@
 	},
 	"main": {
 		"index": {
-			"line1": "Friends usually/call me Lemon🍋.",
-			"line2": "Full-stack developer {doubtful}, from Fuzhou, {age} y.o., INF/TJ.",
+			"line1BeforeEmoji": "Friends usually/call me Lemon",
+			"line1AfterEmoji": "",
+			"line1Tail": ".",
+			"lemonEmoji": "🍋",
+			"line2BeforeDoubtful": "Full-stack developer ",
+			"line2AfterDoubtful": ", from Fuzhou, {age} y.o., INF/TJ.",
 			"doubtful": "debatable",
 			"card": {
 				"education": {
