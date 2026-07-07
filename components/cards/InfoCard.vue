@@ -19,28 +19,58 @@
 				:class="darkInvert ? 'dark:filter-[invert(1)]' : ''"
 			/>
 		</div>
-		<div
-			class="foreground relative z-1 flex gap-2 lg:gap-4 justify-between lg:justify-center items-center w-full h-full p-3"
-		>
-			<div class="w-20 h-20 select-none shrink-0">
-				<slot name="logo" />
-			</div>
-			<div class="text-center flex-1 lg:flex-none min-w-0">
+		<div class="foreground relative z-1 w-full h-full">
+			<Transition v-if="contentKey" name="info-card-content" mode="out-in">
 				<div
-					class="text-3xl font-medium text-slate-800 dark:text-slate-300 truncate overflow-hidden line-clamp-1"
+					:key="contentKey"
+					class="absolute inset-0 flex items-center justify-between gap-2 p-3 lg:justify-center lg:gap-4"
 				>
-					<slot name="title" />
+					<div class="h-20 w-20 shrink-0 select-none">
+						<slot name="logo" />
+					</div>
+					<div class="min-w-0 flex-1 text-center lg:flex-none">
+						<div
+							class="line-clamp-1 overflow-hidden truncate text-3xl font-medium text-slate-800 dark:text-slate-300"
+						>
+							<slot name="title" />
+						</div>
+						<div
+							class="line-clamp-1 overflow-hidden truncate text-base text-slate-700 dark:text-slate-400"
+						>
+							<slot name="subtitle" />
+						</div>
+					</div>
+					<div
+						class="absolute right-0 bottom-1 left-0 text-center text-xs text-slate-500"
+					>
+						<slot name="type" />
+					</div>
 				</div>
-				<div
-					class="text-base text-slate-700 dark:text-slate-400 truncate overflow-hidden line-clamp-1"
-				>
-					<slot name="subtitle" />
-				</div>
-			</div>
+			</Transition>
 			<div
-				class="absolute left-0 right-0 bottom-1 text-xs text-center text-slate-500"
+				v-else
+				class="flex h-full w-full items-center justify-between gap-2 p-3 lg:justify-center lg:gap-4"
 			>
-				<slot name="type" />
+				<div class="h-20 w-20 shrink-0 select-none">
+					<slot name="logo" />
+				</div>
+				<div class="min-w-0 flex-1 text-center lg:flex-none">
+					<div
+						class="line-clamp-1 overflow-hidden truncate text-3xl font-medium text-slate-800 dark:text-slate-300"
+					>
+						<slot name="title" />
+					</div>
+					<div
+						class="line-clamp-1 overflow-hidden truncate text-base text-slate-700 dark:text-slate-400"
+					>
+						<slot name="subtitle" />
+					</div>
+				</div>
+				<div
+					class="absolute right-0 bottom-1 left-0 text-center text-xs text-slate-500"
+				>
+					<slot name="type" />
+				</div>
 			</div>
 		</div>
 	</div>
@@ -54,10 +84,12 @@ const props = withDefaults(
 		backgroundSrc: string
 		backgroundBlur?: number | string
 		darkInvert?: boolean
+		contentKey?: string | number | null
 	}>(),
 	{
 		backgroundBlur: 3,
 		darkInvert: false,
+		contentKey: null,
 	},
 )
 
@@ -72,3 +104,27 @@ const backgroundStyle = computed(() => {
 	}
 })
 </script>
+
+<style scoped>
+.info-card-content-enter-active,
+.info-card-content-leave-active {
+	transition:
+		opacity 220ms ease,
+		transform 220ms ease,
+		filter 220ms ease;
+}
+
+.info-card-content-enter-from,
+.info-card-content-leave-to {
+	opacity: 0;
+	filter: blur(4px);
+}
+
+.info-card-content-enter-from {
+	transform: translateY(8px);
+}
+
+.info-card-content-leave-to {
+	transform: translateY(-8px);
+}
+</style>
