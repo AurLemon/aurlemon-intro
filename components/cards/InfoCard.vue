@@ -23,7 +23,7 @@
 			<Transition v-if="contentKey" name="info-card-content" mode="out-in">
 				<div
 					:key="contentKey"
-					class="absolute inset-0 flex items-center justify-between gap-2 p-3 lg:justify-center lg:gap-4"
+					class="absolute inset-0 flex items-center justify-between gap-3 px-4.5 py-3 lg:justify-center lg:gap-4"
 				>
 					<div class="h-20 w-20 shrink-0 select-none">
 						<slot name="logo" />
@@ -40,16 +40,11 @@
 							<slot name="subtitle" />
 						</div>
 					</div>
-					<div
-						class="absolute right-0 bottom-1 left-0 text-center text-xs text-slate-500"
-					>
-						<slot name="type" />
-					</div>
 				</div>
 			</Transition>
 			<div
 				v-else
-				class="flex h-full w-full items-center justify-between gap-2 p-3 lg:justify-center lg:gap-4"
+				class="flex h-full w-full items-center justify-between gap-3 px-4.5 py-3 lg:justify-center lg:gap-4"
 			>
 				<div class="h-20 w-20 shrink-0 select-none">
 					<slot name="logo" />
@@ -66,11 +61,11 @@
 						<slot name="subtitle" />
 					</div>
 				</div>
-				<div
-					class="absolute right-0 bottom-1 left-0 text-center text-xs text-slate-500"
-				>
-					<slot name="type" />
-				</div>
+			</div>
+			<div
+				class="absolute right-0 bottom-1 left-0 text-center text-xs text-slate-500"
+			>
+				<slot name="type" />
 			</div>
 		</div>
 	</div>
