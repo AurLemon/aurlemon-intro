@@ -136,7 +136,7 @@
 import type { BangumiSectionResponse } from '~/shared/types/bangumi'
 import { useI18n } from 'vue-i18n'
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 
 const { data, pending, error, refresh } = useLazyAsyncData(
 	'bangumi-books',

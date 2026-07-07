@@ -31,16 +31,11 @@
 				<br class="sm:hidden" />
 				<span>{{ line1Parts[1] }}</span>
 				<br />
-				<i18n-t
-					keypath="main.index.line2"
-					tag="span"
-					class="block mt-3 lg:mt-0 break-all"
-				>
-					<template #age>{{ age }}</template>
-					<template #doubtful>
-						<span class="text-xl italic">{{ $t('main.index.doubtful') }}</span>
-					</template>
-				</i18n-t>
+				<span class="block mt-3 lg:mt-0 break-all">
+					{{ line2Parts.before }}
+					<span class="text-xl italic">{{ $t('main.index.doubtful') }}</span>
+					{{ line2Parts.after }}
+				</span>
 			</div>
 		</div>
 
@@ -271,7 +266,7 @@ import languageAbilityCover from '~/assets/resources/homepage/language_ability_c
 
 type EducationStage = 'bachelor' | 'specialty' | 'highSchool' | 'juniorSchool'
 
-const { t, te, locale } = useI18n()
+const { t, te, locale } = useI18n({ useScope: 'global' })
 
 const age = dayjs().diff('2006-05-18', 'year')
 
@@ -286,6 +281,16 @@ const line1Parts = computed(() => {
 const line1DesktopSeparator = computed(() =>
 	locale.value === 'en-US' ? ' ' : '',
 )
+
+const line2Parts = computed(() => {
+	const line2 = String(t('main.index.line2', { age }))
+	const [before = '', after = ''] = line2.split('{doubtful}')
+
+	return {
+		before,
+		after,
+	}
+})
 
 const educationStages: EducationStage[] = [
 	'bachelor',

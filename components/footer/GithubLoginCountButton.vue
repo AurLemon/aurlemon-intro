@@ -36,7 +36,7 @@ const emit = defineEmits<{
 	(event: 'open-list'): void
 }>()
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 
 const buttonLabel = computed(() =>
 	t('social.githubLogin.count', { count: props.count }),

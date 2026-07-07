@@ -312,7 +312,7 @@ const props = defineProps<{
 	depth: number
 }>()
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 
 const REPLY_PAGE_SIZE = 3
 const REPLY_PREVIEW_COUNT = 1

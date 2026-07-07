@@ -20,7 +20,7 @@ const props = defineProps<{
 	showLoginButton?: boolean
 }>()
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 const { login } = useGithubAuth()
 
 const title = computed(() => props.title)

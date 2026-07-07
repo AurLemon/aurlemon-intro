@@ -79,7 +79,7 @@ const props = withDefaults(defineProps<ContentImageGridProps>(), {
 	widthMode: 'fixed',
 })
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 const attrs = useAttrs()
 const activeImageIndex = ref<number | null>(null)
 const imageAspectRatioMap = ref<Record<string, number>>({})

@@ -37,7 +37,7 @@ const props = withDefaults(
 	},
 )
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 const { data: doc } = await useLocalizedContentDoc(
 	() => props.page,
 	() => props.fallbackLocale,

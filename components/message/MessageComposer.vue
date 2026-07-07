@@ -59,7 +59,7 @@ const emit = defineEmits<{
 	cancel: []
 }>()
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 const draft = ref('')
 const isMobile = ref(false)
 

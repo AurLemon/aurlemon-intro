@@ -132,7 +132,7 @@ const props = withDefaults(defineProps<ContentImageCarouselProps>(), {
 	caption: '',
 })
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 const resolvedDefaultHeight = computed(
 	() => props.height || props.defaultHeight,
 )

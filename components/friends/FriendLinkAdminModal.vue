@@ -226,7 +226,7 @@ const emit = defineEmits<{
 	updated: []
 }>()
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 const auth = useGithubAuth()
 const { showError } = useSocialFeedback()
 const { normalizeImage } = useFriendLinkImage()

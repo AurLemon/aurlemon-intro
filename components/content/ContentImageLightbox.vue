@@ -72,7 +72,7 @@ const emit = defineEmits<{
 	'update:open': [value: boolean]
 }>()
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 
 const PREVIEW_MAX_WIDTH_PX = 88 * 16
 const PREVIEW_DESKTOP_PADDING_PX = 48

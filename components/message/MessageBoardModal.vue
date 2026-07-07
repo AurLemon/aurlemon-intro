@@ -150,7 +150,7 @@ const emit = defineEmits<{
 	'refresh-message-count': []
 }>()
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 const auth = useGithubAuth()
 const { showError } = useSocialFeedback()
 

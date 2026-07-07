@@ -102,7 +102,7 @@ import type {
 	SiteLikeSummary,
 } from '~/shared/types/social'
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 const localePath = useLocalePath()
 const hoveredLink = ref<number | null>(null)
 const messageOpen = ref(false)
