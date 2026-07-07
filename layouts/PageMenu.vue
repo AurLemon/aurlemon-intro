@@ -11,7 +11,7 @@ type MenuItem = {
 
 const route = useRoute()
 const localePath = useLocalePath()
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 const menuViewport = ref<HTMLElement | null>(null)
 const menuInner = ref<HTMLElement | null>(null)
 const fallbackSlot = ref<HTMLElement | null>(null)

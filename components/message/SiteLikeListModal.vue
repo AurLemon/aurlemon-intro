@@ -122,7 +122,7 @@ const emit = defineEmits<{
 	'refresh-summary': []
 }>()
 
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 const { showError } = useSocialFeedback()
 
 const items = ref<SiteLikeListItem[]>([])

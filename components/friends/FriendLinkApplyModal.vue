@@ -137,7 +137,7 @@ const emit = defineEmits<{
 	'open-admin': []
 	submitted: []
 }>()
-const { t, locale } = useI18n()
+const { t, locale } = useI18n({ useScope: 'global' })
 const auth = useGithubAuth()
 const { showAuthRequired, showError } = useSocialFeedback()
 const { normalizeImage } = useFriendLinkImage()

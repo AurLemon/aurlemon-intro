@@ -160,7 +160,7 @@ const props = withDefaults(
 	},
 )
 
-const { locale, t } = useI18n()
+const { locale, t } = useI18n({ useScope: 'global' })
 const skeletonWeekCount = 53
 const calendarScrollRef = ref<HTMLElement | null>(null)
 

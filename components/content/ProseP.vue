@@ -11,7 +11,7 @@ const props = defineProps<{
 	class?: unknown
 }>()
 
-const { locale } = useI18n()
+const { locale } = useI18n({ useScope: 'global' })
 
 const proseBaseClass =
 	'my-3 w-full text-pretty text-justify [text-align-last:left]'

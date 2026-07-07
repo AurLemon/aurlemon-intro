@@ -33,7 +33,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
 	refreshSignal: 0,
 })
-const { t } = useI18n()
+const { t } = useI18n({ useScope: 'global' })
 const { showError } = useSocialFeedback()
 const { ensureFingerprint } = useSiteFingerprint()
 const emit = defineEmits<{

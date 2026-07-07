@@ -4,7 +4,7 @@ export const useLocalizedContentDoc = async (
 	page: MaybeRefOrGetter<string>,
 	fallbackLocale: MaybeRefOrGetter<string> = 'zh-cn',
 ) => {
-	const { locale } = useI18n()
+	const { locale } = useI18n({ useScope: 'global' })
 
 	const normalizedPage = computed(() => toValue(page).replace(/^\/+|\/+$/g, ''))
 	const normalizedFallbackLocale = computed(() =>

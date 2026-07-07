@@ -32,7 +32,7 @@ const props = defineProps<{
 	doc: ContentDoc
 }>()
 
-const { t, locale } = useI18n()
+const { t, locale } = useI18n({ useScope: 'global' })
 
 const contentStats = computed(() => getContentStats(props.doc.body))
 
