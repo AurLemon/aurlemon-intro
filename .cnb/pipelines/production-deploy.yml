@@ -1,0 +1,46 @@
+main:
+  web_trigger_deploy:
+    - &production_deploy
+      name: 构建并部署生产环境
+      docker:
+        image: node:24-bookworm
+      imports:
+        - https://cnb.cool/HydCraft/hydcraft-secrets/-/blob/main/aurlemon-intro-deploy.yml
+      stages:
+        - name: Build
+          script: |
+            set -eu
+            apt-get update
+            apt-get install -y --no-install-recommends openssh-client rsync
+            rm -rf /var/lib/apt/lists/*
+
+            export DATABASE_URL='file:./prisma/ci.db'
+            export GITHUB_TOKEN='github_pat'
+            export NUXT_PUBLIC_BAIDU_STAT_KEY=''
+            export NUXT_PUBLIC_MS_CLARITY_ID=''
+
+            corepack enable
+            corepack prepare pnpm@10.14.0 --activate
+            pnpm install --frozen-lockfile
+            pnpm db:generate
+            pnpm build
+
+            rm -rf deploy-artifact
+            mkdir -p deploy-artifact/data
+            cp package.json pnpm-lock.yaml deploy-artifact/
+            cp -R prisma .output deploy-artifact/
+            cp -R data/ip2region deploy-artifact/data/
+            pnpm install --prod --frozen-lockfile --dir deploy-artifact
+
+            test -f deploy-artifact/.output/server/index.mjs
+            test -f deploy-artifact/prisma/schema.prisma
+            test -f deploy-artifact/prisma/migrations/migration_lock.toml
+            test -f deploy-artifact/node_modules/.bin/prisma
+            test -f deploy-artifact/data/ip2region/ip2region_v4.xdb
+
+        - name: Deploy
+          script: bash ./.cnb/scripts/deploy-production.sh
+
+  api_trigger_deploy:
+    - <<: *production_deploy
+      name: API 构建并部署生产环境
