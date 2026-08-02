@@ -14,19 +14,20 @@ permissions:
 
 jobs:
   validate:
+    name: Lint & build
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: 'file:./prisma/ci.db'
-      GITHUB_TOKEN: 'github_pat'
+      DATABASE_URL: file:./prisma/ci.db
+      GITHUB_TOKEN: github_pat
       NUXT_PUBLIC_BAIDU_STAT_KEY: ''
       NUXT_PUBLIC_MS_CLARITY_ID: ''
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: '24'
 
       - name: Enable corepack
         run: corepack enable
@@ -38,10 +39,51 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Generate Prisma client
-        run: pnpm exec prisma generate
+        run: pnpm db:generate
 
       - name: Lint
         run: pnpm lint
 
       - name: Build
         run: pnpm build
+
+  sync:
+    name: Sync CNB
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: cnb-main-sync
+      cancel-in-progress: false
+    env:
+      CNB_REPOSITORY_SLUG: ${{ vars.CNB_REPOSITORY_SLUG }}
+      CNB_TOKEN: ${{ secrets.CNB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate CNB configuration
+        run: |
+          test -n "$CNB_REPOSITORY_SLUG" || {
+            echo 'CNB_REPOSITORY_SLUG GitHub Actions variable is required.' >&2
+            exit 1
+          }
+          test -n "$CNB_TOKEN" || {
+            echo 'CNB_TOKEN GitHub Actions secret is required.' >&2
+            exit 1
+          }
+
+      - name: Sync
+        run: |
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" \
+            -w "$GITHUB_WORKSPACE" \
+            -e "PLUGIN_TARGET_URL=https://cnb.cool/$CNB_REPOSITORY_SLUG.git" \
+            -e 'PLUGIN_AUTH_TYPE=https' \
+            -e 'PLUGIN_USERNAME=cnb' \
+            -e "PLUGIN_PASSWORD=$CNB_TOKEN" \
+            -e 'PLUGIN_BRANCH=main' \
+            -e 'PLUGIN_GIT_USER=cnb' \
+            -e 'PLUGIN_GIT_EMAIL=cnb@cnb.cool' \
+            -e 'PLUGIN_FORCE=true' \
+            tencentcom/git-sync

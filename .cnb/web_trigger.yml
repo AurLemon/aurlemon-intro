@@ -1,0 +1,18 @@
+branch:
+  - reg: ^main$
+    buttons:
+      - name: 部署生产环境
+        description: 在 CNB 构建 main 并部署到生产服务器
+        event: web_trigger_deploy
+        groupName: 生产部署
+        isDefault: true
+        permissions:
+          roles:
+            - owner
+            - master
+        inputs:
+          BASELINE_EXISTING_DB:
+            name: 现有数据库基线
+            description: 首次接管已有数据库时，标记历史迁移为已应用
+            type: switch
+            default: false
