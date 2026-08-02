@@ -98,8 +98,11 @@ fi
 
 "$PRISMA_CLI" migrate deploy
 
-pm2 delete "$PM2_APP_NAME" >/dev/null 2>&1 || true
-pm2 start "$REMOTE_DEPLOY_PATH/.output/server/index.mjs" --name "$PM2_APP_NAME" --cwd "$REMOTE_DEPLOY_PATH"
+if pm2 describe "$PM2_APP_NAME" >/dev/null 2>&1; then
+  pm2 restart "$PM2_APP_NAME" --update-env
+else
+  pm2 start "$REMOTE_DEPLOY_PATH/.output/server/index.mjs" --name "$PM2_APP_NAME" --cwd "$REMOTE_DEPLOY_PATH"
+fi
 pm2 save
 
 rm -rf "$REMOTE_TEMP_DIR"
