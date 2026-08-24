@@ -37,11 +37,13 @@ main:
             fi
             cp -R data/ip2region deploy-artifact/data/
             pnpm install --prod --frozen-lockfile --dir deploy-artifact
+            pnpm --dir deploy-artifact exec prisma generate --schema prisma/schema.prisma
 
             test -f deploy-artifact/.output/server/index.mjs
             test -f deploy-artifact/prisma/schema.prisma
             test -f deploy-artifact/prisma/migrations/migration_lock.toml
             test -f deploy-artifact/node_modules/.bin/prisma
+            (cd deploy-artifact && node -e "const client = require('@prisma/client'); if (typeof client.PrismaClient !== 'function') process.exit(1)")
             if [ "${RUN_USER_IDENTITY_MIGRATION:-false}" = 'true' ]; then
               test -f deploy-artifact/.scripts-dist/migrate-social-users.js
             fi
