@@ -82,11 +82,35 @@ if ! command -v node >/dev/null 2>&1; then
   exit 1
 fi
 
+load_dotenv() {
+  local env_file="$1"
+  local dotenv_dump
+
+  dotenv_dump="$(mktemp)"
+  chmod 600 "$dotenv_dump"
+  if ! ENV_FILE="$env_file" node --input-type=module -e '
+    import { readFileSync } from "node:fs"
+    import { parseEnv } from "node:util"
+
+    const values = parseEnv(readFileSync(process.env.ENV_FILE, "utf8"))
+    for (const [key, value] of Object.entries(values)) {
+      process.stdout.write(`${key}\0${value}\0`)
+    }
+  ' >"$dotenv_dump"; then
+    rm -f -- "$dotenv_dump"
+    echo "DEPLOY_DOTENV_INVALID: failed to parse $env_file" >&2
+    exit 1
+  fi
+
+  while IFS= read -r -d '' key && IFS= read -r -d '' value; do
+    export "$key=$value"
+  done <"$dotenv_dump"
+  rm -f -- "$dotenv_dump"
+}
+
 mkdir -p "$REMOTE_DEPLOY_PATH"
 if [ -f "$REMOTE_DEPLOY_PATH/.env" ]; then
-  set -a
-  source <(sed 's/\r$//' "$REMOTE_DEPLOY_PATH/.env")
-  set +a
+  load_dotenv "$REMOTE_DEPLOY_PATH/.env"
 fi
 
 if [ -z "${DATABASE_URL:-}" ] || [[ "$DATABASE_URL" != file:* ]]; then
