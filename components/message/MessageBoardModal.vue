@@ -64,6 +64,7 @@
 							:pinning-loading="pinning"
 							:deleting-loading="deleting"
 							:can-interact="isLoggedIn"
+							:focused-comment-id="focusedCommentId"
 							:depth="0"
 							@like="likeComment"
 							@reply="startReply"
@@ -114,7 +115,7 @@
 					@submit="submitRootComment"
 				>
 					<template #leading>
-						<SocialAuthStatusBar compact />
+						<AccountStatusBar compact />
 					</template>
 					<template #before-submit>
 						<UButton
@@ -137,7 +138,7 @@
 </template>
 
 <script setup lang="ts">
-import SocialAuthStatusBar from '~/components/common/SocialAuthStatusBar.vue'
+import AccountStatusBar from '~/components/common/AccountStatusBar.vue'
 import type {
 	MessageBoardResponse,
 	MessageCommentItem,
@@ -151,7 +152,9 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n({ useScope: 'global' })
-const auth = useGithubAuth()
+const auth = useAuth()
+const route = useRoute()
+const router = useRouter()
 const { showError } = useSocialFeedback()
 
 const items = ref<MessageCommentItem[]>([])
@@ -178,10 +181,12 @@ const isLoggedIn = computed(() => auth.isLoggedIn.value)
 const replyingToId = computed(() => replyTarget.value?.id ?? null)
 const editingId = computed(() => editingTarget.value?.id ?? null)
 const commentsScrollRef = ref<HTMLElement | null>(null)
+const focusedCommentId = ref<string | null>(null)
 const boardQuery = computed(() => ({
 	page: currentPage.value,
 	pageSize,
 	sort: sortOrder.value,
+	...(focusedCommentId.value ? { comment: focusedCommentId.value } : {}),
 }))
 
 const scrollCommentsToTop = async () => {
@@ -194,6 +199,20 @@ const scrollCommentsToTop = async () => {
 		top: 0,
 		behavior: 'smooth',
 	})
+}
+
+const revealFocusedComment = async () => {
+	if (!import.meta.client || !focusedCommentId.value) return
+	await nextTick()
+	document
+		.getElementById(`message-comment-${focusedCommentId.value}`)
+		?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+	const query = { ...route.query }
+	delete query.comment
+	await router.replace({ query })
+	window.setTimeout(() => {
+		focusedCommentId.value = null
+	}, 4000)
 }
 
 const setSortOrder = (next: MessageBoardSortOrder) => {
@@ -216,7 +235,11 @@ const refreshBoard = async () => {
 		pagination.value = response.pagination
 		currentPage.value = response.pagination.page
 		auth.user.value = response.currentUser
-		void scrollCommentsToTop()
+		if (focusedCommentId.value) {
+			void revealFocusedComment()
+		} else {
+			void scrollCommentsToTop()
+		}
 	} catch (error) {
 		showError(error)
 	}
@@ -428,6 +451,8 @@ watch(open, async (value) => {
 		return
 	}
 
+	focusedCommentId.value =
+		typeof route.query.comment === 'string' ? route.query.comment : null
 	await refreshBoard()
 	emit('refresh-message-count')
 })

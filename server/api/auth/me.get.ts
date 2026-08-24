@@ -1,7 +1,7 @@
-import { getGithubSession } from '~/server/utils/social-auth'
+import { getUserSession } from '~/server/utils/user-auth'
 
 export default defineEventHandler(async (event) => {
-	const user = await getGithubSession(event)
+	const user = await getUserSession(event)
 
 	return {
 		user,

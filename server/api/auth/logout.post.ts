@@ -1,7 +1,7 @@
-import { clearGithubSession } from '~/server/utils/social-auth'
+import { clearUserSession } from '~/server/utils/user-auth'
 
 export default defineEventHandler(async (event) => {
-	await clearGithubSession(event)
+	await clearUserSession(event)
 
 	return {
 		ok: true,

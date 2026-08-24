@@ -1,0 +1,34 @@
+<template>
+	<div
+		class="transition-all duration-300 ease-out"
+		:class="
+			ready
+				? 'opacity-100 translate-y-0 scale-100'
+				: 'opacity-0 translate-y-1 scale-95 pointer-events-none'
+		"
+	>
+		<UTooltip :text="t('social.tooltip.loginUserCount')" :delay-duration="50">
+			<UButton
+				color="neutral"
+				variant="link"
+				class="rounded-full"
+				:aria-label="t('social.actions.openLoginUserList')"
+				@click="emit('open-list')"
+			>
+				<UIcon name="i-lucide-users" class="h-5 w-5" />
+				<span class="block text-base">{{
+					t('social.loginUsers.count', { count })
+				}}</span>
+			</UButton>
+		</UTooltip>
+	</div>
+</template>
+
+<script setup lang="ts">
+withDefaults(defineProps<{ count?: number; ready?: boolean }>(), {
+	count: 0,
+	ready: false,
+})
+const emit = defineEmits<{ 'open-list': [] }>()
+const { t } = useI18n({ useScope: 'global' })
+</script>

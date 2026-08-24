@@ -47,14 +47,9 @@
 			</NuxtLink>
 		</div>
 
-		<div class="flex flex-wrap items-center justify-center gap-1 px-6 mt-auto">
-			<SocialAuthStatusBar compact />
-			<UButton
-				color="primary"
-				size="xs"
-				variant="link"
-				@click="applyOpen = true"
-			>
+		<div class="flex flex-wrap items-center justify-center gap-3 px-6 mt-auto">
+			<AccountStatusBar compact />
+			<UButton color="primary" size="xs" @click="applyOpen = true">
 				<span class="leading-[normal]">
 					{{ $t('social.actions.applyFriendLink') }}
 				</span>
@@ -72,7 +67,7 @@
 
 <script setup lang="ts">
 import ContentHeader from '~/components/content/ContentHeader.vue'
-import SocialAuthStatusBar from '~/components/common/SocialAuthStatusBar.vue'
+import AccountStatusBar from '~/components/common/AccountStatusBar.vue'
 import FriendLinkAdminModal from '~/components/friends/FriendLinkAdminModal.vue'
 import FriendLinkApplyModal from '~/components/friends/FriendLinkApplyModal.vue'
 import linksCoverLight from '~/assets/resources/pages/links_cover_light.webp'
@@ -81,11 +76,15 @@ import type { FriendLinksResponse } from '~/shared/types/social'
 
 const applyOpen = ref(false)
 const adminOpen = ref(false)
+const route = useRoute()
 const colorMode = useColorMode()
 const isMounted = ref(false)
 
 onMounted(() => {
 	isMounted.value = true
+	if (route.query.social === 'friend-links') {
+		adminOpen.value = true
+	}
 })
 
 const linksCover = computed(() =>

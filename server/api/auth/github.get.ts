@@ -1,5 +1,6 @@
-import { createGithubOAuthUrl } from '~/server/utils/social-auth'
+import { OAuthProvider } from '@prisma/client'
+import { startOAuth } from '~/server/utils/user-auth'
 
-export default defineEventHandler((event) => {
-	return sendRedirect(event, createGithubOAuthUrl(event))
+export default defineEventHandler(async (event) => {
+	return sendRedirect(event, await startOAuth(event, OAuthProvider.GITHUB))
 })

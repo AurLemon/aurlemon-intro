@@ -47,7 +47,7 @@ const summary = ref<SiteLikeSummary | null>(null)
 const EMPTY_SITE_LIKE_SUMMARY: SiteLikeSummary = {
 	totalCount: 0,
 	hasLiked: false,
-	githubLoginUserCount: 0,
+	activeUserCount: 0,
 }
 
 const applySummary = (nextSummary: SiteLikeSummary | null) => {

@@ -1,5 +1,5 @@
 import { updateFriendLinkByAdmin } from '~/server/services/friend-link.service'
-import { requireAdminSession } from '~/server/utils/social-auth'
+import { requireAdminUser } from '~/server/utils/user-auth'
 import {
 	ensureNonEmptyString,
 	ensureOptionalImageBase64,
@@ -7,7 +7,7 @@ import {
 } from '~/server/utils/social-validators'
 
 export default defineEventHandler(async (event) => {
-	const currentUser = await requireAdminSession(event)
+	const currentUser = await requireAdminUser(event)
 	const friendLinkId = getRouterParam(event, 'id')
 	const body = await readBody(event)
 

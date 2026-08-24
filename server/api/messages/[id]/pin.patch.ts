@@ -3,10 +3,10 @@ import {
 	setMessageCommentPinned,
 } from '~/server/services/message-board.service'
 import { parseMessageBoardPagination } from '~/server/utils/message-board-pagination'
-import { requireAdminSession } from '~/server/utils/social-auth'
+import { requireAdminUser } from '~/server/utils/user-auth'
 
 export default defineEventHandler(async (event) => {
-	const currentUser = await requireAdminSession(event)
+	const currentUser = await requireAdminUser(event)
 	const paginationQuery = parseMessageBoardPagination(getQuery(event))
 	const commentId = getRouterParam(event, 'id')
 	const body = await readBody(event)
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
 		})
 	}
 
-	await setMessageCommentPinned(commentId, pinned)
+	await setMessageCommentPinned(commentId, pinned, currentUser)
 	const board = await listMessageBoard(currentUser, paginationQuery)
 
 	return {

@@ -18,7 +18,11 @@
 						: 'overflow-hidden transition-none'
 				"
 			>
-				<div ref="contentRef" class="space-y-4">
+				<div
+					ref="contentRef"
+					class="space-y-4"
+					:class="contentTransitioning ? 'site-like-content-transition' : ''"
+				>
 					<UAlert
 						v-if="!loading && !items.length"
 						color="neutral"
@@ -131,6 +135,7 @@ const currentPage = ref(1)
 const pageSize = 20
 const contentHeight = ref<number | null>(null)
 const animateHeight = ref(false)
+const contentTransitioning = ref(false)
 const pagination = ref<SiteLikeListResponse['pagination']>({
 	page: 1,
 	pageSize,
@@ -141,6 +146,8 @@ const pagination = ref<SiteLikeListResponse['pagination']>({
 })
 const listRef = ref<HTMLElement | null>(null)
 const contentRef = ref<HTMLElement | null>(null)
+let contentTransitionFrame = 0
+let contentTransitionTimer: ReturnType<typeof setTimeout> | null = null
 
 const contentWrapperStyle = computed(() => ({
 	height: contentHeight.value === null ? 'auto' : `${contentHeight.value}px`,
@@ -155,7 +162,24 @@ const updateContentHeight = () => {
 		return
 	}
 
-	contentHeight.value = element.offsetHeight
+	const nextHeight = element.offsetHeight
+	contentHeight.value = nextHeight
+	if (!animateHeight.value) return
+
+	triggerContentTransition()
+}
+
+const triggerContentTransition = (): void => {
+	cancelAnimationFrame(contentTransitionFrame)
+	if (contentTransitionTimer !== null) clearTimeout(contentTransitionTimer)
+	contentTransitioning.value = false
+	contentTransitionFrame = requestAnimationFrame(() => {
+		contentTransitioning.value = true
+		contentTransitionTimer = setTimeout(() => {
+			contentTransitioning.value = false
+			contentTransitionTimer = null
+		}, 300)
+	})
 }
 
 const loadItems = async () => {
@@ -173,9 +197,6 @@ const loadItems = async () => {
 		currentPage.value = response.pagination.page
 		await nextTick()
 		updateContentHeight()
-		if (animateHeight.value) {
-			await nextTick()
-		}
 		listRef.value?.scrollTo({
 			top: 0,
 			behavior: 'smooth',
@@ -222,4 +243,28 @@ watch(open, async (value) => {
 		})
 	}
 })
+
+onBeforeUnmount(() => {
+	cancelAnimationFrame(contentTransitionFrame)
+	if (contentTransitionTimer !== null) clearTimeout(contentTransitionTimer)
+})
 </script>
+
+<style scoped>
+.site-like-content-transition {
+	animation: site-like-content-enter 300ms ease-out;
+}
+
+@keyframes site-like-content-enter {
+	from {
+		opacity: 0;
+		transform: translateY(0.25rem);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.site-like-content-transition {
+		animation: none;
+	}
+}
+</style>

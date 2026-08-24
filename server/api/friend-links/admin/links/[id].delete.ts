@@ -1,8 +1,8 @@
 import { deleteFriendLinkByAdmin } from '~/server/services/friend-link.service'
-import { requireAdminSession } from '~/server/utils/social-auth'
+import { requireAdminUser } from '~/server/utils/user-auth'
 
 export default defineEventHandler(async (event) => {
-	const currentUser = await requireAdminSession(event)
+	const currentUser = await requireAdminUser(event)
 	const friendLinkId = getRouterParam(event, 'id')
 
 	if (!friendLinkId) {

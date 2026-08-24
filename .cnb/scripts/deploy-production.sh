@@ -31,10 +31,21 @@ case "${BASELINE_EXISTING_DB:-false}" in
     ;;
 esac
 
+case "${RUN_USER_IDENTITY_MIGRATION:-false}" in
+  true | false) ;;
+  *)
+    echo 'DEPLOY_CONFIGURATION_INVALID: RUN_USER_IDENTITY_MIGRATION must be true or false' >&2
+    exit 1
+    ;;
+esac
+
 test -f deploy-artifact/.output/server/index.mjs
 test -f deploy-artifact/prisma/schema.prisma
 test -f deploy-artifact/prisma/migrations/migration_lock.toml
 test -f deploy-artifact/node_modules/.bin/prisma
+if [ "${RUN_USER_IDENTITY_MIGRATION:-false}" = 'true' ]; then
+  test -f deploy-artifact/.scripts-dist/migrate-social-users.js
+fi
 test -f deploy-artifact/data/ip2region/ip2region_v4.xdb
 
 install -d -m 700 ~/.ssh
@@ -62,7 +73,8 @@ ssh deploy-host \
   "export REMOTE_DEPLOY_PATH='$REMOTE_DEPLOY_PATH' \
   REMOTE_TEMP_DIR='$REMOTE_TEMP_DIR' \
   PM2_APP_NAME='$BACKEND_PM2_APP_NAME' \
-  BASELINE_EXISTING_DB='${BASELINE_EXISTING_DB:-false}'; bash -s" <<'EOF'
+  BASELINE_EXISTING_DB='${BASELINE_EXISTING_DB:-false}' \
+  RUN_USER_IDENTITY_MIGRATION='${RUN_USER_IDENTITY_MIGRATION:-false}'; bash -s" <<'EOF'
 set -euo pipefail
 
 if ! command -v node >/dev/null 2>&1; then
@@ -70,25 +82,132 @@ if ! command -v node >/dev/null 2>&1; then
   exit 1
 fi
 
+mkdir -p "$REMOTE_DEPLOY_PATH"
+if [ -f "$REMOTE_DEPLOY_PATH/.env" ]; then
+  set -a
+  source <(sed 's/\r$//' "$REMOTE_DEPLOY_PATH/.env")
+  set +a
+fi
+
+if [ -z "${DATABASE_URL:-}" ] || [[ "$DATABASE_URL" != file:* ]]; then
+  echo 'DEPLOY_DATABASE_URL_INVALID: a file: SQLite DATABASE_URL is required' >&2
+  exit 1
+fi
+
+database_url_path="${DATABASE_URL#file:}"
+if [[ "$database_url_path" = /* ]]; then
+  database_path="$database_url_path"
+else
+  database_path="$(realpath -m "$REMOTE_DEPLOY_PATH/prisma/$database_url_path")"
+fi
+export DATABASE_URL="file:$database_path"
+
+if [ ! -f "$database_path" ]; then
+  echo "DEPLOY_DATABASE_MISSING: $database_path" >&2
+  exit 1
+fi
+
+STAGED_PRISMA_CLI="$REMOTE_TEMP_DIR/node_modules/.bin/prisma"
+MIGRATION_SCRIPT="$REMOTE_TEMP_DIR/.scripts-dist/migrate-social-users.js"
+if [ ! -x "$STAGED_PRISMA_CLI" ]; then
+  echo 'DEPLOY_ARTIFACT_MISSING_PRISMA: Prisma CLI is required in the deployment artifact' >&2
+  exit 1
+fi
+if [ "$RUN_USER_IDENTITY_MIGRATION" = 'true' ] && [ ! -f "$MIGRATION_SCRIPT" ]; then
+  echo 'DEPLOY_ARTIFACT_MISSING_USER_MIGRATION: the user identity migration script is required when enabled' >&2
+  exit 1
+fi
+
+manifest_path="$REMOTE_TEMP_DIR/social-users.social-user-manifest.json"
+needs_user_migration=false
+if [ "$RUN_USER_IDENTITY_MIGRATION" = 'true' ]; then
+  migration_status="$(cd "$REMOTE_TEMP_DIR" && node "$MIGRATION_SCRIPT" --status | tail -n 1)"
+  case "$migration_status" in
+    USER_IDENTITY_MIGRATION_STATUS=complete)
+      echo 'USER_IDENTITY_MIGRATION_SKIPPED: migration is already complete'
+      ;;
+    USER_IDENTITY_MIGRATION_STATUS=pending | USER_IDENTITY_MIGRATION_STATUS=incomplete)
+      needs_user_migration=true
+      ;;
+    *)
+      echo "DEPLOY_MIGRATION_STATUS_INVALID: $migration_status" >&2
+      exit 1
+      ;;
+  esac
+
+  if [ "$needs_user_migration" = 'true' ]; then
+    (cd "$REMOTE_TEMP_DIR" && node "$MIGRATION_SCRIPT" --check --manifest "$manifest_path")
+  fi
+else
+  echo 'USER_IDENTITY_MIGRATION_DISABLED: skipping the one-time user backfill'
+fi
+
+rollback_dir="${REMOTE_TEMP_DIR}-rollback"
+mkdir -p "$rollback_dir"
+had_previous_app=false
+if [ -f "$REMOTE_DEPLOY_PATH/.output/server/index.mjs" ]; then
+  had_previous_app=true
+  rsync -a --no-owner --no-group --delete \
+    --exclude='.env' \
+    --exclude='backups/' \
+    --exclude='*.db' \
+    --exclude='*.db-journal' \
+    "$REMOTE_DEPLOY_PATH/" \
+    "$rollback_dir/"
+fi
+
+backup_dir="$REMOTE_DEPLOY_PATH/backups"
+mkdir -p "$backup_dir"
+database_mode="$(stat -c '%a' "$database_path")"
+database_backup="$backup_dir/user-identity-$(date -u +%Y%m%dT%H%M%SZ).db"
+cp -p -- "$database_path" "$database_backup"
+chmod 400 "$database_backup"
+
+had_pm2_app=false
+if pm2 describe "$PM2_APP_NAME" >/dev/null 2>&1; then
+  had_pm2_app=true
+  pm2 stop "$PM2_APP_NAME"
+fi
+
+deployment_succeeded=false
+rollback_on_exit() {
+  exit_code=$?
+  trap - EXIT
+  if [ "$deployment_succeeded" != 'true' ]; then
+    echo 'DEPLOY_FAILED: restoring the database and previous application' >&2
+    pm2 stop "$PM2_APP_NAME" >/dev/null 2>&1 || true
+    cp -- "$database_backup" "$database_path"
+    chmod "$database_mode" "$database_path"
+    if [ "$had_previous_app" = 'true' ]; then
+      rsync -a --no-owner --no-group --delete \
+        --exclude='.env' \
+        --exclude='backups/' \
+        --exclude='*.db' \
+        --exclude='*.db-journal' \
+        "$rollback_dir/" \
+        "$REMOTE_DEPLOY_PATH/"
+      if [ "$had_pm2_app" = 'true' ]; then
+        pm2 restart "$PM2_APP_NAME" --update-env || true
+      else
+        pm2 start "$REMOTE_DEPLOY_PATH/.output/server/index.mjs" --name "$PM2_APP_NAME" --cwd "$REMOTE_DEPLOY_PATH" || true
+      fi
+      pm2 save || true
+    fi
+  fi
+  exit "$exit_code"
+}
+trap rollback_on_exit EXIT
+
 rsync -a --no-owner --no-group --delete \
   --exclude='.env' \
+  --exclude='backups/' \
   --exclude='*.db' \
   --exclude='*.db-journal' \
   "$REMOTE_TEMP_DIR/" \
   "$REMOTE_DEPLOY_PATH/"
 
 cd "$REMOTE_DEPLOY_PATH"
-if [ -f ./.env ]; then
-  set -a
-  source <(sed 's/\r$//' ./.env)
-  set +a
-fi
-
 PRISMA_CLI='./node_modules/.bin/prisma'
-if [ ! -x "$PRISMA_CLI" ]; then
-  echo 'DEPLOY_ARTIFACT_MISSING_PRISMA: Prisma CLI is required in the deployment artifact' >&2
-  exit 1
-fi
 
 if [ "$BASELINE_EXISTING_DB" = 'true' ]; then
   "$PRISMA_CLI" migrate resolve --applied 20250202232641_init
@@ -98,12 +217,42 @@ fi
 
 "$PRISMA_CLI" migrate deploy
 
-if pm2 describe "$PM2_APP_NAME" >/dev/null 2>&1; then
+if [ "$needs_user_migration" = 'true' ]; then
+  node ./.scripts-dist/migrate-social-users.js --apply --manifest "$manifest_path"
+  node ./.scripts-dist/migrate-social-users.js --verify --manifest "$manifest_path"
+fi
+
+if [ "$had_pm2_app" = 'true' ]; then
   pm2 restart "$PM2_APP_NAME" --update-env
 else
   pm2 start "$REMOTE_DEPLOY_PATH/.output/server/index.mjs" --name "$PM2_APP_NAME" --cwd "$REMOTE_DEPLOY_PATH"
 fi
 pm2 save
 
-rm -rf "$REMOTE_TEMP_DIR"
+healthcheck_url="${NUXT_SITE_URL%/}/api/health"
+healthcheck_ok=false
+for _ in $(seq 1 15); do
+  if HEALTHCHECK_URL="$healthcheck_url" node --input-type=module -e '
+    const base = process.env.HEALTHCHECK_URL
+    const health = await fetch(base)
+    if (!health.ok || (await health.json()).ok !== true) process.exit(1)
+    const origin = new URL(base).origin
+    for (const path of ["/api/auth/me", "/api/messages?page=1&pageSize=1"]) {
+      const response = await fetch(`${origin}${path}`)
+      if (!response.ok) process.exit(1)
+    }
+  ' >/dev/null 2>&1; then
+    healthcheck_ok=true
+    break
+  fi
+  sleep 2
+done
+if [ "$healthcheck_ok" != 'true' ]; then
+  echo "DEPLOY_HEALTHCHECK_FAILED: $healthcheck_url" >&2
+  exit 1
+fi
+
+deployment_succeeded=true
+rm -rf -- "$REMOTE_TEMP_DIR" "$rollback_dir"
+echo "DEPLOY_DATABASE_BACKUP: $database_backup"
 EOF

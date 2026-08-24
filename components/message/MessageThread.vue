@@ -1,10 +1,18 @@
 <template>
-	<div :class="containerClass">
+	<div
+		:id="`message-comment-${item.id}`"
+		:class="[
+			containerClass,
+			item.id === focusedCommentId
+				? 'ring-2 ring-primary-400 ring-offset-2 dark:ring-offset-slate-950'
+				: '',
+		]"
+	>
 		<div class="flex items-start gap-3">
 			<div class="relative h-10 w-10 flex-shrink-0">
 				<SkeletonImage
 					:src="item.avatarUrl"
-					:alt="item.githubLogin"
+					:alt="item.displayName"
 					class="block h-10 w-10"
 					image-class="block h-10 w-10 rounded-full object-cover"
 					skeleton-class="rounded-full"
@@ -15,7 +23,10 @@
 					<span
 						class="text-sm font-semibold text-slate-900 dark:text-slate-100"
 					>
-						{{ item.githubLogin }}
+						{{ item.displayName }}
+					</span>
+					<span class="text-xs text-slate-500 dark:text-slate-400">
+						@{{ item.username }}
 					</span>
 					<span class="text-xs font-mono text-slate-500 dark:text-slate-400">
 						#{{ item.floor }}
@@ -28,16 +39,30 @@
 						{{ t('social.message.pinned') }}
 					</span>
 					<UButton
+						v-if="githubIdentity"
 						size="xs"
 						color="neutral"
-						class="p-0 mr-2"
+						class="p-0"
 						variant="link"
-						:to="item.profileUrl"
+						:to="githubIdentity.profileUrl"
 						target="_blank"
 						aria-label="GitHub"
 						title="GitHub"
 					>
 						<UIcon name="i-lucide-github" class="h-4 w-4" />
+					</UButton>
+					<UButton
+						v-if="linuxDoIdentity"
+						size="xs"
+						color="neutral"
+						class="p-0"
+						variant="link"
+						:to="linuxDoIdentity.profileUrl"
+						target="_blank"
+						aria-label="Linux DO"
+						title="Linux DO"
+					>
+						<LinuxDoIcon class="h-4 w-4" />
 					</UButton>
 					<span class="text-xs text-slate-500 dark:text-slate-400">
 						{{ formatTime(item.createdAt) }}
@@ -45,12 +70,12 @@
 				</div>
 				<div v-if="editingId !== item.id" class="space-y-2">
 					<div
-						v-if="item.isNestedReply && item.replyToGithubLogin"
+						v-if="item.isNestedReply && item.replyToUsername"
 						class="text-xs text-slate-500 dark:text-slate-400"
 					>
 						{{
 							t('social.message.replyTo', {
-								login: item.replyToGithubLogin,
+								login: item.replyToUsername,
 								floor: item.replyToFloor,
 							})
 						}}
@@ -82,9 +107,9 @@
 						</UButton>
 					</div>
 				</div>
-				<div class="flex flex-wrap gap-2">
+				<div class="flex flex-wrap gap-0.5">
 					<UTooltip
-						v-if="item.likedByGithubLogins.length > 0"
+						v-if="item.likedByUsernames.length > 0"
 						:delay-duration="50"
 						:ui="{ content: 'z-[43120]' }"
 					>
@@ -105,13 +130,13 @@
 							<div class="max-w-56 text-xs leading-tight">
 								<div class="flex flex-wrap gap-x-1.5 gap-y-0.5">
 									<span
-										v-for="login in item.likedByGithubLogins.slice(0, 3)"
+										v-for="login in item.likedByUsernames.slice(0, 3)"
 										:key="login"
 									>
 										@{{ login }}
 									</span>
 									<span
-										v-if="item.likedByGithubLogins.length > 3"
+										v-if="item.likedByUsernames.length > 3"
 										class="text-slate-400"
 									>
 										...
@@ -180,7 +205,7 @@
 					<MessageComposer
 						:loading="replyLoading"
 						:disabled="!canInteract"
-						:replying-to="item.githubLogin"
+						:replying-to="item.username"
 						:replying-to-floor="item.floor"
 						@cancel="$emit('cancel-reply')"
 						@submit="$emit('submit-reply', item.id, $event)"
@@ -199,7 +224,7 @@
 							<MessageComposer
 								:loading="replyLoading"
 								:disabled="!canInteract"
-								:replying-to="item.githubLogin"
+								:replying-to="item.username"
 								:replying-to-floor="item.floor"
 								@cancel="$emit('cancel-reply')"
 								@submit="$emit('submit-reply', item.id, $event)"
@@ -217,6 +242,7 @@
 								:pinning-loading="pinningLoading"
 								:deleting-loading="deletingLoading"
 								:can-interact="canInteract"
+								:focused-comment-id="focusedCommentId"
 								:depth="nextDepth"
 								@like="$emit('like', $event)"
 								@reply="$emit('reply', $event)"
@@ -298,6 +324,7 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import LinuxDoIcon from '~/assets/icons/linux-do.svg'
 import type { MessageCommentItem } from '~/shared/types/social'
 
 const props = defineProps<{
@@ -309,10 +336,17 @@ const props = defineProps<{
 	pinningLoading: boolean
 	deletingLoading: boolean
 	canInteract: boolean
+	focusedCommentId: string | null
 	depth: number
 }>()
 
 const { t } = useI18n({ useScope: 'global' })
+const githubIdentity = computed(() =>
+	props.item.identities.find((identity) => identity.provider === 'GITHUB'),
+)
+const linuxDoIdentity = computed(() =>
+	props.item.identities.find((identity) => identity.provider === 'LINUX_DO'),
+)
 
 const REPLY_PAGE_SIZE = 3
 const REPLY_PREVIEW_COUNT = 1
@@ -354,6 +388,16 @@ const visibleReplies = computed(() => {
 const showReplyPager = computed(
 	() => props.depth === 0 && props.item.replies.length > REPLY_PREVIEW_COUNT,
 )
+
+const revealFocusedReply = () => {
+	if (!props.focusedCommentId || props.depth !== 0) return
+	const replyIndex = props.item.replies.findIndex(
+		(reply) => reply.id === props.focusedCommentId,
+	)
+	if (replyIndex < 0) return
+	replyExpanded.value = true
+	replyPage.value = Math.floor(replyIndex / REPLY_PAGE_SIZE) + 1
+}
 
 const updateReplyAreaHeight = async () => {
 	if (!import.meta.client || !replyAreaRef.value) {
@@ -486,6 +530,15 @@ watch(
 )
 
 let replyAreaObserver: ResizeObserver | null = null
+
+watch(
+	() => props.focusedCommentId,
+	() => {
+		revealFocusedReply()
+		void updateReplyAreaHeight()
+	},
+	{ immediate: true, flush: 'post' },
+)
 
 watch(
 	() => props.item.replies.length,

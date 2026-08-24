@@ -6,6 +6,7 @@ import type {
 	CommentUnlikedEvent,
 	CommentUpdatedEvent,
 	FriendLinkApplicationApprovedEvent,
+	FriendLinkApplicationRejectedEvent,
 	FriendLinkApplicationSubmittedEvent,
 	FriendLinkCreatedEvent,
 	FriendLinkDeletedEvent,
@@ -23,6 +24,7 @@ export const SOCIAL_EVENT_NAMES = {
 	COMMENT_DELETED: 'comment.deleted',
 	FRIEND_LINK_APPLICATION_SUBMITTED: 'friend-link.application.submitted',
 	FRIEND_LINK_APPLICATION_APPROVED: 'friend-link.application.approved',
+	FRIEND_LINK_APPLICATION_REJECTED: 'friend-link.application.rejected',
 	FRIEND_LINK_CREATED: 'friend-link.created',
 	FRIEND_LINK_UPDATED: 'friend-link.updated',
 	FRIEND_LINK_DELETED: 'friend-link.deleted',
@@ -38,6 +40,7 @@ interface SocialEventMap {
 	[SOCIAL_EVENT_NAMES.COMMENT_DELETED]: CommentDeletedEvent
 	[SOCIAL_EVENT_NAMES.FRIEND_LINK_APPLICATION_SUBMITTED]: FriendLinkApplicationSubmittedEvent
 	[SOCIAL_EVENT_NAMES.FRIEND_LINK_APPLICATION_APPROVED]: FriendLinkApplicationApprovedEvent
+	[SOCIAL_EVENT_NAMES.FRIEND_LINK_APPLICATION_REJECTED]: FriendLinkApplicationRejectedEvent
 	[SOCIAL_EVENT_NAMES.FRIEND_LINK_CREATED]: FriendLinkCreatedEvent
 	[SOCIAL_EVENT_NAMES.FRIEND_LINK_UPDATED]: FriendLinkUpdatedEvent
 	[SOCIAL_EVENT_NAMES.FRIEND_LINK_DELETED]: FriendLinkDeletedEvent

@@ -9,7 +9,7 @@
 			<div>
 				<ReadingProgress targetSelector="#page-container" />
 			</div>
-			<div class="flex items-center gap-2">
+			<div class="flex shrink-0 items-center gap-2">
 				<UPopover
 					:popper="{ placement: 'bottom-end' }"
 					:ui="{ content: 'z-[40000]' }"
@@ -194,10 +194,3 @@ const selectLocale = async (value: LocaleCode): Promise<void> => {
 	restoreScrollPosition(savedScrollY)
 }
 </script>
-
-<style scoped>
-.header-shell {
-	background-color: var(--color-primary);
-	border-color: color-mix(in srgb, var(--color-primary) 70%, transparent);
-}
-</style>

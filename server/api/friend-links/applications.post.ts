@@ -1,5 +1,5 @@
 import { submitFriendLinkApplication } from '~/server/services/friend-link.service'
-import { requireGithubSession } from '~/server/utils/social-auth'
+import { requireUserSession } from '~/server/utils/user-auth'
 import {
 	ensureNonEmptyString,
 	ensureOptionalImageBase64,
@@ -7,7 +7,7 @@ import {
 } from '~/server/utils/social-validators'
 
 export default defineEventHandler(async (event) => {
-	const currentUser = await requireGithubSession(event)
+	const currentUser = await requireUserSession(event)
 	const body = await readBody(event)
 
 	await submitFriendLinkApplication(currentUser, {

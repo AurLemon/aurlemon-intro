@@ -87,7 +87,7 @@
 				},
 				"language": {
 					"title": "Native CN",
-					"subtitle": "CET-4 (~510) + JLPT N4",
+					"subtitle": "CET-4 / CET-6 / N4",
 					"type": "Lang"
 				}
 			}
@@ -148,10 +148,18 @@
 		"actions": {
 			"close": "Close",
 			"loginWithGithub": "Sign in with GitHub",
+			"loginWithLinuxDo": "Sign in with Linux DO",
+			"loginWithProvider": "Sign in with GitHub or Linux DO",
+			"openLoginUserList": "Signed-in user list",
 			"logout": "Sign out",
+			"save": "Save",
+			"connect": "Connect",
+			"disconnect": "Disconnect",
+			"confirmMerge": "Confirm account merge",
+			"verifyEmail": "Send verification email",
+			"setPrimary": "Make primary",
 			"refreshStatus": "Refresh status",
 			"openMessageBoard": "Message Board",
-			"openGithubLoginUserList": "GitHub signed-in user list",
 			"sendComment": "Post",
 			"reply": "Reply",
 			"cancelReply": "Cancel reply",
@@ -177,11 +185,19 @@
 			"messageBoard": "Message Board",
 			"siteLike": "Like",
 			"siteLiked": "Liked",
-			"githubLoginUserCount": "GitHub signed-in users"
+			"loginUserCount": "Signed-in users"
 		},
 		"feedback": {
 			"authTitle": "Login required",
-			"errorTitle": "Action not completed"
+			"errorTitle": "Action not completed",
+			"loginSuccessTitle": "Signed in",
+			"loginSuccessDescription": "Signed in as {handle} with {provider}",
+			"connectSuccessTitle": "Provider connected",
+			"connectSuccessDescription": "Connected {provider}",
+			"profileSaveSuccessTitle": "Profile saved",
+			"mergeSuccessTitle": "Accounts merged",
+			"mergeSuccessDescription": "Your content, sign-in methods, emails, and sessions have been merged.",
+			"logoutSuccessTitle": "Signed out"
 		},
 		"auth": {
 			"loggedIn": "Signed in",
@@ -195,11 +211,40 @@
 			"emptyDesc": "Be the first to like this site.",
 			"likedAt": "Liked on: {date}"
 		},
-		"githubLogin": {
+		"loginUsers": {
 			"count": "{count}",
-			"listTitle": "GitHub Signed-in Users",
-			"emptyTitle": "No GitHub sign-ins yet",
-			"emptyDesc": "No one has signed in with GitHub yet."
+			"listTitle": "Signed-in Users",
+			"emptyTitle": "No signed-in users yet",
+			"emptyDesc": "No user has signed in yet."
+		},
+		"account": {
+			"title": "Account",
+			"open": "Open account settings",
+			"headerLogin": "Sign in",
+			"openUserMenu": "Open user menu",
+			"chooseLoginProvider": "Choose a sign-in method",
+			"settings": "Account settings",
+			"manage": "Manage account",
+			"loginDescription": "Choose a provider to sign in. Your first sign-in creates a site account, and you can connect the other provider later.",
+			"profileTab": "Profile",
+			"emailTab": "Email & notifications",
+			"loginMethods": "Sign-in methods",
+			"username": "Username",
+			"usernameChangeHint": "You can change your username once every 7 days. Changing only letter case does not count.",
+			"displayName": "Display name",
+			"avatarSource": "Avatar source",
+			"notificationLanguage": "Email language",
+			"notConnected": "Not connected",
+			"emailPlaceholder": "Your email address",
+			"emailNotificationUnavailable": "You do not have a verified primary email, so you cannot receive comment replies or friend-link approval notifications. Add one in Email & notifications.",
+			"verified": "Verified",
+			"unverified": "Unverified",
+			"primary": "Primary",
+			"replyNotifications": "Email me when someone replies to my comment",
+			"adminCommentNotifications": "Notify me about new comments",
+			"adminFriendLinkNotifications": "Notify me about new link requests",
+			"mergeTitle": "Another site account was found",
+			"mergeDescription": "This sign-in identity already belongs to another account. Confirming will merge content, identities, emails, and sessions, and record an audit entry."
 		},
 		"message": {
 			"title": "Message Board",
@@ -209,7 +254,7 @@
 			"placeholder": "I will be deleting any negative comments.",
 			"replyPlaceholder": "Reply to {login}",
 			"replyPlaceholderWithFloor": "Reply to {login} #{floor}",
-			"loginRequiredTitle": "GitHub login is required",
+			"loginRequiredTitle": "Sign-in required",
 			"loginRequiredDesc": "You need to sign in before posting, replying, or liking messages.",
 			"emptyTitle": "No messages yet",
 			"emptyDesc": "You can be the first one to leave a message.",
@@ -222,8 +267,8 @@
 		"friendLinks": {
 			"applyTitle": "Apply for Link Exchange",
 			"adminEntry": "Admin",
-			"applyReminder": "After submitting, please be sure to email me to remind me to approve at {mail}. This site has not integrated email notifications yet. If you don't remind me, I don't know whether someone submitted for approval. I am very friendly, so please rest assured. 🥹",
-			"loginRequiredTitle": "GitHub login is required",
+			"applyReminder": "Your application will notify the administrators. Once it is approved, they will email you back. Without a verified primary email, you will not receive the update, so it is best to add one.",
+			"loginRequiredTitle": "Sign-in required",
 			"loginRequiredDesc": "You need to sign in before submitting a link exchange request.",
 			"adminTitle": "Friend Link Admin",
 			"adminRequiredTitle": "Admin only",
@@ -250,7 +295,7 @@
 		},
 		"errors": {
 			"generic": "The request did not complete. Please try again later.",
-			"authRequired": "This action requires a GitHub login.",
+			"authRequired": "This action requires you to sign in.",
 			"adminRequired": "The current account is not an administrator.",
 			"sessionExpired": "Your session may have expired. Refresh or sign in again.",
 			"siteAlreadyLiked": "This browser has already liked the site.",
@@ -278,7 +323,33 @@
 			"invalidFriendLinkDesc": "The friend link description is invalid.",
 			"invalidImageBase64": "The image upload failed or the image format is invalid.",
 			"imageTooLarge": "Image is too large. Please upload a file under 3MB.",
-			"invalidFingerprint": "The browser fingerprint is invalid. Refresh and try again."
+			"invalidFingerprint": "The browser fingerprint is invalid. Refresh and try again.",
+			"invalidOauthState": "Sign-in state validation failed. Please start again.",
+			"linuxDoOauthNotConfigured": "Linux DO sign-in is not configured on this site.",
+			"linuxDoOauthTokenExchangeFailed": "The Linux DO authorization code is invalid or expired. Please sign in again.",
+			"linuxDoOauthUserPayloadInvalid": "Linux DO returned incomplete user profile data.",
+			"linuxDoOauthCallbackFailed": "The Linux DO sign-in callback failed.",
+			"oauthConnectSessionChanged": "Your session changed while connecting the provider. Please try again.",
+			"identityProviderAlreadyConnected": "This account already has a different identity from that provider.",
+			"invalidUsername": "The username must be 1–39 letters, numbers, underscores, or hyphens.",
+			"invalidUserDisplayName": "The display name must be between 1 and 64 characters.",
+			"usernameTaken": "That username is already in use.",
+			"usernameChangeCooldown": "You can change your username only once every 7 days.",
+			"invalidAvatarIdentity": "The avatar must come from one of your connected identities.",
+			"verifiedPrimaryEmailRequired": "Verify and choose a primary email before enabling notifications.",
+			"invalidEmail": "The email address is invalid.",
+			"emailAlreadyInUse": "That email already belongs to another account.",
+			"emailVerificationRateLimited": "Verification emails are being requested too often. Please try again later.",
+			"emailVerificationInvalid": "The email verification link is invalid or expired.",
+			"emailNotFound": "The email address was not found.",
+			"lastIdentityCannotDisconnect": "You cannot disconnect your last sign-in method.",
+			"identityNotFound": "That sign-in identity was not found.",
+			"mergeTicketInvalid": "The account merge confirmation has expired. Connect the provider again.",
+			"mergeAccountNotFound": "An account selected for merging no longer exists.",
+			"mergeProviderConflict": "Both accounts have different identities for the same provider, so they cannot be merged automatically.",
+			"invalidOauthProvider": "That sign-in provider is not supported.",
+			"siteUrlNotConfigured": "The public site URL is not configured, so this action is temporarily unavailable.",
+			"accountDisabled": "This account has been disabled."
 		}
 	}
 }

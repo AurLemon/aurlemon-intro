@@ -126,6 +126,17 @@ export default defineNuxtConfig({
 				'lucide:x',
 				'lucide:chevron-left',
 				'lucide:chevron-right',
+				'lucide:circle-alert',
+				'lucide:chevron-down',
+				'lucide:github',
+				'lucide:log-in',
+				'lucide:log-out',
+				'lucide:settings',
+				'lucide:pin',
+				'lucide:trash-2',
+				'lucide:triangle-alert',
+				'lucide:user-round',
+				'lucide:users',
 			],
 		},
 		serverBundle: {
@@ -161,6 +172,7 @@ export default defineNuxtConfig({
 	},
 	svgo: {
 		global: false,
+		autoImportPath: false,
 		defaultImport: 'component',
 	},
 	fontawesome: {
