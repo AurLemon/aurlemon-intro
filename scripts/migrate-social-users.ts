@@ -1,7 +1,10 @@
 import { createHash, randomUUID } from 'node:crypto'
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import { OAuthProvider, Prisma, PrismaClient, UserRole } from '@prisma/client'
+import prismaClientPackage from '@prisma/client'
+import type { Prisma as PrismaTypes } from '@prisma/client'
+
+const { OAuthProvider, Prisma, PrismaClient, UserRole } = prismaClientPackage
 
 interface LegacyCounts {
 	sessions: number
@@ -390,7 +393,7 @@ const readManifest = async (
 }
 
 const upsertLegacyUser = async (
-	tx: Prisma.TransactionClient,
+	tx: PrismaTypes.TransactionClient,
 	manifestUser: ManifestUser,
 ): Promise<void> => {
 	const existingIdentity = await tx.oAuthIdentity.findUnique({
