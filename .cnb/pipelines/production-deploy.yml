@@ -23,12 +23,18 @@ main:
             corepack prepare pnpm@10.14.0 --activate
             pnpm install --frozen-lockfile
             pnpm db:generate
+            if [ "${RUN_USER_IDENTITY_MIGRATION:-false}" = 'true' ]; then
+              pnpm db:users:build
+            fi
             pnpm build
 
             rm -rf deploy-artifact
             mkdir -p deploy-artifact/data
             cp package.json pnpm-lock.yaml deploy-artifact/
             cp -R prisma .output deploy-artifact/
+            if [ "${RUN_USER_IDENTITY_MIGRATION:-false}" = 'true' ]; then
+              cp -R .scripts-dist deploy-artifact/
+            fi
             cp -R data/ip2region deploy-artifact/data/
             pnpm install --prod --frozen-lockfile --dir deploy-artifact
 
@@ -36,6 +42,9 @@ main:
             test -f deploy-artifact/prisma/schema.prisma
             test -f deploy-artifact/prisma/migrations/migration_lock.toml
             test -f deploy-artifact/node_modules/.bin/prisma
+            if [ "${RUN_USER_IDENTITY_MIGRATION:-false}" = 'true' ]; then
+              test -f deploy-artifact/.scripts-dist/migrate-social-users.js
+            fi
             test -f deploy-artifact/data/ip2region/ip2region_v4.xdb
 
         - name: Deploy

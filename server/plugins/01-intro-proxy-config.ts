@@ -11,11 +11,15 @@ export default defineNitroPlugin(() => {
 
 	globalThis.__introProxyConfigLogged__ = true
 
-	const { introProxyConfigured, githubProxyEnabled, bangumiProxyEnabled } =
-		getIntroProxyLogMeta()
+	const {
+		introProxyConfigured,
+		githubProxyEnabled,
+		bangumiProxyEnabled,
+		linuxDoProxyEnabled,
+	} = getIntroProxyLogMeta()
 	const proxyState = introProxyConfigured ? 'configured' : 'missing-config'
 
 	console.info(
-		`[network] intro proxy=${proxyState} github=${githubProxyEnabled ? 'on' : 'off'} bangumi=${bangumiProxyEnabled ? 'on' : 'off'}`,
+		`[network] intro proxy=${proxyState} github=${githubProxyEnabled ? 'on' : 'off'} bangumi=${bangumiProxyEnabled ? 'on' : 'off'} linuxdo=${linuxDoProxyEnabled ? 'on' : 'off'}`,
 	)
 })

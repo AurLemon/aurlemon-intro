@@ -1,4 +1,3 @@
-import { materializeApprovedFriendLink } from '~/server/services/friend-link.service'
 import {
 	SOCIAL_EVENT_NAMES,
 	socialEventBus,
@@ -19,7 +18,16 @@ export default defineNitroPlugin(() => {
 		SOCIAL_EVENT_NAMES.FRIEND_LINK_APPLICATION_SUBMITTED,
 		(payload) => {
 			console.info(
-				`[friend-link] application submitted id=${payload.applicationId} applicant=${payload.applicantGithubLogin} name=${payload.name}`,
+				`[friend-link] application submitted id=${payload.applicationId} applicant=${payload.applicantUsername} name=${payload.name}`,
+			)
+		},
+	)
+
+	socialEventBus.on(
+		SOCIAL_EVENT_NAMES.FRIEND_LINK_APPLICATION_REJECTED,
+		(payload) => {
+			console.info(
+				`[friend-link] application rejected id=${payload.applicationId} by=${payload.rejectedByUsername}`,
 			)
 		},
 	)
@@ -29,16 +37,6 @@ export default defineNitroPlugin(() => {
 		(payload) => {
 			console.info(
 				`[friend-link] application expired id=${payload.applicationId} at=${payload.expiredAt}`,
-			)
-		},
-	)
-
-	socialEventBus.on(
-		SOCIAL_EVENT_NAMES.FRIEND_LINK_APPLICATION_APPROVED,
-		async (payload) => {
-			await materializeApprovedFriendLink(
-				payload.applicationId,
-				payload.approvedByGithubLogin,
 			)
 		},
 	)

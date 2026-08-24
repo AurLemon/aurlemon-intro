@@ -35,21 +35,217 @@ model GithubSession {
   @@index([expiresAt])
 }
 
+model User {
+  id                        String                      @id @default(uuid())
+  username                  String
+  usernameNormalized        String                      @unique
+  usernameUpdatedAt         DateTime?
+  displayName               String
+  role                      UserRole                    @default(USER)
+  status                    UserStatus                  @default(ACTIVE)
+  preferredLocale           String                      @default("zh-CN")
+  preferredAvatarIdentityId String?
+  isLegacyMigrated          Boolean                     @default(false)
+  mergedIntoUserId          String?
+  createdAt                 DateTime                    @default(now())
+  updatedAt                 DateTime                    @updatedAt
+  preferredAvatarIdentity   OAuthIdentity?              @relation("PreferredAvatarIdentity", fields: [preferredAvatarIdentityId], references: [id], onDelete: SetNull)
+  mergedInto                User?                       @relation("MergedUsers", fields: [mergedIntoUserId], references: [id], onDelete: SetNull)
+  mergedUsers               User[]                      @relation("MergedUsers")
+  identities                OAuthIdentity[]             @relation("UserOAuthIdentities")
+  sessions                  UserSession[]
+  emails                    UserEmail[]
+  notificationPreference    UserNotificationPreference?
+  oauthTransactions         OAuthTransaction[]
+  initiatedMergeTickets     AccountMergeTicket[]        @relation("MergeTicketCurrentUser")
+  targetedMergeTickets      AccountMergeTicket[]        @relation("MergeTicketTargetUser")
+  emailVerificationTokens   EmailVerificationToken[]
+  authoredComments          MessageComment[]            @relation("CommentAuthor")
+  commentLikes              MessageCommentLike[]        @relation("CommentLikeUser")
+  createdFriendLinks        FriendLink[]                @relation("FriendLinkCreator")
+  approvedFriendLinks       FriendLink[]                @relation("FriendLinkApprover")
+  friendLinkApplications    FriendLinkApplication[]     @relation("FriendLinkApplicant")
+  approvedApplications      FriendLinkApplication[]     @relation("FriendLinkApplicationApprover")
+  sourceMergeAudits         AccountMergeAudit[]         @relation("MergeSourceUser")
+  survivorMergeAudits       AccountMergeAudit[]         @relation("MergeSurvivorUser")
+
+  @@index([status, createdAt])
+  @@index([mergedIntoUserId])
+}
+
+model OAuthIdentity {
+  id                         String        @id @default(uuid())
+  userId                     String
+  provider                   OAuthProvider
+  providerUserId             String
+  providerUsername           String
+  providerUsernameNormalized String
+  providerDisplayName        String?
+  avatarUrl                  String
+  profileUrl                 String
+  createdAt                  DateTime      @default(now())
+  updatedAt                  DateTime      @updatedAt
+  user                       User          @relation("UserOAuthIdentities", fields: [userId], references: [id], onDelete: Cascade)
+  preferredByUsers           User[]        @relation("PreferredAvatarIdentity")
+
+  @@unique([provider, providerUserId])
+  @@unique([userId, provider])
+  @@index([provider, providerUsernameNormalized])
+}
+
+model UserSession {
+  id              String   @id @default(uuid())
+  userId          String
+  tokenHash       String   @unique
+  expiresAt       DateTime
+  lastSeenAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
+  legacySessionId String?  @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@index([expiresAt])
+}
+
+model UserEmail {
+  id                 String                   @id @default(uuid())
+  userId             String
+  email              String
+  emailNormalized    String                   @unique
+  source             EmailSource
+  isPrimary          Boolean                  @default(false)
+  verifiedAt         DateTime?
+  createdAt          DateTime                 @default(now())
+  updatedAt          DateTime                 @updatedAt
+  user               User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  verificationTokens EmailVerificationToken[]
+
+  @@index([userId, isPrimary])
+}
+
+model UserNotificationPreference {
+  userId                      String  @id
+  replyEmailEnabled           Boolean @default(false)
+  adminCommentEmailEnabled    Boolean @default(false)
+  adminFriendLinkEmailEnabled Boolean @default(false)
+  user                        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model OAuthTransaction {
+  id              String        @id @default(uuid())
+  stateHash       String        @unique
+  provider        OAuthProvider
+  intent          OAuthIntent
+  initiatorUserId String?
+  codeVerifier    String?
+  redirectPath    String        @default("/")
+  expiresAt       DateTime
+  consumedAt      DateTime?
+  createdAt       DateTime      @default(now())
+  initiatorUser   User?         @relation(fields: [initiatorUserId], references: [id], onDelete: SetNull)
+
+  @@index([expiresAt])
+}
+
+model AccountMergeTicket {
+  id             String        @id @default(uuid())
+  tokenHash      String        @unique
+  currentUserId  String
+  targetUserId   String
+  provider       OAuthProvider
+  providerUserId String
+  expiresAt      DateTime
+  consumedAt     DateTime?
+  createdAt      DateTime      @default(now())
+  currentUser    User          @relation("MergeTicketCurrentUser", fields: [currentUserId], references: [id], onDelete: Cascade)
+  targetUser     User          @relation("MergeTicketTargetUser", fields: [targetUserId], references: [id], onDelete: Cascade)
+
+  @@index([currentUserId, expiresAt])
+  @@index([targetUserId, expiresAt])
+}
+
+model EmailVerificationToken {
+  id          String    @id @default(uuid())
+  userId      String
+  userEmailId String
+  tokenHash   String    @unique
+  expiresAt   DateTime
+  consumedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userEmail   UserEmail @relation(fields: [userEmailId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+}
+
+model DomainEventOutbox {
+  id            String       @id @default(uuid())
+  eventType     String
+  aggregateId   String?
+  payloadJson   String
+  status        OutboxStatus @default(PENDING)
+  attempts      Int          @default(0)
+  nextAttemptAt DateTime     @default(now())
+  processedAt   DateTime?
+  lastError     String?
+  createdAt     DateTime     @default(now())
+
+  @@index([status, nextAttemptAt])
+  @@index([eventType, aggregateId])
+}
+
+model EmailOutbox {
+  id             String       @id @default(uuid())
+  recipientEmail String
+  templateKey    String
+  locale         String
+  variablesJson  String
+  dedupeKey      String       @unique
+  status         OutboxStatus @default(PENDING)
+  attempts       Int          @default(0)
+  nextAttemptAt  DateTime     @default(now())
+  sentAt         DateTime?
+  lastError      String?
+  createdAt      DateTime     @default(now())
+
+  @@index([status, nextAttemptAt])
+}
+
+model AccountMergeAudit {
+  id             String        @id @default(uuid())
+  sourceUserId   String
+  survivorUserId String
+  provider       OAuthProvider
+  providerUserId String
+  createdAt      DateTime      @default(now())
+  sourceUser     User          @relation("MergeSourceUser", fields: [sourceUserId], references: [id], onDelete: Restrict)
+  survivorUser   User          @relation("MergeSurvivorUser", fields: [survivorUserId], references: [id], onDelete: Restrict)
+
+  @@index([sourceUserId])
+  @@index([survivorUserId])
+}
+
 model MessageComment {
-  id          String               @id @default(cuid())
-  parentId    String?
-  isPinned    Boolean              @default(false)
-  content     String
-  githubLogin String
-  avatarUrl   String
-  profileUrl  String
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
-  parent      MessageComment?      @relation("MessageCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
-  replies     MessageComment[]     @relation("MessageCommentReplies")
-  likes       MessageCommentLike[]
+  id                        String               @id @default(cuid())
+  parentId                  String?
+  isPinned                  Boolean              @default(false)
+  content                   String
+  githubLogin               String
+  avatarUrl                 String
+  profileUrl                String
+  authorUserId              String?
+  authorHandleSnapshot      String?
+  authorDisplayNameSnapshot String?
+  authorAvatarUrlSnapshot   String?
+  createdAt                 DateTime             @default(now())
+  updatedAt                 DateTime             @updatedAt
+  parent                    MessageComment?      @relation("MessageCommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies                   MessageComment[]     @relation("MessageCommentReplies")
+  likes                     MessageCommentLike[]
+  author                    User?                @relation("CommentAuthor", fields: [authorUserId], references: [id], onDelete: SetNull)
 
   @@index([parentId])
+  @@index([authorUserId])
   @@index([createdAt])
   @@index([isPinned, createdAt])
 }
@@ -58,11 +254,15 @@ model MessageCommentLike {
   id          String         @id @default(cuid())
   commentId   String
   githubLogin String
+  userId      String?
   createdAt   DateTime       @default(now())
   comment     MessageComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user        User?          @relation("CommentLikeUser", fields: [userId], references: [id], onDelete: SetNull)
 
   @@unique([commentId, githubLogin])
+  @@unique([commentId, userId])
   @@index([githubLogin])
+  @@index([userId])
 }
 
 model FriendLink {
@@ -73,11 +273,17 @@ model FriendLink {
   imageBase64           String
   createdByGithubLogin  String
   approvedByGithubLogin String?
+  createdByUserId       String?
+  approvedByUserId      String?
   isActive              Boolean  @default(true)
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
+  createdBy             User?    @relation("FriendLinkCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  approvedBy            User?    @relation("FriendLinkApprover", fields: [approvedByUserId], references: [id], onDelete: SetNull)
 
   @@index([isActive, createdAt])
+  @@index([createdByUserId])
+  @@index([approvedByUserId])
 }
 
 model FriendLinkApplication {
@@ -91,11 +297,50 @@ model FriendLinkApplication {
   expiresAt             DateTime
   approvedAt            DateTime?
   approvedByGithubLogin String?
+  applicantUserId       String?
+  approvedByUserId      String?
   createdAt             DateTime                    @default(now())
   updatedAt             DateTime                    @updatedAt
+  applicant             User?                       @relation("FriendLinkApplicant", fields: [applicantUserId], references: [id], onDelete: SetNull)
+  approvedBy            User?                       @relation("FriendLinkApplicationApprover", fields: [approvedByUserId], references: [id], onDelete: SetNull)
 
   @@index([status, expiresAt])
   @@index([applicantGithubLogin, createdAt])
+  @@index([applicantUserId, createdAt])
+  @@index([approvedByUserId])
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  MERGED
+  DISABLED
+}
+
+enum OAuthProvider {
+  GITHUB
+  LINUX_DO
+}
+
+enum OAuthIntent {
+  SIGN_IN
+  CONNECT
+}
+
+enum EmailSource {
+  GITHUB
+  MANUAL
+}
+
+enum OutboxStatus {
+  PENDING
+  PROCESSING
+  PROCESSED
+  FAILED
 }
 
 enum FriendLinkApplicationStatus {

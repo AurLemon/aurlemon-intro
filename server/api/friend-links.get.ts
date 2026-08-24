@@ -1,9 +1,9 @@
 import { listActiveFriendLinks } from '~/server/services/friend-link.service'
-import { getGithubSession } from '~/server/utils/social-auth'
+import { getUserSession } from '~/server/utils/user-auth'
 
 export default defineEventHandler(async (event) => {
 	const [currentUser, items] = await Promise.all([
-		getGithubSession(event),
+		getUserSession(event),
 		listActiveFriendLinks(),
 	])
 

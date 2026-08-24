@@ -8,6 +8,11 @@ on:
         required: false
         default: false
         type: boolean
+      run_user_identity_migration:
+        description: 'Migrate legacy GitHub users into the User/OAuthIdentity model (enable only for the one-time backfill)'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -25,6 +30,7 @@ jobs:
       CNB_API_TOKEN: ${{ secrets.CNB_API_TOKEN }}
       CNB_BRANCH: main
       BASELINE_EXISTING_DB: ${{ inputs.baseline_existing_db }}
+      RUN_USER_IDENTITY_MIGRATION: ${{ inputs.run_user_identity_migration }}
     steps:
       - uses: actions/checkout@v6
         with:
@@ -67,11 +73,13 @@ jobs:
             --arg event 'api_trigger_deploy' \
             --arg branch "$CNB_BRANCH" \
             --arg baselineExistingDb "$BASELINE_EXISTING_DB" \
+            --arg runUserIdentityMigration "$RUN_USER_IDENTITY_MIGRATION" \
             '{
               event: $event,
               branch: $branch,
               env: {
-                BASELINE_EXISTING_DB: $baselineExistingDb
+                BASELINE_EXISTING_DB: $baselineExistingDb,
+                RUN_USER_IDENTITY_MIGRATION: $runUserIdentityMigration
               }
             }')"
 

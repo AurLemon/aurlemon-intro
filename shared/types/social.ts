@@ -1,14 +1,50 @@
-export interface GithubAuthUser {
-	githubLogin: string
+export type OAuthProviderName = 'GITHUB' | 'LINUX_DO'
+
+export interface AuthIdentity {
+	id: string
+	provider: OAuthProviderName
+	providerUsername: string
+	displayName: string | null
 	avatarUrl: string
 	profileUrl: string
+}
+
+export interface AuthUser {
+	id: string
+	username: string
+	displayName: string
+	avatarUrl: string
+	hasVerifiedPrimaryEmail: boolean
+	preferredAvatarIdentityId: string | null
+	preferredLocale: string
 	isAdmin: boolean
+	identities: AuthIdentity[]
+}
+
+export interface AccountEmail {
+	id: string
+	email: string
+	verified: boolean
+	isPrimary: boolean
+	source: 'GITHUB' | 'MANUAL'
+}
+
+export interface AccountNotificationPreference {
+	replyEmailEnabled: boolean
+	adminCommentEmailEnabled: boolean
+	adminFriendLinkEmailEnabled: boolean
+}
+
+export interface AccountDetails {
+	user: AuthUser
+	emails: AccountEmail[]
+	notifications: AccountNotificationPreference
 }
 
 export interface SiteLikeSummary {
 	totalCount: number
 	hasLiked: boolean
-	githubLoginUserCount: number
+	activeUserCount: number
 }
 
 export interface SiteLikeListItem {
@@ -34,17 +70,22 @@ export interface SiteLikeListResponse {
 	pagination: SiteLikeListPagination
 }
 
-export interface GithubLoginUserListItem {
+export interface LoginUserListItem {
 	id: string
-	displayLogin: string
+	displayUsername: string
 	avatarUrl: string | null
-	profileUrl: string | null
+	providers: OAuthProviderName[]
+	identities: LoginUserListIdentity[]
 	createdAt: string
-	expiresAt: string
-	canViewProfile: boolean
+	canViewDetails: boolean
 }
 
-export interface GithubLoginUserListPagination {
+export interface LoginUserListIdentity {
+	provider: OAuthProviderName
+	profileUrl: string
+}
+
+export interface LoginUserListPagination {
 	page: number
 	pageSize: number
 	totalPages: number
@@ -53,9 +94,9 @@ export interface GithubLoginUserListPagination {
 	hasNext: boolean
 }
 
-export interface GithubLoginUserListResponse {
-	items: GithubLoginUserListItem[]
-	pagination: GithubLoginUserListPagination
+export interface LoginUserListResponse {
+	items: LoginUserListItem[]
+	pagination: LoginUserListPagination
 }
 
 export interface SiteLikedEvent {
@@ -69,9 +110,9 @@ export interface SiteLikedEvent {
 export interface CommentCreatedEvent {
 	commentId: string
 	parentId: string | null
-	githubLogin: string
+	authorUserId: string
+	authorUsername: string
 	avatarUrl: string
-	profileUrl: string
 	content: string
 	createdAt: string
 }
@@ -79,33 +120,38 @@ export interface CommentCreatedEvent {
 export interface CommentLikedEvent {
 	commentLikeId: string
 	commentId: string
-	githubLogin: string
+	actorUserId: string
+	actorUsername: string
 	createdAt: string
 }
 
 export interface CommentUnlikedEvent {
 	commentLikeId: string
 	commentId: string
-	githubLogin: string
+	actorUserId: string
+	actorUsername: string
 	removedAt: string
 }
 
 export interface CommentUpdatedEvent {
 	commentId: string
-	githubLogin: string
+	actorUserId: string
+	actorUsername: string
 	content: string
 	updatedAt: string
 }
 
 export interface CommentDeletedEvent {
 	commentId: string
-	githubLogin: string
+	actorUserId: string
+	actorUsername: string
 	deletedAt: string
 }
 
 export interface FriendLinkApplicationSubmittedEvent {
 	applicationId: string
-	applicantGithubLogin: string
+	applicantUserId: string
+	applicantUsername: string
 	name: string
 	url: string
 	desc: string
@@ -116,8 +162,16 @@ export interface FriendLinkApplicationSubmittedEvent {
 
 export interface FriendLinkApplicationApprovedEvent {
 	applicationId: string
-	approvedByGithubLogin: string
+	approvedByUserId: string
+	approvedByUsername: string
 	approvedAt: string
+}
+
+export interface FriendLinkApplicationRejectedEvent {
+	applicationId: string
+	rejectedByUserId: string
+	rejectedByUsername: string
+	rejectedAt: string
 }
 
 export interface FriendLinkCreatedEvent {
@@ -126,7 +180,8 @@ export interface FriendLinkCreatedEvent {
 	url: string
 	desc: string
 	imageBase64: string
-	createdByGithubLogin: string
+	createdByUserId: string
+	createdByUsername: string
 	createdAt: string
 }
 
@@ -136,13 +191,15 @@ export interface FriendLinkUpdatedEvent {
 	url: string
 	desc: string
 	imageBase64: string
-	updatedByGithubLogin: string
+	updatedByUserId: string
+	updatedByUsername: string
 	updatedAt: string
 }
 
 export interface FriendLinkDeletedEvent {
 	friendLinkId: string
-	deletedByGithubLogin: string
+	deletedByUserId: string
+	deletedByUsername: string
 	deletedAt: string
 }
 
@@ -157,17 +214,19 @@ export interface MessageCommentItem {
 	parentId: string | null
 	isPinned: boolean
 	content: string
-	githubLogin: string
+	authorUserId: string | null
+	username: string
+	displayName: string
 	avatarUrl: string
-	profileUrl: string
+	identities: AuthIdentity[]
 	createdAt: string
 	likeCount: number
 	hasLiked: boolean
-	likedByGithubLogins: string[]
+	likedByUsernames: string[]
 	canEdit: boolean
 	canDelete: boolean
 	canPin: boolean
-	replyToGithubLogin: string | null
+	replyToUsername: string | null
 	replyToFloor: number | null
 	isNestedReply: boolean
 	replies: MessageCommentItem[]
@@ -187,7 +246,7 @@ export interface MessageBoardQuery {
 export interface MessageBoardResponse {
 	items: MessageCommentItem[]
 	pagination: MessageBoardPagination
-	currentUser: GithubAuthUser | null
+	currentUser: AuthUser | null
 }
 
 export interface MessageBoardPagination {
@@ -215,17 +274,17 @@ export interface FriendLinkApplicationItem {
 	url: string
 	desc: string
 	imageBase64: string
-	applicantGithubLogin: string
+	applicantUsername: string
 	status: 'pending' | 'approved' | 'rejected' | 'expired'
 	expiresAt: string
 	approvedAt: string | null
-	approvedByGithubLogin: string | null
+	approvedByUsername: string | null
 	createdAt: string
 }
 
 export interface FriendLinksResponse {
 	items: FriendLinkItem[]
-	currentUser: GithubAuthUser | null
+	currentUser: AuthUser | null
 }
 
 export interface AdminFriendLinkListItem {
@@ -236,5 +295,5 @@ export interface AdminFriendLinkListItem {
 	desc: string
 	imageBase64: string
 	createdAt: string
-	applicantGithubLogin: string | null
+	applicantUsername: string | null
 }

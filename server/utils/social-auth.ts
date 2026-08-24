@@ -1,7 +1,4 @@
-import crypto from 'node:crypto'
 import { getDefaultResultOrder, promises as dnsPromises } from 'node:dns'
-import type { H3Event } from 'h3'
-import prisma from '~/lib/prisma'
 import {
 	isGithubProxyEnabled,
 	isIntroProxyTransportError,
@@ -9,21 +6,23 @@ import {
 	resolveIntroProxyBodyText,
 	resolveIntroProxyJsonBody,
 } from '~/server/utils/intro-proxy'
-import type { GithubAuthUser } from '~/shared/types/social'
-
-const SESSION_COOKIE_NAME = 'aurlemon_session'
-const OAUTH_STATE_COOKIE_NAME = 'aurlemon_github_state'
-const OAUTH_REDIRECT_COOKIE_NAME = 'aurlemon_github_redirect'
-const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 7
 
 interface GithubAccessTokenResponse {
 	access_token?: string
 }
 
-interface GithubUserResponse {
+export interface GithubUserResponse {
+	id: number
 	login: string
+	name?: string | null
 	avatar_url: string
 	html_url: string
+}
+
+export interface GithubEmailResponse {
+	email: string
+	primary: boolean
+	verified: boolean
 }
 
 const GITHUB_FETCH_TIMEOUT = 20_000
@@ -141,12 +140,12 @@ interface FetchWithRetryResult<T> {
 	requestMeta: GithubRequestMeta
 }
 
-interface GithubTokenExchangeResult {
+export interface GithubTokenExchangeResult {
 	accessToken: string
 	requestMeta: GithubRequestMeta
 }
 
-interface GithubUserFetchResult {
+export interface GithubUserFetchResult {
 	user: GithubUserResponse
 	requestMeta: GithubRequestMeta
 }
@@ -345,69 +344,19 @@ const fetchWithRetry = async <T>(
 	throw lastError
 }
 
-const buildCookieOptions = (maxAgeSeconds: number) => ({
-	httpOnly: true,
-	sameSite: 'lax' as const,
-	secure: process.env.NODE_ENV === 'production',
-	path: '/',
-	maxAge: maxAgeSeconds,
-})
-
-export const getAdminGithubLogins = (): string[] => {
-	return (process.env.ADMIN_GITHUB_IDS ?? 'AurLemon')
-		.split(',')
-		.map((item: string) => item.trim())
-		.filter(Boolean)
-}
-
-export const isAdminGithubLogin = (githubLogin: string): boolean => {
-	return getAdminGithubLogins().includes(githubLogin)
-}
-
-export const buildGithubProfileUrl = (githubLogin: string): string => {
-	return `https://github.com/${githubLogin}`
-}
-
-export const createGithubOAuthUrl = (event: H3Event): string => {
-	const githubClientId = process.env.GITHUB_CLIENT_ID ?? ''
-	const githubCallbackUrl = process.env.GITHUB_CALLBACK_URL ?? ''
-
-	if (!githubClientId || !githubCallbackUrl) {
-		throw createError({
-			statusCode: 500,
-			statusMessage: GITHUB_OAUTH_ERROR_CODES.NOT_CONFIGURED,
-		})
-	}
-
-	const redirect = getQuery(event).redirect
-	const state = crypto.randomUUID()
-	const authorizeUrl = new URL('https://github.com/login/oauth/authorize')
-
-	authorizeUrl.searchParams.set('client_id', githubClientId)
-	authorizeUrl.searchParams.set('redirect_uri', githubCallbackUrl)
-	authorizeUrl.searchParams.set('scope', 'read:user')
-	authorizeUrl.searchParams.set('state', state)
-
-	setCookie(event, OAUTH_STATE_COOKIE_NAME, state, buildCookieOptions(600))
-
-	if (typeof redirect === 'string' && redirect.startsWith('/')) {
-		setCookie(
-			event,
-			OAUTH_REDIRECT_COOKIE_NAME,
-			redirect,
-			buildCookieOptions(600),
-		)
-	}
-
-	return authorizeUrl.toString()
-}
+const getGithubCallbackUrl = (): string =>
+	process.env.GITHUB_CALLBACK_URL?.trim() ||
+	(process.env.NUXT_SITE_URL
+		? `${process.env.NUXT_SITE_URL.replace(/\/$/, '')}/api/auth/github/callback`
+		: '')
 
 export const exchangeGithubCode = async (
 	code: string,
+	codeVerifier?: string | null,
 ): Promise<GithubTokenExchangeResult> => {
 	const githubClientId = process.env.GITHUB_CLIENT_ID ?? ''
 	const githubClientSecret = process.env.GITHUB_CLIENT_SECRET ?? ''
-	const githubCallbackUrl = process.env.GITHUB_CALLBACK_URL ?? ''
+	const githubCallbackUrl = getGithubCallbackUrl()
 
 	if (!githubClientId || !githubClientSecret || !githubCallbackUrl) {
 		throw createError({
@@ -423,6 +372,7 @@ export const exchangeGithubCode = async (
 		client_secret: githubClientSecret,
 		code,
 		redirect_uri: githubCallbackUrl,
+		...(codeVerifier ? { code_verifier: codeVerifier } : {}),
 	}).toString()
 
 	try {
@@ -684,7 +634,12 @@ export const fetchGithubUser = async (
 
 	const githubUser = githubUserResult.data
 
-	if (!githubUser.login || !githubUser.avatar_url || !githubUser.html_url) {
+	if (
+		typeof githubUser.id !== 'number' ||
+		!githubUser.login ||
+		!githubUser.avatar_url ||
+		!githubUser.html_url
+	) {
 		throw createError({
 			statusCode: 401,
 			statusMessage: GITHUB_OAUTH_ERROR_CODES.USER_PAYLOAD_INVALID,
@@ -697,170 +652,26 @@ export const fetchGithubUser = async (
 	}
 }
 
-export const createGithubSession = async (
-	event: H3Event,
-	user: GithubUserResponse,
-): Promise<GithubAuthUser> => {
-	const sessionToken = crypto.randomUUID()
-	const expiresAt = new Date(Date.now() + SESSION_TTL_MS)
-
-	await prisma.githubSession.create({
-		data: {
-			sessionToken,
-			githubLogin: user.login,
-			avatarUrl: user.avatar_url,
-			profileUrl: user.html_url,
-			expiresAt,
-		},
-	})
-
-	setCookie(
-		event,
-		SESSION_COOKIE_NAME,
-		sessionToken,
-		buildCookieOptions(Math.floor(SESSION_TTL_MS / 1000)),
-	)
-
-	return {
-		githubLogin: user.login,
-		avatarUrl: user.avatar_url,
-		profileUrl: user.html_url,
-		isAdmin: isAdminGithubLogin(user.login),
-	}
-}
-
-export const clearGithubSession = async (event: H3Event): Promise<void> => {
-	const sessionToken = getCookie(event, SESSION_COOKIE_NAME)
-
-	if (sessionToken) {
-		const session = await prisma.githubSession.findUnique({
-			where: {
-				sessionToken,
+export const fetchGithubEmails = async (
+	accessToken: string,
+): Promise<GithubEmailResponse[]> => {
+	try {
+		const result = await fetchWithRetry<GithubEmailResponse[]>(
+			'https://api.github.com/user/emails',
+			{
+				headers: {
+					authorization: `Bearer ${accessToken}`,
+					accept: 'application/vnd.github+json',
+					'user-agent': 'AurLemon-Intro',
+				},
 			},
-			select: {
-				githubLogin: true,
-			},
+		)
+
+		return Array.isArray(result.data) ? result.data : []
+	} catch (error) {
+		console.warn('GITHUB_EMAIL_FETCH_FAILED', {
+			status: resolveFetchErrorStatus(error),
 		})
-
-		if (session) {
-			const sessionCount = await prisma.githubSession.count({
-				where: {
-					githubLogin: session.githubLogin,
-				},
-			})
-
-			// Keep one persisted session record per GitHub login so the footer
-			// statistics still reflect that the account has logged in before.
-			if (sessionCount > 1) {
-				await prisma.githubSession.deleteMany({
-					where: {
-						sessionToken,
-					},
-				})
-			}
-		}
+		return []
 	}
-
-	deleteCookie(event, SESSION_COOKIE_NAME, { path: '/' })
-}
-
-export const getGithubSession = async (
-	event: H3Event,
-): Promise<GithubAuthUser | null> => {
-	const sessionToken = getCookie(event, SESSION_COOKIE_NAME)
-
-	if (!sessionToken) {
-		return null
-	}
-
-	const session = await prisma.githubSession.findUnique({
-		where: {
-			sessionToken,
-		},
-	})
-
-	if (!session || session.expiresAt <= new Date()) {
-		if (sessionToken) {
-			deleteCookie(event, SESSION_COOKIE_NAME, { path: '/' })
-		}
-
-		if (session) {
-			const latestSession = await prisma.githubSession.findFirst({
-				where: {
-					githubLogin: session.githubLogin,
-				},
-				orderBy: [
-					{
-						createdAt: 'desc',
-					},
-					{
-						id: 'desc',
-					},
-				],
-				select: {
-					id: true,
-				},
-			})
-
-			// Keep the newest session record for each GitHub user.
-			if (latestSession && latestSession.id !== session.id) {
-				await prisma.githubSession.deleteMany({
-					where: {
-						id: session.id,
-					},
-				})
-			}
-		}
-
-		return null
-	}
-
-	return {
-		githubLogin: session.githubLogin,
-		avatarUrl: session.avatarUrl,
-		profileUrl: session.profileUrl,
-		isAdmin: isAdminGithubLogin(session.githubLogin),
-	}
-}
-
-export const requireGithubSession = async (
-	event: H3Event,
-): Promise<GithubAuthUser> => {
-	const session = await getGithubSession(event)
-
-	if (!session) {
-		throw createError({
-			statusCode: 401,
-			statusMessage: 'AUTH_REQUIRED',
-		})
-	}
-
-	return session
-}
-
-export const requireAdminSession = async (
-	event: H3Event,
-): Promise<GithubAuthUser> => {
-	const session = await requireGithubSession(event)
-
-	if (!session.isAdmin) {
-		throw createError({
-			statusCode: 403,
-			statusMessage: 'ADMIN_REQUIRED',
-		})
-	}
-
-	return session
-}
-
-export const consumeGithubOAuthState = (event: H3Event): string | null => {
-	const state = getCookie(event, OAUTH_STATE_COOKIE_NAME) ?? null
-	deleteCookie(event, OAUTH_STATE_COOKIE_NAME, { path: '/' })
-	return state
-}
-
-export const consumeGithubOAuthRedirect = (event: H3Event): string => {
-	const redirect = getCookie(event, OAUTH_REDIRECT_COOKIE_NAME) ?? '/'
-	deleteCookie(event, OAUTH_REDIRECT_COOKIE_NAME, { path: '/' })
-	return redirect.startsWith('/') ? redirect : '/'
 }

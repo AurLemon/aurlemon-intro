@@ -16,8 +16,9 @@
 				>
 					<UButton
 						color="neutral"
+						size="xs"
 						variant="link"
-						class="rounded-full"
+						class="rounded-full gap-1.5 px-2.5 py-1.5"
 						@click="messageOpen = true"
 					>
 						<UIcon name="i-lucide-messages-square" class="h-5 w-5" />
@@ -25,10 +26,10 @@
 					</UButton>
 				</div>
 			</UTooltip>
-			<GithubLoginCountButton
-				:count="githubLoginUserCount"
-				:ready="githubLoginReady"
-				@open-list="githubLoginListOpen = true"
+			<LoginUserCountButton
+				:count="activeUserCount"
+				:ready="loginUserReady"
+				@open-list="loginUserListOpen = true"
 			/>
 		</div>
 		<div class="w-full flex flex-col justify-between lg:flex-row">
@@ -80,8 +81,8 @@
 			v-model:open="siteLikeListOpen"
 			@refresh-summary="refreshSocialSummary"
 		/>
-		<GithubLoginUserListModal
-			v-model:open="githubLoginListOpen"
+		<LoginUserListModal
+			v-model:open="loginUserListOpen"
 			@refresh-summary="refreshSocialSummary"
 		/>
 	</footer>
@@ -91,9 +92,9 @@
 import { computed, nextTick, onMounted, ref } from 'vue'
 
 import SiteMark from '~/components/branding/AurLemon.vue'
-import GithubLoginCountButton from '~/components/footer/GithubLoginCountButton.vue'
+import LoginUserCountButton from '~/components/footer/LoginUserCountButton.vue'
 import SiteLikeButton from '~/components/footer/SiteLikeButton.vue'
-import GithubLoginUserListModal from '~/components/message/GithubLoginUserListModal.vue'
+import LoginUserListModal from '~/components/message/LoginUserListModal.vue'
 import MessageBoardModal from '~/components/message/MessageBoardModal.vue'
 import SiteLikeListModal from '~/components/message/SiteLikeListModal.vue'
 import type {
@@ -103,15 +104,16 @@ import type {
 } from '~/shared/types/social'
 
 const { t } = useI18n({ useScope: 'global' })
+const route = useRoute()
 const localePath = useLocalePath()
 const hoveredLink = ref<number | null>(null)
 const messageOpen = ref(false)
 const siteLikeListOpen = ref(false)
-const githubLoginListOpen = ref(false)
+const loginUserListOpen = ref(false)
 const messageCount = ref(0)
 const messageReady = ref(false)
-const githubLoginUserCount = ref(0)
-const githubLoginReady = ref(false)
+const activeUserCount = ref(0)
+const loginUserReady = ref(false)
 const socialSummaryRefreshSignal = ref(0)
 
 const countMessageItems = (items: MessageCommentItem[]): number =>
@@ -124,8 +126,8 @@ const messageButtonLabel = computed(() =>
 const messageTooltipLabel = computed(() => t('social.tooltip.messageBoard'))
 
 const handleSiteLikeSummaryChange = (summary: SiteLikeSummary) => {
-	githubLoginUserCount.value = summary.githubLoginUserCount
-	githubLoginReady.value = true
+	activeUserCount.value = summary.activeUserCount
+	loginUserReady.value = true
 }
 
 const refreshSocialSummary = () => {
@@ -162,5 +164,8 @@ const linkClass = (index: number) => [
 
 onMounted(() => {
 	void loadMessageCount()
+	if (route.query.social === 'messages') {
+		messageOpen.value = true
+	}
 })
 </script>

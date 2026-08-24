@@ -5,6 +5,8 @@
 .nitro
 .cache
 dist
+.scripts-dist
+*.social-user-manifest.json
 
 # Database
 *.db

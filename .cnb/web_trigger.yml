@@ -16,3 +16,8 @@ branch:
             description: 首次接管已有数据库时，标记历史迁移为已应用
             type: switch
             default: false
+          RUN_USER_IDENTITY_MIGRATION:
+            name: 执行旧用户身份迁移
+            description: 仅首次迁移旧 GitHub 用户数据时开启；普通部署保持关闭
+            type: switch
+            default: false

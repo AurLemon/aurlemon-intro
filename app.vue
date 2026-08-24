@@ -4,11 +4,14 @@ import PageHeader from '~/layouts/PageHeader.vue'
 import PageContainer from '~/layouts/PageContainer.vue'
 import PageFooter from '~/layouts/PageFooter.vue'
 import PageMenu from '~/layouts/PageMenu.vue'
+import UserAccountModal from '~/components/account/UserAccountModal.vue'
 
 const route = useRoute()
 const { locale, t } = useI18n({ useScope: 'global' })
 const toast = useToast()
 const nuxtApp = useNuxtApp()
+const auth = useAuth()
+const accountModal = useAccountModal()
 
 type LocaleCode = 'zh-CN' | 'ja-JP' | 'en-US'
 type LocaleNameKey = 'zhCN' | 'jaJP' | 'enUS'
@@ -233,7 +236,7 @@ useHead(() => ({
 	title: pageTitle.value,
 }))
 
-const resolveAuthErrorCode = (queryValue: unknown): string | null => {
+const resolveQueryValue = (queryValue: unknown): string | null => {
 	if (typeof queryValue === 'string' && queryValue) {
 		return queryValue
 	}
@@ -251,31 +254,66 @@ const resolveAuthErrorCode = (queryValue: unknown): string | null => {
 
 if (import.meta.client) {
 	void maybePromptLocaleSwitch()
+	let consumingAuthFeedback = false
 
-	watch(
-		() => route.query.authError,
-		(queryValue) => {
-			const authErrorCode = resolveAuthErrorCode(queryValue)
+	const consumeAuthFeedback = async (): Promise<void> => {
+		if (consumingAuthFeedback) return
 
-			if (!authErrorCode) {
-				return
+		const authErrorCode = resolveQueryValue(route.query.authError)
+		const authSuccess = resolveQueryValue(route.query.authSuccess)
+		const authProvider = resolveQueryValue(route.query.authProvider)
+		if (!authErrorCode && !authSuccess && !authProvider) return
+
+		consumingAuthFeedback = true
+		try {
+			if (authErrorCode) {
+				const descriptionKey = resolveSocialErrorKey({
+					statusMessage: authErrorCode,
+				})
+
+				toast.add({
+					id: 'oauth-feedback-error',
+					title: t('social.feedback.errorTitle'),
+					description: t(descriptionKey),
+					color: 'error',
+					icon: 'i-lucide-circle-alert',
+				})
+			} else if (
+				(authSuccess === 'sign-in' || authSuccess === 'connect') &&
+				(authProvider === 'github' || authProvider === 'linuxdo')
+			) {
+				const user = await auth.refresh()
+				if (user) {
+					const provider = authProvider === 'github' ? 'GitHub' : 'Linux DO'
+					const isSignIn = authSuccess === 'sign-in'
+					toast.add({
+						id: `oauth-feedback-${authSuccess}-${authProvider}`,
+						title: t(
+							isSignIn
+								? 'social.feedback.loginSuccessTitle'
+								: 'social.feedback.connectSuccessTitle',
+						),
+						description: t(
+							isSignIn
+								? 'social.feedback.loginSuccessDescription'
+								: 'social.feedback.connectSuccessDescription',
+							{ provider, handle: `@${user.username}` },
+						),
+						color: 'success',
+						icon: 'i-lucide-circle-check',
+					})
+					if (!isSignIn) {
+						accountModal.show()
+					}
+				}
 			}
-
-			const descriptionKey = resolveSocialErrorKey({
-				statusMessage: authErrorCode,
-			})
-
-			toast.add({
-				title: t('social.feedback.errorTitle'),
-				description: t(descriptionKey),
-				color: 'error',
-				icon: 'i-lucide-circle-alert',
-			})
 
 			const nextQuery = { ...route.query }
 			delete nextQuery.authError
+			delete nextQuery.authSuccess
+			delete nextQuery.authProvider
 
-			void navigateTo(
+			await navigateTo(
 				{
 					path: route.path,
 					query: nextQuery,
@@ -283,7 +321,53 @@ if (import.meta.client) {
 				},
 				{ replace: true },
 			)
-		},
+		} finally {
+			consumingAuthFeedback = false
+		}
+	}
+
+	watch(
+		() => [
+			route.query.authError,
+			route.query.authSuccess,
+			route.query.authProvider,
+		],
+		() => void consumeAuthFeedback(),
+		{ immediate: true },
+	)
+
+	let consumingEmailVerificationFeedback = false
+	const consumeEmailVerificationFeedback = async (): Promise<void> => {
+		if (
+			consumingEmailVerificationFeedback ||
+			route.query.emailVerification !== 'invalid'
+		) {
+			return
+		}
+
+		consumingEmailVerificationFeedback = true
+		try {
+			toast.add({
+				id: 'email-verification-invalid',
+				title: t('social.feedback.errorTitle'),
+				description: t('social.errors.emailVerificationInvalid'),
+				color: 'error',
+				icon: 'i-lucide-circle-alert',
+			})
+			const nextQuery = { ...route.query }
+			delete nextQuery.emailVerification
+			await navigateTo(
+				{ path: route.path, query: nextQuery, hash: route.hash },
+				{ replace: true },
+			)
+		} finally {
+			consumingEmailVerificationFeedback = false
+		}
+	}
+
+	watch(
+		() => route.query.emailVerification,
+		() => void consumeEmailVerificationFeedback(),
 		{ immediate: true },
 	)
 }
@@ -304,5 +388,6 @@ if (import.meta.client) {
 			<PageFooter />
 			<PageMenu />
 		</div>
+		<UserAccountModal />
 	</UApp>
 </template>

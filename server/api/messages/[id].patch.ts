@@ -3,11 +3,11 @@ import {
 	updateMessageComment,
 } from '~/server/services/message-board.service'
 import { parseMessageBoardPagination } from '~/server/utils/message-board-pagination'
-import { requireGithubSession } from '~/server/utils/social-auth'
+import { requireUserSession } from '~/server/utils/user-auth'
 import { ensureNonEmptyString } from '~/server/utils/social-validators'
 
 export default defineEventHandler(async (event) => {
-	const currentUser = await requireGithubSession(event)
+	const currentUser = await requireUserSession(event)
 	const paginationQuery = parseMessageBoardPagination(getQuery(event))
 	const commentId = getRouterParam(event, 'id')
 	const body = await readBody(event)

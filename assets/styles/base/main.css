@@ -139,6 +139,17 @@ body {
 	transform: translateY(0);
 }
 
+[data-slot='content'][data-state='open'] [data-slot='body'] > * {
+	animation: modal-body-content-enter 300ms ease-out;
+}
+
+@keyframes modal-body-content-enter {
+	from {
+		opacity: 0;
+		transform: translateY(0.25rem);
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.page-enter-active,
 	.page-leave-active {
@@ -150,5 +161,9 @@ body {
 	.page-enter-to,
 	.page-leave-from {
 		transform: none;
+	}
+
+	[data-slot='content'][data-state='open'] [data-slot='body'] > * {
+		animation: none;
 	}
 }

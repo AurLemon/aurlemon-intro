@@ -7,7 +7,7 @@ My personal website, built with Nuxt 4 and TypeScript. The site is organized int
 - A personal profile page with an introduction, education background, major experience, and technical background.
 - A projects page with a project timeline, milestones, and links to external repositories.
 - A personal preferences page, mainly covering Bangumi, music, and a few other interests.
-- Social features, including a message board, friendly links, and a GitHub login flow.
+- Social features, including a message board, friendly links, generic accounts, and GitHub / Linux DO sign-in flows.
 - Localized content support for `zh-CN`, `ja-JP`, and `en-US`.
 
 ## Structure

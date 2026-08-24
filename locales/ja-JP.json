@@ -87,7 +87,7 @@
 				},
 				"language": {
 					"title": "中国語ネイティブ",
-					"subtitle": "CET-4 (~510) + N4",
+					"subtitle": "CET-4 / CET-6 / N4",
 					"type": "言語"
 				}
 			}
@@ -148,10 +148,18 @@
 		"actions": {
 			"close": "閉じる",
 			"loginWithGithub": "GitHub でログイン",
+			"loginWithLinuxDo": "Linux DO でログイン",
+			"loginWithProvider": "GitHub または Linux DO でログイン",
+			"openLoginUserList": "ログインユーザー一覧",
 			"logout": "ログアウト",
+			"save": "保存",
+			"connect": "連携",
+			"disconnect": "連携解除",
+			"confirmMerge": "アカウント統合を確認",
+			"verifyEmail": "確認メールを送信",
+			"setPrimary": "メインに設定",
 			"refreshStatus": "状態を更新",
 			"openMessageBoard": "メッセージボード",
-			"openGithubLoginUserList": "GitHub ログインユーザー一覧",
 			"sendComment": "送信",
 			"reply": "返信",
 			"cancelReply": "返信をやめる",
@@ -177,11 +185,19 @@
 			"messageBoard": "メッセージボード",
 			"siteLike": "いいね",
 			"siteLiked": "いいね済み",
-			"githubLoginUserCount": "GitHub ログイン人数"
+			"loginUserCount": "ログインユーザー数"
 		},
 		"feedback": {
 			"authTitle": "ログインが必要です",
-			"errorTitle": "操作が完了しませんでした"
+			"errorTitle": "操作が完了しませんでした",
+			"loginSuccessTitle": "ログインしました",
+			"loginSuccessDescription": "{provider} で {handle} としてログインしました",
+			"connectSuccessTitle": "連携しました",
+			"connectSuccessDescription": "{provider} を連携しました",
+			"profileSaveSuccessTitle": "プロフィールを保存しました",
+			"mergeSuccessTitle": "アカウントを統合しました",
+			"mergeSuccessDescription": "投稿、ログイン方法、メール、セッションを統合しました。",
+			"logoutSuccessTitle": "ログアウトしました"
 		},
 		"auth": {
 			"loggedIn": "ログイン済み",
@@ -195,11 +211,40 @@
 			"emptyDesc": "最初のいいねを押してみてください。",
 			"likedAt": "いいね日時: {date}"
 		},
-		"githubLogin": {
+		"loginUsers": {
 			"count": "{count}",
-			"listTitle": "GitHub ログインユーザー一覧",
-			"emptyTitle": "GitHub ログイン履歴はまだありません",
-			"emptyDesc": "まだ GitHub でログインしたユーザーはいません。"
+			"listTitle": "ログインユーザー一覧",
+			"emptyTitle": "ログインユーザーはいません",
+			"emptyDesc": "まだログインしたユーザーはいません。"
+		},
+		"account": {
+			"title": "アカウント",
+			"open": "アカウント設定を開く",
+			"headerLogin": "ログイン",
+			"openUserMenu": "ユーザーメニューを開く",
+			"chooseLoginProvider": "ログイン方法を選択",
+			"settings": "アカウント設定",
+			"manage": "アカウント管理",
+			"loginDescription": "ログインするサービスを選んでください。初回ログインでサイト内アカウントを作成し、あとからもう一方のサービスも連携できます。",
+			"profileTab": "プロフィール",
+			"emailTab": "メールと通知",
+			"loginMethods": "ログイン方法",
+			"username": "ユーザー名",
+			"usernameChangeHint": "ユーザー名は7日に1回だけ変更できます。大文字・小文字のみの変更は回数に含まれません。",
+			"displayName": "表示名",
+			"avatarSource": "アバターの取得元",
+			"notificationLanguage": "メールの言語",
+			"notConnected": "未連携",
+			"emailPlaceholder": "メールアドレス",
+			"emailNotificationUnavailable": "確認済みのメインメールアドレスがないため、コメント返信と相互リンク承認の通知を受け取れません。メールと通知で追加してください。",
+			"verified": "確認済み",
+			"unverified": "未確認",
+			"primary": "メイン",
+			"replyNotifications": "コメントに返信があったらメールで通知",
+			"adminCommentNotifications": "新しいコメントを通知",
+			"adminFriendLinkNotifications": "新しい相互リンク申請を通知",
+			"mergeTitle": "別のサイト内アカウントが見つかりました",
+			"mergeDescription": "このログイン情報は別のアカウントに連携されています。確認すると投稿、ログイン情報、メール、セッションを統合し、監査記録を残します。"
 		},
 		"message": {
 			"title": "メッセージボード",
@@ -209,8 +254,8 @@
 			"placeholder": "不快なコメントは削除させていただきます。",
 			"replyPlaceholder": "{login} に返信",
 			"replyPlaceholderWithFloor": "{login} #{floor} に返信",
-			"loginRequiredTitle": "GitHub ログインが必要です",
-			"loginRequiredDesc": "投稿、返信、いいねには GitHub ログインが必要です。",
+			"loginRequiredTitle": "ログインが必要です",
+			"loginRequiredDesc": "投稿、返信、いいねをするにはログインが必要です。",
 			"emptyTitle": "まだメッセージはありません",
 			"emptyDesc": "最初のメッセージを残せます。",
 			"pinned": "固定",
@@ -222,9 +267,9 @@
 		"friendLinks": {
 			"applyTitle": "相互リンク申請",
 			"adminEntry": "管理",
-			"applyReminder": "申請を送信した後は、必ずメールで承認を促してください {mail}。このサイトはまだメール通知に対応していません。知らせてもらえないと、誰かが承認申請を出したかどうか分かりません。私はとてもフレンドリーなので、どうぞ安心してください🥹。",
-			"loginRequiredTitle": "GitHub ログインが必要です",
-			"loginRequiredDesc": "相互リンク申請には GitHub ログインが必要です。",
+			"applyReminder": "申請すると管理者に通知され、相互リンクが承認されるとメールでお知らせします。確認済みのメインメールアドレスがないと受信できないため、追加することをおすすめします。",
+			"loginRequiredTitle": "ログインが必要です",
+			"loginRequiredDesc": "相互リンク申請にはログインが必要です。",
 			"adminTitle": "相互リンク管理",
 			"adminRequiredTitle": "管理者のみ",
 			"adminRequiredDesc": "現在のアカウントには管理権限がありません。",
@@ -250,7 +295,7 @@
 		},
 		"errors": {
 			"generic": "リクエストは完了しませんでした。あとでもう一度試してください。",
-			"authRequired": "この操作には GitHub ログインが必要です。",
+			"authRequired": "この操作にはログインが必要です。",
 			"adminRequired": "現在のアカウントは管理者ではありません。",
 			"sessionExpired": "ログイン状態が切れている可能性があります。更新または再ログインしてください。",
 			"siteAlreadyLiked": "このブラウザではすでにいいね済みです。",
@@ -278,7 +323,33 @@
 			"invalidFriendLinkDesc": "相互リンク紹介文が不正です。",
 			"invalidImageBase64": "画像アップロードに失敗したか、画像形式が不正です。",
 			"imageTooLarge": "画像サイズが大きすぎます。3MB 以下の画像をアップロードしてください。",
-			"invalidFingerprint": "ブラウザ識別子が無効です。更新して再試行してください。"
+			"invalidFingerprint": "ブラウザ識別子が無効です。更新して再試行してください。",
+			"invalidOauthState": "ログイン状態の検証に失敗しました。もう一度開始してください。",
+			"linuxDoOauthNotConfigured": "このサイトでは Linux DO ログインが設定されていません。",
+			"linuxDoOauthTokenExchangeFailed": "Linux DO 認可コードが無効または期限切れです。再度ログインしてください。",
+			"linuxDoOauthUserPayloadInvalid": "Linux DO から返されたユーザー情報が不完全です。",
+			"linuxDoOauthCallbackFailed": "Linux DO ログインのコールバックに失敗しました。",
+			"oauthConnectSessionChanged": "連携中にログイン状態が変わりました。もう一度お試しください。",
+			"identityProviderAlreadyConnected": "このアカウントには同じサービスの別のログイン情報が連携されています。",
+			"invalidUsername": "ユーザー名は1〜39文字の英数字、アンダースコア、ハイフンで入力してください。",
+			"invalidUserDisplayName": "表示名は1〜64文字で入力してください。",
+			"usernameTaken": "このユーザー名はすでに使用されています。",
+			"usernameChangeCooldown": "ユーザー名は7日に1回だけ変更できます。",
+			"invalidAvatarIdentity": "連携済みのログイン情報からアバターを選んでください。",
+			"verifiedPrimaryEmailRequired": "通知を有効にする前にメールを確認し、メインに設定してください。",
+			"invalidEmail": "メールアドレスの形式が正しくありません。",
+			"emailAlreadyInUse": "このメールアドレスは別のアカウントで使用されています。",
+			"emailVerificationRateLimited": "確認メールの送信回数が多すぎます。しばらくしてから再試行してください。",
+			"emailVerificationInvalid": "メール確認リンクが無効または期限切れです。",
+			"emailNotFound": "メールアドレスが見つかりません。",
+			"lastIdentityCannotDisconnect": "最後のログイン方法は連携解除できません。",
+			"identityNotFound": "ログイン情報が見つかりません。",
+			"mergeTicketInvalid": "アカウント統合の確認期限が切れました。もう一度連携してください。",
+			"mergeAccountNotFound": "統合対象のアカウントが見つかりません。",
+			"mergeProviderConflict": "両方のアカウントに同じサービスの異なるログイン情報があるため、自動統合できません。",
+			"invalidOauthProvider": "このログインサービスはサポートされていません。",
+			"siteUrlNotConfigured": "公開サイト URL が未設定のため、この操作は一時的に利用できません。",
+			"accountDisabled": "このアカウントは無効化されています。"
 		}
 	}
 }

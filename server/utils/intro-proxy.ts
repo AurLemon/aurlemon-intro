@@ -144,11 +144,16 @@ export const isBangumiProxyEnabled = (): boolean => {
 	return parseBooleanEnv(process.env.BANGUMI_PROXY_ENABLED)
 }
 
+export const isLinuxDoProxyEnabled = (): boolean => {
+	return parseBooleanEnv(process.env.LINUX_DO_PROXY_ENABLED)
+}
+
 export interface IntroProxyLogMeta {
 	introProxyConfigured: boolean
 	introProxyUrl: string | null
 	githubProxyEnabled: boolean
 	bangumiProxyEnabled: boolean
+	linuxDoProxyEnabled: boolean
 }
 
 export const getIntroProxyLogMeta = (): IntroProxyLogMeta => {
@@ -159,6 +164,7 @@ export const getIntroProxyLogMeta = (): IntroProxyLogMeta => {
 		introProxyUrl: url ? sanitizeProxyUrlForLog(url) : null,
 		githubProxyEnabled: isGithubProxyEnabled(),
 		bangumiProxyEnabled: isBangumiProxyEnabled(),
+		linuxDoProxyEnabled: isLinuxDoProxyEnabled(),
 	}
 }
 

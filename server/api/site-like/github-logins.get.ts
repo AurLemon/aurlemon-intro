@@ -1,5 +1,5 @@
-import { listGithubLoginUsers } from '~/server/services/site-like.service'
-import { getGithubSession } from '~/server/utils/social-auth'
+import { listLoginUsers } from '~/server/services/site-like.service'
+import { getUserSession } from '~/server/utils/user-auth'
 
 const toPositiveInt = (value: unknown, fallback: number) => {
 	const normalizedValue = Array.isArray(value) ? value[0] : value
@@ -17,9 +17,9 @@ export default defineEventHandler(async (event) => {
 	const query = getQuery(event)
 	const page = toPositiveInt(query.page, 1)
 	const pageSize = toPositiveInt(query.pageSize ?? query.limit, 6)
-	const currentUser = await getGithubSession(event)
+	const currentUser = await getUserSession(event)
 
-	return listGithubLoginUsers(currentUser, {
+	return listLoginUsers(currentUser, {
 		page,
 		pageSize,
 	})

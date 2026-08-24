@@ -10,208 +10,232 @@
 		}"
 	>
 		<template #body>
-			<div class="space-y-6">
-				<AuthActionGuard
-					v-if="!currentUser?.isAdmin"
-					:title="t('social.friendLinks.adminRequiredTitle')"
-					:description="t('social.friendLinks.adminRequiredDesc')"
-				/>
-				<div v-else class="grid gap-6 lg:grid-cols-2">
-					<div class="space-y-4">
-						<h3
-							class="text-sm font-semibold text-slate-900 dark:text-slate-100"
-						>
-							{{ t('social.friendLinks.listTitle') }}
-						</h3>
-						<UAlert
-							v-if="!items.length"
-							color="neutral"
-							variant="soft"
-							:title="t('social.friendLinks.pendingEmptyTitle')"
-						/>
-						<div v-else class="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
-							<div
-								v-for="item in items"
-								:key="`${item.type}-${item.id}`"
-								class="rounded-2xl border border-slate-200/70 p-4 dark:border-slate-800"
+			<AnimatedModalBody>
+				<div class="space-y-6">
+					<AuthActionGuard
+						v-if="!currentUser?.isAdmin"
+						:title="t('social.friendLinks.adminRequiredTitle')"
+						:description="t('social.friendLinks.adminRequiredDesc')"
+					/>
+					<div v-else class="grid gap-6 lg:grid-cols-2">
+						<div class="space-y-4">
+							<h3
+								class="text-sm font-semibold text-slate-900 dark:text-slate-100"
 							>
-								<div class="flex items-start gap-4">
-									<img
-										:src="item.imageBase64"
-										:alt="item.name"
-										class="h-14 w-14 rounded-xl object-cover"
-									/>
-									<div class="min-w-0 flex-1 space-y-2">
-										<div class="flex flex-wrap items-center gap-2">
-											<h4
-												class="text-base font-semibold text-slate-900 dark:text-slate-100"
-											>
-												{{ item.name }}
-											</h4>
-											<UBadge
-												v-if="item.type === 'pending-application'"
-												color="warning"
-												variant="soft"
-											>
-												{{ t('social.friendLinks.status.pending') }}
-											</UBadge>
-										</div>
-										<p class="text-sm text-slate-600 dark:text-slate-300">
-											{{ item.desc }}
-										</p>
-										<a
-											:href="item.url"
-											target="_blank"
-											rel="noopener noreferrer"
-											class="text-sm text-primary-600 dark:text-primary-300 break-all"
-										>
-											{{ item.url }}
-										</a>
-										<UButton
-											v-if="item.applicantGithubLogin"
-											size="xs"
-											color="neutral"
-											variant="link"
-											:to="`https://github.com/${item.applicantGithubLogin}`"
-											target="_blank"
-										>
-											{{ item.applicantGithubLogin }}
-										</UButton>
-										<div class="flex justify-end gap-2">
-											<UButton
-												v-if="item.type === 'pending-application'"
-												size="xs"
-												color="primary"
-												:loading="approvingId === item.id"
-												@click="approve(item.id)"
-											>
-												{{ t('social.actions.approve') }}
-											</UButton>
-											<template v-else>
-												<UButton
-													size="xs"
-													color="neutral"
-													variant="ghost"
-													@click="startEdit(item)"
+								{{ t('social.friendLinks.listTitle') }}
+							</h3>
+							<UAlert
+								v-if="!items.length"
+								color="neutral"
+								variant="soft"
+								:title="t('social.friendLinks.pendingEmptyTitle')"
+							/>
+							<div v-else class="space-y-4 max-h-[60vh] overflow-y-auto pr-1">
+								<div
+									v-for="item in items"
+									:key="`${item.type}-${item.id}`"
+									:id="`friend-link-item-${item.id}`"
+									class="rounded-2xl border border-slate-200/70 p-4 dark:border-slate-800"
+									:class="
+										item.id === focusedApplicationId
+											? 'ring-2 ring-primary-400 ring-offset-2 dark:ring-offset-slate-950'
+											: ''
+									"
+								>
+									<div class="flex items-start gap-4">
+										<img
+											:src="item.imageBase64"
+											:alt="item.name"
+											class="h-14 w-14 rounded-xl object-cover"
+										/>
+										<div class="min-w-0 flex-1 space-y-2">
+											<div class="flex flex-wrap items-center gap-2">
+												<h4
+													class="text-base font-semibold text-slate-900 dark:text-slate-100"
 												>
-													{{ t('social.actions.edit') }}
-												</UButton>
-												<UButton
-													size="xs"
-													color="error"
-													variant="ghost"
-													:loading="deletingId === item.id"
-													@click="remove(item.id)"
+													{{ item.name }}
+												</h4>
+												<UBadge
+													v-if="item.type === 'pending-application'"
+													color="warning"
+													variant="soft"
 												>
-													{{ t('social.actions.delete') }}
-												</UButton>
-											</template>
+													{{ t('social.friendLinks.status.pending') }}
+												</UBadge>
+											</div>
+											<p class="text-sm text-slate-600 dark:text-slate-300">
+												{{ item.desc }}
+											</p>
+											<a
+												:href="item.url"
+												target="_blank"
+												rel="noopener noreferrer"
+												class="text-sm text-primary-600 dark:text-primary-300 break-all"
+											>
+												{{ item.url }}
+											</a>
+											<p
+												v-if="item.applicantUsername"
+												class="text-xs text-slate-500 dark:text-slate-400"
+											>
+												@{{ item.applicantUsername }}
+											</p>
+											<div class="flex justify-end gap-2">
+												<template v-if="item.type === 'pending-application'">
+													<UButton
+														size="xs"
+														color="primary"
+														:loading="approvingId === item.id"
+														@click="approve(item.id)"
+													>
+														{{ t('social.actions.approve') }}
+													</UButton>
+													<UButton
+														size="xs"
+														color="neutral"
+														variant="ghost"
+														@click="startEdit(item)"
+													>
+														{{ t('social.actions.edit') }}
+													</UButton>
+													<UButton
+														size="xs"
+														color="error"
+														variant="ghost"
+														:loading="deletingId === item.id"
+														@click="removeApplication(item.id)"
+													>
+														{{ t('social.actions.delete') }}
+													</UButton>
+												</template>
+												<template v-else>
+													<UButton
+														size="xs"
+														color="neutral"
+														variant="ghost"
+														@click="startEdit(item)"
+													>
+														{{ t('social.actions.edit') }}
+													</UButton>
+													<UButton
+														size="xs"
+														color="error"
+														variant="ghost"
+														:loading="deletingId === item.id"
+														@click="remove(item.id)"
+													>
+														{{ t('social.actions.delete') }}
+													</UButton>
+												</template>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
 
-					<div class="space-y-4">
-						<h3
-							class="text-sm font-semibold text-slate-900 dark:text-slate-100"
-						>
-							{{
-								editingLinkId
-									? t('social.friendLinks.editTitle')
-									: t('social.friendLinks.directCreateTitle')
-							}}
-						</h3>
-						<div class="space-y-2">
-							<label class="text-sm text-slate-700 dark:text-slate-300">
-								{{ t('social.friendLinks.fields.name') }}
-							</label>
-							<UInput
-								v-model="form.name"
-								class="w-full"
-								:placeholder="t('social.friendLinks.fields.name')"
-							/>
-						</div>
-						<div class="space-y-2">
-							<label class="text-sm text-slate-700 dark:text-slate-300">
-								{{ t('social.friendLinks.fields.url') }}
-							</label>
-							<UInput
-								v-model="form.url"
-								class="w-full"
-								:placeholder="t('social.friendLinks.fields.url')"
-							/>
-						</div>
-						<div class="space-y-2">
-							<label class="text-sm text-slate-700 dark:text-slate-300">
-								{{ t('social.friendLinks.fields.desc') }}
-							</label>
-							<UTextarea
-								v-model="form.desc"
-								class="w-full"
-								:rows="4"
-								:placeholder="t('social.friendLinks.fields.desc')"
-							/>
-						</div>
-						<div class="space-y-2">
-							<label class="text-sm text-slate-700 dark:text-slate-300">
-								{{ t('social.friendLinks.fields.image') }}
-							</label>
-							<input
-								ref="fileInputRef"
-								type="file"
-								accept="image/*"
-								class="hidden"
-								@change="handleFileChange"
-							/>
-							<UButton
-								size="xs"
-								color="neutral"
-								variant="link"
-								@click="openFilePicker"
-							>
-								{{ t('social.friendLinks.fields.chooseImage') }}
-							</UButton>
-							<p class="text-sm text-slate-500 dark:text-slate-400">
-								{{
-									selectedImageName ||
-									t('social.friendLinks.fields.noFileSelected')
-								}}
-							</p>
-							<img
-								v-if="form.imageBase64"
-								:src="form.imageBase64"
-								alt="preview"
-								class="h-20 w-20 rounded-xl object-cover"
-							/>
-						</div>
-						<div class="flex justify-end gap-2">
-							<UButton
-								v-if="editingLinkId"
-								size="xs"
-								color="neutral"
-								variant="ghost"
-								@click="cancelEdit"
-							>
-								{{ t('social.actions.cancelEdit') }}
-							</UButton>
-							<UButton
-								size="xs"
-								color="primary"
-								:loading="saving"
-								@click="save"
+						<div class="space-y-4">
+							<h3
+								class="text-sm font-semibold text-slate-900 dark:text-slate-100"
 							>
 								{{
-									editingLinkId
-										? t('social.actions.saveEdit')
-										: t('social.actions.createFriendLink')
+									editingLinkId || editingApplicationId
+										? t('social.friendLinks.editTitle')
+										: t('social.friendLinks.directCreateTitle')
 								}}
-							</UButton>
+							</h3>
+							<div class="space-y-2">
+								<label class="text-sm text-slate-700 dark:text-slate-300">
+									{{ t('social.friendLinks.fields.name') }}
+								</label>
+								<UInput
+									v-model="form.name"
+									class="w-full"
+									:placeholder="t('social.friendLinks.fields.name')"
+								/>
+							</div>
+							<div class="space-y-2">
+								<label class="text-sm text-slate-700 dark:text-slate-300">
+									{{ t('social.friendLinks.fields.url') }}
+								</label>
+								<UInput
+									v-model="form.url"
+									class="w-full"
+									:placeholder="t('social.friendLinks.fields.url')"
+								/>
+							</div>
+							<div class="space-y-2">
+								<label class="text-sm text-slate-700 dark:text-slate-300">
+									{{ t('social.friendLinks.fields.desc') }}
+								</label>
+								<UTextarea
+									v-model="form.desc"
+									class="w-full"
+									:rows="4"
+									:placeholder="t('social.friendLinks.fields.desc')"
+								/>
+							</div>
+							<div class="space-y-2">
+								<label class="text-sm text-slate-700 dark:text-slate-300">
+									{{ t('social.friendLinks.fields.image') }}
+								</label>
+								<input
+									ref="fileInputRef"
+									type="file"
+									accept="image/*"
+									class="hidden"
+									@change="handleFileChange"
+								/>
+								<UButton
+									size="xs"
+									color="neutral"
+									variant="link"
+									@click="openFilePicker"
+								>
+									{{ t('social.friendLinks.fields.chooseImage') }}
+								</UButton>
+								<p class="text-sm text-slate-500 dark:text-slate-400">
+									{{
+										selectedImageName ||
+										t('social.friendLinks.fields.noFileSelected')
+									}}
+								</p>
+								<img
+									v-if="form.imageBase64"
+									:src="form.imageBase64"
+									alt="preview"
+									class="h-20 w-20 rounded-xl object-cover"
+								/>
+							</div>
+							<div class="flex justify-end gap-2">
+								<UButton
+									v-if="editingLinkId || editingApplicationId"
+									size="xs"
+									color="neutral"
+									variant="ghost"
+									@click="cancelEdit"
+								>
+									{{ t('social.actions.cancelEdit') }}
+								</UButton>
+								<UButton
+									size="xs"
+									color="primary"
+									:loading="saving"
+									@click="save"
+								>
+									{{
+										editingApplicationId
+											? t('social.actions.approve')
+											: editingLinkId
+												? t('social.actions.saveEdit')
+												: t('social.actions.createFriendLink')
+									}}
+								</UButton>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			</AnimatedModalBody>
 		</template>
 	</UModal>
 </template>
@@ -227,7 +251,9 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n({ useScope: 'global' })
-const auth = useGithubAuth()
+const auth = useAuth()
+const route = useRoute()
+const router = useRouter()
 const { showError } = useSocialFeedback()
 const { normalizeImage } = useFriendLinkImage()
 
@@ -238,7 +264,9 @@ const saving = ref(false)
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const selectedImageName = ref('')
 const editingLinkId = ref<string | null>(null)
+const editingApplicationId = ref<string | null>(null)
 const currentUser = computed(() => auth.user.value)
+const focusedApplicationId = ref<string | null>(null)
 const form = reactive({
 	name: '',
 	url: '',
@@ -256,6 +284,7 @@ const resetForm = () => {
 
 const cancelEdit = () => {
 	editingLinkId.value = null
+	editingApplicationId.value = null
 	resetForm()
 }
 
@@ -269,6 +298,18 @@ const loadItems = async () => {
 			'/api/friend-links/admin/items',
 		)
 		items.value = response.items
+		if (focusedApplicationId.value) {
+			await nextTick()
+			document
+				.getElementById(`friend-link-item-${focusedApplicationId.value}`)
+				?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+			const query = { ...route.query }
+			delete query.application
+			await router.replace({ query })
+			window.setTimeout(() => {
+				focusedApplicationId.value = null
+			}, 4000)
+		}
 	} catch (error) {
 		showError(error)
 	}
@@ -314,16 +355,33 @@ const approve = async (applicationId: string) => {
 }
 
 const startEdit = (item: AdminFriendLinkListItem) => {
-	if (item.type !== 'friend-link') {
-		return
-	}
-
-	editingLinkId.value = item.id
+	editingLinkId.value = item.type === 'friend-link' ? item.id : null
+	editingApplicationId.value =
+		item.type === 'pending-application' ? item.id : null
 	form.name = item.name
 	form.url = item.url
 	form.desc = item.desc
 	form.imageBase64 = item.imageBase64
 	selectedImageName.value = t('social.friendLinks.fields.keepCurrentImage')
+}
+
+const removeApplication = async (applicationId: string) => {
+	deletingId.value = applicationId
+
+	try {
+		await $fetch(`/api/friend-links/admin/applications/${applicationId}`, {
+			method: 'DELETE',
+		})
+		if (editingApplicationId.value === applicationId) {
+			cancelEdit()
+		}
+		await loadItems()
+		emit('updated')
+	} catch (error) {
+		showError(error)
+	} finally {
+		deletingId.value = null
+	}
 }
 
 const remove = async (friendLinkId: string) => {
@@ -354,7 +412,24 @@ const save = async () => {
 	saving.value = true
 
 	try {
-		if (editingLinkId.value) {
+		if (editingApplicationId.value) {
+			await $fetch(
+				`/api/friend-links/admin/applications/${editingApplicationId.value}/approve`,
+				{
+					method: 'POST',
+					body: {
+						name: form.name,
+						url: form.url,
+						desc: form.desc,
+						imageBase64:
+							typeof form.imageBase64 === 'string' &&
+							form.imageBase64.startsWith('data:image/')
+								? form.imageBase64
+								: null,
+					},
+				},
+			)
+		} else if (editingLinkId.value) {
 			await $fetch(`/api/friend-links/admin/links/${editingLinkId.value}`, {
 				method: 'PATCH',
 				body: {
@@ -400,6 +475,8 @@ watch(open, async (value) => {
 	}
 
 	await auth.ensureReady()
+	focusedApplicationId.value =
+		typeof route.query.application === 'string' ? route.query.application : null
 	await loadItems()
 })
 </script>

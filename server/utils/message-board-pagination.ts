@@ -8,6 +8,7 @@ export interface MessageBoardPaginationQuery {
 	pageSize: number
 	sort: MessageBoardSortOrder
 	pinFilter: MessageBoardPinFilter
+	focusCommentId: string | null
 }
 
 const DEFAULT_PAGE = 1
@@ -111,11 +112,13 @@ export const parseMessageBoardPagination = (
 	)
 	const sort = parseSortOrder(query)
 	const pinFilter = parsePinFilter(query)
+	const focusCommentId = readQueryString(query.comment)?.trim() || null
 
 	return {
 		page,
 		pageSize,
 		sort,
 		pinFilter,
+		focusCommentId,
 	}
 }

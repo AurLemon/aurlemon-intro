@@ -87,7 +87,7 @@
 				},
 				"language": {
 					"title": "中文母语者",
-					"subtitle": "CET-4 (~510) + JLPT N4",
+					"subtitle": "CET-4 / CET-6 / N4",
 					"type": "语言能力"
 				}
 			}
@@ -148,10 +148,18 @@
 		"actions": {
 			"close": "关闭",
 			"loginWithGithub": "使用 GitHub 登录",
+			"loginWithLinuxDo": "使用 Linux DO 登录",
+			"loginWithProvider": "使用 GitHub 或 Linux DO 登录",
+			"openLoginUserList": "登录用户列表",
 			"logout": "退出登录",
+			"save": "保存",
+			"connect": "绑定",
+			"disconnect": "解绑",
+			"confirmMerge": "确认合并账号",
+			"verifyEmail": "发送验证邮件",
+			"setPrimary": "设为主邮箱",
 			"refreshStatus": "刷新状态",
 			"openMessageBoard": "留言板",
-			"openGithubLoginUserList": "GitHub 登录用户列表",
 			"sendComment": "发送留言",
 			"reply": "回复",
 			"cancelReply": "取消回复",
@@ -177,11 +185,19 @@
 			"messageBoard": "留言板",
 			"siteLike": "点赞",
 			"siteLiked": "已点赞",
-			"githubLoginUserCount": "GitHub 登录人数"
+			"loginUserCount": "登录用户数"
 		},
 		"feedback": {
 			"authTitle": "需要登录",
-			"errorTitle": "操作未完成"
+			"errorTitle": "操作未完成",
+			"loginSuccessTitle": "登录成功",
+			"loginSuccessDescription": "已通过 {provider} 登录为 {handle}",
+			"connectSuccessTitle": "绑定成功",
+			"connectSuccessDescription": "已绑定 {provider}",
+			"profileSaveSuccessTitle": "资料已保存",
+			"mergeSuccessTitle": "账户合并成功",
+			"mergeSuccessDescription": "账户内容、登录方式、邮箱和会话已合并。",
+			"logoutSuccessTitle": "已退出登录"
 		},
 		"auth": {
 			"loggedIn": "已登录",
@@ -195,11 +211,40 @@
 			"emptyDesc": "等你来点第一个赞。",
 			"likedAt": "点赞日期：{date}"
 		},
-		"githubLogin": {
+		"loginUsers": {
 			"count": "{count}",
-			"listTitle": "GitHub 登录用户列表",
-			"emptyTitle": "暂无 GitHub 登录记录",
-			"emptyDesc": "还没有用户通过 GitHub 登录过。"
+			"listTitle": "登录用户列表",
+			"emptyTitle": "暂无登录用户",
+			"emptyDesc": "还没有用户登录过。"
+		},
+		"account": {
+			"title": "账户",
+			"open": "打开账户管理",
+			"headerLogin": "登录",
+			"openUserMenu": "打开用户菜单",
+			"chooseLoginProvider": "选择登录方式",
+			"settings": "账户设置",
+			"manage": "管理账户",
+			"loginDescription": "选择一个平台登录。首次登录会自动创建站内账户，之后可以绑定另一个平台。",
+			"profileTab": "个人信息",
+			"emailTab": "邮箱与通知",
+			"loginMethods": "登录方式",
+			"username": "用户名",
+			"usernameChangeHint": "用户名每 7 天仅可修改一次；仅修改大小写不受影响。",
+			"displayName": "显示名称",
+			"avatarSource": "头像来源",
+			"notificationLanguage": "邮件语言",
+			"notConnected": "未绑定",
+			"emailPlaceholder": "你的邮箱地址",
+			"emailNotificationUnavailable": "你还没有已验证的主邮箱，无法收到留言回复和友链审批通知。请在“邮箱与通知”中绑定邮箱。",
+			"verified": "已验证",
+			"unverified": "未验证",
+			"primary": "主邮箱",
+			"replyNotifications": "收到评论回复时发邮件",
+			"adminCommentNotifications": "有新留言时提醒我",
+			"adminFriendLinkNotifications": "有新友链申请时提醒我",
+			"mergeTitle": "发现另一个站内账户",
+			"mergeDescription": "该登录身份已经属于另一个账户。确认后会合并内容、身份、邮箱和会话；此操作会记录审计信息。"
 		},
 		"message": {
 			"title": "留言板",
@@ -209,7 +254,7 @@
 			"placeholder": "不好的评论我会删除。",
 			"replyPlaceholder": "回复 {login}",
 			"replyPlaceholderWithFloor": "回复 {login} #{floor}",
-			"loginRequiredTitle": "留言需要 GitHub 登录",
+			"loginRequiredTitle": "留言需要登录",
 			"loginRequiredDesc": "登录后才能发表评论、回复别人以及点赞评论。",
 			"emptyTitle": "还没有留言",
 			"emptyDesc": "不好的评论已经被我删除了。",
@@ -222,8 +267,8 @@
 		"friendLinks": {
 			"applyTitle": "申请友链",
 			"adminEntry": "管理员管理",
-			"applyReminder": "申请提交后，请务必发邮件提醒我审批 {mail}。网站暂未接入邮件提醒，不提醒我我不知道是否有人提交审批。我很友好的，请放心🥹。",
-			"loginRequiredTitle": "申请友链需要 GitHub 登录",
+			"applyReminder": "链接申请后会通知管理员，管理员通过友链后会给你回信哦！但如果没有绑定邮箱的话，就收不到信息了，最好绑一下。",
+			"loginRequiredTitle": "申请友链需要登录",
 			"loginRequiredDesc": "登录后才能提交友链申请。",
 			"adminTitle": "友链管理",
 			"adminRequiredTitle": "仅管理员可管理友链",
@@ -250,7 +295,7 @@
 		},
 		"errors": {
 			"generic": "请求没有成功，请稍后再试。",
-			"authRequired": "当前操作需要 GitHub 登录。",
+			"authRequired": "当前操作需要登录。",
 			"adminRequired": "当前账号没有管理员权限。",
 			"sessionExpired": "登录状态可能已经失效，请刷新状态或重新登录。",
 			"siteAlreadyLiked": "这个浏览器已经点过赞了。",
@@ -278,7 +323,33 @@
 			"invalidFriendLinkDesc": "友链简介不合法。",
 			"invalidImageBase64": "图片上传失败，或图片格式不正确。",
 			"imageTooLarge": "图片过大，请上传 3MB 以内的文件。",
-			"invalidFingerprint": "浏览器指纹无效，请刷新后重试。"
+			"invalidFingerprint": "浏览器指纹无效，请刷新后重试。",
+			"invalidOauthState": "登录状态校验失败，请重新发起登录。",
+			"linuxDoOauthNotConfigured": "站点暂未正确配置 Linux DO 登录。",
+			"linuxDoOauthTokenExchangeFailed": "Linux DO 授权码已失效，请重新登录。",
+			"linuxDoOauthUserPayloadInvalid": "Linux DO 返回的用户信息不完整。",
+			"linuxDoOauthCallbackFailed": "Linux DO 登录回调失败。",
+			"oauthConnectSessionChanged": "绑定期间登录状态已变化，请重新操作。",
+			"identityProviderAlreadyConnected": "当前账户已绑定该平台的另一个身份。",
+			"invalidUsername": "用户名只能包含字母、数字、下划线和连字符，长度为 1–39 位。",
+			"invalidUserDisplayName": "显示名称不能为空，且不能超过 64 个字符。",
+			"usernameTaken": "这个用户名已被使用。",
+			"usernameChangeCooldown": "用户名每 7 天只能修改一次。",
+			"invalidAvatarIdentity": "头像必须来自当前已绑定的身份。",
+			"verifiedPrimaryEmailRequired": "请先验证并设置主邮箱，再开启邮件通知。",
+			"invalidEmail": "邮箱地址格式不正确。",
+			"emailAlreadyInUse": "该邮箱已属于另一个账户。",
+			"emailVerificationRateLimited": "验证邮件发送过于频繁，请稍后再试。",
+			"emailVerificationInvalid": "邮箱验证链接无效或已过期。",
+			"emailNotFound": "邮箱不存在。",
+			"lastIdentityCannotDisconnect": "不能解绑最后一个登录方式。",
+			"identityNotFound": "该登录身份不存在。",
+			"mergeTicketInvalid": "账号合并确认已失效，请重新绑定。",
+			"mergeAccountNotFound": "待合并的账户不存在。",
+			"mergeProviderConflict": "两个账户在同一平台绑定了不同身份，无法自动合并。",
+			"invalidOauthProvider": "不支持该登录平台。",
+			"siteUrlNotConfigured": "站点公开地址尚未配置，暂时无法完成此操作。",
+			"accountDisabled": "该账户已被停用。"
 		}
 	}
 }
