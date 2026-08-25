@@ -18,8 +18,8 @@
 					skeleton-class="rounded-full"
 				/>
 			</div>
-			<div class="min-w-0 flex-1 space-y-2">
-				<div class="flex flex-wrap items-center gap-2">
+			<div class="min-w-0 flex-1 space-y-2.5">
+				<div class="flex flex-wrap items-center gap-x-2 gap-y-0.5">
 					<span
 						class="text-sm font-semibold text-slate-900 dark:text-slate-100"
 					>
@@ -27,9 +27,6 @@
 					</span>
 					<span class="text-xs text-slate-500 dark:text-slate-400">
 						@{{ item.username }}
-					</span>
-					<span class="text-xs font-mono text-slate-500 dark:text-slate-400">
-						#{{ item.floor }}
 					</span>
 					<span
 						v-if="item.isPinned"
@@ -64,9 +61,6 @@
 					>
 						<LinuxDoIcon class="h-4 w-4" />
 					</UButton>
-					<span class="text-xs text-slate-500 dark:text-slate-400">
-						{{ formatTime(item.createdAt) }}
-					</span>
 				</div>
 				<div v-if="editingId !== item.id" class="space-y-2">
 					<div
@@ -107,7 +101,15 @@
 						</UButton>
 					</div>
 				</div>
-				<div class="flex flex-wrap gap-0.5">
+				<div
+					ref="actionRowRef"
+					class="flex min-w-0 items-center gap-0 sm:gap-0.5"
+				>
+					<span
+						class="mr-1 shrink-0 text-xs text-slate-500 dark:text-slate-400 leading-[normal]"
+					>
+						{{ formatTime(item.createdAt) }}
+					</span>
 					<UTooltip
 						v-if="item.likedByUsernames.length > 0"
 						:delay-duration="50"
@@ -118,6 +120,7 @@
 								size="xs"
 								color="neutral"
 								variant="ghost"
+								class="px-1 sm:px-1.5"
 								@click="handleLike(item.id)"
 							>
 								<UIcon name="i-lucide-heart" class="h-4 w-4" />
@@ -150,6 +153,7 @@
 						size="xs"
 						color="neutral"
 						variant="ghost"
+						class="px-1 sm:px-1.5"
 						@click="handleLike(item.id)"
 					>
 						<UIcon name="i-lucide-heart" class="h-4 w-4" />
@@ -158,45 +162,103 @@
 						</span>
 					</UButton>
 					<UButton
+						v-if="shouldShowInlineReply"
 						size="xs"
 						color="neutral"
 						variant="ghost"
+						class="shrink-0 whitespace-nowrap leading-[normal]"
 						@click="handleReply(item)"
 					>
-						{{ t('social.actions.reply') }}
+						<span class="whitespace-nowrap leading-[normal]">{{
+							t('social.actions.reply')
+						}}</span>
 					</UButton>
-					<UButton
-						v-if="item.canEdit"
-						size="xs"
-						color="neutral"
-						variant="ghost"
-						:disabled="!canInteract || editingLoading"
-						@click="startEdit(item)"
-					>
-						{{ t('social.actions.edit') }}
-					</UButton>
-					<UButton
-						v-if="item.canDelete"
-						size="xs"
-						color="error"
-						variant="ghost"
-						:disabled="!canInteract || editingLoading || deletingLoading"
-						@click="handleDelete(item.id)"
-					>
-						{{ t('social.actions.delete') }}
-					</UButton>
-					<UButton
-						v-if="item.canPin"
-						size="xs"
-						color="neutral"
-						variant="ghost"
-						:disabled="pinningLoading || editingLoading"
-						@click="handleTogglePin(item)"
-					>
-						{{
-							t(item.isPinned ? 'social.actions.unpin' : 'social.actions.pin')
-						}}
-					</UButton>
+					<div class="ml-auto shrink-0">
+						<UPopover
+							:content="{ align: 'end', side: 'bottom' }"
+							:ui="{ content: 'z-[43110]' }"
+						>
+							<UButton
+								type="button"
+								size="xs"
+								color="neutral"
+								variant="ghost"
+								class="px-1 sm:px-1.5"
+								:aria-label="t('social.actions.moreCommentActions')"
+							>
+								<UIcon name="i-lucide-ellipsis" class="h-4 w-4" />
+							</UButton>
+
+							<template #content="{ close }">
+								<div class="flex min-w-36 flex-col gap-1 p-2">
+									<div
+										class="px-3 py-1.5 text-xs text-slate-500 dark:text-slate-400"
+									>
+										#{{ item.floor }}
+									</div>
+									<UButton
+										v-if="!shouldShowInlineReply"
+										type="button"
+										size="xs"
+										color="neutral"
+										variant="ghost"
+										class="w-full justify-start gap-2 rounded-lg px-3 py-2"
+										@click="handleMenuReply(item, close)"
+									>
+										<UIcon name="i-lucide-reply" class="h-4 w-4" />
+										{{ t('social.actions.reply') }}
+									</UButton>
+									<UButton
+										v-if="item.canEdit"
+										type="button"
+										size="xs"
+										color="neutral"
+										variant="ghost"
+										class="w-full justify-start gap-2 rounded-lg px-3 py-2"
+										:disabled="!canInteract || editingLoading"
+										@click="handleMenuEdit(item, close)"
+									>
+										<UIcon name="i-lucide-pencil" class="h-4 w-4" />
+										{{ t('social.actions.edit') }}
+									</UButton>
+									<UButton
+										v-if="item.canDelete"
+										type="button"
+										size="xs"
+										color="error"
+										variant="ghost"
+										class="w-full justify-start gap-2 rounded-lg px-3 py-2"
+										:disabled="
+											!canInteract || editingLoading || deletingLoading
+										"
+										@click="handleMenuDelete(item.id, close)"
+									>
+										<UIcon name="i-lucide-trash-2" class="h-4 w-4" />
+										{{ t('social.actions.delete') }}
+									</UButton>
+									<UButton
+										v-if="item.canPin"
+										type="button"
+										size="xs"
+										color="neutral"
+										variant="ghost"
+										class="w-full justify-start gap-2 rounded-lg px-3 py-2"
+										:disabled="pinningLoading || editingLoading"
+										@click="handleMenuTogglePin(item, close)"
+									>
+										<UIcon name="i-lucide-pin" class="h-4 w-4" />
+										{{
+											t(
+												item.isPinned
+													? 'social.actions.unpin'
+													: 'social.actions.pin',
+											)
+										}}
+									</UButton>
+								</div>
+							</template>
+						</UPopover>
+					</div>
 				</div>
 				<div
 					v-if="replyingToId === item.id && depth > 0"
@@ -350,11 +412,14 @@ const linuxDoIdentity = computed(() =>
 
 const REPLY_PAGE_SIZE = 3
 const REPLY_PREVIEW_COUNT = 1
+const NESTED_REPLY_INLINE_MIN_WIDTH = 300
 const replyExpanded = ref(false)
 const replyPage = ref(1)
 const replyAreaRef = ref<HTMLElement | null>(null)
 const replyComposerRef = ref<HTMLElement | null>(null)
 const replyAreaHeight = ref('0px')
+const actionRowRef = ref<HTMLElement | null>(null)
+const actionRowWidth = ref(0)
 
 const replyTotalPages = computed(() =>
 	Math.max(1, Math.ceil(props.item.replies.length / REPLY_PAGE_SIZE)),
@@ -413,10 +478,12 @@ const replyAreaStyle = computed(() => ({
 }))
 
 const nextDepth = computed(() => Math.min(props.depth + 1, 1))
+const shouldShowInlineReply = computed(
+	() =>
+		props.depth === 0 || actionRowWidth.value >= NESTED_REPLY_INLINE_MIN_WIDTH,
+)
 const containerClass = computed(() =>
-	props.depth === 0
-		? 'space-y-4 rounded-2xl border border-slate-200/70 p-4 dark:border-slate-800 mb-2'
-		: 'space-y-3 py-0',
+	props.depth === 0 ? 'space-y-3 py-3 first:pt-0 last:pb-0' : 'space-y-3 py-0',
 )
 
 const formatTime = (value: string) => dayjs(value).format('YYYY-MM-DD HH:mm')
@@ -478,6 +545,11 @@ const handleReply = (item: MessageCommentItem) => {
 	emit('reply', item)
 }
 
+const handleMenuReply = (item: MessageCommentItem, close: () => void) => {
+	close()
+	handleReply(item)
+}
+
 const handleDelete = (id: string) => {
 	if (!props.canInteract) {
 		return
@@ -488,6 +560,21 @@ const handleDelete = (id: string) => {
 
 const handleTogglePin = (item: MessageCommentItem) => {
 	emit('toggle-pin', item.id, !item.isPinned)
+}
+
+const handleMenuEdit = (item: MessageCommentItem, close: () => void) => {
+	close()
+	startEdit(item)
+}
+
+const handleMenuDelete = (id: string, close: () => void) => {
+	close()
+	handleDelete(id)
+}
+
+const handleMenuTogglePin = (item: MessageCommentItem, close: () => void) => {
+	close()
+	handleTogglePin(item)
 }
 
 const scrollReplyComposerIntoView = async () => {
@@ -530,6 +617,7 @@ watch(
 )
 
 let replyAreaObserver: ResizeObserver | null = null
+let actionRowObserver: ResizeObserver | null = null
 
 watch(
 	() => props.focusedCommentId,
@@ -594,8 +682,31 @@ watch(
 	{ flush: 'post', immediate: true },
 )
 
+watch(
+	() => actionRowRef.value,
+	(element) => {
+		actionRowObserver?.disconnect()
+		actionRowObserver = null
+
+		if (!import.meta.client || !element) {
+			return
+		}
+
+		const syncActionRowWidth = () => {
+			actionRowWidth.value = element.clientWidth
+		}
+
+		actionRowObserver = new ResizeObserver(syncActionRowWidth)
+		actionRowObserver.observe(element)
+		syncActionRowWidth()
+	},
+	{ flush: 'post', immediate: true },
+)
+
 onBeforeUnmount(() => {
 	replyAreaObserver?.disconnect()
 	replyAreaObserver = null
+	actionRowObserver?.disconnect()
+	actionRowObserver = null
 })
 </script>

@@ -89,7 +89,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import SiteMark from '~/components/branding/AurLemon.vue'
 import LoginUserCountButton from '~/components/footer/LoginUserCountButton.vue'
@@ -147,9 +147,7 @@ const loadMessageCount = async () => {
 	}
 }
 
-const openSiteLikeListFromMessage = async () => {
-	messageOpen.value = false
-	await nextTick()
+const openSiteLikeListFromMessage = () => {
 	siteLikeListOpen.value = true
 }
 

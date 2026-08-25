@@ -5,16 +5,32 @@
 			size="xs"
 			color="neutral"
 			variant="link"
-			class="gap-2 px-0 text-primary-600 hover:text-primary-700 dark:text-primary-300 dark:hover:text-primary-200"
+			class="min-w-0 max-w-full gap-1.5 px-0 text-primary-600 hover:text-primary-700 dark:text-primary-300 dark:hover:text-primary-200"
 		>
-			<UIcon name="i-lucide-log-in" class="h-4 w-4" />
-			<span class="leading-[normal]">
-				{{ t('social.actions.loginWithProvider') }}
+			<UIcon name="i-lucide-log-in" class="h-4 w-4 shrink-0" />
+			<span
+				v-if="t('social.actions.loginWithProviderPrefix')"
+				class="shrink-0 text-sm leading-[normal]"
+			>
+				{{ t('social.actions.loginWithProviderPrefix') }}
+			</span>
+			<span class="flex shrink-0 items-center gap-1">
+				<UIcon name="i-lucide-github" class="h-4 w-4" />
+				<span class="text-sm leading-[normal]">
+					{{ t('social.actions.loginWithProviderOr') }}
+				</span>
+				<LinuxDoIcon class="h-4 w-4" />
+			</span>
+			<span
+				v-if="t('social.actions.loginWithProviderSuffix')"
+				class="shrink-0 text-sm leading-[normal]"
+			>
+				{{ t('social.actions.loginWithProviderSuffix') }}
 			</span>
 		</UButton>
 
 		<template #content>
-			<div class="w-52 space-y-1 p-2">
+			<div class="w-56 max-w-[calc(100vw-2rem)] space-y-1 p-2">
 				<p class="px-3 py-2 text-xs text-slate-500 dark:text-slate-400">
 					{{ t('social.account.chooseLoginProvider') }}
 				</p>
@@ -22,25 +38,29 @@
 					type="button"
 					color="neutral"
 					variant="ghost"
-					class="w-full justify-start gap-2 rounded-lg px-3 py-2 text-sm"
+					class="w-full min-w-0 justify-start gap-2 rounded-lg px-3 py-2 text-left text-sm whitespace-nowrap"
 					:loading="loginProvider === 'GITHUB'"
 					:disabled="Boolean(loginProvider)"
 					@click="startLogin('GITHUB')"
 				>
 					<UIcon name="i-lucide-github" class="h-4 w-4" />
-					{{ t('social.actions.loginWithGithub') }}
+					<span class="min-w-0 flex-1 truncate text-left">
+						{{ t('social.actions.loginWithGithub') }}
+					</span>
 				</UButton>
 				<UButton
 					type="button"
 					color="neutral"
 					variant="ghost"
-					class="w-full justify-start gap-2 rounded-lg px-3 py-2 text-sm"
+					class="w-full min-w-0 justify-start gap-2 rounded-lg px-3 py-2 text-left text-sm whitespace-nowrap"
 					:loading="loginProvider === 'LINUX_DO'"
 					:disabled="Boolean(loginProvider)"
 					@click="startLogin('LINUX_DO')"
 				>
 					<LinuxDoIcon class="h-4 w-4" />
-					{{ t('social.actions.loginWithLinuxDo') }}
+					<span class="min-w-0 flex-1 truncate text-left">
+						{{ t('social.actions.loginWithLinuxDo') }}
+					</span>
 				</UButton>
 			</div>
 		</template>
@@ -54,16 +74,19 @@
 			type="button"
 			:class="
 				compact
-					? 'flex items-center gap-2 text-sm text-slate-700 dark:text-slate-200'
-					: 'flex w-full flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-slate-50/80 px-3 py-2 text-left dark:border-slate-700 dark:bg-slate-800/70'
+					? 'flex min-w-0 max-w-full items-center gap-2 text-sm text-slate-700 transition-opacity hover:opacity-80 dark:text-slate-200'
+					: 'flex w-full flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-slate-50/80 px-3 py-2 text-left transition-opacity hover:opacity-80 dark:border-slate-700 dark:bg-slate-800/70'
 			"
 			:aria-label="t('social.account.openUserMenu')"
 		>
 			<span class="flex min-w-0 items-center gap-1.5">
-				<img
+				<SkeletonImage
 					:src="currentUser.avatarUrl"
 					:alt="currentUser.displayName"
-					class="h-5.5 w-5.5 rounded-full object-cover"
+					class="h-5.5 w-5.5 shrink-0"
+					image-class="h-full w-full rounded-full object-cover"
+					skeleton-class="rounded-full"
+					loading="eager"
 				/>
 				<span class="truncate leading-[normal]">{{
 					compact

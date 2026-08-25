@@ -10,33 +10,26 @@
 		}"
 	>
 		<template #body>
-			<div
-				:style="contentWrapperStyle"
-				:class="
-					animateHeight
-						? 'overflow-hidden transition-[height] duration-300 ease-out'
-						: 'overflow-hidden transition-none'
-				"
-			>
-				<div
-					ref="contentRef"
-					class="space-y-4"
-					:class="contentTransitioning ? 'site-like-content-transition' : ''"
-				>
+			<AnimatedModalBody>
+				<div class="space-y-4">
 					<UAlert
 						v-if="!loading && !items.length"
 						color="neutral"
 						variant="soft"
 						:title="t('social.siteLike.emptyTitle')"
 						:description="t('social.siteLike.emptyDesc')"
+						:class="contentTransitioning ? 'site-like-content-transition' : ''"
 					/>
 					<div
 						v-else
 						ref="listRef"
-						class="space-y-2 max-h-[60vh] overflow-y-auto pr-1"
+						class="space-y-3.5 lg:space-y-2 max-h-[60vh] overflow-y-auto pr-1"
+						:class="contentTransitioning ? 'site-like-content-transition' : ''"
 					>
 						<div v-for="item in items" :key="item.likeId" class="">
-							<div class="flex items-center gap-3">
+							<div
+								class="flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-3"
+							>
 								<UIcon
 									name="i-lucide-heart"
 									class="h-4 w-4 shrink-0 text-red-500"
@@ -109,7 +102,7 @@
 						</UButton>
 					</div>
 				</div>
-			</div>
+			</AnimatedModalBody>
 		</template>
 	</UModal>
 </template>
@@ -133,10 +126,8 @@ const items = ref<SiteLikeListItem[]>([])
 const loading = ref(false)
 const currentPage = ref(1)
 const pageSize = 20
-const contentHeight = ref<number | null>(null)
-const animateHeight = ref(false)
 const contentTransitioning = ref(false)
-const pagination = ref<SiteLikeListResponse['pagination']>({
+const createInitialPagination = (): SiteLikeListResponse['pagination'] => ({
 	page: 1,
 	pageSize,
 	totalPages: 1,
@@ -144,30 +135,14 @@ const pagination = ref<SiteLikeListResponse['pagination']>({
 	hasPrev: false,
 	hasNext: false,
 })
+const pagination = ref<SiteLikeListResponse['pagination']>(
+	createInitialPagination(),
+)
 const listRef = ref<HTMLElement | null>(null)
-const contentRef = ref<HTMLElement | null>(null)
 let contentTransitionFrame = 0
 let contentTransitionTimer: ReturnType<typeof setTimeout> | null = null
 
-const contentWrapperStyle = computed(() => ({
-	height: contentHeight.value === null ? 'auto' : `${contentHeight.value}px`,
-}))
-
 const formatTime = (value: string) => dayjs(value).format('YYYY-MM-DD HH:mm')
-
-const updateContentHeight = () => {
-	const element = contentRef.value
-
-	if (!element) {
-		return
-	}
-
-	const nextHeight = element.offsetHeight
-	contentHeight.value = nextHeight
-	if (!animateHeight.value) return
-
-	triggerContentTransition()
-}
 
 const triggerContentTransition = (): void => {
 	cancelAnimationFrame(contentTransitionFrame)
@@ -196,7 +171,7 @@ const loadItems = async () => {
 		pagination.value = response.pagination
 		currentPage.value = response.pagination.page
 		await nextTick()
-		updateContentHeight()
+		triggerContentTransition()
 		listRef.value?.scrollTo({
 			top: 0,
 			behavior: 'smooth',
@@ -231,17 +206,11 @@ watch(open, async (value) => {
 		return
 	}
 
-	animateHeight.value = false
-	contentHeight.value = null
 	currentPage.value = 1
+	items.value = []
+	pagination.value = createInitialPagination()
 	await loadItems()
 	emit('refresh-summary')
-	await nextTick()
-	if (import.meta.client) {
-		requestAnimationFrame(() => {
-			animateHeight.value = true
-		})
-	}
 })
 
 onBeforeUnmount(() => {
