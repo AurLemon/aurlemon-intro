@@ -360,7 +360,9 @@ const createUserForIdentity = async (
 				usernameNormalized: normalize(username),
 				displayName: identity.displayName ?? identity.providerUsername,
 				role: shouldBootstrapAdmin ? UserRole.ADMIN : UserRole.USER,
-				notificationPreference: { create: {} },
+				notificationPreference: {
+					create: { replyEmailEnabled: true },
+				},
 				identities: {
 					create: {
 						provider: identity.provider,

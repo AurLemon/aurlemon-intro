@@ -55,7 +55,7 @@ export const getAccountDetails = async (
 		}),
 		prisma.userNotificationPreference.upsert({
 			where: { userId: currentUser.id },
-			create: { userId: currentUser.id },
+			create: { userId: currentUser.id, replyEmailEnabled: true },
 			update: {},
 			select: preferenceSelect,
 		}),
@@ -163,25 +163,6 @@ export const updateNotificationPreferences = async (
 	currentUser: AuthUser,
 	payload: Partial<AccountNotificationPreference>,
 ): Promise<AccountNotificationPreference> => {
-	const primaryEmail = await prisma.userEmail.findFirst({
-		where: {
-			userId: currentUser.id,
-			isPrimary: true,
-			verifiedAt: { not: null },
-		},
-		select: { id: true },
-	})
-	const wantsAnyEnabled =
-		payload.replyEmailEnabled === true ||
-		payload.adminCommentEmailEnabled === true ||
-		payload.adminFriendLinkEmailEnabled === true
-
-	if (wantsAnyEnabled && !primaryEmail) {
-		throw createError({
-			statusCode: 400,
-			statusMessage: 'VERIFIED_PRIMARY_EMAIL_REQUIRED',
-		})
-	}
 	if (
 		!currentUser.isAdmin &&
 		(payload.adminCommentEmailEnabled === true ||
@@ -194,7 +175,7 @@ export const updateNotificationPreferences = async (
 		where: { userId: currentUser.id },
 		create: {
 			userId: currentUser.id,
-			replyEmailEnabled: payload.replyEmailEnabled ?? false,
+			replyEmailEnabled: payload.replyEmailEnabled ?? true,
 			adminCommentEmailEnabled: currentUser.isAdmin
 				? (payload.adminCommentEmailEnabled ?? false)
 				: false,
@@ -384,14 +365,6 @@ export const deleteAccountEmail = async (
 			})
 			return
 		}
-		await tx.userNotificationPreference.updateMany({
-			where: { userId: currentUser.id },
-			data: {
-				replyEmailEnabled: false,
-				adminCommentEmailEnabled: false,
-				adminFriendLinkEmailEnabled: false,
-			},
-		})
 	})
 	return { id: email.id }
 }

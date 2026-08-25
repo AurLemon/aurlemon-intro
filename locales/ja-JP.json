@@ -336,7 +336,6 @@
 			"usernameTaken": "このユーザー名はすでに使用されています。",
 			"usernameChangeCooldown": "ユーザー名は7日に1回だけ変更できます。",
 			"invalidAvatarIdentity": "連携済みのログイン情報からアバターを選んでください。",
-			"verifiedPrimaryEmailRequired": "通知を有効にする前にメールを確認し、メインに設定してください。",
 			"invalidEmail": "メールアドレスの形式が正しくありません。",
 			"emailAlreadyInUse": "このメールアドレスは別のアカウントで使用されています。",
 			"emailVerificationRateLimited": "確認メールの送信回数が多すぎます。しばらくしてから再試行してください。",

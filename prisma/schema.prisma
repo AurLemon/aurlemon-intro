@@ -125,7 +125,7 @@ model UserEmail {
 
 model UserNotificationPreference {
   userId                      String  @id
-  replyEmailEnabled           Boolean @default(false)
+  replyEmailEnabled           Boolean @default(true)
   adminCommentEmailEnabled    Boolean @default(false)
   adminFriendLinkEmailEnabled Boolean @default(false)
   user                        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
