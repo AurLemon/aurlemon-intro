@@ -1,8 +1,10 @@
 ---
-updatedAt: 2026-06-29T01:50:11+08:00
+updatedAt: 2026-08-25T16:58:57+08:00
 ---
 
 2026 年 4 月的时候花时间重构了一下网站，之前的内容太乱了，感觉也没必要暴露太多自己的信息。总之，UI 方案试了很多，最终迭代成了现在这版。本来还打算给网站加个侧栏的，结果总体观感一般就删掉了，克制一点好啊。
+
+2026 年 8 月再立个 Flag，打算把自己的项目作品集、音乐偏好、ACGN 做成个卡片或者以某种可视化形式放进来，最近碰了点 Three.js 感觉很有趣，反正不是纯文字就行。还有个 Flag 就是来路页面的拆分。
 
 ## 内容来源
 
@@ -41,4 +43,4 @@ updatedAt: 2026-06-29T01:50:11+08:00
 - Nuxt 4 + TypeScript
 - Nuxt UI + TailwindCSS + Motion-V
 - MiSans + Rubik / 思源宋体 + Literata
-- GitHub Actions + 腾讯云 EdgeOne
+- GitHub Actions + CNB + 腾讯云 EdgeOne

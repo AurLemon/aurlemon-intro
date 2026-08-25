@@ -1,8 +1,10 @@
 ---
-updatedAt: 2026-06-29T01:50:11+08:00
+updatedAt: 2026-08-25T16:58:57+08:00
 ---
 
 Around April 2026, I spent some time refactoring this site. The old content was too messy, and I did not feel there was any need to expose that much about myself. Anyway, I tried a lot of UI directions, and after several iterations this is where it landed. I even planned to add a sidebar at first, but the overall look was just mediocre, so I removed it. Better to stay restrained.
+
+In August 2026, I am planting another flag: I want to turn my project portfolio, music preferences, and ACGN interests into cards or some kind of visualized presentation. I have been playing with Three.js lately and find it quite interesting. As long as it is not just plain text, I am happy. Another flag is to split the Journey page into separate parts.
 
 ## Where The Content Comes From
 
@@ -41,4 +43,4 @@ The repository is [here](https://github.com/AurLemon/aurlemon-intro). This site 
 - Nuxt 4 + TypeScript
 - Nuxt UI + TailwindCSS + Motion-V
 - MiSans + Rubik / Source Han Serif + Literata
-- GitHub Actions + Tencent Cloud EdgeOne
+- GitHub Actions + CNB + Tencent Cloud EdgeOne

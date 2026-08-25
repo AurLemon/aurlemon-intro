@@ -1,8 +1,10 @@
 ---
-updatedAt: 2026-06-29T01:50:11+08:00
+updatedAt: 2026-08-25T16:58:57+08:00
 ---
 
 2026 年 4 月ごろ、時間を取ってサイトを少し作り直した。前の内容はあまりにも散らかっていたし、自分の情報をそこまで露出する必要もないと感じた。とにかく UI 案はいろいろ試して、最終的に今の版に落ち着いた。最初はサイドバーも付けるつもりだったが、全体の見た目がいまひとつだったので消した。少し抑えたほうがいい。
+
+2026 年 8 月、また一つ Flag を立てる。自分のプロジェクトのポートフォリオ、音楽の好み、ACGN の趣味をカードか何らかのビジュアル表現にして追加したい。最近 Three.js を少し触っていて、なかなか面白い。とにかく、ただの文章でなければいい。もう一つの Flag は、「来路」ページを分割すること。
 
 ## 内容の出どころ
 
@@ -41,4 +43,4 @@ Anthropic がすぐ封号してくる件はひとまず置いて、公平に見�
 - Nuxt 4 + TypeScript
 - Nuxt UI + TailwindCSS + Motion-V
 - MiSans + Rubik / Source Han Serif + Literata
-- GitHub Actions + Tencent Cloud EdgeOne
+- GitHub Actions + CNB + Tencent Cloud EdgeOne
