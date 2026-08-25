@@ -22,18 +22,24 @@
 							:key="item.id"
 							class="flex items-center gap-3 rounded-xl p-2"
 						>
+							<SkeletonImage
+								v-if="item.avatarUrl"
+								:src="item.avatarUrl"
+								:alt="item.displayUsername"
+								class="h-8 w-8 shrink-0 overflow-hidden rounded-full border border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800"
+								:image-class="
+									[
+										'h-full w-full object-cover',
+										!item.canViewDetails ? 'blur-sm' : '',
+									].join(' ')
+								"
+								skeleton-class="rounded-full"
+							/>
 							<div
+								v-else
 								class="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full border border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800"
 							>
-								<img
-									v-if="item.avatarUrl"
-									:src="item.avatarUrl"
-									:alt="item.displayUsername"
-									class="h-full w-full object-cover"
-									:class="{ 'blur-sm': !item.canViewDetails }"
-								/>
 								<UIcon
-									v-else
 									name="i-lucide-user-round"
 									class="h-4 w-4 text-slate-500"
 								/>

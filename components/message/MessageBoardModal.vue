@@ -7,7 +7,7 @@
 			overlay: 'z-[43000]',
 			content:
 				'z-[43010] flex h-[calc(100dvh-2rem)] flex-col overflow-hidden sm:h-[calc(100dvh-4rem)]',
-			body: 'min-h-0 flex h-full flex-1 overflow-hidden',
+			body: 'min-h-0 flex h-full flex-1 overflow-hidden p-0!',
 		}"
 	>
 		<template #actions>
@@ -40,98 +40,123 @@
 		</template>
 
 		<template #body>
-			<div class="flex min-h-0 h-full flex-1 flex-col gap-4 overflow-hidden">
+			<div class="relative min-h-0 h-full flex-1 overflow-hidden">
 				<div
 					ref="commentsScrollRef"
-					class="min-h-0 flex-1 overflow-y-auto space-y-4 pr-1 scroll-smooth"
+					class="message-board-scroll absolute inset-0 overflow-y-auto scroll-smooth"
+					@scroll.passive="syncScrollCues"
 				>
-					<UAlert
-						v-if="!items.length"
-						color="neutral"
-						variant="soft"
-						:title="t('social.message.emptyTitle')"
-						:description="t('social.message.emptyDesc')"
-					/>
-					<div v-else class="space-y-4">
-						<MessageThread
-							v-for="item in items"
-							:key="item.id"
-							:item="item"
-							:replying-to-id="replyingToId"
-							:reply-loading="submitting"
-							:editing-id="editingId"
-							:editing-loading="editing"
-							:pinning-loading="pinning"
-							:deleting-loading="deleting"
-							:can-interact="isLoggedIn"
-							:focused-comment-id="focusedCommentId"
-							:depth="0"
-							@like="likeComment"
-							@reply="startReply"
-							@cancel-reply="cancelReply"
-							@submit-reply="submitReply"
-							@start-edit="startEdit"
-							@cancel-edit="cancelEdit"
-							@submit-edit="submitEdit"
-							@toggle-pin="togglePinComment"
-							@delete="deleteComment"
+					<div class="px-4 pt-4 sm:px-6 sm:pt-6" :style="commentsContentStyle">
+						<UAlert
+							v-if="!items.length"
+							color="neutral"
+							variant="soft"
+							:title="t('social.message.emptyTitle')"
+							:description="t('social.message.emptyDesc')"
 						/>
+						<div v-else>
+							<MessageThread
+								v-for="item in items"
+								:key="item.id"
+								:item="item"
+								:replying-to-id="replyingToId"
+								:reply-loading="submitting"
+								:editing-id="editingId"
+								:editing-loading="editing"
+								:pinning-loading="pinning"
+								:deleting-loading="deleting"
+								:can-interact="isLoggedIn"
+								:focused-comment-id="focusedCommentId"
+								:depth="0"
+								@like="likeComment"
+								@reply="startReply"
+								@cancel-reply="cancelReply"
+								@submit-reply="submitReply"
+								@start-edit="startEdit"
+								@cancel-edit="cancelEdit"
+								@submit-edit="submitEdit"
+								@toggle-pin="togglePinComment"
+								@delete="deleteComment"
+							/>
+						</div>
+						<div
+							v-if="pagination.totalPages > 1"
+							class="mt-3 flex items-center justify-end gap-2"
+						>
+							<UButton
+								size="xs"
+								color="neutral"
+								variant="ghost"
+								:disabled="!pagination.hasPrev"
+								@click="goPrevPage"
+							>
+								{{ t('social.actions.prevPage') }}
+							</UButton>
+							<span class="text-xs text-slate-500 dark:text-slate-400">
+								{{
+									t('social.message.pageInfo', {
+										page: pagination.page,
+										total: pagination.totalPages,
+									})
+								}}
+							</span>
+							<UButton
+								size="xs"
+								color="neutral"
+								variant="ghost"
+								:disabled="!pagination.hasNext"
+								@click="goNextPage"
+							>
+								{{ t('social.actions.nextPage') }}
+							</UButton>
+						</div>
 					</div>
 				</div>
 				<div
-					v-if="pagination.totalPages > 1"
-					class="flex items-center justify-end gap-2"
+					v-show="canScrollUp"
+					class="pointer-events-none absolute inset-x-0 top-0 z-10 h-8 bg-default/85 backdrop-blur-sm mask-[linear-gradient(to_bottom,black_0%,rgba(0,0,0,0.55)_45%,transparent_100%)]"
+				/>
+				<div
+					ref="composerAreaRef"
+					class="absolute inset-x-0 -bottom-px z-10 bg-default px-4 pt-2 pb-4 sm:px-6 sm:pb-6"
 				>
-					<UButton
-						size="xs"
-						color="neutral"
-						variant="ghost"
-						:disabled="!pagination.hasPrev"
-						@click="goPrevPage"
-					>
-						{{ t('social.actions.prevPage') }}
-					</UButton>
-					<span class="text-xs text-slate-500 dark:text-slate-400">
-						{{
-							t('social.message.pageInfo', {
-								page: pagination.page,
-								total: pagination.totalPages,
-							})
-						}}
-					</span>
-					<UButton
-						size="xs"
-						color="neutral"
-						variant="ghost"
-						:disabled="!pagination.hasNext"
-						@click="goNextPage"
-					>
-						{{ t('social.actions.nextPage') }}
-					</UButton>
-				</div>
-				<MessageComposer
-					:loading="submitting"
-					:disabled="!isLoggedIn"
-					@submit="submitRootComment"
-				>
-					<template #leading>
-						<AccountStatusBar compact />
-					</template>
-					<template #before-submit>
-						<UButton
-							color="neutral"
-							class="gap-1 shrink-0"
-							variant="link"
-							:aria-label="t('social.actions.openSiteLikeList')"
-							@click="emit('open-site-like-list')"
+					<div
+						class="pointer-events-none absolute inset-x-0 -top-12 h-[calc(3rem+2px)] bg-default/90 backdrop-blur-md mask-[linear-gradient(to_bottom,transparent_0%,rgba(0,0,0,0.18)_20%,rgba(0,0,0,0.58)_60%,black_100%)]"
+					/>
+					<Transition name="message-scroll-cue">
+						<UIcon
+							v-if="canScrollDown"
+							name="i-lucide-chevrons-down"
+							class="message-scroll-cue pointer-events-none absolute left-1/2 -top-8 h-4 w-4 text-muted"
+							aria-hidden="true"
+						/>
+					</Transition>
+					<div class="relative">
+						<MessageComposer
+							:loading="submitting"
+							:disabled="!isLoggedIn"
+							@submit="submitRootComment"
 						>
-							<UIcon name="i-lucide-heart" class="h-4.5 w-4.5" />
-							<span class="hidden leading-[normal] sm:inline">
-								{{ t('social.actions.openSiteLikeList') }}
-							</span>
-						</UButton>
-					</template>
-				</MessageComposer>
+							<template #leading>
+								<AccountStatusBar compact />
+							</template>
+							<template #before-submit>
+								<UButton
+									color="neutral"
+									class="gap-1 shrink-0"
+									variant="link"
+									:aria-label="t('social.actions.openSiteLikeList')"
+									@click="emit('open-site-like-list')"
+								>
+									<UIcon name="i-lucide-heart" class="h-4.5 w-4.5" />
+									<span class="hidden leading-[normal] sm:inline">
+										{{ t('social.actions.openSiteLikeList') }}
+									</span>
+								</UButton>
+							</template>
+						</MessageComposer>
+					</div>
+				</div>
 			</div>
 		</template>
 	</UModal>
@@ -159,7 +184,7 @@ const { showError } = useSocialFeedback()
 
 const items = ref<MessageCommentItem[]>([])
 const currentPage = ref(1)
-const pageSize = 6
+const pageSize = 10
 const pagination = ref<MessageBoardResponse['pagination']>({
 	page: 1,
 	pageSize,
@@ -181,7 +206,16 @@ const isLoggedIn = computed(() => auth.isLoggedIn.value)
 const replyingToId = computed(() => replyTarget.value?.id ?? null)
 const editingId = computed(() => editingTarget.value?.id ?? null)
 const commentsScrollRef = ref<HTMLElement | null>(null)
+const composerAreaRef = ref<HTMLElement | null>(null)
+const composerAreaHeight = ref(0)
+const canScrollUp = ref(false)
+const canScrollDown = ref(false)
 const focusedCommentId = ref<string | null>(null)
+const commentsContentStyle = computed(() => ({
+	paddingBottom: composerAreaHeight.value
+		? `${composerAreaHeight.value + 20}px`
+		: '0px',
+}))
 const boardQuery = computed(() => ({
 	page: currentPage.value,
 	pageSize,
@@ -195,9 +229,27 @@ const scrollCommentsToTop = async () => {
 	}
 
 	await nextTick()
-	commentsScrollRef.value?.scrollTo({
+	const scrollArea = commentsScrollRef.value
+	if (!scrollArea || scrollArea.scrollTop <= 2) {
+		return
+	}
+
+	scrollArea.scrollTo({
 		top: 0,
 		behavior: 'smooth',
+	})
+
+	await new Promise<void>((resolve) => {
+		const waitForScrollEnd = () => {
+			if (scrollArea.scrollTop <= 2) {
+				resolve()
+				return
+			}
+
+			requestAnimationFrame(waitForScrollEnd)
+		}
+
+		requestAnimationFrame(waitForScrollEnd)
 	})
 }
 
@@ -215,6 +267,73 @@ const revealFocusedComment = async () => {
 	}, 4000)
 }
 
+const syncScrollCues = () => {
+	const scrollArea = commentsScrollRef.value
+	if (!scrollArea) {
+		canScrollUp.value = false
+		canScrollDown.value = false
+		return
+	}
+
+	const maxScrollTop = Math.max(
+		0,
+		scrollArea.scrollHeight - scrollArea.clientHeight,
+	)
+	canScrollUp.value = scrollArea.scrollTop > 2
+	canScrollDown.value =
+		maxScrollTop > 2 && scrollArea.scrollTop < maxScrollTop - 2
+}
+
+let composerAreaObserver: ResizeObserver | null = null
+let scrollAreaObserver: ResizeObserver | null = null
+
+const observeModalLayout = async () => {
+	composerAreaObserver?.disconnect()
+	composerAreaObserver = null
+	scrollAreaObserver?.disconnect()
+	scrollAreaObserver = null
+
+	if (!open.value || !import.meta.client) {
+		canScrollUp.value = false
+		canScrollDown.value = false
+		return
+	}
+
+	await nextTick()
+	const composerArea = composerAreaRef.value
+	const scrollArea = commentsScrollRef.value
+	if (!composerArea || !scrollArea) {
+		return
+	}
+
+	const syncComposerAreaHeight = () => {
+		composerAreaHeight.value = composerArea.offsetHeight
+		void nextTick(syncScrollCues)
+	}
+
+	composerAreaObserver = new ResizeObserver(syncComposerAreaHeight)
+	composerAreaObserver.observe(composerArea)
+	scrollAreaObserver = new ResizeObserver(syncScrollCues)
+	scrollAreaObserver.observe(scrollArea)
+	if (scrollArea.firstElementChild instanceof HTMLElement) {
+		scrollAreaObserver.observe(scrollArea.firstElementChild)
+	}
+	syncComposerAreaHeight()
+	syncScrollCues()
+}
+
+watch(open, () => void observeModalLayout(), {
+	immediate: true,
+	flush: 'post',
+})
+
+onBeforeUnmount(() => {
+	composerAreaObserver?.disconnect()
+	composerAreaObserver = null
+	scrollAreaObserver?.disconnect()
+	scrollAreaObserver = null
+})
+
 const setSortOrder = (next: MessageBoardSortOrder) => {
 	if (sortOrder.value === next) {
 		return
@@ -222,22 +341,25 @@ const setSortOrder = (next: MessageBoardSortOrder) => {
 
 	sortOrder.value = next
 	currentPage.value = 1
-	void refreshBoard()
+	void refreshBoard({ scrollToTop: true })
 }
 
-const refreshBoard = async () => {
+const refreshBoard = async ({ scrollToTop = false } = {}) => {
 	try {
 		await auth.ensureReady()
-		const response = await $fetch<MessageBoardResponse>('/api/messages', {
-			query: boardQuery.value,
-		})
+		const [response] = await Promise.all([
+			$fetch<MessageBoardResponse>('/api/messages', {
+				query: boardQuery.value,
+			}),
+			scrollToTop ? scrollCommentsToTop() : Promise.resolve(),
+		])
 		items.value = response.items
 		pagination.value = response.pagination
 		currentPage.value = response.pagination.page
 		auth.user.value = response.currentUser
 		if (focusedCommentId.value) {
 			void revealFocusedComment()
-		} else {
+		} else if (!scrollToTop) {
 			void scrollCommentsToTop()
 		}
 	} catch (error) {
@@ -434,7 +556,7 @@ const goPrevPage = () => {
 	}
 
 	currentPage.value -= 1
-	void refreshBoard()
+	void refreshBoard({ scrollToTop: true })
 }
 
 const goNextPage = () => {
@@ -443,7 +565,7 @@ const goNextPage = () => {
 	}
 
 	currentPage.value += 1
-	void refreshBoard()
+	void refreshBoard({ scrollToTop: true })
 }
 
 watch(open, async (value) => {
@@ -457,3 +579,33 @@ watch(open, async (value) => {
 	emit('refresh-message-count')
 })
 </script>
+
+<style scoped>
+.message-board-scroll {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+.message-board-scroll::-webkit-scrollbar {
+	display: none;
+	width: 0;
+	height: 0;
+}
+
+.message-scroll-cue {
+	transform: translateX(-50%);
+}
+
+.message-scroll-cue-enter-active,
+.message-scroll-cue-leave-active {
+	transition:
+		opacity 180ms ease,
+		transform 180ms ease;
+}
+
+.message-scroll-cue-enter-from,
+.message-scroll-cue-leave-to {
+	opacity: 0;
+	transform: translate(-50%, 4px);
+}
+</style>

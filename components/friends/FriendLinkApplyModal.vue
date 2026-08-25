@@ -107,8 +107,8 @@
 		</template>
 
 		<template #footer>
-			<AccountStatusBar class="shrink-0" compact />
-			<div class="flex w-full justify-end gap-3">
+			<AccountStatusBar class="min-w-0 flex-1" compact />
+			<div class="flex shrink-0 justify-end gap-3">
 				<UButton color="neutral" variant="ghost" @click="open = false">
 					{{ t('social.actions.close') }}
 				</UButton>

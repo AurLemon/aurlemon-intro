@@ -14,10 +14,10 @@
 				$slots.leading ? 'justify-between' : 'justify-end',
 			]"
 		>
-			<div v-if="$slots.leading" class="min-w-0">
+			<div v-if="$slots.leading" class="min-w-0 flex-1">
 				<slot name="leading" />
 			</div>
-			<div class="flex items-center justify-end gap-2 sm:gap-3">
+			<div class="flex shrink-0 items-center justify-end gap-2 sm:gap-3">
 				<UButton
 					v-if="replyingTo"
 					color="neutral"
@@ -63,7 +63,7 @@ const { t } = useI18n({ useScope: 'global' })
 const draft = ref('')
 const isMobile = ref(false)
 
-const textareaRows = computed(() => (isMobile.value ? 6 : 5))
+const textareaRows = computed(() => (isMobile.value ? 4 : 5))
 const placeholderText = computed(() => {
 	if (!props.replyingTo) {
 		return t('social.message.placeholder')

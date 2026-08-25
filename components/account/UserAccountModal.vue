@@ -11,7 +11,7 @@
 		}"
 	>
 		<template #actions>
-			<div role="tablist" class="flex min-w-0 flex-1 gap-1 pe-8">
+			<div role="tablist" class="flex min-w-0 flex-1 gap-1 pe-12">
 				<UButton
 					v-for="tab in tabs"
 					:key="tab.value"
@@ -21,7 +21,7 @@
 					color="neutral"
 					:variant="activeTab === tab.value ? 'soft' : 'ghost'"
 					:aria-selected="activeTab === tab.value"
-					class="min-w-0 flex-1 justify-center sm:flex-none"
+					class="min-w-0 justify-center sm:flex-none"
 					@click="activeTab = tab.value"
 				>
 					{{ tab.label }}
