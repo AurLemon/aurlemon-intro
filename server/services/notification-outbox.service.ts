@@ -85,11 +85,7 @@ const projectCommentCreated = async (
 	const recipients = new Set<string>()
 	const replyUser = comment.parent?.author
 
-	if (
-		replyUser &&
-		replyUser.id !== payload.authorUserId &&
-		replyUser.notificationPreference?.replyEmailEnabled
-	) {
+	if (replyUser && replyUser.notificationPreference?.replyEmailEnabled) {
 		const email = replyUser.emails.find(
 			(item) => item.isPrimary && Boolean(item.verifiedAt),
 		)
@@ -118,7 +114,6 @@ const projectCommentCreated = async (
 		where: {
 			role: UserRole.ADMIN,
 			status: UserStatus.ACTIVE,
-			id: { not: payload.authorUserId },
 			notificationPreference: { adminCommentEmailEnabled: true },
 		},
 		include: { emails: true },

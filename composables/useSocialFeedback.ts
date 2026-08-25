@@ -50,7 +50,6 @@ const ERROR_KEY_MAP: Record<string, string> = {
 	USERNAME_TAKEN: 'social.errors.usernameTaken',
 	USERNAME_CHANGE_COOLDOWN: 'social.errors.usernameChangeCooldown',
 	INVALID_AVATAR_IDENTITY: 'social.errors.invalidAvatarIdentity',
-	VERIFIED_PRIMARY_EMAIL_REQUIRED: 'social.errors.verifiedPrimaryEmailRequired',
 	INVALID_EMAIL: 'social.errors.invalidEmail',
 	EMAIL_ALREADY_IN_USE: 'social.errors.emailAlreadyInUse',
 	EMAIL_VERIFICATION_RATE_LIMITED: 'social.errors.emailVerificationRateLimited',

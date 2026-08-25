@@ -336,7 +336,6 @@
 			"usernameTaken": "这个用户名已被使用。",
 			"usernameChangeCooldown": "用户名每 7 天只能修改一次。",
 			"invalidAvatarIdentity": "头像必须来自当前已绑定的身份。",
-			"verifiedPrimaryEmailRequired": "请先验证并设置主邮箱，再开启邮件通知。",
 			"invalidEmail": "邮箱地址格式不正确。",
 			"emailAlreadyInUse": "该邮箱已属于另一个账户。",
 			"emailVerificationRateLimited": "验证邮件发送过于频繁，请稍后再试。",

@@ -336,7 +336,6 @@
 			"usernameTaken": "That username is already in use.",
 			"usernameChangeCooldown": "You can change your username only once every 7 days.",
 			"invalidAvatarIdentity": "The avatar must come from one of your connected identities.",
-			"verifiedPrimaryEmailRequired": "Verify and choose a primary email before enabling notifications.",
 			"invalidEmail": "The email address is invalid.",
 			"emailAlreadyInUse": "That email already belongs to another account.",
 			"emailVerificationRateLimited": "Verification emails are being requested too often. Please try again later.",

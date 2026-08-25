@@ -422,7 +422,9 @@ const upsertLegacyUser = async (
 			role: manifestUser.role === 'ADMIN' ? UserRole.ADMIN : UserRole.USER,
 			isLegacyMigrated: true,
 			createdAt,
-			notificationPreference: { create: {} },
+			notificationPreference: {
+				create: { replyEmailEnabled: true },
+			},
 		},
 		update: {
 			role: manifestUser.role === 'ADMIN' ? UserRole.ADMIN : undefined,
