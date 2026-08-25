@@ -1,5 +1,5 @@
 ---
-updatedAt: 2026-07-07T23:35:41+08:00
+updatedAt: 2026-08-25T16:58:57+08:00
 ---
 
 This page is called Journey, but most of it is really my own black history. Some parts may feel bleak or heavy. So I want to say this up front: my life is not made only of bad things. I am only selecting a part of it here to remind myself.
@@ -333,7 +333,7 @@ Liz and the Blue Bird taught me that letting go is also a form of love. Maybe I 
 ::image-carousel{height="20rem" width-mode="auto" mobile-height="10rem" images='[{"src":"hydroline_screenshots.webp","caption":"Hydroline screenshots."},{"src":"graduation_design_1.webp","caption":"The first version of my graduation project, a failed little car."},{"src":"graduation_design_2.webp","caption":"The second version of my graduation project, something barely acceptable to submit."},{"src":"graduation_design_3.webp","caption":"The Electron program paired with the graduation project."}]'}
 ::
 
-### The Weight of Expectations
+### Being Seen
 
 In early May 2026, after finishing the graduation project but before starting the thesis, I accidentally dug another embarrassing memory out of my email inbox. In July 2025, a senior I had never met became interested in me after seeing a Wiki.js CSS script I had written. After visiting my website, he wanted to bring me into a project and work with me. In his email he said it was a new project of medium scale. He had only reached out to me in a try-it-and-see way because he had asked many people and been rejected by all of them. But from my writing, he said, he could see my enthusiasm, my aesthetics, and my desire to build things, and he hoped I would join him. Looking at it now, maybe he saw a shadow of his past self in me.
 
@@ -347,9 +347,21 @@ He saw my enthusiasm and chose me, but back then I lacked the ability to keep th
 
 I remember that last year I was still in that excited beginner phase of technology. I naïvely believed that as long as I could break everything down and organize it in a way I approved of, every problem would solve itself and the other person would fully understand me. Back then I had no sense of boundaries. I was like a child desperate for recognition, spreading my emptiness and ambition out in front of others. He chose me at that time, but I really could not hold that choice. Wanting to do something, understanding it, even being able to build a demo, does not mean I can deliver it stably. A commitment cannot be supported by emotion and potential alone.
 
-When someone handed me a real key, I discovered that all I had practiced before was only the gesture of unlocking, not what it means to take responsibility for the room after entering it. He saw me, but I could not answer that properly. And he had no obligation to wait for me to grow. It was another failure to live up to something. But at least now I have that lesson. I have my first dataset to train on. Back then, I was seen, but I was not yet capable of responding to that kind of being seen. Throughout the whole process, I was also under pressure, anxious, and unable to understand the project clearly, and then it all ended in a vague mess.
+When someone handed me a real key, I discovered that all I had practiced before was only the gesture of unlocking, not what it means to take responsibility for the room after entering it. He saw me, but I could not answer that properly. And he had no obligation to wait for me to grow. At least, that was how I saw it when I first wrote these words.
 
-Maybe this is a regret for me. During the time after my graduation project was finished, I kept thinking about it. I used to feel confident that I had value that deserved to be seen. But being seen is one thing. Being able to carry that attention is another.
+---
+
+I wrote the passage above around July 1, 2026. Twenty days after I finished writing it, he replied.
+
+He did not ask me to return the money, and he did not blame me. He said he had also been dealing with many things recently, so the project upgrade had been put on hold for the time being. Once his pace recovered, perhaps we could work on another project together.
+
+I was actually a little surprised when I saw the reply. I realized that I had privately written an ending for the whole matter in my head. It was a very conventional plot: overestimate my abilities, accept something I should not have accepted, and ultimately let down someone who was willing to believe in me. Even the paragraphs above had been written under that assumption. But reality was not quite so dramatic. He had not been waiting on the other side for me to grow, nor had he been endlessly disappointed while waiting for an outcome. We had both encountered other things in our own lives. The project's stagnation was simply the result of those things piling up together.
+
+Of course, the reflections above are still valid. At the time, I really could not deliver consistently, and I really had not handled scope control, communication, or loss-cutting well. But looking back now, I seem to have developed another bad habit: imagining other people judging me. Still, the version of me who wrote twenty thousand words and organized these stories did not know what the future would hold. Making sense of what happened and what I thought about it was important in itself. I just did not know yet that some stories had not ended.
+
+This matter is still not truly over. The money was not returned, and the project did not continue, but it is still there. I do not know whether it will ever start again. At least it is no longer only a "failure to live up to someone." I once confidently believed that I had value worth seeing. Then I realized that being seen is one thing, and being able to carry that attention is another. Now I might add one more sentence: failing to catch something once does not mean every matter must immediately be declared a failure. But understanding that requires first experiencing both being seen and failing to catch it. Without what came before, I would not have arrived at these later thoughts.
+
+In short, some things do not reach a conclusion as quickly as we expect. This chapter was originally called "The Weight of Expectations." I have now renamed it "Being Seen."
 
 ### Is It Over?
 
@@ -358,7 +370,7 @@ Maybe this is a regret for me. During the time after my graduation project was f
 
 On June 30, 2026, I received my junior-college graduation certificate, though not a degree certificate. I had dinner with classmates, came home, looked through my photo album, and felt unexpectedly calm. Over these five years, I have met many people. The past version of me was also very inflated. My social experience in junior college taught me that not every instance of being seen needs a response, and not every instance of being seen even carries meaning. I have met people with backgrounds similar to mine, people from business families who were good at planning for themselves, and people who were very introverted and deeply twisted inside. I often wonder: if I had gotten into a normal high school, would my road have been the same? What is my IF route? If I had not done a certain thing, would I have become like someone else?
 
-In June, I finished CET-6 again. This time I did twenty days of last-minute preparation, went through the process and my mistakes, and although I did not produce any dramatic breakthrough or moment of revelation, the result seems at least fine. Judging by my estimated score, I almost certainly passed. In June, I also kept building projects for my MC server. But even without Hydroline, I would probably still have stepped into many of the same pits. At least I have already fallen into them once. I really have grown something through all this friction. Even now, I am still writing things with AI, and I am still constantly anxious about the future. What kind of people will I meet during my undergraduate years? Will there be restless people who manufacture anxiety for me? Will I still meet close friends? Everything keeps spiraling upward. Everything is still moving forward.
+In June, I finished CET-6 again. This time I did twenty days of last-minute preparation, went through the process and my mistakes, and although I did not produce any dramatic breakthrough or moment of revelation, the result seems at least fine: I got 479. In June, I also kept building projects for my MC server. But even without Hydroline, I would probably still have stepped into many of the same pits. At least I have already fallen into them once. I really have grown something through all this friction. Even now, I am still writing things with AI, and I am still constantly anxious about the future. What kind of people will I meet during my undergraduate years? Will there be restless people who manufacture anxiety for me? Will I still meet close friends? Everything keeps spiraling upward. Everything is still moving forward.
 
 Keep moving. Keep moving matters more than anything else. Action comes before understanding. Do not be anxious about things you have never done before. If you do not even know how to do them yet, why be anxious? You should almost feel relieved instead. For the things you do choose to do, you should have a fairly solid grasp of them. "Think everything through before acting" is a false proposition. Reality is a black box. If you never press the button, you will never know what is inside. Since plans will always fail to keep up with change, you might as well treat change itself as part of the plan. Move first. Put the improvised stage together first, and patch the holes when something goes wrong. After doing it a few more times, reviewing it, and sorting out the experience, many things will suddenly become clear. Start moving with incomplete understanding, then adjust as you move.
 
@@ -372,19 +384,29 @@ If I do regret it someday, I can just choose another road.
 
 Fuzhou in July is still blazing under the sun. Whenever I see the six o'clock morning sun, feel the summer heat and humidity, or notice the temperature of the air conditioner, I think of the version of myself who spent summer nights at school fixing meteorology-project code with the teacher. I think of the anxious, stumbling version of myself on competition day. I think of the desperate version of myself after seeing the junior-high admission result. I think of the version of myself that accepted being a technical-secondary-school student. I think of the version of myself in early spring staring blankly at the transfer-exam political-outline notes.
 
-Everything is still proceeding in an orderly way. The sun rises as usual.
+Adachi and Shimamura is my favorite work. The most important mainline, the confession, was finished long ago, but the story did not stop when they finally got together. There are still the rest of their high-school days, their everyday life after graduation, and many short stories scattered across different points in time. Even in other worlds, Adachi and Shimamura, living different lives and working different jobs, continue to meet one another again and again.
+
+It is not a linear story from meeting to confession. It is more like a Graph, a graph: one that keeps branching and extending. Time keeps moving forward, and the story keeps developing. Different nodes, different lives, and even different worlds eventually connect back to Adachi and Shimamura again and again. Life does not end when the most important story ends. What remains are ordinary, peaceful, and sometimes even boring days, and those days themselves can continue to become stories.
+
+Everything is still proceeding in an orderly way. The sun rises as usual, and the story continues.
+
+$x → ∞$.
 
 ## Undergraduate Years
 
-What's Next? I do not know. I do not know what stories I will encounter during my undergraduate years, because they have not even started yet.
+As for what happens next, I do not know. The undergraduate period is not over yet.
 
-Adachi and Shimamura is my favorite work. Not only is its writing delicate, more importantly, it feels like a complete universe. It is still being updated even now. The main storyline, the confession, was actually finished long ago. What is being updated now is the mainline and side stories, the story of their everyday life. Maybe the most romantic thing in the world is long companionship. After all the grand drama comes an ordinary, quiet everyday life, like $x → \infty$.
+Both undergraduate study and junior college last only two years. During the five-year vocational track, I had already experienced having less time together than a standard program, so after transferring into undergraduate study, I may actually adapt more easily to this limited university life. I wonder whether the version of me in 2028 will have passed the graduate-school entrance exam, be taking it for a second time, or have gone straight into employment.
 
-Just like junior college, undergraduate study will only last two years. I hope that the version of me in 2028 can hand in an answer sheet he does not regret. The next story is the story of me and my MC server.
+Quite a lot has already happened during this summer before undergraduate classes officially begin. Preparing for and maintaining a new season of my Minecraft server, as well as its portal site and updater, will probably become long-term projects; I am still working on them right up until the start of term. I also met an online friend—or perhaps a classmate?—from Fujian University of Technology who works on RoboMaster. He showed me around their laboratories before I even started school, and carried me from the North Campus to the South Campus. It was the first time I had a concrete feeling for the place where I would spend the next two years.
+
+In August, I took a trip around Jiangxi with my family, checked my CET-6 result, and kept writing code. I have also had a cold for almost a week and still have not recovered. Near the end of the month, there will be pre-registration, looking for a place to rent, renting it, and preparing for the graduate-school entrance exam. Surprisingly, our major even has an experimental class. Unfortunately, my old Windows laptop broke at a particularly inconvenient time, just after its warranty expired. I am planning to pick up an M1 Pro MacBook.
+
+I wonder what I will be like at the end of the year. The next story is the story of me and my MC server.
 
 > To keep the narrative coherent, I deliberately broke the main thread into pieces while writing this article. I suddenly realized that there is no need to pour everything out all at once.
 >
-> My main story ends here for now. I have not even started undergraduate study yet, and I have not even received the admission letter.
+> My main junior-college story ends here. I will write about the undergraduate period gradually.
 >
 > Thank you for being willing to read this little essay of mine.
 
@@ -477,6 +499,10 @@ _Sincerely._
 
 I only just realized that I have written twenty thousand words. Anyone who has made it this far is honestly incredible. I wrote this article over the course of about three days. At first I did not intend to write that much. I had originally only planned to write about my MC server. Somehow I accidentally poured out my whole past along with it. The overall tone may feel heavy, so I want to remind readers that many things were not as crushing as they may sound here. I think people can still sense my humor through the writing.
 
-Because I knew the overall tone could get heavy, I inserted some images here and there to lighten the atmosphere. Reading nothing but text is tiring too. It is true that technical secondary school and junior college could feel oppressive, but they were not all bad either. Junior college actually had fun moments and happy moments too. I only noticed the oppressive side in hindsight. Back then I could not even describe what felt wrong, nor did I know where the problem was. After writing everything out this time, it all became much clearer.
+Because I knew the overall tone could get heavy, I inserted some images here and there to lighten the atmosphere, and reading nothing but text is tiring too. It is true that technical secondary school and junior college could feel oppressive, but they were not all bad either. Junior college actually had fun moments and happy moments too. I only noticed the oppressive side in hindsight. Back then I could not even describe what felt wrong, nor did I know where the problem was. After writing everything out this time, it all became much clearer.
 
-This whole article was revised little by little, so there may still be typos or awkward sentences. The awkward parts mostly come from places where I merged or edited sentences and accidentally left something out. Feel free to point them out directly in the guestbook. I will reply when I see them. The guestbook has no way to notify me, though, so it may take a while before I notice.
+There may be typos or awkward passages in the article. The awkward parts mostly come from accidentally leaving something out while merging or revising sentences. Feel free to point them out directly in the guestbook, and I will reply when I see them.
+
+I finished writing this article in early July 2026. Looking back now, it feels more like a long process of sorting things out for my past self. During these two summer months, some things that once required repeated thought and gradual discovery have slowly become habits, or even ideas I have internalized. Looking back at the version of myself who had just finished writing "The Journey," some parts now seem inexplicable, or even a little unfamiliar.
+
+However, I do not have time to rewrite it all for now, and when I think about it carefully, keeping these things may actually be good. They are like a Milestone, recording who I was then rather than who I am now. So be it! I will slowly write a few more new stories during my undergraduate years. I am also planting another flag here: I want to split this article into separate parts before the end of 2026. Putting more than twenty thousand words on a single page is not very convenient for reading or maintenance.
