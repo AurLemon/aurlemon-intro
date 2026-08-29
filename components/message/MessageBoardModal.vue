@@ -127,7 +127,7 @@
 						<UIcon
 							v-if="canScrollDown"
 							name="i-lucide-chevrons-down"
-							class="message-scroll-cue pointer-events-none absolute left-1/2 -top-8 h-4 w-4 text-muted"
+							class="message-scroll-cue pointer-events-none absolute left-1/2 -top-6 h-4 w-4 text-muted"
 							aria-hidden="true"
 						/>
 					</Transition>
