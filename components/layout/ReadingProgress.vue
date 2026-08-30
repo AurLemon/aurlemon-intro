@@ -248,7 +248,6 @@ onMounted(() => {
 	line-height: 1.2em;
 	text-align: center;
 	font-variant-numeric: tabular-nums;
-	vertical-align: -0.16em;
 }
 
 .digit-flip__reel {
@@ -267,17 +266,20 @@ onMounted(() => {
 }
 
 .progress-text {
+	display: inline-flex;
+	align-items: center;
+	height: 1.2em;
 	line-height: 1;
 	font-variant-numeric: tabular-nums;
 	font-feature-settings: 'tnum';
 }
 
 .progress-text__inner {
-	display: inline-block;
+	display: inline-flex;
+	align-items: center;
 	width: max-content;
-	height: 1.2em;
+	height: 100%;
 	line-height: 1.2em;
-	transform: translateY(-0.12em);
 	white-space: nowrap;
 }
 
@@ -285,6 +287,5 @@ onMounted(() => {
 	display: inline-block;
 	height: 1.2em;
 	line-height: 1.2em;
-	vertical-align: -0.16em;
 }
 </style>
