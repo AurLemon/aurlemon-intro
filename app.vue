@@ -5,6 +5,7 @@ import PageContainer from '~/layouts/PageContainer.vue'
 import PageFooter from '~/layouts/PageFooter.vue'
 import PageMenu from '~/layouts/PageMenu.vue'
 import UserAccountModal from '~/components/account/UserAccountModal.vue'
+import { getRouteSeoDefinition } from '~/utils/route-seo'
 
 const route = useRoute()
 const { locale, t } = useI18n({ useScope: 'global' })
@@ -15,6 +16,12 @@ const accountModal = useAccountModal()
 
 type LocaleCode = 'zh-CN' | 'ja-JP' | 'en-US'
 type LocaleNameKey = 'zhCN' | 'jaJP' | 'enUS'
+
+const OPEN_GRAPH_LOCALES: Record<LocaleCode, string> = {
+	'en-US': 'en_US',
+	'ja-JP': 'ja_JP',
+	'zh-CN': 'zh_CN',
+}
 
 const CHINESE_PRIMARY_LOCALES = new Set([
 	'zh',
@@ -199,40 +206,94 @@ const maybePromptLocaleSwitch = async (): Promise<void> => {
 	}
 }
 
-const normalizePath = (path: string): string => {
-	const matched = path.match(/^\/(?:zh-CN|ja-JP|en-US)(?=\/|$)(.*)$/)
-	if (!matched) {
-		return path
-	}
-
-	return matched[1] ? `/${matched[1].replace(/^\/+/, '')}` : '/'
-}
-
 const pageTitle = computed(() => {
-	const siteName = t('header.siteName')
-	const normalizedPath = normalizePath(route.path)
-
-	if (normalizedPath === '/') {
-		return siteName
-	}
-
-	const routeToLabelKey: Record<string, string> = {
-		'/project': 'menu.project',
-		'/profile': 'menu.profile',
-		'/journey': 'menu.journey',
-		'/preference': 'menu.preference',
-		'/about': 'menu.about',
-		'/friends': 'menu.friends',
-	}
-
-	const labelKey = routeToLabelKey[normalizedPath] || 'menu.currentPage'
-	return `${t(labelKey)} / ${siteName}`
+	return t(getRouteSeoDefinition(route.path).titleKey)
 })
+
+const runtimeConfig = useRuntimeConfig()
+const seoDefinition = computed(() => getRouteSeoDefinition(route.path))
+const pageDescription = computed(() =>
+	seoDefinition.value.descriptionKey
+		? t(seoDefinition.value.descriptionKey)
+		: undefined,
+)
+const canonicalUrl = computed(
+	() => new URL(route.path, String(runtimeConfig.public.canonicalSiteUrl)).href,
+)
+const openGraphLocale = computed(
+	() => OPEN_GRAPH_LOCALES[normalizeLocaleCode(locale.value)],
+)
 
 useHead(() => ({
 	htmlAttrs: {
 		lang: locale.value,
 	},
+	link: [
+		{
+			href: canonicalUrl.value,
+			rel: 'canonical',
+		},
+	],
+	meta: [
+		...(pageDescription.value
+			? [
+					{
+						content: pageDescription.value,
+						name: 'description',
+					},
+				]
+			: []),
+		{
+			content: seoDefinition.value.indexable
+				? 'index, follow'
+				: 'noindex, follow',
+			name: 'robots',
+		},
+		{
+			content: pageTitle.value,
+			property: 'og:title',
+		},
+		...(pageDescription.value
+			? [
+					{
+						content: pageDescription.value,
+						property: 'og:description',
+					},
+				]
+			: []),
+		{
+			content: canonicalUrl.value,
+			property: 'og:url',
+		},
+		{
+			content: t('header.siteName'),
+			property: 'og:site_name',
+		},
+		{
+			content: openGraphLocale.value,
+			property: 'og:locale',
+		},
+		{
+			content: 'website',
+			property: 'og:type',
+		},
+		{
+			content: 'summary',
+			name: 'twitter:card',
+		},
+		{
+			content: pageTitle.value,
+			name: 'twitter:title',
+		},
+		...(pageDescription.value
+			? [
+					{
+						content: pageDescription.value,
+						name: 'twitter:description',
+					},
+				]
+			: []),
+	],
 	title: pageTitle.value,
 }))
 

@@ -24,6 +24,40 @@
 		"friends": "友情链接",
 		"currentPage": "当前页"
 	},
+	"seo": {
+		"pages": {
+			"home": {
+				"title": "AurLemon Intro",
+				"description": "柠檬（AurLemon）的个人网站！并非博客，只是纯粹的自我介绍站。"
+			},
+			"profile": {
+				"title": "自述 / AurLemon Intro",
+				"description": "柠檬（AurLemon）的教育经历、技术方向和个人近况！"
+			},
+			"project": {
+				"title": "项目 / AurLemon Intro",
+				"description": "柠檬（AurLemon）的计算机项目经历与现有能力画像！"
+			},
+			"journey": {
+				"title": "来路 / AurLemon Intro"
+			},
+			"preference": {
+				"title": "偏好 / AurLemon Intro",
+				"description": "柠檬（AurLemon）的一些偏好！"
+			},
+			"about": {
+				"title": "关于本站 / AurLemon Intro",
+				"description": "AurLemon Intro 站的内容、设计思路与技术实现的说明！"
+			},
+			"friends": {
+				"title": "友情链接 / AurLemon Intro",
+				"description": "柠檬（AurLemon）的朋友们！"
+			},
+			"unconfigured": {
+				"title": "当前页 / AurLemon Intro"
+			}
+		}
+	},
 	"main": {
 		"index": {
 			"line1BeforeEmoji": "朋友们/一般叫我柠檬",

@@ -24,6 +24,40 @@
 		"friends": "Links",
 		"currentPage": "Current Page"
 	},
+	"seo": {
+		"pages": {
+			"home": {
+				"title": "AurLemon Intro",
+				"description": "AurLemon's personal website—not a blog, but a place solely for self-introduction."
+			},
+			"profile": {
+				"title": "Profile / AurLemon Intro",
+				"description": "AurLemon's educational background, technical focus, and recent updates!"
+			},
+			"project": {
+				"title": "Projects / AurLemon Intro",
+				"description": "AurLemon's computing project experience and current capability profile!"
+			},
+			"journey": {
+				"title": "Journey / AurLemon Intro"
+			},
+			"preference": {
+				"title": "Preferences / AurLemon Intro",
+				"description": "Some of AurLemon's preferences!"
+			},
+			"about": {
+				"title": "About / AurLemon Intro",
+				"description": "An explanation of AurLemon Intro's content, design ideas, and technical implementation!"
+			},
+			"friends": {
+				"title": "Links / AurLemon Intro",
+				"description": "AurLemon's friends!"
+			},
+			"unconfigured": {
+				"title": "Current Page / AurLemon Intro"
+			}
+		}
+	},
 	"main": {
 		"index": {
 			"line1BeforeEmoji": "Friends usually/call me Lemon",
