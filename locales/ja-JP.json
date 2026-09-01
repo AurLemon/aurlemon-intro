@@ -24,6 +24,40 @@
 		"friends": "リンク集",
 		"currentPage": "現在のページ"
 	},
+	"seo": {
+		"pages": {
+			"home": {
+				"title": "AurLemon Intro",
+				"description": "AurLemon の個人サイトです！ブログではなく、純粋な自己紹介サイトです。"
+			},
+			"profile": {
+				"title": "自己紹介 / AurLemon Intro",
+				"description": "AurLemon の学歴、技術分野と近況です！"
+			},
+			"project": {
+				"title": "プロジェクト / AurLemon Intro",
+				"description": "AurLemon のコンピュータ関連プロジェクトの経験と、現在のスキルセットです！"
+			},
+			"journey": {
+				"title": "来し方 / AurLemon Intro"
+			},
+			"preference": {
+				"title": "好み / AurLemon Intro",
+				"description": "AurLemon のいくつかの好みです！"
+			},
+			"about": {
+				"title": "サイトについて / AurLemon Intro",
+				"description": "AurLemon Intro のコンテンツ、デザインの考え方と技術的実装についての説明です！"
+			},
+			"friends": {
+				"title": "リンク集 / AurLemon Intro",
+				"description": "AurLemon の友人たちです！"
+			},
+			"unconfigured": {
+				"title": "現在のページ / AurLemon Intro"
+			}
+		}
+	},
 	"main": {
 		"index": {
 			"line1BeforeEmoji": "皆は大体私を/レモン",

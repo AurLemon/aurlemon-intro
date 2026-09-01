@@ -18,6 +18,7 @@ const analyticsPlugins =
 				{ src: '~/plugins/microsoft-clarity.ts', mode: 'client' as const },
 			]
 		: []
+const siteUrl = process.env.NUXT_SITE_URL || 'https://aurlemon.top'
 
 export default defineNuxtConfig({
 	compatibilityDate: '2024-04-03',
@@ -26,6 +27,7 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		public: {
 			baiduStatKey: '',
+			canonicalSiteUrl: siteUrl,
 			msClarityId: '',
 		},
 	},
@@ -72,10 +74,22 @@ export default defineNuxtConfig({
 	},
 	sitemap: {
 		autoLastmod: true,
+		exclude: ['/journey', '/en-US/journey', '/ja-JP/journey'],
 	},
 	robots: {
-		sitemap: '/sitemap.xml',
+		sitemap: '/sitemap_index.xml',
 		disallow: ['/api/**'],
+	},
+	routeRules: {
+		'/journey': {
+			robots: 'noindex, follow',
+		},
+		'/en-US/journey': {
+			robots: 'noindex, follow',
+		},
+		'/ja-JP/journey': {
+			robots: 'noindex, follow',
+		},
 	},
 	linkChecker: {
 		failOnError: true,
@@ -88,7 +102,7 @@ export default defineNuxtConfig({
 		},
 	},
 	site: {
-		url: process.env.NUXT_SITE_URL,
+		url: siteUrl,
 		name: 'AurLemon Intro',
 		description:
 			'A personal site by AurLemon, built with Nuxt 4 and TypeScript, focused on profile, projects, and preferences.',
