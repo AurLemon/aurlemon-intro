@@ -2,7 +2,7 @@
 	"name": "aurlemon-intro",
 	"private": true,
 	"type": "module",
-	"packageManager": "pnpm@10.14.0",
+	"packageManager": "pnpm@10.34.5",
 	"scripts": {
 		"build": "nuxt build",
 		"dev": "nuxt dev",
@@ -54,27 +54,6 @@
 	"overrides": {
 		"vue": "^3.5.31",
 		"vue-router": "^4.5.1"
-	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"@parcel/watcher",
-			"@prisma/client",
-			"@prisma/engines",
-			"esbuild",
-			"prisma",
-			"sharp",
-			"unrs-resolver",
-			"vue-demi"
-		],
-		"ignoredBuiltDependencies": [
-			"@fortawesome/fontawesome-common-types",
-			"@fortawesome/fontawesome-svg-core"
-		],
-		"peerDependencyRules": {
-			"allowedVersions": {
-				"magicast": "0.5.2"
-			}
-		}
 	},
 	"devDependencies": {
 		"@fortawesome/free-brands-svg-icons": "^6.6.0",
