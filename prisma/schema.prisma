@@ -211,6 +211,13 @@ model EmailOutbox {
   @@index([status, nextAttemptAt])
 }
 
+model ExternalDataSnapshot {
+  cacheKey    String   @id
+  payloadJson String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
 model AccountMergeAudit {
   id             String        @id @default(uuid())
   sourceUserId   String

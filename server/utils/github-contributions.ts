@@ -1,9 +1,10 @@
 import type { GithubContributionCalendar } from '~/shared/types/github-contributions'
 import {
-	cleanupManagedCache,
-	readManagedCache,
-	refreshManagedCache,
-} from '~/server/utils/memory-cache-manager'
+	isPersistedDataSnapshotFresh,
+	readPersistedDataSnapshot,
+	runDeduplicatedDataSnapshotRefresh,
+	writePersistedDataSnapshot,
+} from '~/server/utils/persisted-data-snapshot'
 import {
 	GITHUB_CONTRIBUTIONS_EVENT_NAMES,
 	githubContributionsEventBus,
@@ -20,8 +21,6 @@ type ContributionLevel = NonNullable<
 
 const DEFAULT_DAYS = 365
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000
-const MAX_CACHE_ENTRIES = 32
-const CACHE_NAMESPACE = 'github-contributions'
 const GITHUB_COLORS = ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39']
 const GITHUB_CONTRIBUTIONS_URL = 'https://github.com/users'
 
@@ -58,7 +57,7 @@ const buildCacheKey = (
 	days: number,
 	mode: 'recent-year' | 'days',
 ): string => {
-	return `${username.toLowerCase()}:${mode}:${days}`
+	return `github-contributions:${username.toLowerCase()}:${mode}:${days}`
 }
 
 const toIsoDate = (value: Date): string => {
@@ -337,32 +336,22 @@ const refreshGithubContributionCache = async (options: {
 	)
 
 	try {
-		await refreshManagedCache({
-			namespace: CACHE_NAMESPACE,
-			key: options.cacheKey,
-			loader: () =>
-				fetchCalendarFromGithub({
+		const calendar = await runDeduplicatedDataSnapshotRefresh({
+			cacheKey: options.cacheKey,
+			loader: async () => {
+				const data = await fetchCalendarFromGithub({
 					username: options.username,
 					from: options.from,
 					to: options.to,
 					transport: isGithubProxyEnabled() ? 'proxy' : 'direct',
-				}),
-			ttlMs: CACHE_TTL_MS,
-			silent: true,
-			maxEntries: MAX_CACHE_ENTRIES,
+				})
+				await writePersistedDataSnapshot({
+					cacheKey: options.cacheKey,
+					data,
+				})
+				return data
+			},
 		})
-
-		const cached = readManagedCache<GithubContributionCalendar>({
-			namespace: CACHE_NAMESPACE,
-			key: options.cacheKey,
-			now: Date.now(),
-		})
-		if (!cached.entry) {
-			throw createError({
-				statusCode: 502,
-				statusMessage: 'Failed to refresh GitHub public contributions.',
-			})
-		}
 
 		githubContributionsEventBus.emit(
 			GITHUB_CONTRIBUTIONS_EVENT_NAMES.REFRESH_SUCCEEDED,
@@ -372,8 +361,8 @@ const refreshGithubContributionCache = async (options: {
 				transport: isGithubProxyEnabled() ? 'proxy' : 'direct',
 				from: options.from.toISOString(),
 				to: options.to.toISOString(),
-				totalContributions: cached.entry.data.totalContributions,
-				weeks: cached.entry.data.weeks.length,
+				totalContributions: calendar.totalContributions,
+				weeks: calendar.weeks.length,
 				durationMs: Date.now() - startedAt,
 				at: new Date().toISOString(),
 			},
@@ -414,23 +403,18 @@ export const fetchGithubContributionCalendar = async (options?: {
 		useRecentYear ? 'recent-year' : 'days',
 	)
 	const now = Date.now()
-	cleanupManagedCache({
-		namespace: CACHE_NAMESPACE,
-		now,
-		keepKey: cacheKey,
-		maxEntries: MAX_CACHE_ENTRIES,
-	})
-	const cached = readManagedCache<GithubContributionCalendar>({
-		namespace: CACHE_NAMESPACE,
-		key: cacheKey,
-		now,
+	const cached = await readPersistedDataSnapshot<GithubContributionCalendar>({
+		cacheKey,
 	})
 	const { from, to } = useRecentYear
 		? resolveRangeFromRecentYear()
 		: resolveRangeFromDays(days)
 
-	if (cached.isFresh && cached.entry) {
-		return cached.entry.data
+	if (
+		cached &&
+		isPersistedDataSnapshotFresh(cached.updatedAt, CACHE_TTL_MS, now)
+	) {
+		return cached.data
 	}
 
 	void refreshGithubContributionCache({
@@ -438,12 +422,12 @@ export const fetchGithubContributionCalendar = async (options?: {
 		username,
 		from,
 		to,
-		reason: cached.entry ? 'scheduled' : 'cache-miss',
+		reason: cached ? 'scheduled' : 'cache-miss',
 		silent: true,
 	})
 
-	if (cached.entry) {
-		return cached.entry.data
+	if (cached) {
+		return cached.data
 	}
 
 	return createPlaceholderCalendar({

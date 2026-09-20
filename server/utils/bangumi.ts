@@ -11,10 +11,11 @@ import {
 	bangumiEventBus,
 } from '~/server/utils/bangumi-events'
 import {
-	cleanupManagedCache,
-	readManagedCache,
-	refreshManagedCache,
-} from '~/server/utils/memory-cache-manager'
+	isPersistedDataSnapshotFresh,
+	readPersistedDataSnapshot,
+	runDeduplicatedDataSnapshotRefresh,
+	writePersistedDataSnapshot,
+} from '~/server/utils/persisted-data-snapshot'
 import {
 	isBangumiProxyEnabled,
 	proxyIntroRequest,
@@ -24,10 +25,9 @@ import {
 
 const BANGUMI_API_BASE = 'https://api.bgm.tv/v0'
 const BANGUMI_PROFILE_BASE = 'https://bgm.tv/user'
-const BANGUMI_CACHE_NAMESPACE = 'bangumi'
-const BANGUMI_CACHE_KEY = 'default'
+const BANGUMI_USER_AGENT =
+	'AurLemon/aurlemon-intro (https://github.com/AurLemon/aurlemon-intro)'
 const BANGUMI_CACHE_TTL_MS = 48 * 60 * 60 * 1000
-const BANGUMI_MAX_CACHE_ENTRIES = 8
 const COLLECTION_PAGE_LIMIT = 100
 const MAX_COLLECTION_PAGES = 30
 
@@ -68,6 +68,9 @@ const resolveBangumiUsername = (): string => {
 
 	return 'AurLemon'
 }
+
+const buildBangumiSnapshotCacheKey = (username: string): string =>
+	`bangumi:${username.trim().toLowerCase()}`
 
 const toErrorMessage = (error: unknown): string => {
 	return error instanceof Error ? error.message : String(error)
@@ -182,7 +185,7 @@ const fetchBangumiCollectionPage = async (options: {
 			method: 'GET',
 			headers: {
 				Accept: 'application/json',
-				'User-Agent': 'AurLemonIntro/1.0',
+				'User-Agent': BANGUMI_USER_AGENT,
 			},
 			timeoutMs: 12_000,
 			notConfiguredStatusMessage: 'BANGUMI_PROXY_NOT_CONFIGURED',
@@ -203,7 +206,7 @@ const fetchBangumiCollectionPage = async (options: {
 		{
 			headers: {
 				Accept: 'application/json',
-				'User-Agent': 'AurLemonIntro/1.0',
+				'User-Agent': BANGUMI_USER_AGENT,
 			},
 			query,
 			timeout: 12_000,
@@ -266,7 +269,7 @@ const fetchStatusGroupSafely = async (options: {
 			errorMessage: toErrorMessage(error),
 			at: new Date().toISOString(),
 		})
-		return []
+		throw error
 	}
 }
 
@@ -371,29 +374,22 @@ const refreshBangumiSnapshot = async (options: {
 	startedAt?: number
 }): Promise<void> => {
 	const startedAt = options.startedAt ?? Date.now()
-
-	await refreshManagedCache({
-		namespace: BANGUMI_CACHE_NAMESPACE,
-		key: BANGUMI_CACHE_KEY,
-		loader: async () =>
-			await fetchBangumiSnapshot(options.username, options.reason),
-		ttlMs: BANGUMI_CACHE_TTL_MS,
-		silent: options.silent,
-		maxEntries: BANGUMI_MAX_CACHE_ENTRIES,
+	const cacheKey = buildBangumiSnapshotCacheKey(options.username)
+	const data = await runDeduplicatedDataSnapshotRefresh({
+		cacheKey,
+		loader: async () => {
+			const snapshot = await fetchBangumiSnapshot(
+				options.username,
+				options.reason,
+			)
+			await writePersistedDataSnapshot({
+				cacheKey,
+				data: snapshot,
+			})
+			return snapshot
+		},
 	})
 
-	const cached = readManagedCache<BangumiSnapshot>({
-		namespace: BANGUMI_CACHE_NAMESPACE,
-		key: BANGUMI_CACHE_KEY,
-	})
-	if (!cached.entry) {
-		throw createError({
-			statusCode: 502,
-			statusMessage: 'Failed to refresh Bangumi snapshot.',
-		})
-	}
-
-	const data = cached.entry.data
 	bangumiEventBus.emit(BANGUMI_EVENT_NAMES.REFRESH_SUCCEEDED, {
 		username: options.username,
 		reason: options.reason,
@@ -493,30 +489,25 @@ const resolveBangumiSection = async (options: {
 	endpoint: '/api/bangumi/anime' | '/api/bangumi/books'
 }): Promise<BangumiSectionResponse> => {
 	const now = Date.now()
-	cleanupManagedCache({
-		namespace: BANGUMI_CACHE_NAMESPACE,
-		now,
-		keepKey: BANGUMI_CACHE_KEY,
-		maxEntries: BANGUMI_MAX_CACHE_ENTRIES,
+	const username = resolveBangumiUsername()
+	const cached = await readPersistedDataSnapshot<BangumiSnapshot>({
+		cacheKey: buildBangumiSnapshotCacheKey(username),
 	})
 
-	const cached = readManagedCache<BangumiSnapshot>({
-		namespace: BANGUMI_CACHE_NAMESPACE,
-		key: BANGUMI_CACHE_KEY,
-		now,
-	})
-
-	if (cached.isFresh && cached.entry) {
-		return snapshotToSection(cached.entry.data, options.type)
+	if (
+		cached &&
+		isPersistedDataSnapshotFresh(cached.updatedAt, BANGUMI_CACHE_TTL_MS, now)
+	) {
+		return snapshotToSection(cached.data, options.type)
 	}
 
-	if (cached.entry) {
+	if (cached) {
 		void refreshBangumiSnapshotWithRetry({
 			reason: 'scheduled',
 			maxAttempts: 1,
 			silent: true,
 		})
-		return snapshotToSection(cached.entry.data, options.type)
+		return snapshotToSection(cached.data, options.type)
 	}
 
 	bangumiEventBus.emit(BANGUMI_EVENT_NAMES.CACHE_MISS, {
@@ -531,19 +522,15 @@ const resolveBangumiSection = async (options: {
 	})
 
 	if (loaded) {
-		const afterLoad = readManagedCache<BangumiSnapshot>({
-			namespace: BANGUMI_CACHE_NAMESPACE,
-			key: BANGUMI_CACHE_KEY,
+		const afterLoad = await readPersistedDataSnapshot<BangumiSnapshot>({
+			cacheKey: buildBangumiSnapshotCacheKey(username),
 		})
-		if (afterLoad.entry) {
-			return snapshotToSection(afterLoad.entry.data, options.type)
+		if (afterLoad) {
+			return snapshotToSection(afterLoad.data, options.type)
 		}
 	}
 
-	return snapshotToSection(
-		createEmptySnapshot(resolveBangumiUsername()),
-		options.type,
-	)
+	return snapshotToSection(createEmptySnapshot(username), options.type)
 }
 
 export const fetchBangumiAnimeSection =
