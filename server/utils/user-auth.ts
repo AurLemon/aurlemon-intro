@@ -20,7 +20,9 @@ import {
 import type { AuthIdentity, AuthUser } from '~/shared/types/social'
 
 const SESSION_COOKIE_NAME = 'aurlemon_session'
-const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 7
+const SESSION_IDLE_TTL_MS = 1000 * 60 * 60 * 24 * 7
+const SESSION_ABSOLUTE_TTL_MS = 1000 * 60 * 60 * 24 * 30
+const SESSION_TOUCH_INTERVAL_MS = 1000 * 60 * 5
 const OAUTH_TRANSACTION_TTL_MS = 1000 * 60 * 10
 const MERGE_TICKET_TTL_MS = 1000 * 60 * 10
 const HANDLE_PATTERN = /^[A-Za-z0-9_-]{1,39}$/
@@ -134,9 +136,18 @@ export const getUserSession = async (
 		},
 	})
 
-	if (!session || session.expiresAt <= new Date()) {
-		if (session) {
-			await prisma.userSession.deleteMany({ where: { id: session.id } })
+	if (!session) {
+		deleteCookie(event, SESSION_COOKIE_NAME, { path: '/' })
+		return null
+	}
+
+	const now = new Date()
+	if (session.expiresAt <= now) {
+		const deleted = await prisma.userSession.deleteMany({
+			where: { id: session.id, expiresAt: { lte: now } },
+		})
+		if (deleted.count === 0) {
+			return getUserSession(event)
 		}
 		deleteCookie(event, SESSION_COOKIE_NAME, { path: '/' })
 		return null
@@ -162,10 +173,36 @@ export const getUserSession = async (
 		return null
 	}
 
-	if (Date.now() - session.lastSeenAt.getTime() > 5 * 60 * 1000) {
-		void prisma.userSession
-			.update({ where: { id: session.id }, data: { lastSeenAt: new Date() } })
-			.catch(() => undefined)
+	const touchCutoff = new Date(now.getTime() - SESSION_TOUCH_INTERVAL_MS)
+	if (session.lastSeenAt <= touchCutoff) {
+		const absoluteExpiresAt = new Date(
+			session.createdAt.getTime() + SESSION_ABSOLUTE_TTL_MS,
+		)
+		const expiresAt = new Date(
+			Math.min(
+				now.getTime() + SESSION_IDLE_TTL_MS,
+				absoluteExpiresAt.getTime(),
+			),
+		)
+		const renewed = await prisma.userSession
+			.updateMany({
+				where: {
+					id: session.id,
+					expiresAt: { gt: now },
+					lastSeenAt: { lte: touchCutoff },
+				},
+				data: { lastSeenAt: now, expiresAt },
+			})
+			.catch(() => ({ count: 0 }))
+
+		if (renewed.count > 0) {
+			setCookie(
+				event,
+				SESSION_COOKIE_NAME,
+				token,
+				cookieOptions(Math.floor((expiresAt.getTime() - now.getTime()) / 1000)),
+			)
+		}
 	}
 
 	return toAuthUser(user)
@@ -196,14 +233,14 @@ const createUserSession = async (
 		data: {
 			userId,
 			tokenHash: hashSecret(token),
-			expiresAt: new Date(Date.now() + SESSION_TTL_MS),
+			expiresAt: new Date(Date.now() + SESSION_IDLE_TTL_MS),
 		},
 	})
 	setCookie(
 		event,
 		SESSION_COOKIE_NAME,
 		token,
-		cookieOptions(Math.floor(SESSION_TTL_MS / 1000)),
+		cookieOptions(Math.floor(SESSION_IDLE_TTL_MS / 1000)),
 	)
 }
 
