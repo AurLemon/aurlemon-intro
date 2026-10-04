@@ -2,3 +2,15 @@
 @import url('https://cdn-font.hyperos.mi.com/font/css?family=MiSans_Latin_VF:VF:Latin&display=swap');
 @import url('https://cdn-font.hyperos.mi.com/font/css?family=Misans_TC_VF:VF:Chinese_Traditional_TW&display=swap');
 @import url('https://cdn-font.hyperos.mi.com/font/css?family=MiSans_L3:400:Uncommon&display=swap');
+
+@font-face {
+	font-family: 'MiSans Fallback';
+	font-style: normal;
+	font-weight: 150 700;
+	font-display: swap;
+	src: url('../../fonts/MiSans/MiSans_Fallback.woff2') format('woff2');
+	unicode-range:
+		U+FF02, U+FF03, U+FF04, U+FF05, U+FF06, U+FF07, U+FF0A, U+FF0B, U+FF0D,
+		U+FF0F, U+FF1C, U+FF1D, U+FF1E, U+FF1F, U+FF20, U+FF3B, U+FF3C, U+FF3D,
+		U+FF3E, U+FF3F, U+FF40, U+FF5B, U+FF5C, U+FF5D, U+FF5E;
+}
