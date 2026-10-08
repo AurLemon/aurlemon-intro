@@ -48,7 +48,7 @@
 				<br />
 				<span
 					:lang="locale"
-					class="block mt-3 lg:mt-0 break-normal"
+					class="block pt-1 lg:mt-0 break-normal"
 					:class="{
 						'hyphens-auto text-balance text-[34px] leading-snug sm:text-4xl sm:text-wrap':
 							locale === 'en-US',

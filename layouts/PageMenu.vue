@@ -1,184 +1,94 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { AnimatePresence, motion, useReducedMotion, vMotion } from 'motion-v'
+import {
+	usePageMenuNavigation,
+	type MenuItem,
+} from '~/composables/usePageMenuNavigation'
+import { usePageMenuPreview } from '~/composables/usePageMenuPreview'
+import { usePageMenuScrollMotion } from '~/composables/usePageMenuScrollMotion'
+import { usePageMenuMotion } from '~/composables/usePageMenuMotion'
+import { usePageMenuSizing } from '~/composables/usePageMenuSizing'
+import { usePageMenuActiveItem } from '~/composables/usePageMenuActiveItem'
 
-type MenuItem = {
-	key: string
-	label: string
-	to: string
-	isFallback?: boolean
-}
-
-const route = useRoute()
-const localePath = useLocalePath()
-const { t } = useI18n({ useScope: 'global' })
+const {
+	route,
+	baseNavItems,
+	currentFallback,
+	displayNavItems,
+	resolveTo,
+	isPathActive,
+} = usePageMenuNavigation()
 const menuViewport = ref<HTMLElement | null>(null)
 const menuInner = ref<HTMLElement | null>(null)
 const fallbackSlot = ref<HTMLElement | null>(null)
 const fallbackMeasure = ref<HTMLElement | null>(null)
-const shellWidth = ref<number | null>(null)
-const viewportWidth = ref<number | null>(null)
 const displayedFallback = ref<MenuItem | null>(null)
 const fallbackSlotVisible = ref(false)
-const fallbackSlotWidth = ref(0)
 const isAtBottom = ref(false)
+const menuReady = ref(false)
+const prefersReducedMotion = useReducedMotion()
+const menuVisible = computed(() => menuReady.value && !isAtBottom.value)
 const rawAtBottom = ref(false)
-const SIDE_GUTTER = 12
-const MOBILE_SIDE_GUTTER = 12
-const MOBILE_BREAKPOINT = 1024
 const BOTTOM_HIDE_DELAY = 180
 const BOTTOM_SHOW_DELAY = 120
 const FALLBACK_SLOT_TRANSITION_MS = 350
-const MENU_SHELL_TRANSITION_MS = 500
 let resizeObserver: ResizeObserver | null = null
 let bottomHideTimer: ReturnType<typeof setTimeout> | null = null
 let bottomShowTimer: ReturnType<typeof setTimeout> | null = null
 let fallbackLeaveTimer: ReturnType<typeof setTimeout> | null = null
 let scrollRaf = 0
-let activeItemScrollRaf = 0
-let activeItemScrollTimer: ReturnType<typeof setTimeout> | null = null
-let activeItemFollowupScrollTimer: ReturnType<typeof setTimeout> | null = null
 
-const baseNavItems = computed<MenuItem[]>(() => [
-	{ key: 'overview', label: t('menu.overview'), to: '/' },
-	{ key: 'project', label: t('menu.project'), to: '/project' },
-	{ key: 'profile', label: t('menu.profile'), to: '/profile' },
-	{ key: 'journey', label: t('menu.journey'), to: '/journey' },
-	{ key: 'preference', label: t('menu.preference'), to: '/preference' },
-])
-
-const resolveTo = (item: MenuItem): string => localePath(item.to)
-
-const normalizePath = (path: string): string => {
-	const matched = path.match(/^\/(?:zh-CN|ja-JP|en-US)(?=\/|$)(.*)$/)
-	if (!matched) {
-		return path
-	}
-
-	return matched[1] ? `/${matched[1].replace(/^\/+/, '')}` : '/'
-}
-
-const isPathActive = (
-	item: MenuItem,
-	currentPath: string = route.path,
-): boolean => {
-	const target = resolveTo(item)
-	if (item.to === '/') {
-		return currentPath === target
-	}
-	return currentPath === target || currentPath.startsWith(`${target}/`)
-}
-
-const currentFallback = computed<MenuItem | null>(() => {
-	const hasCurrent = baseNavItems.value.some((item) => isPathActive(item))
-	if (hasCurrent) {
-		return null
-	}
-
-	const routeToLabelKey: Record<string, string> = {
-		'/': 'menu.overview',
-		'/project': 'menu.project',
-		'/profile': 'menu.profile',
-		'/journey': 'menu.journey',
-		'/preference': 'menu.preference',
-		'/about': 'menu.about',
-		'/friends': 'menu.friends',
-	}
-
-	const normalizedPath = normalizePath(route.path)
-	const fallbackLabel = t(routeToLabelKey[normalizedPath] || 'menu.currentPage')
-
-	return {
-		key: route.fullPath || route.path,
-		label: fallbackLabel,
-		to: route.fullPath || route.path,
-		isFallback: true,
-	}
+const {
+	fallbackSlotWidth,
+	isMobileMenuClamped,
+	menuShellStyle,
+	syncFallbackWidth,
+	syncShellWidth,
+	syncViewportWidth,
+} = usePageMenuSizing({
+	menuInner,
+	fallbackMeasure,
+	onMeasured: () => syncPills(),
 })
+const {
+	scheduleScrollActiveItemIntoView,
+	scheduleFollowupScrollActiveItemIntoView,
+} = usePageMenuActiveItem({ menuViewport })
 
-const displayNavItems = computed<MenuItem[]>(() =>
-	currentFallback.value
-		? [...baseNavItems.value, currentFallback.value]
-		: baseNavItems.value,
-)
-
-const isMobileMenuClamped = computed(() => {
-	if (viewportWidth.value === null || shellWidth.value === null) {
-		return false
-	}
-
-	const contentWidth = shellWidth.value + SIDE_GUTTER * 2
-	const maxMobileWidth = viewportWidth.value - MOBILE_SIDE_GUTTER * 2
-	return (
-		viewportWidth.value < MOBILE_BREAKPOINT && contentWidth > maxMobileWidth
-	)
+const {
+	selectedPillMotion,
+	previewPill,
+	previewOrigin,
+	previewSession,
+	previewTransition,
+	menuPressed,
+	syncPills,
+	clearPreview,
+	onPreviewPointerEnter,
+	onPreviewPointerDown,
+	onPreviewPointerMove,
+	onPreviewPointerUp,
+	onPreviewPointerCancel,
+	onMenuClickCapture,
+	onPreviewFocus,
+} = usePageMenuPreview({
+	menuViewport,
+	menuInner,
+	isMobileMenuClamped,
+	prefersReducedMotion,
 })
-
-const menuShellStyle = computed(() => {
-	if (shellWidth.value === null) {
-		return undefined
-	}
-
-	const contentWidth = shellWidth.value + SIDE_GUTTER * 2
-	if (
-		viewportWidth.value === null ||
-		viewportWidth.value >= MOBILE_BREAKPOINT
-	) {
-		return { width: `${contentWidth}px` }
-	}
-
-	const maxMobileWidth = Math.max(
-		0,
-		viewportWidth.value - MOBILE_SIDE_GUTTER * 2,
-	)
-
-	return {
-		width: `${Math.min(contentWidth, maxMobileWidth)}px`,
-	}
-})
-
-const measureFallbackWidth = async () => {
-	await nextTick()
-	const el = fallbackMeasure.value
-	if (!el) {
-		return
-	}
-
-	fallbackSlotWidth.value = Math.ceil(el.scrollWidth)
-}
-
-const syncFallbackWidth = async () => {
-	await measureFallbackWidth()
-	void syncShellWidth(false)
-}
-
-const syncShellWidth = async (animate = true) => {
-	if (!import.meta.client) {
-		return
-	}
-
-	await nextTick()
-	const inner = menuInner.value
-	if (!inner) {
-		return
-	}
-
-	const nextWidth = Math.ceil(inner.scrollWidth)
-	if (!animate || shellWidth.value === null) {
-		shellWidth.value = nextWidth
-		return
-	}
-
-	shellWidth.value = nextWidth
-}
-
-const syncViewportWidth = () => {
-	if (!import.meta.client) {
-		return
-	}
-
-	viewportWidth.value = window.innerWidth
-}
+const {
+	menuHovered,
+	menuFocused,
+	scrollOffset,
+	updateScrollFollow,
+	resetScrollTracking,
+	onMenuPointerEnter,
+	onMenuFocusOut,
+} = usePageMenuScrollMotion({ menuVisible, prefersReducedMotion, menuPressed })
+const { menuRevealMotion, menuSurfaceMotion, menuClipMotion, menuTextMotion } =
+	usePageMenuMotion({ menuVisible, prefersReducedMotion })
 
 const updateBottomState = () => {
 	if (!import.meta.client) {
@@ -244,119 +154,17 @@ const onScroll = () => {
 		return
 	}
 
-	scrollRaf = window.requestAnimationFrame(() => {
+	scrollRaf = window.requestAnimationFrame((time) => {
 		scrollRaf = 0
 		updateBottomState()
+		updateScrollFollow(time)
 	})
 }
 
 const onResize = () => {
+	resetScrollTracking()
 	syncViewportWidth()
 	onScroll()
-}
-
-const scrollActiveItemIntoView = (behavior: ScrollBehavior = 'smooth') => {
-	if (!import.meta.client) {
-		return
-	}
-
-	const container = menuViewport.value
-	if (!container || container.scrollWidth <= container.clientWidth + 1) {
-		return
-	}
-
-	const activeItem = container.querySelector<HTMLElement>(
-		'[data-menu-link][aria-current="page"]',
-	)
-	if (!activeItem) {
-		return
-	}
-
-	const containerRect = container.getBoundingClientRect()
-	const activeRect = activeItem.getBoundingClientRect()
-	const currentScrollLeft = container.scrollLeft
-	const maxScrollLeft = Math.max(
-		0,
-		container.scrollWidth - container.clientWidth,
-	)
-	const activeLeft = activeRect.left - containerRect.left + currentScrollLeft
-	const activeRight = activeRect.right - containerRect.left + currentScrollLeft
-	const visibleLeft = currentScrollLeft
-	const visibleRight = currentScrollLeft + container.clientWidth
-	const viewportPadding = 8
-
-	if (
-		activeLeft >= visibleLeft + viewportPadding &&
-		activeRight <= visibleRight - viewportPadding
-	) {
-		return
-	}
-
-	const targetScrollLeft =
-		activeRect.width >= container.clientWidth - viewportPadding * 2
-			? activeLeft - (container.clientWidth - activeRect.width) / 2
-			: activeLeft < visibleLeft + viewportPadding
-				? activeLeft - viewportPadding
-				: activeRight - container.clientWidth + viewportPadding
-
-	container.scrollTo({
-		left: Math.min(maxScrollLeft, Math.max(0, targetScrollLeft)),
-		behavior,
-	})
-}
-
-const scheduleScrollActiveItemIntoView = (
-	behavior: ScrollBehavior = 'smooth',
-	delay = 0,
-) => {
-	if (!import.meta.client) {
-		return
-	}
-
-	if (activeItemScrollTimer) {
-		clearTimeout(activeItemScrollTimer)
-		activeItemScrollTimer = null
-	}
-
-	if (activeItemScrollRaf) {
-		window.cancelAnimationFrame(activeItemScrollRaf)
-	}
-
-	const run = () => {
-		activeItemScrollRaf = window.requestAnimationFrame(async () => {
-			activeItemScrollRaf = 0
-			await nextTick()
-			scrollActiveItemIntoView(behavior)
-		})
-	}
-
-	if (delay > 0) {
-		activeItemScrollTimer = setTimeout(() => {
-			activeItemScrollTimer = null
-			run()
-		}, delay)
-		return
-	}
-
-	run()
-}
-
-const scheduleFollowupScrollActiveItemIntoView = (
-	behavior: ScrollBehavior = 'smooth',
-	delay = MENU_SHELL_TRANSITION_MS,
-) => {
-	if (!import.meta.client) {
-		return
-	}
-
-	if (activeItemFollowupScrollTimer) {
-		clearTimeout(activeItemFollowupScrollTimer)
-	}
-
-	activeItemFollowupScrollTimer = setTimeout(() => {
-		activeItemFollowupScrollTimer = null
-		scheduleScrollActiveItemIntoView(behavior)
-	}, delay)
 }
 
 watch(
@@ -415,15 +223,20 @@ watch(
 watch(
 	() => route.fullPath,
 	() => {
+		resetScrollTracking()
 		void nextTick(updateBottomState)
+		void nextTick(syncPills)
 		scheduleScrollActiveItemIntoView('smooth')
 	},
 )
 
 onMounted(() => {
 	syncViewportWidth()
-	void syncShellWidth(false)
+	void syncShellWidth(false).then(() => {
+		menuReady.value = true
+	})
 	updateBottomState()
+	isAtBottom.value = rawAtBottom.value
 	if (currentFallback.value) {
 		void syncFallbackWidth()
 	}
@@ -454,18 +267,6 @@ onBeforeUnmount(() => {
 		window.cancelAnimationFrame(scrollRaf)
 		scrollRaf = 0
 	}
-	if (activeItemScrollRaf) {
-		window.cancelAnimationFrame(activeItemScrollRaf)
-		activeItemScrollRaf = 0
-	}
-	if (activeItemScrollTimer) {
-		clearTimeout(activeItemScrollTimer)
-		activeItemScrollTimer = null
-	}
-	if (activeItemFollowupScrollTimer) {
-		clearTimeout(activeItemFollowupScrollTimer)
-		activeItemFollowupScrollTimer = null
-	}
 	if (bottomHideTimer) {
 		clearTimeout(bottomHideTimer)
 		bottomHideTimer = null
@@ -485,137 +286,139 @@ onBeforeUnmount(() => {
 	<aside>
 		<div
 			ref="fallbackMeasure"
-			class="pointer-events-none fixed left-0 top-0 -z-10 opacity-0 whitespace-nowrap rounded-full p-2 text-base leading-none font-semibold"
+			class="pointer-events-none fixed left-0 top-0 -z-10 opacity-0 whitespace-nowrap rounded-full px-2 py-2 text-base leading-none font-semibold"
 			aria-hidden="true"
 		>
 			{{ displayedFallback?.label ?? currentFallback?.label ?? '' }}
 		</div>
 
 		<div
-			class="fixed left-0 right-0 bottom-0 z-10 h-32 pointer-events-none bg-white dark:bg-slate-950 mask-[linear-gradient(to_top,black_-5%,transparent_100%)] transition-opacity duration-500 ease-out"
-			:class="isAtBottom ? 'opacity-0' : 'opacity-100'"
+			class="pointer-events-none fixed inset-x-0 bottom-0 z-10 h-36 bg-(--color-surface-0) mask-[linear-gradient(to_top,black_0%,rgba(0,0,0,0.55)_30%,rgba(0,0,0,0.16)_60%,rgba(0,0,0,0.02)_85%,transparent_100%)] transition-opacity duration-360 ease-in-out motion-reduce:duration-0 dark:mask-[linear-gradient(to_top,black_0%,rgba(0,0,0,0.75)_30%,rgba(0,0,0,0.3)_60%,rgba(0,0,0,0.05)_85%,transparent_100%)]"
+			:class="menuVisible ? 'opacity-100' : 'opacity-0'"
+			aria-hidden="true"
 		/>
 
 		<div
 			class="menu-shell pointer-events-none fixed left-1/2 bottom-14 z-100"
-			:class="isAtBottom ? 'menu-shell--hidden' : 'menu-shell--visible'"
-			:aria-hidden="isAtBottom ? 'true' : 'false'"
+			:aria-hidden="!menuVisible"
+			:inert="!menuVisible"
 			:style="menuShellStyle"
 		>
-			<nav
-				ref="menuViewport"
-				class="menu-viewport pointer-events-auto inline-flex w-full flex-nowrap items-center justify-center gap-1 rounded-full border-[1.5px] border-slate-300 bg-white px-2 transition-[width,box-shadow,border-color] duration-500 ease-out dark:border-slate-700 dark:bg-slate-900"
-				:class="[
-					isMobileMenuClamped
-						? 'overflow-x-auto overflow-y-hidden justify-start'
-						: 'overflow-hidden justify-center',
-					isAtBottom ? 'shadow-none' : 'shadow-[0_4rem_5rem_#000a0f80]',
-					isAtBottom ? 'pointer-events-none' : 'pointer-events-auto',
-				]"
+			<motion.div
+				:style="{ y: scrollOffset }"
+				class="w-full"
+				@pointerenter="onMenuPointerEnter"
+				@pointerleave="menuHovered = false"
+				@focusin="menuFocused = true"
+				@focusout="onMenuFocusOut"
 			>
-				<div
-					ref="menuInner"
-					class="inline-flex w-max flex-none flex-nowrap items-center justify-center gap-1"
-				>
-					<NuxtLink
-						v-for="item in baseNavItems"
-						:key="item.key"
-						:to="resolveTo(item)"
-						data-menu-link
-						class="menu-link rounded-full p-2 text-base leading-none whitespace-nowrap transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)]"
-						:class="
-							isPathActive(item)
-								? 'menu-link--active font-semibold text-primary opacity-100 dark:text-sky-300'
-								: 'text-slate-800 opacity-85 hover:opacity-100 hover:text-sky-700 dark:text-slate-300 dark:opacity-75 dark:hover:opacity-100 dark:hover:text-sky-100'
-						"
-						:aria-current="isPathActive(item) ? 'page' : undefined"
-					>
-						{{ item.label }}
-					</NuxtLink>
-
+				<div v-motion="menuRevealMotion" class="relative flex w-full">
 					<div
-						v-if="fallbackSlotVisible"
-						ref="fallbackSlot"
-						class="overflow-hidden transition-[width] duration-350 ease-out"
-						:style="{ width: `${fallbackSlotWidth}px` }"
+						v-motion="menuSurfaceMotion"
+						class="pointer-events-none absolute inset-y-0 left-1/2 -translate-x-1/2 rounded-full border-[1.5px] border-slate-400/55 bg-white shadow-menu-floating dark:border-slate-700/80 dark:bg-slate-950 dark:shadow-[0_4rem_5rem_#000a0f33]"
+						aria-hidden="true"
+					/>
+					<nav
+						ref="menuViewport"
+						v-motion="menuClipMotion"
+						class="menu-viewport relative inline-flex w-full touch-none select-none flex-nowrap items-center justify-center gap-1 rounded-full border-[1.5px] border-transparent px-2.5"
+						@pointerdown="onPreviewPointerDown"
+						@pointerenter="onPreviewPointerEnter"
+						@pointermove="onPreviewPointerMove"
+						@pointerup="onPreviewPointerUp"
+						@pointercancel="onPreviewPointerCancel"
+						@pointerleave="clearPreview"
+						@click.capture="onMenuClickCapture"
+						@focusin="onPreviewFocus"
+						@focusout="clearPreview"
+						:class="[
+							isMobileMenuClamped
+								? 'overflow-x-auto overflow-y-hidden justify-start'
+								: 'overflow-hidden justify-center',
+							menuVisible ? 'pointer-events-auto' : 'pointer-events-none',
+						]"
 					>
-						<NuxtLink
-							v-if="displayedFallback"
-							:key="displayedFallback.to"
-							:to="resolveTo(displayedFallback)"
-							data-menu-link
-							class="menu-link menu-link--active rounded-full p-2 text-base leading-none whitespace-nowrap font-semibold text-primary opacity-100 transition-all duration-350 ease-[cubic-bezier(0.22,1,0.36,1)] dark:text-sky-300"
-							aria-current="page"
+						<div
+							ref="menuInner"
+							v-motion="menuTextMotion"
+							class="relative inline-flex w-max flex-none flex-nowrap items-center justify-center gap-1"
 						>
-							{{ displayedFallback.label }}
-						</NuxtLink>
-					</div>
+							<div
+								v-motion="selectedPillMotion"
+								class="pointer-events-none absolute left-0 top-0 rounded-xl bg-menu-highlight/28 dark:bg-menu-highlight/16"
+								aria-hidden="true"
+							/>
+							<AnimatePresence>
+								<motion.div
+									v-if="previewPill"
+									:key="previewSession"
+									:initial="{
+										...previewOrigin,
+										opacity: 0,
+										scale: prefersReducedMotion ? 1 : 0.94,
+									}"
+									:animate="{
+										...previewPill,
+										opacity: 1,
+										scale: menuPressed ? 0.985 : 1,
+									}"
+									:exit="{ opacity: 0, scale: prefersReducedMotion ? 1 : 0.97 }"
+									:transition="previewTransition"
+									class="pointer-events-none absolute left-0 top-0 rounded-xl bg-menu-highlight/12 dark:bg-menu-highlight/8"
+									aria-hidden="true"
+								/>
+							</AnimatePresence>
+							<NuxtLink
+								v-for="item in baseNavItems"
+								:key="item.key"
+								:to="resolveTo(item)"
+								data-menu-link
+								class="menu-link relative z-10 inline-flex h-8.5 items-center rounded-full px-2 text-base leading-none whitespace-nowrap transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+								:class="
+									isPathActive(item)
+										? 'font-semibold text-primary dark:text-sky-300'
+										: 'font-normal text-slate-800 hover:text-primary dark:text-slate-200 dark:hover:text-primary-200'
+								"
+								:aria-current="isPathActive(item) ? 'page' : undefined"
+							>
+								{{ item.label }}
+							</NuxtLink>
+
+							<div
+								v-if="fallbackSlotVisible"
+								ref="fallbackSlot"
+								class="overflow-hidden transition-[width] duration-350 ease-out"
+								:style="{ width: `${fallbackSlotWidth}px` }"
+							>
+								<NuxtLink
+									v-if="displayedFallback"
+									:key="displayedFallback.to"
+									:to="resolveTo(displayedFallback)"
+									data-menu-link
+									class="menu-link relative z-10 flex h-8.5 items-center rounded-full px-2 text-base leading-none whitespace-nowrap font-semibold text-primary transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] dark:text-sky-300"
+									aria-current="page"
+								>
+									{{ displayedFallback.label }}
+								</NuxtLink>
+							</div>
+						</div>
+					</nav>
 				</div>
-			</nav>
+			</motion.div>
 		</div>
 	</aside>
 </template>
 
 <style scoped>
 .menu-shell {
-	transform: translateX(-50%) translateY(0) scale(1);
-	opacity: 1;
-	filter: blur(0);
-	transition-property: width, opacity, transform, filter;
-	transition-duration: 500ms, 280ms, 560ms, 280ms;
-	transition-timing-function:
-		cubic-bezier(0.22, 1, 0.36, 1), cubic-bezier(0.2, 0.8, 0.2, 1),
-		cubic-bezier(0.16, 1, 0.3, 1), cubic-bezier(0.2, 0.8, 0.2, 1);
-	will-change: transform, opacity, filter, width;
+	transform: translateX(-50%);
+	transition: width 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.menu-shell--visible {
-	transform: translateX(-50%) translateY(0) scale(1);
-	opacity: 1;
-	filter: blur(0);
-}
-
-.menu-shell--hidden {
-	transform: translateX(-50%) translateY(14px) scale(0.94);
-	opacity: 0;
-	filter: blur(1px);
-}
-
-.menu-link {
-	position: relative;
-	z-index: 0;
-}
-
-.menu-link::before {
-	content: '';
-	position: absolute;
-	left: 50%;
-	bottom: 0.375em;
-	z-index: -1;
-	height: 0.75em;
-	width: 90%;
-	border-radius: 0.25rem;
-	background: rgba(125, 211, 252, 0.28);
-	box-shadow: 0 0 10px rgba(125, 211, 252, 0.18);
-	opacity: 0;
-	transform: translateX(-50%) translateY(0.24em) scaleY(0.2);
-	transform-origin: center bottom;
-	transition:
-		opacity 350ms ease-out,
-		transform 350ms ease-out,
-		box-shadow 350ms ease-out;
-	pointer-events: none;
-}
-
-.dark .menu-link::before {
-	background: rgba(125, 211, 252, 0.16);
-	box-shadow: 0 0 10px rgba(125, 211, 252, 0.12);
-}
-
-.menu-link:hover::before,
-.menu-link--active::before {
-	opacity: 1;
-	transform: translateX(-50%) translateY(0) scaleY(1);
+@media (prefers-reduced-motion: reduce) {
+	.menu-shell {
+		transition: none;
+	}
 }
 
 .menu-viewport {
