@@ -5,7 +5,7 @@
 		page="about"
 		use-clean-slot
 	>
-		<SiteMark class="mb-4" />
+		<SiteMark animated loop class="mb-4" />
 	</ContentPage>
 </template>
 

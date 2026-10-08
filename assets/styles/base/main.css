@@ -121,6 +121,45 @@ body {
 	color-scheme: dark;
 }
 
+html[data-theme-transition='snapshot']::view-transition {
+	pointer-events: none;
+}
+
+html[data-theme-transition='snapshot']::view-transition-old(root) {
+	animation: none;
+	mix-blend-mode: normal;
+}
+
+html[data-theme-transition='snapshot']::view-transition-new(root) {
+	animation: theme-color-fade 460ms ease-in-out both;
+	mix-blend-mode: normal;
+}
+
+@keyframes theme-color-fade {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+/* Temporary fallback for browsers without snapshot transitions and OS changes. */
+html[data-theme-transition='colors'],
+html[data-theme-transition='colors'] *,
+html[data-theme-transition='colors'] *::before,
+html[data-theme-transition='colors'] *::after {
+	transition:
+		color 460ms ease-in-out,
+		background-color 460ms ease-in-out,
+		border-color 460ms ease-in-out,
+		outline-color 460ms ease-in-out,
+		text-decoration-color 460ms ease-in-out,
+		box-shadow 460ms ease-in-out,
+		fill 460ms ease-in-out,
+		stroke 460ms ease-in-out !important;
+}
+
 .page-enter-active,
 .page-leave-active {
 	transition:
@@ -152,6 +191,17 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+	html[data-theme-transition='snapshot']::view-transition-new(root) {
+		animation: none;
+	}
+
+	html[data-theme-transition='colors'],
+	html[data-theme-transition='colors'] *,
+	html[data-theme-transition='colors'] *::before,
+	html[data-theme-transition='colors'] *::after {
+		transition: none !important;
+	}
+
 	.page-enter-active,
 	.page-leave-active {
 		transition: none;

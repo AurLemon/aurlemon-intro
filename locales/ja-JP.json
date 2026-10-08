@@ -60,13 +60,30 @@
 	},
 	"main": {
 		"index": {
-			"line1BeforeEmoji": "皆は大体私を/レモン",
-			"line1AfterEmoji": "",
+			"line1Lead": "皆は大体私を",
+			"line1Introduction": "{name}",
+			"name": "レモン",
 			"line1Tail": "って呼びます。",
 			"lemonEmoji": "🍋",
-			"line2BeforeDoubtful": "フルスタック開発者",
-			"line2AfterDoubtful": "、福州市出身、{age}歳、INF/TJ。",
-			"doubtful": "かも",
+			"line2": "TypeScript フルスタック開発者{education}、福州市出身、{age} 歳、INF/TJ。",
+			"educationSegment": "、{grade}",
+			"studyYears": {
+				"undergraduate": {
+					"1": "大学 1 年生",
+					"2": "大学 2 年生",
+					"3": "大学 3 年生",
+					"4": "大学 4 年生"
+				},
+				"master": {
+					"1": "修士課程 1 年生",
+					"2": "修士課程 2 年生",
+					"3": "修士課程 3 年生"
+				}
+			},
+			"studyLabels": {
+				"undergraduate": "大学生",
+				"master": "大学院生"
+			},
 			"card": {
 				"education": {
 					"type": "学歴",
