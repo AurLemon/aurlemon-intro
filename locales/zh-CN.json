@@ -60,13 +60,30 @@
 	},
 	"main": {
 		"index": {
-			"line1BeforeEmoji": "朋友们/一般叫我柠檬",
-			"line1AfterEmoji": "",
+			"line1Lead": "朋友们",
+			"line1Introduction": "一般叫我{name}",
+			"name": "柠檬",
 			"line1Tail": "。",
 			"lemonEmoji": "🍋",
-			"line2BeforeDoubtful": "全栈开发者",
-			"line2AfterDoubtful": "，福建福州人，{age} 岁，INF/TJ。",
-			"doubtful": "存疑",
+			"line2": "TypeScript 全栈开发者{education}，福建福州人，{age} 岁，INF/TJ。",
+			"educationSegment": "，{grade}",
+			"studyYears": {
+				"undergraduate": {
+					"1": "大一在读",
+					"2": "大二在读",
+					"3": "大三在读",
+					"4": "大四在读"
+				},
+				"master": {
+					"1": "研一在读",
+					"2": "研二在读",
+					"3": "研三在读"
+				}
+			},
+			"studyLabels": {
+				"undergraduate": "本科生",
+				"master": "研究生"
+			},
 			"card": {
 				"education": {
 					"type": "教育经历",

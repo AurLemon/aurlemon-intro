@@ -1,7 +1,10 @@
 <template>
 	<header data-page-header class="sticky top-0 z-100 pt-6 lg:pt-10 lg:pb-16">
 		<div
-			class="absolute top-0 left-0 right-0 -bottom-4/5 lg:-bottom-3/5 z-10 pointer-events-none bg-[#FAFAFA]/80 dark:bg-[#192024]/85 backdrop-blur-[48px] mask-[linear-gradient(to_bottom,black_0%,rgba(0,0,0,0.98)_30%,rgba(0,0,0,0.92)_45%,rgba(0,0,0,0.8)_55%,rgba(0,0,0,0.58)_65%,rgba(0,0,0,0.35)_75%,rgba(0,0,0,0.15)_85%,transparent_100%)]"
+			class="absolute top-0 left-0 right-0 -bottom-4/5 lg:-bottom-3/5 z-10 pointer-events-none backdrop-blur-[8px] dark:backdrop-blur-[12px] mask-[linear-gradient(to_bottom,black_0%,rgba(0,0,0,0.95)_18%,rgba(0,0,0,0.82)_32%,rgba(0,0,0,0.6)_46%,rgba(0,0,0,0.35)_60%,rgba(0,0,0,0.14)_72%,rgba(0,0,0,0.03)_84%,transparent_92%)]"
+		/>
+		<div
+			class="absolute top-0 left-0 right-0 -bottom-4/5 lg:-bottom-3/5 z-10 pointer-events-none bg-[linear-gradient(to_bottom,rgba(250,250,250,0.94)_0%,rgba(250,250,250,0.88)_18%,rgba(250,250,250,0.72)_32%,rgba(250,250,250,0.5)_46%,rgba(250,250,250,0.27)_60%,rgba(250,250,250,0.1)_72%,rgba(250,250,250,0.02)_84%,transparent_92%)] dark:bg-[linear-gradient(to_bottom,rgba(25,32,36,0.88)_0%,rgba(25,32,36,0.8)_18%,rgba(25,32,36,0.65)_32%,rgba(25,32,36,0.45)_46%,rgba(25,32,36,0.25)_60%,rgba(25,32,36,0.1)_72%,rgba(25,32,36,0.02)_84%,transparent_92%)]"
 		/>
 		<div
 			class="mx-auto max-w-4xl px-6 lg:px-0 flex items-center justify-between relative z-40"
@@ -113,6 +116,7 @@ import { useI18n } from 'vue-i18n'
 
 const { locale, t } = useI18n({ useScope: 'global' })
 const colorMode = useColorMode()
+const { applyThemeChange, isTransitioning } = useThemeTransition()
 const nuxtApp = useNuxtApp()
 
 type LocaleCode = 'zh-CN' | 'ja-JP' | 'en-US'
@@ -150,7 +154,10 @@ const themeButtonIcon = computed(() =>
 )
 
 const selectTheme = (mode: ThemeMode): void => {
-	colorMode.preference = mode
+	if (colorMode.preference === mode && !isTransitioning.value) return
+	void applyThemeChange(() => {
+		colorMode.preference = mode
+	})
 }
 
 const selectedLocale = computed(() => locale.value as LocaleCode)

@@ -60,13 +60,30 @@
 	},
 	"main": {
 		"index": {
-			"line1BeforeEmoji": "Friends usually/call me Lemon",
-			"line1AfterEmoji": "",
+			"line1Lead": "Friends usually",
+			"line1Introduction": "call me {name}",
+			"name": "Lemon",
 			"line1Tail": ".",
 			"lemonEmoji": "🍋",
-			"line2BeforeDoubtful": "Full-stack developer ",
-			"line2AfterDoubtful": ", from Fuzhou, {age} y.o., INF/TJ.",
-			"doubtful": "debatable",
+			"line2": "TypeScript full-stack developer{education}, from Fuzhou, {age} y.o., INF/TJ.",
+			"educationSegment": ", {grade}",
+			"studyYears": {
+				"undergraduate": {
+					"1": "first-year undergraduate",
+					"2": "second-year undergraduate",
+					"3": "third-year undergraduate",
+					"4": "fourth-year undergraduate"
+				},
+				"master": {
+					"1": "first-year master’s student",
+					"2": "second-year master’s student",
+					"3": "third-year master’s student"
+				}
+			},
+			"studyLabels": {
+				"undergraduate": "undergraduate student",
+				"master": "graduate student"
+			},
 			"card": {
 				"education": {
 					"type": "Education",

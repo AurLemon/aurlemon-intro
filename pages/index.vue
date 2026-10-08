@@ -14,7 +14,7 @@
 
 		<!-- 顶部问候 -->
 		<div class="mx-2">
-			<div class="relative h-42 w-42">
+			<div class="relative h-38 w-38 sm:h-42 sm:w-42">
 				<SkeletonImage
 					:src="avatarMark"
 					alt="AurLemon avatar"
@@ -24,19 +24,36 @@
 				/>
 			</div>
 			<div
-				class="mt-6 text-4xl font-serif text-slate-900 dark:text-slate-100 font-medium leading-snug"
+				class="mt-6 font-serif text-slate-900 dark:text-slate-100 font-medium leading-snug"
+				:class="locale === 'en-US' ? 'text-[34px] sm:text-4xl' : 'text-4xl'"
 			>
-				<span>{{ line1Parts[0] }}</span>
+				<span>{{ $t('main.index.line1Lead') }}</span>
 				<span class="hidden sm:inline">{{ line1DesktopSeparator }}</span>
 				<br class="sm:hidden" />
-				<span>{{ line1Parts[1] }}</span
-				><span class="text-xl">{{ $t('main.index.lemonEmoji') }}</span
-				><span>{{ line1Tail }}</span>
+				<i18n-t
+					keypath="main.index.line1Introduction"
+					tag="span"
+					scope="global"
+				>
+					<template #name>
+						<HighlightText
+							:text="$t('main.index.name')"
+							:emoji="$t('main.index.lemonEmoji')"
+							:before-text="nameHighlightContext.before"
+							:desktop-before-text="nameHighlightContext.desktopBefore"
+							:after-text="nameHighlightContext.after"
+						/>
+					</template> </i18n-t
+				><span>{{ $t('main.index.line1Tail') }}</span>
 				<br />
-				<span class="block mt-3 lg:mt-0 break-all"
-					>{{ line2Parts.before
-					}}<span class="text-xl italic">{{ $t('main.index.doubtful') }}</span
-					>{{ line2Parts.after }}</span
+				<span
+					:lang="locale"
+					class="block mt-3 lg:mt-0 break-normal"
+					:class="{
+						'hyphens-auto text-balance text-[34px] leading-snug sm:text-4xl sm:text-wrap':
+							locale === 'en-US',
+					}"
+					>{{ introductionLine2 }}</span
 				>
 			</div>
 		</div>
@@ -245,8 +262,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
-import dayjs from 'dayjs'
 import InfoCard from '~/components/cards/InfoCard.vue'
+import HighlightText from '~/components/common/HighlightText.vue'
 
 import avatarMark from '~/assets/resources/sitemark/avatar_mark.webp'
 import FPMLogo from '~/assets/resources/school_badge/FPM.webp'
@@ -270,25 +287,34 @@ type EducationStage = 'bachelor' | 'specialty' | 'highSchool' | 'juniorSchool'
 
 const { t, te, locale } = useI18n({ useScope: 'global' })
 
-const age = dayjs().diff('2006-05-18', 'year')
+const profile = usePersonalProfile()
+const introductionLine2 = computed(() => {
+	const { age, studyYear } = profile.value
+	const education = studyYear
+		? t('main.index.educationSegment', {
+				grade: te(`main.index.studyYears.${studyYear.level}.${studyYear.year}`)
+					? t(`main.index.studyYears.${studyYear.level}.${studyYear.year}`)
+					: t(`main.index.studyLabels.${studyYear.level}`),
+			})
+		: ''
 
-const line1Parts = computed(() => {
-	const line1 = `${String(t('main.index.line1BeforeEmoji'))}${String(t('main.index.line1AfterEmoji'))}`
-	const [first = '', second = ''] = line1.split('/').map((part) => part.trim())
-
-	return [first, second]
+	return t('main.index.line2', { age, education })
 })
-
-const line1Tail = computed(() => String(t('main.index.line1Tail')))
 
 const line1DesktopSeparator = computed(() =>
 	locale.value === 'en-US' ? ' ' : '',
 )
 
-const line2Parts = computed(() => {
+// 从翻译后的名字插槽两侧读取文字，语言切换时同步调整高亮组合的间距。
+const nameHighlightContext = computed(() => {
+	const marker = '__HIGHLIGHT_NAME__'
+	const introduction = t('main.index.line1Introduction', { name: marker })
+	const [before = '', after = ''] = introduction.split(marker)
+
 	return {
-		before: String(t('main.index.line2BeforeDoubtful')),
-		after: String(t('main.index.line2AfterDoubtful', { age })),
+		before,
+		desktopBefore: `${t('main.index.line1Lead')}${line1DesktopSeparator.value}${before}`,
+		after: `${after}${t('main.index.line1Tail')}`,
 	}
 })
 
