@@ -1,6 +1,6 @@
 <template>
 	<span
-		class="relative isolate inline-flex items-baseline whitespace-nowrap px-[0.16em] before:absolute before:inset-x-0 before:bottom-[0.1em] before:-z-10 before:h-[0.46em] before:-rotate-2 before:rounded-[0.06em] before:bg-warning-200/65 before:content-[''] dark:before:bg-warning-300/25"
+		class="relative isolate inline-flex items-baseline whitespace-nowrap px-[0.16em] before:absolute before:inset-x-0 before:bottom-[0.1em] before:-z-10 before:h-[0.46em] before:-rotate-2 before:rounded-[0.06em] before:bg-lemon-highlight/45 before:content-[''] dark:before:bg-lemon-highlight/25"
 		:class="spacingClasses"
 		><span v-if="emoji && emojiPosition === 'start'" class="font-normal">{{
 			emoji
@@ -59,13 +59,13 @@ const rightSpacing = {
 const desktopLeftSpacing = {
 	empty: 'sm:ml-0',
 	punctuation: 'sm:ml-[0.04em]',
-	text: 'sm:ml-[0.22em]',
+	text: 'sm:ml-[0.1em]',
 }
 
 const desktopRightSpacing = {
 	empty: 'sm:mr-0',
 	punctuation: 'sm:mr-[0.04em]',
-	text: 'sm:mr-[0.22em]',
+	text: 'sm:mr-[0.1em]',
 }
 
 const spacingClasses = computed(() => {

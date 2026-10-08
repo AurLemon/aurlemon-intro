@@ -32,6 +32,13 @@
 	--color-primary-900: hsl(200 70% 24%);
 	--color-primary-950: hsl(200 74% 16%);
 
+	/* 头像柠檬果皮亮部取色；菜单保留原始 sky RGB。 */
+	--color-lemon-highlight: rgb(199 213 160);
+	--color-menu-highlight: rgb(125 211 252);
+	--shadow-menu-floating:
+		0 6px 20px color-mix(in srgb, var(--color-neutral-950) 10%, transparent),
+		0 1px 4px color-mix(in srgb, var(--color-neutral-950) 6%, transparent);
+
 	/* 适用于界面表面的中性灰阶 */
 	--color-neutral-25: hsl(210 14% 99%);
 	--color-neutral-50: hsl(210 12% 97%);

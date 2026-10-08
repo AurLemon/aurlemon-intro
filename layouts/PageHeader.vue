@@ -12,10 +12,16 @@
 			<div>
 				<ReadingProgress targetSelector="#page-container" />
 			</div>
-			<div class="flex shrink-0 items-center gap-2">
+			<div
+				data-theme-controls
+				class="flex shrink-0 items-center gap-2 [view-transition-name:header-controls]"
+			>
 				<UPopover
 					:popper="{ placement: 'bottom-end' }"
-					:ui="{ content: 'z-[40000]' }"
+					:ui="{
+						content:
+							'z-[40000] theme-controls-popover [view-transition-name:header-theme-menu]',
+					}"
 				>
 					<UButton
 						color="neutral"
@@ -59,7 +65,10 @@
 
 				<UPopover
 					:popper="{ placement: 'bottom-end' }"
-					:ui="{ content: 'z-[40000]' }"
+					:ui="{
+						content:
+							'z-[40000] theme-controls-popover [view-transition-name:header-language-menu]',
+					}"
 				>
 					<UButton
 						color="neutral"
