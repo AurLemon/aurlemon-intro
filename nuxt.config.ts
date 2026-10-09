@@ -3,6 +3,7 @@ import { createRequire } from 'node:module'
 import tailwindcss from '@tailwindcss/vite'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
+import emojiFontOptions from './emoji.config'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
@@ -39,6 +40,7 @@ export default defineNuxtConfig({
 	],
 	plugins: [...analyticsPlugins],
 	modules: [
+		['./build/emoji-font/nuxt', emojiFontOptions],
 		'@nuxt/eslint',
 		'@pinia/nuxt',
 		'@vesp/nuxt-fontawesome',
