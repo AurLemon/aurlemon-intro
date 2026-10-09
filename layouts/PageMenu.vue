@@ -80,11 +80,12 @@ const {
 })
 const {
 	menuHovered,
-	menuFocused,
 	scrollOffset,
 	updateScrollFollow,
 	resetScrollTracking,
 	onMenuPointerEnter,
+	onMenuPointerDown,
+	onMenuFocusIn,
 	onMenuFocusOut,
 } = usePageMenuScrollMotion({ menuVisible, prefersReducedMotion, menuPressed })
 const { menuRevealMotion, menuSurfaceMotion, menuClipMotion, menuTextMotion } =
@@ -293,8 +294,10 @@ onBeforeUnmount(() => {
 		</div>
 
 		<div
-			class="pointer-events-none fixed inset-x-0 bottom-0 z-10 h-36 bg-(--color-surface-0) mask-[linear-gradient(to_top,black_0%,rgba(0,0,0,0.55)_30%,rgba(0,0,0,0.16)_60%,rgba(0,0,0,0.02)_85%,transparent_100%)] transition-opacity duration-360 ease-in-out motion-reduce:duration-0 dark:mask-[linear-gradient(to_top,black_0%,rgba(0,0,0,0.75)_30%,rgba(0,0,0,0.3)_60%,rgba(0,0,0,0.05)_85%,transparent_100%)]"
-			:class="menuVisible ? 'opacity-100' : 'opacity-0'"
+			class="pointer-events-none fixed inset-x-0 bottom-0 z-10 h-36 bg-(--color-surface-0) mask-[linear-gradient(to_top,black_0%,rgba(0,0,0,0.55)_30%,rgba(0,0,0,0.16)_60%,rgba(0,0,0,0.02)_85%,transparent_100%)] transition-[opacity,translate] duration-600 ease-in-out motion-reduce:duration-0 motion-reduce:translate-y-0 dark:mask-[linear-gradient(to_top,black_0%,rgba(0,0,0,0.75)_30%,rgba(0,0,0,0.3)_60%,rgba(0,0,0,0.05)_85%,transparent_100%)]"
+			:class="
+				menuVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+			"
 			aria-hidden="true"
 		/>
 
@@ -308,8 +311,9 @@ onBeforeUnmount(() => {
 				:style="{ y: scrollOffset }"
 				class="w-full"
 				@pointerenter="onMenuPointerEnter"
+				@pointerdown="onMenuPointerDown"
 				@pointerleave="menuHovered = false"
-				@focusin="menuFocused = true"
+				@focusin="onMenuFocusIn"
 				@focusout="onMenuFocusOut"
 			>
 				<div v-motion="menuRevealMotion" class="relative flex w-full">
