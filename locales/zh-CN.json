@@ -92,25 +92,29 @@
 							"label": "本科",
 							"title": "福建理工大学",
 							"subtitle": "在读中 2026 — 2028",
-							"hint": null
+							"hint": null,
+							"shortTitle": ""
 						},
 						"specialty": {
 							"label": "专科",
-							"title": "船政交通职业学院",
+							"title": "福建船政交通职业学院",
 							"subtitle": "2024 — 2026",
-							"hint": "3+2 高职阶段"
+							"hint": "3+2 高职阶段",
+							"shortTitle": "船政交通学院"
 						},
 						"highSchool": {
 							"label": "高中",
 							"title": "福建工贸学校",
 							"subtitle": "2021 — 2024",
-							"hint": "3+2 中职阶段"
+							"hint": "3+2 中职阶段",
+							"shortTitle": ""
 						},
 						"juniorSchool": {
 							"label": "初中",
 							"title": "福州屏东中学",
 							"subtitle": "2018 — 2021",
-							"hint": null
+							"hint": null,
+							"shortTitle": ""
 						}
 					}
 				},

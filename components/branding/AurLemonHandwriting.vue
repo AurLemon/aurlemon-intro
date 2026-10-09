@@ -7,6 +7,8 @@ interface HandwritingProps {
 	duration?: number
 	/** Write, fade the ink in place, and repeat while visible. */
 	loop?: boolean
+	/** Optional background marker leading into the handwriting animation. */
+	getHighlightElement?: () => HTMLElement | null
 }
 
 interface HandwritingSpeedZone {
@@ -29,6 +31,7 @@ interface HandwritingStroke {
 const props = withDefaults(defineProps<HandwritingProps>(), {
 	duration: 4000,
 	loop: false,
+	getHighlightElement: undefined,
 })
 const svgRef = ref<SVGSVGElement | null>(null)
 const complete = ref(false)
@@ -221,9 +224,22 @@ const finish = (): void => {
 const updatePlayback = (): void => {
 	if (!started || complete.value) return
 	const playing = !document.hidden && (!props.loop || inView)
-	animations.forEach((animation) =>
-		playing ? animation.play() : animation.pause(),
-	)
+	const timelineTime = document.timeline.currentTime
+	const playbackTime = animations[0]?.currentTime ?? 0
+	animations.forEach((animation) => {
+		if (playing) {
+			animation.play()
+			// Keep SVG masks and visible layers on the same iteration boundary.
+			if (
+				typeof timelineTime === 'number' &&
+				typeof playbackTime === 'number'
+			) {
+				animation.startTime = timelineTime - playbackTime
+			}
+		} else {
+			animation.pause()
+		}
+	})
 }
 
 const onMotionPreferenceChange = (event: MediaQueryListEvent): void => {
@@ -244,12 +260,20 @@ onMounted(() => {
 		(total, stroke) => total + stroke.duration + stroke.pauseBefore,
 		0,
 	)
+	const highlight = props.getHighlightElement?.()
+	const highlightDuration = highlight ? 900 : 0
+	const outlineFadeStart = highlight ? 600 : 0
+	const outlineFadeEnd = highlight
+		? highlightDuration
+		: Math.min(400, props.duration)
+	const writingStart = outlineFadeStart
+	const writingEnd = Math.max(highlightDuration, writingStart + props.duration)
 	const holdDuration = 1000
 	const fadeDuration = 1000
-	const fadeStart = props.duration + holdDuration
+	const fadeStart = writingEnd + holdDuration
 	const fadeEnd = fadeStart + fadeDuration
-	const cycleDuration = props.loop ? fadeEnd + 400 : props.duration
-	let elapsed = 0
+	const cycleDuration = props.loop ? fadeEnd + 400 : writingEnd
+	let elapsed = writingStart
 	animations = Array.from(
 		svg.querySelectorAll<SVGGElement>('[data-writing-stroke]'),
 	).flatMap((group, index) => {
@@ -278,8 +302,16 @@ onMounted(() => {
 					})),
 				]
 				if (props.loop) {
-					// Keep overlapping mask strokes opaque; fade the rendered ink once.
-					frames.push({ strokeDashoffset: '0', opacity: 1, offset: 1 })
+					// Reset the mask during the invisible pause, before the next cycle.
+					frames.push(
+						{
+							strokeDashoffset: '0',
+							opacity: 1,
+							offset: fadeEnd / cycleDuration,
+						},
+						{ ...hiddenFrame, offset: (fadeEnd + 100) / cycleDuration },
+						{ ...hiddenFrame, offset: 1 },
+					)
 				}
 				const animation = path.animate(frames, {
 					duration: cycleDuration,
@@ -293,12 +325,97 @@ onMounted(() => {
 		)
 	})
 
+	if (highlight) {
+		const frames: Keyframe[] = [
+			{
+				clipPath: 'inset(0 100% 0 0)',
+				opacity: 1,
+				offset: 0,
+				easing: 'cubic-bezier(0.45, 0, 0.2, 1)',
+			},
+			{
+				clipPath: 'inset(0 0% 0 0)',
+				opacity: 1,
+				offset: highlightDuration / cycleDuration,
+			},
+		]
+		if (props.loop) {
+			frames.push(
+				{
+					clipPath: 'inset(0 0% 0 0)',
+					opacity: 1,
+					offset: fadeStart / cycleDuration,
+					easing: 'ease-in-out',
+				},
+				{
+					clipPath: 'inset(0 0% 0 0)',
+					opacity: 0,
+					offset: fadeEnd / cycleDuration,
+				},
+				// Close the reveal while transparent, before opacity resets next cycle.
+				{
+					clipPath: 'inset(0 100% 0 0)',
+					opacity: 0,
+					offset: (fadeEnd + 100) / cycleDuration,
+				},
+				{ clipPath: 'inset(0 100% 0 0)', opacity: 0, offset: 1 },
+			)
+		} else {
+			frames.push({ clipPath: 'inset(0 0% 0 0)', opacity: 1, offset: 1 })
+		}
+		const animation = highlight.animate(frames, {
+			duration: cycleDuration,
+			iterations: props.loop ? Infinity : 1,
+			fill: 'both',
+		})
+		animation.pause()
+		animations.push(animation)
+	}
+
+	const outline = svg.querySelector<SVGPathElement>('[data-writing-outline]')
+	if (outline) {
+		// Fade the guide in during the marker's final sweep instead of popping in.
+		const frames: Keyframe[] = [
+			{ opacity: 0, offset: 0 },
+			{
+				opacity: 0,
+				offset: outlineFadeStart / cycleDuration,
+				easing: 'ease-in-out',
+			},
+			{ opacity: 0.3, offset: outlineFadeEnd / cycleDuration },
+		]
+		if (props.loop) {
+			frames.push(
+				{ opacity: 0.3, offset: writingEnd / cycleDuration },
+				{ opacity: 0, offset: (writingEnd + 200) / cycleDuration },
+				{ opacity: 0, offset: 1 },
+			)
+		} else {
+			frames.push(
+				{
+					opacity: 0.3,
+					offset: Math.max(outlineFadeEnd, writingEnd - 200) / cycleDuration,
+				},
+				{ opacity: 0, offset: 1 },
+			)
+		}
+		const animation = outline.animate(frames, {
+			duration: cycleDuration,
+			iterations: props.loop ? Infinity : 1,
+			fill: 'both',
+		})
+		animation.pause()
+		animations.push(animation)
+	}
+
 	if (props.loop) {
 		const ink = svg.querySelector<SVGPathElement>('[data-writing-ink]')
 		if (ink) {
 			const animation = ink.animate(
 				[
-					{ opacity: 1, offset: 0 },
+					{ opacity: 0, offset: 0 },
+					{ opacity: 0, offset: writingStart / cycleDuration },
+					{ opacity: 1, offset: writingStart / cycleDuration },
 					{
 						opacity: 1,
 						offset: fadeStart / cycleDuration,
@@ -306,28 +423,6 @@ onMounted(() => {
 					},
 					{ opacity: 0, offset: fadeEnd / cycleDuration },
 					{ opacity: 0, offset: 1 },
-				],
-				{ duration: cycleDuration, iterations: Infinity, fill: 'both' },
-			)
-			animation.pause()
-			animations.push(animation)
-		}
-		const outline = svg.querySelector<SVGPathElement>('[data-writing-outline]')
-		if (outline) {
-			const animation = outline.animate(
-				[
-					{ opacity: 0.3, offset: 0 },
-					{ opacity: 0.3, offset: props.duration / cycleDuration },
-					{ opacity: 0, offset: (props.duration + 200) / cycleDuration },
-					{
-						opacity: 0,
-						offset: (props.duration + holdDuration) / cycleDuration,
-					},
-					{
-						opacity: 0.3,
-						offset: fadeEnd / cycleDuration,
-					},
-					{ opacity: 0.3, offset: 1 },
 				],
 				{ duration: cycleDuration, iterations: Infinity, fill: 'both' },
 			)
