@@ -65,19 +65,19 @@
 			"name": "柠檬",
 			"line1Tail": "。",
 			"lemonEmoji": "🍋",
-			"line2": "TypeScript 全栈开发者{education}，福建福州人，{age} 岁，INF/TJ。",
+			"line2": "TypeScript 全栈开发{education}，{age} 岁，INF/TJ，福建福州人。",
 			"educationSegment": "，{grade}",
 			"studyYears": {
 				"undergraduate": {
-					"1": "大一在读",
-					"2": "大二在读",
-					"3": "大三在读",
-					"4": "大四在读"
+					"1": "本科一年级在读",
+					"2": "本科二年级在读",
+					"3": "本科三年级在读",
+					"4": "本科四年级在读"
 				},
 				"master": {
-					"1": "研一在读",
-					"2": "研二在读",
-					"3": "研三在读"
+					"1": "研究生一年级在读",
+					"2": "研究生二年级在读",
+					"3": "研究生三年级在读"
 				}
 			},
 			"studyLabels": {
