@@ -7,8 +7,7 @@ interface PersistedDataSnapshot<T> {
 
 declare global {
 	var __persistedDataSnapshotRefreshes__:
-		| Map<string, Promise<unknown>>
-		| undefined
+		Map<string, Promise<unknown>> | undefined
 }
 
 const inFlightRefreshes =

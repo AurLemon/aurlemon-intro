@@ -102,8 +102,7 @@ export const readManagedCache = <T>(options: {
 	const now = options.now ?? Date.now()
 	const scopedKey = namespacedKey(options.namespace, options.key)
 	const entry = managedMemoryCacheStore.entries.get(scopedKey) as
-		| ManagedCacheEntry<T>
-		| undefined
+		ManagedCacheEntry<T> | undefined
 
 	if (!entry) {
 		return {

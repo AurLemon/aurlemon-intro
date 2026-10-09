@@ -44,7 +44,7 @@ test -f deploy-artifact/prisma/schema.prisma
 test -f deploy-artifact/prisma/migrations/migration_lock.toml
 test -f deploy-artifact/node_modules/.bin/prisma
 if [ "${RUN_USER_IDENTITY_MIGRATION:-false}" = 'true' ]; then
-  test -f deploy-artifact/.scripts-dist/migrate-social-users.js
+  test -f deploy-artifact/.scripts-dist/scripts/migrate-social-users.js
 fi
 test -f deploy-artifact/data/ip2region/ip2region_v4.xdb
 
@@ -79,6 +79,11 @@ set -euo pipefail
 
 if ! command -v node >/dev/null 2>&1; then
   echo 'DEPLOY_RUNTIME_MISSING_NODE: node is required on remote host' >&2
+  exit 1
+fi
+
+if ! node -e 'const [major, minor] = process.versions.node.split(".").map(Number); process.exit(major === 24 && minor >= 15 ? 0 : 1)'; then
+  echo 'DEPLOY_RUNTIME_UNSUPPORTED: Node.js 24.15 or newer within 24.x is required' >&2
   exit 1
 fi
 
@@ -132,7 +137,7 @@ if [ ! -f "$database_path" ]; then
 fi
 
 STAGED_PRISMA_CLI="$REMOTE_TEMP_DIR/node_modules/.bin/prisma"
-MIGRATION_SCRIPT="$REMOTE_TEMP_DIR/.scripts-dist/migrate-social-users.js"
+MIGRATION_SCRIPT="$REMOTE_TEMP_DIR/.scripts-dist/scripts/migrate-social-users.js"
 if [ ! -x "$STAGED_PRISMA_CLI" ]; then
   echo 'DEPLOY_ARTIFACT_MISSING_PRISMA: Prisma CLI is required in the deployment artifact' >&2
   exit 1
@@ -176,6 +181,8 @@ if [ -f "$REMOTE_DEPLOY_PATH/.output/server/index.mjs" ]; then
     --exclude='backups/' \
     --exclude='*.db' \
     --exclude='*.db-journal' \
+    --exclude='*.db-wal' \
+    --exclude='*.db-shm' \
     "$REMOTE_DEPLOY_PATH/" \
     "$rollback_dir/"
 fi
@@ -184,7 +191,11 @@ backup_dir="$REMOTE_DEPLOY_PATH/backups"
 mkdir -p "$backup_dir"
 database_mode="$(stat -c '%a' "$database_path")"
 database_backup="$backup_dir/user-identity-$(date -u +%Y%m%dT%H%M%SZ).db"
-cp -p -- "$database_path" "$database_backup"
+DATABASE_PATH="$database_path" DATABASE_BACKUP="$database_backup" node --input-type=module -e '
+  import { DatabaseSync, backup } from "node:sqlite"
+  const db = new DatabaseSync(process.env.DATABASE_PATH, { readOnly: true })
+  try { await backup(db, process.env.DATABASE_BACKUP) } finally { db.close() }
+'
 chmod 400 "$database_backup"
 
 had_pm2_app=false
@@ -200,6 +211,7 @@ rollback_on_exit() {
   if [ "$deployment_succeeded" != 'true' ]; then
     echo 'DEPLOY_FAILED: restoring the database and previous application' >&2
     pm2 stop "$PM2_APP_NAME" >/dev/null 2>&1 || true
+    rm -f -- "${database_path}-wal" "${database_path}-shm" "${database_path}-journal"
     cp -- "$database_backup" "$database_path"
     chmod "$database_mode" "$database_path"
     if [ "$had_previous_app" = 'true' ]; then
@@ -208,6 +220,8 @@ rollback_on_exit() {
         --exclude='backups/' \
         --exclude='*.db' \
         --exclude='*.db-journal' \
+        --exclude='*.db-wal' \
+        --exclude='*.db-shm' \
         "$rollback_dir/" \
         "$REMOTE_DEPLOY_PATH/"
       if [ "$had_pm2_app" = 'true' ]; then
@@ -227,6 +241,8 @@ rsync -a --no-owner --no-group --delete \
   --exclude='backups/' \
   --exclude='*.db' \
   --exclude='*.db-journal' \
+  --exclude='*.db-wal' \
+  --exclude='*.db-shm' \
   "$REMOTE_TEMP_DIR/" \
   "$REMOTE_DEPLOY_PATH/"
 
@@ -242,8 +258,8 @@ fi
 "$PRISMA_CLI" migrate deploy
 
 if [ "$needs_user_migration" = 'true' ]; then
-  node ./.scripts-dist/migrate-social-users.js --apply --manifest "$manifest_path"
-  node ./.scripts-dist/migrate-social-users.js --verify --manifest "$manifest_path"
+  node ./.scripts-dist/scripts/migrate-social-users.js --apply --manifest "$manifest_path"
+  node ./.scripts-dist/scripts/migrate-social-users.js --verify --manifest "$manifest_path"
 fi
 
 if [ "$had_pm2_app" = 'true' ]; then

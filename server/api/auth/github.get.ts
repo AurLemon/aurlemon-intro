@@ -1,4 +1,4 @@
-import { OAuthProvider } from '@prisma/client'
+import { OAuthProvider } from '~/generated/prisma/client'
 import { startOAuth } from '~/server/utils/user-auth'
 
 export default defineEventHandler(async (event) => {

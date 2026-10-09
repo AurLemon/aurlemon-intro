@@ -8,9 +8,14 @@ dist
 .scripts-dist
 *.social-user-manifest.json
 
+# Prisma generated client
+/generated/prisma/
+
 # Database
 *.db
 *.db-journal
+*.db-wal
+*.db-shm
 
 # Node dependencies
 node_modules

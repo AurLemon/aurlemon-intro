@@ -1,5 +1,3 @@
-import { dirname, resolve } from 'node:path'
-import { createRequire } from 'node:module'
 import tailwindcss from '@tailwindcss/vite'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
@@ -7,11 +5,6 @@ import emojiFontOptions from './emoji.config'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-const require = createRequire(import.meta.url)
-const prismaClientBrowserEntry = resolve(
-	dirname(require.resolve('@prisma/client/package.json')),
-	'../../.prisma/client/index-browser.js',
-)
 const analyticsPlugins =
 	process.env.NODE_ENV === 'production'
 		? [
@@ -58,7 +51,7 @@ export default defineNuxtConfig({
 					{ code: 'en-US', name: 'English', file: 'en-US.json' },
 				],
 				detectBrowserLanguage: false,
-				vueI18n: './i18n.config.ts',
+				vueI18n: '../i18n.config.ts',
 			},
 		],
 		['@nuxtjs/seo', {}],
@@ -229,14 +222,6 @@ export default defineNuxtConfig({
 	],
 	vite: {
 		plugins: [tailwindcss()],
-		ssr: {
-			external: ['@prisma/client'],
-		},
-		resolve: {
-			alias: {
-				'.prisma/client/index-browser': prismaClientBrowserEntry,
-			},
-		},
 	},
 	app: {
 		head: {

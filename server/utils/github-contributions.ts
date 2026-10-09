@@ -252,7 +252,7 @@ const fetchCalendarFromGithub = async (options: {
 			`${GITHUB_CONTRIBUTIONS_URL}/${encodeURIComponent(options.username)}/contributions` +
 			`?from=${segment.fromDate}&to=${segment.toDate}`
 
-		let html = ''
+		let html: string
 
 		if (useProxy) {
 			const proxyEnvelope = await proxyIntroRequest({

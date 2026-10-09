@@ -20,7 +20,7 @@ main:
             export NUXT_PUBLIC_MS_CLARITY_ID=''
 
             corepack enable
-            corepack prepare pnpm@10.34.5 --activate
+            corepack prepare pnpm@12.10.1 --activate
             pnpm install --frozen-lockfile
             pnpm db:generate
             if [ "${RUN_USER_IDENTITY_MIGRATION:-false}" = 'true' ]; then
@@ -31,7 +31,13 @@ main:
             rm -rf deploy-artifact
             mkdir -p deploy-artifact/data
             cp package.json pnpm-lock.yaml pnpm-workspace.yaml deploy-artifact/
-            cp -R prisma .output deploy-artifact/
+            cp -R .output deploy-artifact/
+            mkdir -p deploy-artifact/prisma
+            cp prisma/schema.prisma deploy-artifact/prisma/
+            cp -R prisma/migrations deploy-artifact/prisma/
+            cp prisma7.config.ts deploy-artifact/
+            mkdir -p deploy-artifact/lib
+            cp lib/database-url.ts deploy-artifact/lib/
             if [ "${RUN_USER_IDENTITY_MIGRATION:-false}" = 'true' ]; then
               cp -R .scripts-dist deploy-artifact/
             fi
@@ -43,9 +49,9 @@ main:
             test -f deploy-artifact/prisma/schema.prisma
             test -f deploy-artifact/prisma/migrations/migration_lock.toml
             test -f deploy-artifact/node_modules/.bin/prisma
-            (cd deploy-artifact && node -e "const client = require('@prisma/client'); if (typeof client.PrismaClient !== 'function') process.exit(1)")
+            (cd deploy-artifact && node --input-type=module -e "const client = await import('./generated/prisma/client.ts'); if (typeof client.PrismaClient !== 'function') process.exit(1)")
             if [ "${RUN_USER_IDENTITY_MIGRATION:-false}" = 'true' ]; then
-              test -f deploy-artifact/.scripts-dist/migrate-social-users.js
+              test -f deploy-artifact/.scripts-dist/scripts/migrate-social-users.js
             fi
             test -f deploy-artifact/data/ip2region/ip2region_v4.xdb
 

@@ -7,8 +7,9 @@
 		"skipLibCheck": true,
 		"esModuleInterop": true,
 		"outDir": "../.scripts-dist",
-		"rootDir": ".",
-		"types": ["node"]
+		"rootDir": "..",
+		"types": ["node"],
+		"rewriteRelativeImportExtensions": true
 	},
 	"include": ["migrate-social-users.ts"]
 }

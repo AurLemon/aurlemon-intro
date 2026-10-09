@@ -1,4 +1,4 @@
-import { OAuthProvider } from '@prisma/client'
+import { OAuthProvider } from '~/generated/prisma/client'
 import { disconnectIdentity } from '~/server/services/account.service'
 import { requireUserSession } from '~/server/utils/user-auth'
 

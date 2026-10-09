@@ -1,4 +1,4 @@
-import { OutboxStatus } from '@prisma/client'
+import { OutboxStatus } from '~/generated/prisma/client'
 import prisma from '~/lib/prisma'
 
 export default defineEventHandler(async () => {
