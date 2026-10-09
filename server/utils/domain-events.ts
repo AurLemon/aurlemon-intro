@@ -1,4 +1,4 @@
-import type { OAuthProvider, Prisma } from '@prisma/client'
+import type { OAuthProvider, Prisma } from '~/generated/prisma/client'
 
 export const DOMAIN_EVENT_NAMES = {
 	USER_CREATED: 'user.created',

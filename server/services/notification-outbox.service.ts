@@ -1,5 +1,5 @@
-import { OutboxStatus, UserRole, UserStatus } from '@prisma/client'
-import type { Prisma } from '@prisma/client'
+import { OutboxStatus, UserRole, UserStatus } from '~/generated/prisma/client'
+import type { Prisma } from '~/generated/prisma/client'
 import nodemailer from 'nodemailer'
 import prisma from '~/lib/prisma'
 import { DOMAIN_EVENT_NAMES } from '~/server/utils/domain-events'

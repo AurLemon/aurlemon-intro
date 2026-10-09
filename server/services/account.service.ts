@@ -1,6 +1,11 @@
 import crypto from 'node:crypto'
-import { EmailSource, Prisma, UserRole, UserStatus } from '@prisma/client'
-import type { OAuthProvider } from '@prisma/client'
+import {
+	EmailSource,
+	Prisma,
+	UserRole,
+	UserStatus,
+} from '~/generated/prisma/client'
+import type { OAuthProvider } from '~/generated/prisma/client'
 import prisma from '~/lib/prisma'
 import {
 	DOMAIN_EVENT_NAMES,

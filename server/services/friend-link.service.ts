@@ -1,4 +1,4 @@
-import { FriendLinkApplicationStatus, Prisma } from '@prisma/client'
+import { FriendLinkApplicationStatus, Prisma } from '~/generated/prisma/client'
 import prisma from '~/lib/prisma'
 import {
 	DOMAIN_EVENT_NAMES,

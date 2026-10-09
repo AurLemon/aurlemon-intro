@@ -1,4 +1,4 @@
-import { OAuthIntent, OAuthProvider } from '@prisma/client'
+import { OAuthIntent, OAuthProvider } from '~/generated/prisma/client'
 import { completeOAuth } from '~/server/utils/user-auth'
 
 const withResult = (

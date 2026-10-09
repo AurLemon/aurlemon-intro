@@ -5,8 +5,8 @@ import {
 	OAuthProvider,
 	UserRole,
 	UserStatus,
-} from '@prisma/client'
-import type { Prisma } from '@prisma/client'
+} from '~/generated/prisma/client'
+import type { Prisma } from '~/generated/prisma/client'
 import type { H3Event } from 'h3'
 import prisma from '~/lib/prisma'
 import {

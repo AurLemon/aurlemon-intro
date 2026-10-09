@@ -1,7 +1,13 @@
 import withNuxt from './.nuxt/eslint.config.mjs'
 
 export default withNuxt({
-	ignores: ['.nuxt/**', '.output/**', 'node_modules/**'],
+	ignores: [
+		'.nuxt/**',
+		'.output/**',
+		'node_modules/**',
+		'generated/prisma/**',
+		'.scripts-dist/**',
+	],
 	rules: {
 		'@typescript-eslint/no-explicit-any': 'off',
 		'@typescript-eslint/no-unused-vars': 'warn',

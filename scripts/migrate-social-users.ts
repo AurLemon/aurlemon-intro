@@ -1,10 +1,15 @@
 import { createHash, randomUUID } from 'node:crypto'
 import { readFile, writeFile } from 'node:fs/promises'
 import { resolve } from 'node:path'
-import prismaClientPackage from '@prisma/client'
-import type { Prisma as PrismaTypes } from '@prisma/client'
-
-const { OAuthProvider, Prisma, PrismaClient, UserRole } = prismaClientPackage
+import {
+	OAuthProvider,
+	Prisma,
+	PrismaClient,
+	UserRole,
+} from '../generated/prisma/client.ts'
+import { PrismaBetterSqlite3 } from '@prisma/adapter-better-sqlite3'
+import { resolveSqliteDatabaseUrl } from '../lib/database-url.js'
+import type { Prisma as PrismaTypes } from '../generated/prisma/client.ts'
 
 interface LegacyCounts {
 	sessions: number
@@ -57,7 +62,12 @@ interface ForeignKeyViolation {
 	fkid: number
 }
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient({
+	adapter: new PrismaBetterSqlite3(
+		{ url: resolveSqliteDatabaseUrl() },
+		{ timestampFormat: 'unixepoch-ms' },
+	),
+})
 const HANDLE_PATTERN = /^[A-Za-z0-9_-]{1,39}$/
 
 const hashToken = (value: string): string =>

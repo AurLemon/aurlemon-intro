@@ -1,4 +1,5 @@
 allowBuilds:
+  better-sqlite3: true
   '@parcel/watcher': true
   '@prisma/client': true
   '@prisma/engines': true
@@ -13,3 +14,36 @@ allowBuilds:
 peerDependencyRules:
   allowedVersions:
     magicast: 0.5.2
+
+overrides:
+  vue: ^3.5.43
+  vue-router: ^5.4.0
+  katex: ^0.19.0
+  '@tiptap/core': 3.31.4
+  '@tiptap/pm': 3.31.4
+
+# 本轮已核查的具体版本；保留其他新发布依赖的默认等待期。
+minimumReleaseAgeExclude:
+  - '@nuxt/kit@4.6.1'
+  - '@nuxt/nitro-server@4.6.1'
+  - '@nuxt/schema@4.6.1'
+  - '@nuxt/vite-builder@4.6.1'
+  - '@nuxt/vite-server@4.6.1'
+  - cssnano-preset-default@9.5.0
+  - cssnano@9.5.0
+  - dotenv@18.0.7
+  - nuxt@4.6.1
+  - postcss-normalize-unicode@9.1.0
+  - '@iconify-json/lucide@1.2.142'
+  - '@iconify/collections@1.0.749'
+  - '@nuxt/cli@4.0.1'
+  - '@tanstack/virtual-core@3.18.0'
+  - '@tanstack/vue-virtual@3.13.40'
+  - '@types/lodash@4.17.26'
+  - '@types/node@24.19.2'
+  - '@types/node@26.6.5'
+  - 'bare-fs@4.8.4'
+  - 'electron-to-chromium@1.5.452'
+  - 'isomorphic-git@1.43.3'
+  - 'postcss-normalize-whitespace@9.0.7'
+  - 'seroval@1.6.9'

@@ -83,7 +83,7 @@
 					class="grid grid-flow-col auto-cols-[12px] gap-1 overflow-x-auto py-2"
 				>
 					<div
-						v-for="(week, weekIndex) in calendar.weeks"
+						v-for="(week, weekIndex) in calendar?.weeks ?? []"
 						:key="`week-${weekIndex}-${week.firstDay}`"
 						class="grid grid-rows-7 gap-1"
 					>

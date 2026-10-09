@@ -71,7 +71,12 @@
 					<div
 						class="line-clamp-1 overflow-hidden truncate text-3xl font-medium text-slate-800 dark:text-slate-300"
 					>
-						<slot name="title" />
+						<slot
+							name="title"
+							:layout-target="textColumn"
+							:available-width="availableTitleWidth"
+							:minimum-width="subtitleWidth"
+						/>
 					</div>
 					<div
 						class="line-clamp-1 overflow-hidden truncate text-base text-slate-700 dark:text-slate-400"
@@ -92,6 +97,19 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
+interface TitleSlotProps {
+	layoutTarget: HTMLElement | null
+	availableWidth: number
+	minimumWidth: number
+}
+
+interface Slots {
+	title(props: TitleSlotProps): unknown
+	logo(): unknown
+	subtitle(): unknown
+	type(): unknown
+}
+
 interface Props {
 	backgroundSrc: string
 	backgroundBlur?: number | string
@@ -99,6 +117,8 @@ interface Props {
 	contentKey?: string | number | null
 	animatedTitle?: boolean
 }
+
+defineSlots<Slots>()
 
 const props = withDefaults(defineProps<Props>(), {
 	backgroundBlur: 3,
