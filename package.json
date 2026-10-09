@@ -63,7 +63,10 @@
 		"@nuxt/eslint": "1.15.2",
 		"@types/node": "^26.2.0",
 		"@types/nodemailer": "^8.0.1",
+		"@web-alchemy/fonttools": "^1.4.0",
+		"emoji-regex": "^11.0.0",
 		"eslint": "10.1.0",
+		"fast-glob": "^3.3.3",
 		"prettier": "3.8.1",
 		"typescript": "5.9.3",
 		"vue-tsc": "^3.2.6"

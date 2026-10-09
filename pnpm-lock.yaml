@@ -113,6 +113,15 @@ importers:
       vue-tsc:
         specifier: ^3.2.6
         version: 3.2.6(typescript@5.9.3)
+      '@web-alchemy/fonttools':
+        specifier: ^1.4.0
+        version: 1.4.0
+      emoji-regex:
+        specifier: ^11.0.0
+        version: 11.0.0
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
 
 packages:
   '@alloc/quick-lru@5.2.0':
@@ -11673,6 +11682,29 @@ packages:
       {
         integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==,
       }
+  '@types/emscripten@1.41.6':
+    resolution:
+      {
+        integrity: sha512-uN+9i8bFT5CUcZfyIEYDrSueACEyKGbUs5kC/72DGlZZoinh84sJfVV0i8UOJD1asdzkvLPBRrKs41kZ8MdEXg==,
+      }
+  '@web-alchemy/fonttools@1.4.0':
+    resolution:
+      {
+        integrity: sha512-367nxtz8VdOWuShLt2lbWBx3kgk1c3L+wmNpZxmU/jRwSS9cm0API8twn9zRPVbW/gLK0lJR1fssltHRFS5FMA==,
+      }
+    engines: { node: '>=18.0.0', npm: '>=9.0.0' }
+    hasBin: true
+  emoji-regex@11.0.0:
+    resolution:
+      {
+        integrity: sha512-2qQtc7syPcJmvF7BfKxBvwgvhzDth6u3q23+Jr4JOQUcmMGgmj7B4/ePZ2DmOhrrb77S8kMNHq2kilVASysfqA==,
+      }
+  pyodide@0.29.3:
+    resolution:
+      {
+        integrity: sha512-22UBuhOJawj7vKUnS7/F3xK+515LJdjiMAHoCfuS6/PbHiOrSQVnYwDe+2sbVwiOZ3sMMexdXICew6NqOMQGgA==,
+      }
+    engines: { node: '>=18.0.0' }
   framer-motion@14.0.0:
     resolution:
       {
@@ -20023,6 +20055,21 @@ snapshots:
   zod@3.25.76: {}
 
   zwitch@2.0.4: {}
+  '@types/emscripten@1.41.6': {}
+  '@web-alchemy/fonttools@1.4.0':
+    dependencies:
+      pyodide: 0.29.3
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
+  emoji-regex@11.0.0: {}
+  pyodide@0.29.3:
+    dependencies:
+      '@types/emscripten': 1.41.6
+      ws: 8.20.0
+    transitivePeerDependencies:
+      - bufferutil
+      - utf-8-validate
   framer-motion@14.0.0:
     dependencies:
       motion-dom: 14.0.0
