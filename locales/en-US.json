@@ -65,14 +65,14 @@
 			"name": "Lemon",
 			"line1Tail": ".",
 			"lemonEmoji": "🍋",
-			"line2": "TypeScript full-stack developer{education}, from Fuzhou, {age} y.o., INF/TJ.",
+			"line2": "TypeScript full-stack development{education}, {age} y.o., INF/TJ, from Fuzhou.",
 			"educationSegment": ", {grade}",
 			"studyYears": {
 				"undergraduate": {
-					"1": "first-year undergraduate",
-					"2": "second-year undergraduate",
-					"3": "third-year undergraduate",
-					"4": "fourth-year undergraduate"
+					"1": "first-year undergraduate student",
+					"2": "second-year undergraduate student",
+					"3": "third-year undergraduate student",
+					"4": "fourth-year undergraduate student"
 				},
 				"master": {
 					"1": "first-year master’s student",
