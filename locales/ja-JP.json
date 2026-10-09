@@ -65,7 +65,7 @@
 			"name": "レモン",
 			"line1Tail": "って呼びます。",
 			"lemonEmoji": "🍋",
-			"line2": "TypeScript フルスタック開発{education}、{age} 歳、INF/TJ、福州市出身。",
+			"line2": "TypeScript フルスタック開発者{education}、{age} 歳、INF/TJ、福州市出身。",
 			"educationSegment": "、{grade}",
 			"studyYears": {
 				"undergraduate": {
@@ -81,7 +81,7 @@
 				}
 			},
 			"studyLabels": {
-				"undergraduate": "大学生",
+				"undergraduate": "学部生",
 				"master": "大学院生"
 			},
 			"card": {
@@ -89,28 +89,32 @@
 					"type": "学歴",
 					"stages": {
 						"bachelor": {
-							"label": "学部",
+							"label": "学士課程",
 							"title": "福建理工大学",
 							"subtitle": "在学中 2026 - 2028",
-							"hint": null
+							"hint": null,
+							"shortTitle": ""
 						},
 						"specialty": {
-							"label": "高等専門",
-							"title": "船政交通職業学院",
+							"label": "専科",
+							"title": "福建船政交通職業学院",
 							"subtitle": "2024 - 2026",
-							"hint": null
+							"hint": "高等職業教育",
+							"shortTitle": "船政交通学院"
 						},
 						"highSchool": {
 							"label": "高校",
 							"title": "福建工貿学校",
 							"subtitle": "2021 - 2024",
-							"hint": null
+							"hint": null,
+							"shortTitle": ""
 						},
 						"juniorSchool": {
 							"label": "中学",
 							"title": "福州屏東中学",
 							"subtitle": "2018 - 2021",
-							"hint": null
+							"hint": null,
+							"shortTitle": ""
 						}
 					}
 				},

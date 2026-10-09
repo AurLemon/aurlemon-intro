@@ -60,10 +60,11 @@
 
 		<!-- 信息卡片 -->
 		<div class="mt-16 pb-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
-			<div class="relative">
+			<div class="group/education relative">
 				<InfoCard
 					:background-src="currentEducationBg"
-					:content-key="selectedEducationStage"
+					:content-key="`${locale}-${selectedEducationStage}`"
+					animated-title
 				>
 					<template #logo>
 						<SkeletonImage
@@ -79,7 +80,16 @@
 						/>
 						<component v-else :is="currentEducationLogo" class="block" />
 					</template>
-					<template #title>{{ currentEducationStage.title }}</template>
+					<template #title="{ layoutTarget, availableWidth, minimumWidth }">
+						<EducationSchoolName
+							:key="`${locale}-${selectedEducationStage}`"
+							:full-name="currentEducationStage.title"
+							:short-name="currentEducationStage.shortTitle"
+							:layout-target="layoutTarget"
+							:available-width="availableWidth"
+							:minimum-width="minimumWidth"
+						/>
+					</template>
 					<template #subtitle>{{ currentEducationStage.subtitle }}</template>
 					<template #type>
 						<div class="flex items-center justify-center w-full">
@@ -93,9 +103,23 @@
 								<UButton
 									variant="link"
 									color="neutral"
-									class="font-semibold text-xs p-0 gap-0 cursor-pointer"
+									class="relative font-semibold text-xs p-0 gap-0 cursor-pointer"
 								>
 									{{ currentEducationStage.label }}
+									<svg
+										viewBox="0 0 10 6"
+										fill="none"
+										aria-hidden="true"
+										class="pointer-events-none absolute left-full ml-1 h-1.5 w-2.5 opacity-0 transition-opacity duration-200 group-hover/education:opacity-100 group-focus-within/education:opacity-100"
+									>
+										<path
+											d="M1 1L5 5L9 1"
+											stroke="currentColor"
+											stroke-width="1.4"
+											stroke-linecap="round"
+											stroke-linejoin="round"
+										/>
+									</svg>
 								</UButton>
 
 								<template #content>
@@ -344,6 +368,7 @@ const getEducationStage = (stage: EducationStage) => {
 	return {
 		label: t(`${baseKey}.label`),
 		title: t(`${baseKey}.title`),
+		shortTitle: t(`${baseKey}.shortTitle`),
 		subtitle: t(`${baseKey}.subtitle`),
 		hint: hintValue ?? '',
 	}

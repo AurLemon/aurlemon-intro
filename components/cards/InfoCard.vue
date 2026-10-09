@@ -1,5 +1,6 @@
 <template>
 	<div
+		ref="card"
 		class="group relative h-40 rounded-xl border-6 border-slate-200 dark:border-slate-800"
 	>
 		<div
@@ -23,21 +24,38 @@
 			<Transition v-if="contentKey" name="info-card-content" mode="out-in">
 				<div
 					:key="contentKey"
-					class="absolute inset-0 flex items-center justify-between gap-3 px-4.5 py-3 lg:justify-center lg:gap-4"
+					ref="contentRow"
+					class="absolute inset-0 flex items-center gap-3 px-4.5 py-3 lg:justify-center lg:gap-4"
+					:class="animatedTitle ? 'justify-center' : 'justify-between'"
 				>
 					<div class="h-20 w-20 shrink-0 select-none">
 						<slot name="logo" />
 					</div>
-					<div class="min-w-0 flex-1 text-center lg:flex-none">
+					<div
+						ref="textColumn"
+						class="min-w-0 text-center"
+						:class="animatedTitle ? 'flex-none' : 'flex-1 lg:flex-none'"
+						:style="animatedTitle ? animatedColumnStyle : undefined"
+					>
 						<div
-							class="line-clamp-1 overflow-hidden truncate text-3xl font-medium text-slate-800 dark:text-slate-300"
+							class="text-3xl font-medium text-slate-800 dark:text-slate-300"
+							:class="
+								animatedTitle ? '' : 'line-clamp-1 overflow-hidden truncate'
+							"
 						>
-							<slot name="title" />
+							<slot
+								name="title"
+								:layout-target="textColumn"
+								:available-width="availableTitleWidth"
+								:minimum-width="subtitleWidth"
+							/>
 						</div>
 						<div
 							class="line-clamp-1 overflow-hidden truncate text-base text-slate-700 dark:text-slate-400"
 						>
-							<slot name="subtitle" />
+							<span ref="subtitleText" class="inline-block whitespace-nowrap"
+								><slot name="subtitle"
+							/></span>
 						</div>
 					</div>
 				</div>
@@ -72,21 +90,69 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
-const props = withDefaults(
-	defineProps<{
-		backgroundSrc: string
-		backgroundBlur?: number | string
-		darkInvert?: boolean
-		contentKey?: string | number | null
-	}>(),
-	{
-		backgroundBlur: 3,
-		darkInvert: false,
-		contentKey: null,
-	},
-)
+interface Props {
+	backgroundSrc: string
+	backgroundBlur?: number | string
+	darkInvert?: boolean
+	contentKey?: string | number | null
+	animatedTitle?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+	backgroundBlur: 3,
+	darkInvert: false,
+	contentKey: null,
+	animatedTitle: false,
+})
+
+const card = ref<HTMLElement | null>(null)
+const contentRow = ref<HTMLElement | null>(null)
+const textColumn = ref<HTMLElement | null>(null)
+const subtitleText = ref<HTMLElement | null>(null)
+const availableTitleWidth = ref(0)
+const subtitleWidth = ref(0)
+let resizeObserver: ResizeObserver | undefined
+
+const animatedColumnStyle = computed(() => ({
+	width: 'max-content',
+	maxWidth:
+		availableTitleWidth.value > 0
+			? `${availableTitleWidth.value}px`
+			: 'calc(100% - 6rem)',
+}))
+
+const measureTitleSpace = () => {
+	if (!props.animatedTitle || !contentRow.value) return
+	const row = contentRow.value
+	const style = getComputedStyle(row)
+	const logo = row.firstElementChild as HTMLElement | null
+	availableTitleWidth.value = Math.max(
+		0,
+		row.clientWidth -
+			parseFloat(style.paddingLeft) -
+			parseFloat(style.paddingRight) -
+			parseFloat(style.columnGap) -
+			(logo?.offsetWidth ?? 80),
+	)
+	subtitleWidth.value = subtitleText.value?.scrollWidth ?? 0
+}
+
+watch([contentRow, subtitleText], () => {
+	void nextTick(measureTitleSpace)
+})
+onMounted(() => {
+	if (!props.animatedTitle) return
+	resizeObserver = new ResizeObserver(measureTitleSpace)
+	resizeObserver.observe(card.value!)
+	document.fonts.addEventListener('loadingdone', measureTitleSpace)
+	measureTitleSpace()
+})
+onBeforeUnmount(() => {
+	resizeObserver?.disconnect()
+	document.fonts.removeEventListener('loadingdone', measureTitleSpace)
+})
 
 const backgroundStyle = computed(() => {
 	const blurValue =

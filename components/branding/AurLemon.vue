@@ -7,17 +7,19 @@
 			/>
 			<component
 				:is="animated ? AurLemonHandwriting : AurLemon"
-				v-bind="animated ? { loop } : {}"
+				v-bind="animated ? { loop, getHighlightElement } : {}"
 				class="h-7 text-[#236F95] dark:text-[#54aed7]"
 			/>
 		</div>
 		<div
+			ref="highlightRef"
 			class="absolute -left-1 -right-2 bottom-0.5 z-0 h-2.5 -rotate-2 bg-[linear-gradient(to_right,transparent,rgba(55,145,190,0.1)_15%,rgba(55,145,190,0.15)_50%,rgba(55,145,190,0.1)_85%,transparent)] dark:bg-[linear-gradient(to_right,transparent,rgba(55,145,190,0.15)_15%,rgba(55,145,190,0.3)_50%,rgba(55,145,190,0.15)_85%,transparent)]"
 		/>
 	</div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import AurLemon from '~/assets/resources/sitemark/text_mark.svg'
 import AurLemonHandwriting from '~/components/branding/AurLemonHandwriting.vue'
 
@@ -27,4 +29,7 @@ interface SiteMarkProps {
 }
 
 withDefaults(defineProps<SiteMarkProps>(), { animated: false, loop: false })
+
+const highlightRef = ref<HTMLElement | null>(null)
+const getHighlightElement = (): HTMLElement | null => highlightRef.value
 </script>
