@@ -15,7 +15,23 @@
 - pnpm 配置统一放在 `pnpm-workspace.yaml`；原生依赖的安装脚本通过 `allowBuilds` 显式授权。新锁文件包含独立的 pnpm 自身依赖文档，保留完整文件，不按单文档 YAML 改写。
 - 保留 pnpm 默认的 24 小时发布时间检查；`minimumReleaseAgeExclude` 仅列出本次升级已选定的具体版本，使旧锁文件与 Nuxt 修复版本能够安装，不对整个包名或作用域放开。后续升级时按需核查并清理旧例外。
 
+## 本地图片缩略图
+
+仓库只保留原图，需要缩略图的使用位置通过静态 import 声明尺寸：
+
+```ts
+import cover from '~/assets/resources/photo.png?w=640&h=480&q=85&thumbnail'
+```
+
+- `thumbnail` 放在查询字符串末尾，以匹配 `types/thumbnails.d.ts` 的 URL 类型声明；也可直接使用 `?thumbnail`，默认宽高上限均为 320px，质量 90。
+- `w` / `h` 是尺寸上限，保持纵横比完整容纳，不裁切、不放大；省略 `h` 时与 `w` 相同。尺寸允许 1–4096，`q` 允许 1–100。例如 80px 校徽可选 320px，以保留 4 倍像素密度。
+- 支持仓库内静态 PNG、JPEG、WebP、AVIF，统一输出 WebP，保留透明通道并校正 EXIF 方向。动画、SVG、远程 URL 不走此入口；未加参数的引用继续加载原图。不能只在浏览器运行时给 URL 拼参数，转换发生在 Vite 解析静态 import 时。
+- 同一原图、同一参数复用缓存 URL；不同尺寸独立生成。Dev 原图变更会重新生成并自动刷新页面（图片 URL 稳定，因此使用整页刷新保证更新），Build 将生成文件作为普通资源打包到 `.output/`。删除 `.nuxt/` 后会自动重建，不必提交产物或单独执行生成命令。
+- 组件继续使用普通 URL（如 `<SkeletonImage :src="cover" />`），压缩逻辑属于构建层，不放进客户端组件；批量资源也应明确导入需要的尺寸，避免为整仓图片生成没有引用的变体。
+
 ## 验证与提交
+
+- 本地缩略图由 `build/thumbnails/nuxt.ts` 的 Nuxt/Vite 模块按需处理，Dev、Build、Generate 都自动执行，不需要预生成脚本。按原图内容、尺寸、质量与 sharp 版本校验缓存，重复启动复用结果；产物仅写入已忽略的 `.nuxt/thumbnails/`，不进入 `assets/` 或 Git。具体引用方式见下节。
 
 - 完成前运行 `pnpm format` 和 `pnpm build`，并按范围执行必要的 lint、类型或内容解析检查；用户明确免除时按当前要求执行。
 - Build 通过只证明可构建，不能代替浏览器交互、部署或跨平台验证；未验证的行为应明确说明。

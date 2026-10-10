@@ -33,6 +33,8 @@ export default defineNuxtConfig({
 	],
 	plugins: [...analyticsPlugins],
 	modules: [
+		// 按引用尺寸生成本地静态图片缩略图，产物只进入构建缓存。
+		'./build/thumbnails/nuxt',
 		['./build/emoji-font/nuxt', emojiFontOptions],
 		'@nuxt/eslint',
 		'@pinia/nuxt',

@@ -1,24 +1,28 @@
 <template>
 	<div
 		ref="card"
-		class="group relative h-40 rounded-xl border-6 border-slate-200 dark:border-slate-800"
+		class="group group/card relative h-40 rounded-xl border-6 border-slate-200 dark:border-slate-800"
 	>
 		<div
 			class="pointer-events-none absolute inset-[-6px] z-2 rounded-xl border-6 border-slate-400/60 opacity-0 transition-opacity duration-120 group-hover:opacity-100 dark:border-slate-700/80"
 			aria-hidden="true"
 		/>
 		<div
-			class="background absolute z-0 top-0 left-0 right-0 bottom-0 overflow-hidden"
-			:style="backgroundStyle"
+			class="background pointer-events-none absolute z-0 top-0 left-0 right-0 bottom-0 overflow-hidden"
+			:style="$slots.background ? undefined : backgroundStyle"
+			aria-hidden="true"
 		>
-			<SkeletonImage
-				:src="backgroundSrc"
-				alt=""
-				class="h-full w-full"
-				image-class="w-full h-full block object-cover select-none"
-				skeleton-class="h-full w-full"
-				:class="darkInvert ? 'dark:filter-[invert(1)]' : ''"
-			/>
+			<slot name="background">
+				<SkeletonImage
+					v-if="backgroundSrc"
+					:src="backgroundSrc"
+					alt=""
+					class="h-full w-full"
+					image-class="w-full h-full block object-cover select-none"
+					skeleton-class="h-full w-full"
+					:class="darkInvert ? 'dark:filter-[invert(1)]' : ''"
+				/>
+			</slot>
 		</div>
 		<div class="foreground relative z-1 w-full h-full">
 			<Transition v-if="contentKey" name="info-card-content" mode="out-in">
@@ -107,6 +111,7 @@ interface TitleSlotProps {
 }
 
 interface Slots {
+	background(): unknown
 	title(props: TitleSlotProps): unknown
 	logo(): unknown
 	subtitle(): unknown
@@ -114,7 +119,7 @@ interface Slots {
 }
 
 interface Props {
-	backgroundSrc: string
+	backgroundSrc?: string
 	backgroundBlur?: number | string
 	darkInvert?: boolean
 	contentKey?: string | number | null
@@ -124,6 +129,7 @@ interface Props {
 defineSlots<Slots>()
 
 const props = withDefaults(defineProps<Props>(), {
+	backgroundSrc: '',
 	backgroundBlur: 3,
 	darkInvert: false,
 	contentKey: null,
