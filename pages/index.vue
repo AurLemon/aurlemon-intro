@@ -62,10 +62,15 @@
 		<div class="mt-16 pb-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
 			<div class="group/education relative">
 				<InfoCard
-					:background-src="currentEducationBg"
 					:content-key="`${locale}-${selectedEducationStage}`"
 					animated-title
 				>
+					<template #background>
+						<EducationCardBackground
+							:badges="educationBackgroundBadges"
+							:selected-badge="String(currentEducationLogo)"
+						/>
+					</template>
 					<template #logo>
 						<SkeletonImage
 							v-if="!currentEducationLogoIsComponent"
@@ -290,15 +295,15 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import InfoCard from '~/components/cards/InfoCard.vue'
+import EducationCardBackground from '~/components/cards/EducationCardBackground.vue'
 import HighlightText from '~/components/common/HighlightText.vue'
 
 import avatarMark from '~/assets/resources/sitemark/avatar_mark.webp'
-import FPMSLogo from '~/assets/resources/school_badge/FPMS.webp'
-import FEESLogo from '~/assets/resources/school_badge/FEES.webp'
-import FJCCCLogo from '~/assets/resources/school_badge/FJCCC.webp'
-import FJUTLogo from '~/assets/resources/school_badge/FJUT.webp'
+import FPMSLogo from '~/assets/resources/school_badge/FPMS.webp?w=320&q=90&thumbnail'
+import FEESLogo from '~/assets/resources/school_badge/FEES.webp?w=320&q=90&thumbnail'
+import FJCCCLogo from '~/assets/resources/school_badge/FJCCC.webp?w=320&q=90&thumbnail'
+import FJUTLogo from '~/assets/resources/school_badge/FJUT.webp?w=320&q=90&thumbnail'
 
-import educationBg from '~/assets/resources/homepage/education_bg.webp'
 import techCoverUrl from '~/assets/resources/homepage/tech_cover.svg?url'
 import techBg from '~/assets/resources/homepage/tech_bg.webp'
 import acgPreferenceBg from '~/assets/resources/homepage/acg_preference_bg.webp'
@@ -387,7 +392,7 @@ const currentEducationLogo = computed(
 const currentEducationLogoIsComponent = computed(
 	() => typeof currentEducationLogo.value !== 'string',
 )
-const currentEducationBg = educationBg
+const educationBackgroundBadges = [FPMSLogo, FJUTLogo, FEESLogo, FJCCCLogo]
 
 const isLogoComponent = (logo: any) => typeof logo !== 'string'
 
