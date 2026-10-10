@@ -5,7 +5,12 @@
 		page="about"
 		use-clean-slot
 	>
-		<SiteMark animated loop class="mb-4" />
+		<SiteMark
+			animated
+			:duration="2600"
+			:highlight-duration="360"
+			class="mb-4"
+		/>
 	</ContentPage>
 </template>
 
