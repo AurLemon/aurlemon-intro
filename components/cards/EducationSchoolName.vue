@@ -56,6 +56,7 @@ interface Props {
 	fullName: string
 	shortName?: string
 	layoutTarget?: HTMLElement | null
+	logoTarget?: HTMLElement | null
 	availableWidth?: number
 	minimumWidth?: number
 }
@@ -63,6 +64,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
 	shortName: '',
 	layoutTarget: null,
+	logoTarget: null,
 	availableWidth: 0,
 	minimumWidth: 0,
 })
@@ -93,6 +95,20 @@ let motionPreference: MediaQueryList | undefined
 let mounted = false
 let revision = 0
 
+interface AnimationLayout {
+	fullName: string
+	shortName: string
+	availableWidth: number
+	fullTextWidth: number
+	compactWidth: number
+	fullWidth: number
+	reducedMotion: boolean
+	layoutTarget: HTMLElement | null
+	logoTarget: HTMLElement | null
+}
+
+let previousLayout: AnimationLayout | undefined
+
 const cancelAnimations = () => {
 	animations.forEach((animation) => animation.cancel())
 	animations = []
@@ -100,7 +116,7 @@ const cancelAnimations = () => {
 
 const freezeAnimationFrame = () => {
 	// Vue 的离场过渡会保留 DOM，但子组件已经开始卸载。
-	// 先把当前动画帧写回旧元素，再撤掉动画，避免退出时露出 max-content 的全称宽度。
+	// 先把当前动画帧写回旧元素，再撤掉动画，避免校徽和文字在退出时跳回原位。
 	animations.forEach((animation) => {
 		const effect = animation.effect
 		if (
@@ -112,7 +128,7 @@ const freezeAnimationFrame = () => {
 		const target = effect.target
 		const computedStyle = getComputedStyle(target)
 		const keyframes = effect.getKeyframes()
-		for (const property of ['width', 'opacity', 'transform']) {
+		for (const property of ['opacity', 'transform']) {
 			if (keyframes.some((keyframe) => property in keyframe))
 				target.style.setProperty(
 					property,
@@ -151,28 +167,48 @@ const restart = async () => {
 		availableWidth,
 		Math.max(fullTextWidth, props.minimumWidth),
 	)
-	await nextTick()
-	if (!mounted || currentRevision !== revision) return
-	// 测量期间保留现有布局，准备就绪后同一帧替换动画，避免先恢复自然宽度再收拢。
-	cancelAnimations()
-	if (reducedMotion.value || !hasOverflow.value) {
-		if (props.layoutTarget)
-			animations.push(
-				props.layoutTarget.animate([{ width: `${fullWidth}px` }], {
-					duration: 1,
-					fill: 'both',
-				}),
-			)
-		return
-	}
 	const compactWidth = Math.min(
 		availableWidth,
-		// scrollWidth 会取整，精确测量后向上取整并留 2px，避免末尾字母误触发省略号。
+		// 精确测量后留 2px，避免末尾字母误触发省略号。
 		Math.max(
 			Math.ceil(shortMeasure.value?.getBoundingClientRect().width ?? 0) + 2,
 			props.minimumWidth,
 		),
 	)
+	const layout: AnimationLayout = {
+		fullName: props.fullName,
+		shortName: props.shortName,
+		availableWidth,
+		fullTextWidth,
+		compactWidth,
+		fullWidth,
+		reducedMotion: reducedMotion.value,
+		layoutTarget: props.layoutTarget,
+		logoTarget: props.logoTarget,
+	}
+	// 无关字体加载或重复尺寸通知不应把正在播放的动画拉回起点。
+	const previous = previousLayout
+	if (
+		previous &&
+		(Object.keys(layout) as (keyof AnimationLayout)[]).every(
+			(key) => layout[key] === previous[key],
+		)
+	)
+		return
+	await nextTick()
+	if (!mounted || currentRevision !== revision) return
+	// 测量期间保留现有布局，准备就绪后同一帧替换动画，避免先恢复自然宽度再收拢。
+	cancelAnimations()
+	previousLayout = layout
+	// 列宽只在测量结果改变时更新。居中 flex 中，列宽变化前后文字中心不变，
+	// 校徽的位置差可以用 transform 表达，无需每帧重新布局。
+	const layoutTarget = props.layoutTarget
+	const logoTarget = props.logoTarget
+	if (layoutTarget) layoutTarget.style.width = `${fullWidth}px`
+	if (logoTarget) logoTarget.style.transform = ''
+	if (reducedMotion.value || !hasOverflow.value) {
+		return
+	}
 	const distance = Math.max(0, fullTextWidth + EDGE_PADDING - fullWidth)
 
 	const travel = (distance / PIXELS_PER_SECOND) * 1000
@@ -185,25 +221,25 @@ const restart = async () => {
 	const offset = (time: number) => time / duration
 	const endTransform = `translateX(-${distance}px)`
 	const fullOpacity = usesShortName.value ? 0 : 1
-	if (props.layoutTarget) {
-		const compact = `${usesShortName.value ? compactWidth : fullWidth}px`
-		const expanded = `${fullWidth}px`
+	const compactOffset = usesShortName.value ? (fullWidth - compactWidth) / 2 : 0
+	const compactTransform = `translateX(${compactOffset}px)`
+	if (props.logoTarget) {
 		animations.push(
-			props.layoutTarget.animate(
+			props.logoTarget.animate(
 				[
-					{ offset: 0, width: compact },
+					{ offset: 0, transform: compactTransform },
 					{
 						offset: offset(usesShortName.value ? SHORT_HOLD : 0),
-						width: compact,
+						transform: compactTransform,
 						easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
 					},
-					{ offset: offset(start), width: expanded },
+					{ offset: offset(start), transform: 'translateX(0)' },
 					{
 						offset: offset(fadeStart),
-						width: expanded,
+						transform: 'translateX(0)',
 						easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
 					},
-					{ offset: 1, width: compact },
+					{ offset: 1, transform: compactTransform },
 				],
 				{ duration, iterations: Infinity, easing: 'linear' },
 			),
@@ -212,11 +248,11 @@ const restart = async () => {
 	animations.push(
 		fullText.value!.animate(
 			[
-				{ offset: 0, opacity: fullOpacity, transform: 'translateX(0)' },
+				{ offset: 0, opacity: fullOpacity, transform: compactTransform },
 				{
 					offset: offset(usesShortName.value ? SHORT_HOLD : 0),
 					opacity: fullOpacity,
-					transform: 'translateX(0)',
+					transform: compactTransform,
 					easing: 'ease-in-out',
 				},
 				{ offset: offset(start), opacity: 1, transform: 'translateX(0)' },
@@ -228,7 +264,11 @@ const restart = async () => {
 					transform: endTransform,
 					easing: 'ease-in-out',
 				},
-				{ offset: offset(fadeEnd), opacity: 0, transform: endTransform },
+				{
+					offset: offset(fadeEnd),
+					opacity: 0,
+					transform: `translateX(${compactOffset - distance}px)`,
+				},
 				...(usesShortName.value
 					? []
 					: [
@@ -275,6 +315,7 @@ watch(
 		props.fullName,
 		props.shortName,
 		props.layoutTarget,
+		props.logoTarget,
 		props.availableWidth,
 		props.minimumWidth,
 	],

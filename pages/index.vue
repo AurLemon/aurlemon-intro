@@ -80,12 +80,15 @@
 						/>
 						<component v-else :is="currentEducationLogo" class="block" />
 					</template>
-					<template #title="{ layoutTarget, availableWidth, minimumWidth }">
+					<template
+						#title="{ layoutTarget, logoTarget, availableWidth, minimumWidth }"
+					>
 						<EducationSchoolName
 							:key="`${locale}-${selectedEducationStage}`"
 							:full-name="currentEducationStage.title"
 							:short-name="currentEducationStage.shortTitle"
 							:layout-target="layoutTarget"
+							:logo-target="logoTarget"
 							:available-width="availableWidth"
 							:minimum-width="minimumWidth"
 						/>
