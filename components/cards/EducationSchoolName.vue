@@ -81,7 +81,7 @@ const usesShortName = computed(
 )
 
 // 简称多停留一会儿；全称两端留出阅读时间，按固定像素速度线性展示。
-const SHORT_HOLD = 4000
+const SHORT_HOLD = 3000
 const FULL_HOLD = 1200
 const FADE = 360
 const PIXELS_PER_SECOND = 56
@@ -143,7 +143,9 @@ const restart = async () => {
 
 	// 测量原始文字与卡片可用空间，不把正在变化的列宽当作溢出判断依据。
 	const availableWidth = props.availableWidth || viewport.value.clientWidth
-	const fullTextWidth = fullMeasure.value.scrollWidth
+	const fullTextWidth = Math.ceil(
+		fullMeasure.value.getBoundingClientRect().width,
+	)
 	hasOverflow.value = fullTextWidth - availableWidth > 1
 	const fullWidth = Math.min(
 		availableWidth,
@@ -165,7 +167,11 @@ const restart = async () => {
 	}
 	const compactWidth = Math.min(
 		availableWidth,
-		Math.max(shortMeasure.value?.scrollWidth ?? 0, props.minimumWidth),
+		// scrollWidth 会取整，精确测量后向上取整并留 2px，避免末尾字母误触发省略号。
+		Math.max(
+			Math.ceil(shortMeasure.value?.getBoundingClientRect().width ?? 0) + 2,
+			props.minimumWidth,
+		),
 	)
 	const distance = Math.max(0, fullTextWidth + EDGE_PADDING - fullWidth)
 

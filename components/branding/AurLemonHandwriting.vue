@@ -5,6 +5,8 @@ import wordmarkSource from '~/assets/resources/sitemark/text_mark.svg?raw'
 interface HandwritingProps {
 	/** Total writing time in milliseconds. */
 	duration?: number
+	/** Background marker reveal time in milliseconds. */
+	highlightDuration?: number
 	/** Write, fade the ink in place, and repeat while visible. */
 	loop?: boolean
 	/** Optional background marker leading into the handwriting animation. */
@@ -30,6 +32,7 @@ interface HandwritingStroke {
 
 const props = withDefaults(defineProps<HandwritingProps>(), {
 	duration: 4000,
+	highlightDuration: 900,
 	loop: false,
 	getHighlightElement: undefined,
 })
@@ -186,18 +189,23 @@ const createPenFrames = (
 			// Ease into each connecting sweep and slow again before the next turn.
 			return Math.max(
 				current,
-				1 + (zone.speed - 1) * Math.sin(Math.PI * position) ** 2,
+				1 + (zone.speed - 1) * 0.55 * Math.sin(Math.PI * position) ** 2,
 			)
 		}, 1)
 		return (1 + 2 * (1 - alignment) + endpointWeight) / speed
 	})
-	const totalWeight = weights.reduce((sum, weight) => sum + weight, 0)
+	// Blend neighboring samples so tight turns do not cause abrupt speed changes.
+	const smoothWeights = weights.map((_, index) => {
+		const neighbors = weights.slice(Math.max(0, index - 2), index + 3)
+		return neighbors.reduce((sum, weight) => sum + weight, 0) / neighbors.length
+	})
+	const totalWeight = smoothWeights.reduce((sum, weight) => sum + weight, 0)
 	let elapsed = 0
 	const frames: Keyframe[] = [
 		{ strokeDashoffset: '1', opacity: 0, offset: 0 },
 		{ strokeDashoffset: '1', opacity: 1, offset: 0.001 },
 	]
-	weights.forEach((weight, index) => {
+	smoothWeights.forEach((weight, index) => {
 		elapsed += weight
 		const progress = (index + 1) / sampleCount
 		// Let the smaller round tip lead; catch up completely at each stroke end.
@@ -256,17 +264,15 @@ onMounted(() => {
 		return
 	}
 
+	const penLiftPauseScale = 0.5
 	const totalWeight = strokes.reduce(
-		(total, stroke) => total + stroke.duration + stroke.pauseBefore,
+		(total, stroke) =>
+			total + stroke.duration + stroke.pauseBefore * penLiftPauseScale,
 		0,
 	)
 	const highlight = props.getHighlightElement?.()
-	const highlightDuration = highlight ? 900 : 0
-	const outlineFadeStart = highlight ? 600 : 0
-	const outlineFadeEnd = highlight
-		? highlightDuration
-		: Math.min(400, props.duration)
-	const writingStart = outlineFadeStart
+	const highlightDuration = highlight ? Math.max(0, props.highlightDuration) : 0
+	const writingStart = 0
 	const writingEnd = Math.max(highlightDuration, writingStart + props.duration)
 	const holdDuration = 1000
 	const fadeDuration = 1000
@@ -278,7 +284,8 @@ onMounted(() => {
 		svg.querySelectorAll<SVGGElement>('[data-writing-stroke]'),
 	).flatMap((group, index) => {
 		const stroke = strokes[index]!
-		elapsed += (stroke.pauseBefore / totalWeight) * props.duration
+		elapsed +=
+			((stroke.pauseBefore * penLiftPauseScale) / totalWeight) * props.duration
 		const start = elapsed
 		const duration = (stroke.duration / totalWeight) * props.duration
 		const end = start + duration
@@ -364,42 +371,6 @@ onMounted(() => {
 			frames.push({ clipPath: 'inset(0 0% 0 0)', opacity: 1, offset: 1 })
 		}
 		const animation = highlight.animate(frames, {
-			duration: cycleDuration,
-			iterations: props.loop ? Infinity : 1,
-			fill: 'both',
-		})
-		animation.pause()
-		animations.push(animation)
-	}
-
-	const outline = svg.querySelector<SVGPathElement>('[data-writing-outline]')
-	if (outline) {
-		// Fade the guide in during the marker's final sweep instead of popping in.
-		const frames: Keyframe[] = [
-			{ opacity: 0, offset: 0 },
-			{
-				opacity: 0,
-				offset: outlineFadeStart / cycleDuration,
-				easing: 'ease-in-out',
-			},
-			{ opacity: 0.3, offset: outlineFadeEnd / cycleDuration },
-		]
-		if (props.loop) {
-			frames.push(
-				{ opacity: 0.3, offset: writingEnd / cycleDuration },
-				{ opacity: 0, offset: (writingEnd + 200) / cycleDuration },
-				{ opacity: 0, offset: 1 },
-			)
-		} else {
-			frames.push(
-				{
-					opacity: 0.3,
-					offset: Math.max(outlineFadeEnd, writingEnd - 200) / cycleDuration,
-				},
-				{ opacity: 0, offset: 1 },
-			)
-		}
-		const animation = outline.animate(frames, {
 			duration: cycleDuration,
 			iterations: props.loop ? Infinity : 1,
 			fill: 'both',
@@ -523,16 +494,6 @@ onBeforeUnmount(() => {
 				</g>
 			</mask>
 		</defs>
-		<path
-			:d="wordmarkPath"
-			data-writing-outline
-			fill="none"
-			stroke="currentColor"
-			stroke-width="0.65"
-			vector-effect="non-scaling-stroke"
-			class="transition-opacity duration-200 motion-reduce:transition-none"
-			:class="complete ? 'opacity-0' : 'opacity-30'"
-		/>
 		<path
 			:d="wordmarkPath"
 			data-writing-ink

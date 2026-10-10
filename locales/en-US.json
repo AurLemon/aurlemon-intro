@@ -92,29 +92,29 @@
 							"label": "Bachelor’s",
 							"title": "Fujian University of Technology",
 							"subtitle": "IN PROGRESS 2026 - 2028",
-							"hint": null,
+							"hint": "",
 							"shortTitle": "FJUT"
 						},
 						"specialty": {
 							"label": "Junior College",
 							"title": "Fujian Chuanzheng Communications College",
-							"subtitle": "DIPLOMA 2024 - 2026",
-							"hint": null,
+							"subtitle": "2024 - 2026",
+							"hint": "",
 							"shortTitle": "FJCCC"
 						},
 						"highSchool": {
 							"label": "High School",
 							"title": "Fujian Engineering & Economics School",
 							"subtitle": "2021 - 2024",
-							"hint": null,
+							"hint": "",
 							"shortTitle": "FEES"
 						},
 						"juniorSchool": {
 							"label": "Junior High School",
 							"title": "Pingdong Middle School",
 							"subtitle": "2018 - 2021",
-							"hint": null,
-							"shortTitle": "Pingdong"
+							"hint": "",
+							"shortTitle": "FPM"
 						}
 					}
 				},

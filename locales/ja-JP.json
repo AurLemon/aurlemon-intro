@@ -92,28 +92,28 @@
 							"label": "学士課程",
 							"title": "福建理工大学",
 							"subtitle": "在学中 2026 - 2028",
-							"hint": null,
+							"hint": "",
 							"shortTitle": ""
 						},
 						"specialty": {
 							"label": "専科",
 							"title": "福建船政交通職業学院",
 							"subtitle": "2024 - 2026",
-							"hint": "高等職業教育",
+							"hint": "",
 							"shortTitle": "船政交通学院"
 						},
 						"highSchool": {
 							"label": "高校",
 							"title": "福建工貿学校",
 							"subtitle": "2021 - 2024",
-							"hint": null,
+							"hint": "",
 							"shortTitle": ""
 						},
 						"juniorSchool": {
 							"label": "中学",
 							"title": "福州屏東中学",
 							"subtitle": "2018 - 2021",
-							"hint": null,
+							"hint": "",
 							"shortTitle": ""
 						}
 					}

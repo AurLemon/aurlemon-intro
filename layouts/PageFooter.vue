@@ -33,7 +33,7 @@
 			/>
 		</div>
 		<div class="w-full flex flex-col justify-between lg:flex-row">
-			<SiteMark animated />
+			<SiteMark />
 			<div
 				class="mt-3 lg:mt-0 break-all flex flex-wrap gap-x-2 lg:items-center lg:gap-x-4 text-[15px] text-slate-800 dark:text-slate-200 tracking-wide"
 				@mouseleave="hoveredLink = null"

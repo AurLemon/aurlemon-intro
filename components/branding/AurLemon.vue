@@ -7,7 +7,11 @@
 			/>
 			<component
 				:is="animated ? AurLemonHandwriting : AurLemon"
-				v-bind="animated ? { loop, getHighlightElement } : {}"
+				v-bind="
+					animated
+						? { loop, duration, highlightDuration, getHighlightElement }
+						: {}
+				"
 				class="h-7 text-[#236F95] dark:text-[#54aed7]"
 			/>
 		</div>
@@ -26,9 +30,16 @@ import AurLemonHandwriting from '~/components/branding/AurLemonHandwriting.vue'
 interface SiteMarkProps {
 	animated?: boolean
 	loop?: boolean
+	duration?: number
+	highlightDuration?: number
 }
 
-withDefaults(defineProps<SiteMarkProps>(), { animated: false, loop: false })
+withDefaults(defineProps<SiteMarkProps>(), {
+	animated: false,
+	loop: false,
+	duration: 4000,
+	highlightDuration: 900,
+})
 
 const highlightRef = ref<HTMLElement | null>(null)
 const getHighlightElement = (): HTMLElement | null => highlightRef.value
