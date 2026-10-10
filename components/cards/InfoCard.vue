@@ -28,7 +28,7 @@
 					class="absolute inset-0 flex items-center gap-3 px-4.5 py-3 lg:justify-center lg:gap-4"
 					:class="animatedTitle ? 'justify-center' : 'justify-between'"
 				>
-					<div class="h-20 w-20 shrink-0 select-none">
+					<div ref="logo" class="h-20 w-20 shrink-0 select-none">
 						<slot name="logo" />
 					</div>
 					<div
@@ -46,6 +46,7 @@
 							<slot
 								name="title"
 								:layout-target="textColumn"
+								:logo-target="logo"
 								:available-width="availableTitleWidth"
 								:minimum-width="subtitleWidth"
 							/>
@@ -74,6 +75,7 @@
 						<slot
 							name="title"
 							:layout-target="textColumn"
+							:logo-target="logo"
 							:available-width="availableTitleWidth"
 							:minimum-width="subtitleWidth"
 						/>
@@ -99,6 +101,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 interface TitleSlotProps {
 	layoutTarget: HTMLElement | null
+	logoTarget: HTMLElement | null
 	availableWidth: number
 	minimumWidth: number
 }
@@ -130,6 +133,7 @@ const props = withDefaults(defineProps<Props>(), {
 const card = ref<HTMLElement | null>(null)
 const contentRow = ref<HTMLElement | null>(null)
 const textColumn = ref<HTMLElement | null>(null)
+const logo = ref<HTMLElement | null>(null)
 const subtitleText = ref<HTMLElement | null>(null)
 const availableTitleWidth = ref(0)
 const subtitleWidth = ref(0)
