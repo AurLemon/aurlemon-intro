@@ -290,7 +290,7 @@ import InfoCard from '~/components/cards/InfoCard.vue'
 import HighlightText from '~/components/common/HighlightText.vue'
 
 import avatarMark from '~/assets/resources/sitemark/avatar_mark.webp'
-import FPMLogo from '~/assets/resources/school_badge/FPM.webp'
+import FPMSLogo from '~/assets/resources/school_badge/FPMS.webp'
 import FEESLogo from '~/assets/resources/school_badge/FEES.webp'
 import FJCCCLogo from '~/assets/resources/school_badge/FJCCC.webp'
 import FJUTLogo from '~/assets/resources/school_badge/FJUT.webp'
@@ -359,7 +359,7 @@ const educationLogos: Record<EducationStage, any> = {
 	bachelor: FJUTLogo,
 	specialty: FJCCCLogo,
 	highSchool: FEESLogo,
-	juniorSchool: FPMLogo,
+	juniorSchool: FPMSLogo,
 }
 
 const getEducationStage = (stage: EducationStage) => {
