@@ -185,6 +185,17 @@
 					"title": "Native CN",
 					"subtitle": "CET-4 / CET-6 / N4",
 					"type": "Lang"
+				},
+				"navigation": {
+					"profile": "Explore my education in {page}",
+					"project": "Discover my work in {page}",
+					"acg": "Explore my ACG interests in {page}",
+					"music": "Explore my music tastes in {page}",
+					"pages": {
+						"profile": "Profile",
+						"project": "Projects",
+						"preference": "Preferences"
+					}
 				}
 			}
 		},

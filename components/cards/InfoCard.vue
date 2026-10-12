@@ -2,7 +2,10 @@
 	<div
 		ref="card"
 		class="group group/card relative h-40 rounded-xl border-6 border-slate-200 dark:border-slate-800"
+		@mouseenter="isHovered = true"
+		@mouseleave="isHovered = false"
 	>
+		<slot name="navigation" :hovered="isHovered" />
 		<div
 			class="pointer-events-none absolute inset-[-6px] z-2 rounded-xl border-6 border-slate-400/60 opacity-0 transition-opacity duration-120 group-hover:opacity-100 dark:border-slate-700/80"
 			aria-hidden="true"
@@ -132,7 +135,12 @@ interface TitleSlotProps {
 	minimumWidth: number
 }
 
+interface NavigationSlotProps {
+	hovered: boolean
+}
+
 interface Slots {
+	navigation?(props: NavigationSlotProps): unknown
 	background(): unknown
 	title(props: TitleSlotProps): unknown
 	logo(): unknown
@@ -154,6 +162,7 @@ const props = withDefaults(defineProps<Props>(), {
 	smoothWidth: false,
 })
 
+const isHovered = ref(false)
 const card = ref<HTMLElement | null>(null)
 const contentRow = ref<HTMLElement | null>(null)
 const textColumn = ref<HTMLElement | null>(null)

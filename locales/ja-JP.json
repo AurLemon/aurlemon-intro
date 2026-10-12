@@ -149,15 +149,15 @@
 					"categories": {
 						"yorushika": {
 							"title": "ヨルシカ",
-							"subtitles": ["n-bunaが大好き"]
+							"subtitles": ["n-buna が大好き"]
 						},
 						"zuttomayo": {
 							"title": "ずっとまよ",
-							"subtitles": ["ACAねが大好き"]
+							"subtitles": ["ACAね が大好き"]
 						},
 						"chilichill": {
 							"title": "ChiliChill",
-							"subtitles": ["ChiliChillは神"]
+							"subtitles": ["ChiliChill は神"]
 						},
 						"vocaloid": {
 							"title": "Vocaloid",
@@ -185,6 +185,17 @@
 					"title": "中国語ネイティブ",
 					"subtitle": "CET-4 / CET-6 / N4",
 					"type": "言語"
+				},
+				"navigation": {
+					"profile": "{page}で私の学歴を見る",
+					"project": "{page}で私の制作物を見る",
+					"acg": "{page}で私の ACG の好みを見る",
+					"music": "{page}で私の音楽の好みを見る",
+					"pages": {
+						"profile": "自己紹介ページ",
+						"project": "プロジェクトページ",
+						"preference": "好みのページ"
+					}
 				}
 			}
 		},
