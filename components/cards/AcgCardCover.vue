@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="relative h-full w-full overflow-hidden rounded-lg"
+		class="relative h-full w-full overflow-hidden rounded-lg bg-slate-200/60 dark:bg-slate-800/60"
 		role="img"
 		:aria-label="alt"
 	>
@@ -24,7 +24,7 @@
 		</TransitionGroup>
 		<span
 			aria-hidden="true"
-			class="pointer-events-none absolute inset-0 z-10 rounded-lg border border-slate-300/60"
+			class="pointer-events-none absolute inset-0 z-10 rounded-lg border border-slate-300/60 dark:border-slate-800/60"
 		/>
 	</div>
 </template>

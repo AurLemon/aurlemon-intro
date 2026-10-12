@@ -18,7 +18,7 @@
 - 每个素材独立计算 `opacity = min(0.6, visibility / contrast)`，纯透明或与底色完全同色的素材保持不可见，不无限放大。使用亮度权重的 sRGB 色差 RMS 作为项目内的近似视觉指标，包含透明覆盖面积、色彩和饱和度调整效果；它不保证不同图案的主观观感完全相等，也不是正文 WCAG 对比度。静态径向遮罩与阴影仍统一施加，不把前景附近的刻意渐隐补偿回来。
 - `build/card-appearance/nuxt.ts` 在 Dev/Build 中按 48px 单元格、42px 素材测量各主题；色票读取当前 `assets/styles/base/tailwind.css` 的 surface-0、neutral-500/400。素材先按实际 contain/cover 裁切、保留 alpha、按共用 `saturate(1.15)` 增强饱和度，再模拟 Gaussian blur，输出色差和梯度 RMS 的保留率。测量只在构建侧发生，不由客户端逐张下载原图或用 Canvas 分析。
 - 模糊统一以 64px 单元格为配置基准：普通状态 3px，hover/内部聚焦 1.5px，实际值按 `clamp(36px, 14cqw, 64px) / 64` 同比计算。采样表按 48px 单元格换算并线性插值色差，再反算透明度；不会继续用边缘保留阈值把用户设定的模糊压到过小，也不会让静态与 hover 算成相同值。构建输出的边缘保留率作为测量元数据保留。SVG 文本采样使用构建主机 serif 字体，浏览器继续用项目 serif 字体，字形差异会带来小幅测量误差。
-- 公共档位位于 `cardPattern.ts`：`blurLevel` 的 `clear / standard / soft` 分别乘 0.65 / 1 / 1.15；`strengthLevel` 的 `quiet / subtle / standard / distinct` 分别乘 0.5 / 0.8 / 1 / 1.2。先继承公共默认值和部分字段覆盖，再应用档位。技术、夜间与语言当前使用 `density: 1` 和默认 standard 档位，语言文字字号为 18；ACG 与音乐都使用 clear + distinct，保持相同目标可见度；教育使用 soft + subtle 和 `density: 0.95`，较默认 0.8 略密，在常见桌面卡片宽度下约多一列，保持更柔和的校徽背景。
+- 公共档位位于 `cardPattern.ts`：`blurLevel` 的 `clear / standard / soft` 分别乘 0.65 / 1 / 1.15；`strengthLevel` 的 `quiet / subtle / standard / distinct` 分别乘 0.5 / 0.8 / 1 / 1.2。先继承公共默认值和部分字段覆盖，再应用档位。技术、夜间与语言当前使用 `density: 1` 和默认 standard 档位，语言文字字号为 18；ACG 与音乐都使用 clear + distinct，保持相同目标可见度；教育使用 standard + subtle 和 `density: 0.95`，较默认 0.8 略密，在常见桌面卡片宽度下约多一列，保持更柔和的校徽背景。
 - `options.density` 按比例缩小单元格；布局测量、模糊与移动距离同步使用该单元格尺寸。`columnStep` / `rowStep` 分别独立控制横向列距和纵向行距，默认均为 1 个单元格，不改变素材大小；图片背景默认按素材显示宽度加 0.12 格留白计算，竖版封面为 0.62 + 0.12 = 0.74，未指定尺寸的方形图片仍为 1，可通过 options 覆盖列距。音乐通过 `imageWidth: 0.62` 与 ACG 使用相同显示宽度、density 0.7 和 0.12 格间隙，正方形素材行距为 0.74，不沿用竖图的 1 格行距。音乐使用 catalog 排列，四列、八行覆盖全部 29 张，补齐空位的少量图片重复；悬停以原速度持续向下滚动完整八行周期（40 秒），循环接缝与起点图案重合。其他背景同样移动各自完整的平铺周期，保持既有排列。`options` 按需提供 `light`、`dark` 的目标可见度与参考尺寸 blur、`shadow` 部分字段，以及 `transitionMs`、`driftSecondsPerRow`。未提供字段继承公共默认值。常规卡片只传素材和构建输出的 `profiles`，不得再手填每个素材的透明度。色票、图片或 SVG 清单修改后重新生成测量结果。
 - 普通与 hover 各渲染一份固定 blur、固定素材 opacity 的 SVG 图案，hover 用外层 HTML 的 500ms ease-out opacity 交叉淡化模拟清晰度与强度变化。禁止逐帧改变重复 SVG 素材的 opacity 或 blur/filter；这会让快速换卡片时的退场过渡一起重绘。两份图案共享素材 URL，不增加下载。主题数值在挂载后读取 `useColorMode`，SSR 与首次 hydration 使用相同默认值，避免深色主题样式不一致；素材内联取值，不依赖 SVG use 引用树的祖先主题/hover 选择器。教育菜单打开时通过 `focusActive` 关闭焦点播放，保持既有交互。
 - 四类素材通过 `motifs` 和 `motif` 插槽接入：`EducationCardBackground` 只传校徽与测量值，`TechnologyCardBackground` 和 `PersonalCardBackground` 通过 `SvgCardBackground` 使用受信任的本地 `*.card-motifs.json?appearance` 清单，渲染和测量共用同一份 SVG，`ImageCardBackground` 从一个图集 URL 按区域裁切。六张卡片的每个静态状态均合并为一个 SVG pattern 层；教育阶段切换不改变背景图案或强度。图案层数不等于图片请求数。公共层统一交互和视觉参数，素材层保留不同的外轮廓，不要求每个主题都套相同的圆角底块。
@@ -44,7 +44,7 @@
 ### 前景布局与颜色
 
 - 六张卡片继承 `InfoCard` 的同一套外边框和文字颜色：外层 `h-40 rounded-xl border-6 border-slate-200 dark:border-slate-800`；标题 `text-slate-800 dark:text-slate-300`，副标题 `text-slate-700 dark:text-slate-400`。技术卡不再单独覆盖为更浅颜色。背景滚动、图片分类和副标题切换不得改变主标题。
-- ACG 与音乐前景使用完整的 80 × 80 容器，外层 `rounded-lg overflow-hidden` 和常驻边框覆盖层；图片贴满边缘，不加 margin、padding 或会挤占图片的布局边框。ACG 内层封面只使用 `rounded-sm`，层间有阴影，阴影不能漏出容器。教育背景也按内圆角裁切；教育菜单仍可溢出前景，不能直接裁掉整个 InfoCard。
+- ACG 与音乐前景使用完整的 80 × 80 容器，外层 `rounded-lg overflow-hidden`，使用 `bg-slate-200/60 dark:bg-slate-800/60` 作为图片加载、失败与切换时的颜色兜底；常驻边框覆盖层使用 `border-slate-300/60 dark:border-slate-800/60`，与夜间、语言前景保持相同主题配色；图片贴满边缘，不加 margin、padding 或会挤占图片的布局边框。ACG 内层封面只使用 `rounded-sm`，层间有阴影，阴影不能漏出容器。教育背景也按内圆角裁切；教育菜单仍可溢出前景，不能直接裁掉整个 InfoCard。
 - ACG 与音乐的 InfoCard 和前景行 DOM 常驻，只切换内部封面、副标题和作品名，不通过 contentKey 重建整行。启用 smoothWidth：分别测量固定标题与副标题的自然宽度，以可用空间为上限，用 500ms width 过渡推动文字列与封面；自然测量不能受到 line-clamp 或省略号影响。教育继续沿用其独立的校名过渡。
 - 音乐主标题固定使用原来的 J-POP / Voca 文案；ACG 固定 GIRL LOVE。英文、日文副标题保持短句，并遵守文字列最大宽度，不能挤出卡片。底部作品名是加粗的非交互文本，不创建链接。
 
@@ -64,7 +64,7 @@
 
 - 分类与作者按已确认清单维护：s62 的「夜未艾」「夏末递归定义」「星期零」及 Sakura_Rain 的「樱花雨」归国创 Vocaloid；花水r 的「南京夜无电波讯号」归中V，黑色磁带作为 album 元数据；其余用户指定的 P 主作品归 Vocaloid。日文作者与作品名以清单原文为准，不用描述性旧文件名 blue cube / black tape 等替代正式名称。
 - 各语言文案位于 `main.index.card.music.categories`，subtitles 当前每类一项；不保留旧的封面哈希选句逻辑。ChiliChill 的英文、日文副标题直接使用 ChiliChill 名称，分别为「ChiliChill is god」「ChiliChillは神」，不翻译为七里桥；英文、日文翻译不添加标点，尤其逗号、句点和引号；作品名、作者原文不按这条翻译规则改写。切换语言即时更新文案，不等待换图。
-- 底部显示「音乐偏好 分类 / 歌名」，分类与歌名之间用带空格的 `/`。ChiliChill 展示时去掉末尾括号里的英文，完整标题仍保留在 JSON；其他作品名保留原文及其标点。
+- 底部显示「音乐偏好 分类 / 歌名」，分类与歌名之间用带空格的 `/`；Vocaloid、中V、国创 Vocaloid 三类在歌名后追加 ` (作者)`，直接使用清单的 author 数组，多作者以 `/` 分隔，其他分类不追加作者。ChiliChill 展示时去掉末尾括号里的英文，完整标题仍保留在 JSON；其他作品名保留原文及其标点。
 - SSR 随机选择一张，hydration 复用该选择；返回首页推进队列。Cookie 保存有效素材 id、剩余队列与上次 id，保留 30 天；一轮全部展示后才重洗，跨轮避免连续重复，清单改变时过滤失效 id。保证持续停留或返回首页时覆盖全部封面；下载失败不消耗待展示队列，下一周期重试。
 - `useMusicPreference` 每次只准备下一张缩略图，先下载并解码，成功且页面仍可见后同步更新封面、分类文案和歌名；失败、页面隐藏或已离开首页时保留原图，不预加载全部封面。
 - `MusicCardCover` 用原生图片和稳定容器做内部交接，不叠加 SkeletonImage 的第二次淡入。旧封面保持不透明，新封面从左侧完整一幅宽度之外滑入，700ms 水平位移 + opacity + blur；旧层在交接结束后移除，稳定状态一张，交接时两张。不能改成硬切、垂直切换或中途露出背景。副标题同样水平位移 + opacity + blur；主标题和边框不参与切换。
@@ -85,9 +85,9 @@
 
 ### 底部作品名阅读窗口
 
-- ACG 与音乐共用非交互 PreferenceTrackLabel，最多占父容器 55% 且不超过 14rem。实际超过宽度才滚动，能放下就静止；溢出时两侧使用 12px 透明渐隐遮罩，让首尾自然进出。作品名切换只用 opacity，不加 blur；正文副标题和图片的 blur 规则独立。
-- 开头先停留 3.5 秒，再以固定 32px/s 从开头滚到末尾，末尾停留 2 秒；滚动距离包含渐隐区域的内边距，不压缩速度来赶十秒。滚动只播放一遍并保持末尾，不来回弹、不刚出现就滚。
-- `usePreferenceRotation` 以十秒作为最小展示间隔，接收标签的实际阅读时长，加 400ms 交接余量后决定下一次换图。长作品没读完就 delay；语言、字体、容器尺寸变化重新测量并规划阅读窗口。相同尺寸的 ResizeObserver 通知不打断初始化或重播。
+- ACG 与音乐共用非交互 PreferenceTrackLabel，最多占父容器 55% 且不超过 14rem。实际超过宽度才滚动，能放下就静止；溢出时两侧使用 12px 透明渐隐遮罩，让首尾自然进出。作品名切换只用 opacity，不加 blur；正文副标题和图片的 blur 规则独立。封面与底部作品名先切换，旧作品名用 160ms 淡出、新作品名用 240ms 淡入；副标题以实际翻译后的文案作为 Transition key，相同文案保持原 DOM，不播放 blur 或淡入淡出；文案变化时保留 120ms 后再用 260ms 淡出、260ms 淡入接上（总计 640ms，略慢于作品名的 400ms），避免两行同时消失。底部作品名的外层容器常驻，仅切换内部文本；按新作品名的自然宽度与可用宽度上限计算目标像素宽度，用 400ms ease-in-out width 过渡（与作品名淡出、淡入的总时长一致）带动左侧「XX 偏好」平滑移动，不能通过替换整个作品名组件让宽度跳变；减少动态效果时直接切换，不保留延迟。
+- 开头先停留 1.5 秒，再以固定速度从开头滚到末尾（ACG 默认 56px/s，音乐通过 `pixelsPerSecond` 设置为 48px/s），末尾停留 1 秒；滚动距离包含渐隐区域的内边距，不压缩速度来赶六秒。滚动只播放一遍并保持末尾，不来回弹、不刚出现就滚。
+- `usePreferenceRotation` 以六秒作为最小展示间隔，接收标签的实际阅读时长，加 400ms 交接余量后决定下一次换图。长作品没读完就 delay；语言、字体、容器尺寸变化重新测量并规划阅读窗口。相同尺寸的 ResizeObserver 通知不打断初始化或重播。滚动距离和阅读窗口按外层最终目标宽度计算，缓存文本自然宽度与父容器可用宽度，ResizeObserver 直接使用 contentRect 更新测量值；仅在作品名或字体变化时主动测量文本，新文本挂载复用缓存，不在过渡 hook 中重复读取尺寸；不观察正在过渡的作品名容器；旧文本离场时冻结位移，新文本 DOM 就绪后建立滚动，不能因 width 中间帧或 after-enter 通知重播。
 - 页面隐藏时同时暂停滚动与倒计时，返回后继续剩余阅读窗口；离开首页清理定时器、观察器和动画。离场时冻结当前位移再取消动画，避免淡出时跳回开头。减少动态效果时静态显示，通过 title 提供全名。
 
 ### 其余主题素材
