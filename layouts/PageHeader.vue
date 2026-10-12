@@ -31,7 +31,7 @@
 						icon-only
 						:aria-label="t('header.theme.label')"
 					>
-						<UIcon :name="themeButtonIcon" class="h-5 w-5" />
+						<UIcon mode="svg" :name="themeButtonIcon" class="h-5 w-5" />
 					</UButton>
 
 					<template #content>
@@ -51,9 +51,10 @@
 								}"
 								@click="selectTheme(mode.value)"
 							>
-								<UIcon :name="mode.icon" class="text-base" />
+								<UIcon mode="svg" :name="mode.icon" class="text-base" />
 								<span>{{ t(mode.labelKey) }}</span>
 								<UIcon
+									mode="svg"
 									v-if="selectedThemeMode === mode.value"
 									name="i-lucide-check"
 									class="ml-auto text-base"
@@ -78,7 +79,7 @@
 						icon-only
 						:aria-label="t('header.switchLanguage')"
 					>
-						<UIcon name="i-lucide-languages" class="h-5 w-5" />
+						<UIcon mode="svg" name="i-lucide-languages" class="h-5 w-5" />
 					</UButton>
 
 					<template #content>
@@ -106,6 +107,7 @@
 									{{ item.badge }}
 								</span>
 								<UIcon
+									mode="svg"
 									v-if="selectedLocale === item.value"
 									name="i-lucide-check"
 									class="ml-auto text-base"
