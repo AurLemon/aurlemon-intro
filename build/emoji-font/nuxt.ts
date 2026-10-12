@@ -24,7 +24,7 @@ export default defineNuxtModule<EmojiFontOptions>({
 			if (nuxt.options._prepare) return
 			const { manifest } = await generate()
 			console.info(
-				`[EMOJI_FONT] ${manifest.sequences.length} sequences, ${manifest.subsetBytes} bytes WOFF2`,
+				`[EMOJI_FONT] ${manifest.sequences.length} sequences, bitmap ${manifest.bitmapBytes} bytes, SVG ${manifest.svgBytes} bytes WOFF2`,
 			)
 			if (manifest.missingCodepoints.length)
 				console.warn(

@@ -24,4 +24,6 @@ export interface EmojiFontManifest {
 	missingCodepoints: string[]
 	sourceBytes: number
 	subsetBytes: number
+	bitmapBytes: number
+	svgBytes: number
 }

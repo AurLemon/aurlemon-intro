@@ -1,9 +1,10 @@
 import { createHash } from 'node:crypto'
-import { mkdir, readFile, rename, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises'
 import { Agent, get } from 'node:https'
 import { resolve } from 'node:path'
 import emojiRegex from 'emoji-regex'
 import glob from 'fast-glob'
+import { createSvgFontXml } from './compatibility'
 import type { EmojiFontManifest, EmojiFontOptions } from './types'
 
 interface FontTools {
@@ -125,7 +126,7 @@ export async function generateEmojiFont(
 	const { sequences, files } = await scanEmoji(rootDir, options)
 	const cacheKey = hash(
 		JSON.stringify({
-			version: 1,
+			version: 3,
 			source: options.source.sha256,
 			family: options.family,
 			sequences,
@@ -133,14 +134,16 @@ export async function generateEmojiFont(
 	)
 	const cacheDir = resolve(rootDir, '.cache/emoji', cacheKey)
 	const manifestPath = resolve(cacheDir, 'manifest.json')
-	const fontPath = resolve(cacheDir, 'emoji.woff2')
+	const bitmapPath = resolve(cacheDir, 'emoji-bitmap.woff2')
+	const svgPath = resolve(cacheDir, 'emoji-svg.woff2')
 	const cssPath = resolve(outputDir, 'emoji.css')
 	await mkdir(cacheDir, { recursive: true })
 	await mkdir(outputDir, { recursive: true })
 	const cachedManifest = await readOptional(manifestPath)
-	let font = await readOptional(fontPath)
+	let bitmapFont = await readOptional(bitmapPath)
+	let svgFont = await readOptional(svgPath)
 	let manifest: EmojiFontManifest
-	if (cachedManifest && font) {
+	if (cachedManifest && bitmapFont && svgFont) {
 		manifest = { ...JSON.parse(cachedManifest.toString()), files }
 	} else {
 		const sourcePath = options.source.file
@@ -174,7 +177,7 @@ export async function generateEmojiFont(
 			// The adapter bundles fontTools + Brotli in WASM; no system Python needed.
 			const fontTools: FontTools = (await import('@web-alchemy/fonttools'))
 				.default
-			font = Buffer.from(
+			bitmapFont = Buffer.from(
 				await fontTools.subset(source, {
 					text: sequences.join('\n'),
 					flavor: 'woff2',
@@ -182,11 +185,27 @@ export async function generateEmojiFont(
 					'no-hinting': true,
 				}),
 			)
-			const xml = Buffer.from(
-				await fontTools.ttx(font, [['-q'], ['-t', 'cmap'], ['-t', 'CBLC']]),
+			const subsetXml = Buffer.from(
+				await fontTools.ttx(bitmapFont, [['-q']]),
 			).toString()
-			if (!xml.includes('<CBLC>') || !xml.includes('<strike '))
+			if (!subsetXml.includes('<CBLC>') || !subsetXml.includes('<strike '))
 				throw new Error('EMOJI_FONT_COLOR_DATA_MISSING')
+			svgFont = Buffer.from(
+				await fontTools.ttx(Buffer.from(createSvgFontXml(subsetXml)), [
+					['-q'],
+					['--flavor', 'woff2'],
+				]),
+			)
+			const xml = Buffer.from(
+				await fontTools.ttx(svgFont, [
+					['-q'],
+					['-t', 'cmap'],
+					['-t', 'SVG'],
+					['-t', 'glyf'],
+				]),
+			).toString()
+			if (!xml.includes('<svgDoc ') || !xml.includes('<glyf>'))
+				throw new Error('EMOJI_FONT_SVG_DATA_MISSING')
 			const cmap = new Set(
 				[...xml.matchAll(/<map code="0x([\da-f]+)"/gi)].map((match) =>
 					Number.parseInt(match[1]!, 16),
@@ -205,7 +224,8 @@ export async function generateEmojiFont(
 				.filter((code) => !cmap.has(code) && code !== 0xfe0f && code !== 0x200d)
 				.map(format)
 		} else {
-			font = Buffer.alloc(0)
+			bitmapFont = Buffer.alloc(0)
+			svgFont = Buffer.alloc(0)
 		}
 		manifest = {
 			cacheKey,
@@ -215,22 +235,29 @@ export async function generateEmojiFont(
 			unicodeRange,
 			missingCodepoints,
 			sourceBytes: source.length,
-			subsetBytes: font.length,
+			subsetBytes: bitmapFont.length + svgFont.length,
+			bitmapBytes: bitmapFont.length,
+			svgBytes: svgFont.length,
 		}
-		await writeFile(fontPath, font)
+		await writeFile(bitmapPath, bitmapFont)
+		await writeFile(svgPath, svgFont)
 		await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`)
 	}
 	const css = manifest.unicodeRange
-		? `@font-face {\n  font-family: ${JSON.stringify(options.family)};\n  src: url('./emoji.woff2?v=${cacheKey}') format('woff2');\n  font-style: normal;\n  font-weight: 100 900;\n  font-display: swap;\n  unicode-range: ${manifest.unicodeRange};\n}\n`
+		? `@font-face {\n  font-family: ${JSON.stringify(options.family)};\n  src: url('./emoji-bitmap.woff2?v=${cacheKey}') format('woff2');\n  src: url('./emoji-svg.woff2?v=${cacheKey}') format('woff2') tech(color-SVG), url('./emoji-bitmap.woff2?v=${cacheKey}') format('woff2');\n  font-style: normal;\n  font-weight: 100 900;\n  font-display: swap;\n  unicode-range: ${manifest.unicodeRange};\n}\n`
 		: '/* No emoji in the configured source files. */\n'
-	const changed = (await readOptional(cssPath))?.toString() !== css
-	if (
-		changed ||
-		!(await readOptional(resolve(outputDir, 'emoji.woff2')))?.equals(font)
-	) {
-		await writeFile(resolve(outputDir, 'emoji.woff2'), font)
+	const outputBitmapPath = resolve(outputDir, 'emoji-bitmap.woff2')
+	const outputSvgPath = resolve(outputDir, 'emoji-svg.woff2')
+	const changed =
+		(await readOptional(cssPath))?.toString() !== css ||
+		!(await readOptional(outputBitmapPath))?.equals(bitmapFont) ||
+		!(await readOptional(outputSvgPath))?.equals(svgFont)
+	if (changed) {
+		await writeFile(outputBitmapPath, bitmapFont)
+		await writeFile(outputSvgPath, svgFont)
 		await writeFile(cssPath, css)
 	}
+	await rm(resolve(outputDir, 'emoji.woff2'), { force: true })
 	await writeFile(
 		resolve(outputDir, 'manifest.json'),
 		`${JSON.stringify(manifest, null, 2)}\n`,
