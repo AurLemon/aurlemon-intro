@@ -88,7 +88,7 @@ export default defineNuxtModule({
 					},
 				)
 				if (!resolved || resolved.external)
-					throw new Error(`无法解析卡片图集清单：${id}`)
+					throw new Error(`Unable to resolve card atlas manifest: ${id}`)
 				return (covers ? COVERS_PREFIX : VIRTUAL_PREFIX) + resolved.id + '.js'
 			},
 			async load(id) {
@@ -105,13 +105,13 @@ export default defineNuxtModule({
 					manifest.images.length > MAX_IMAGES
 				)
 					throw new Error(
-						`卡片图集需要 1–${MAX_IMAGES} 张本地图片：${manifestPath}`,
+						`Card atlases require between 1 and ${MAX_IMAGES} local images: ${manifestPath}`,
 					)
 				const ids = new Set<string>()
 				const files = manifest.images.map((image) => {
 					if (!/^[a-zA-Z0-9_-]+$/.test(image.id) || ids.has(image.id))
 						throw new Error(
-							`图集 id 必须唯一且仅包含字母、数字、连字符或下划线：${image.id}`,
+							`Atlas IDs must be unique and contain only ASCII letters, digits, hyphens, or underscores: ${image.id}`,
 						)
 					ids.add(image.id)
 					const file = resolve(dirname(manifestPath), image.file)
@@ -121,7 +121,9 @@ export default defineNuxtModule({
 							extname(file).toLowerCase(),
 						)
 					)
-						throw new Error(`图集只接受 assets 内的本地静态图片：${image.file}`)
+						throw new Error(
+							`Atlases only accept local static images within assets: ${image.file}`,
+						)
 					return file
 				})
 				dependencies.set(manifestPath, { manifest: manifestPath, files })

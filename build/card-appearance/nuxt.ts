@@ -21,7 +21,9 @@ export default defineNuxtModule({
 					skipSelf: true,
 				})
 				if (!source || !source.id.startsWith(assets + sep))
-					throw new Error(`只能分析本地卡片素材：${id}`)
+					throw new Error(
+						`Card appearance analysis only supports local assets: ${id}`,
+					)
 				return PREFIX + source.id + '.js'
 			},
 			async load(id) {
@@ -41,7 +43,7 @@ export default defineNuxtModule({
 						manifest.motifs.length < 1 ||
 						manifest.motifs.some((m) => !m.id || !m.svg?.startsWith('<svg '))
 					)
-						throw new Error(`无效的 SVG 素材清单：${file}`)
+						throw new Error(`Invalid SVG motif manifest: ${file}`)
 					const profiles = Object.fromEntries(
 						await Promise.all(
 							manifest.motifs.map(async (m) => [

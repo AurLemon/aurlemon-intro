@@ -15,7 +15,10 @@ export async function readAppearancePalette(file: string): Promise<Palette> {
 	const css = await readFile(file, 'utf8')
 	const value = (text: string, name: string) => {
 		const result = text.match(new RegExp(`--${name}:\\s*([^;]+);`))?.[1]?.trim()
-		if (!result) throw new Error(`缺少卡片可见度分析色票：${name}`)
+		if (!result)
+			throw new Error(
+				`Missing color token for card appearance analysis: ${name}`,
+			)
 		return result
 	}
 	const root = css.slice(css.indexOf(':root {'), css.indexOf('\n\t.dark {'))
@@ -59,7 +62,7 @@ export async function analyzeCardMaterial(
 	options: { svg?: boolean; fit?: 'contain' | 'cover' } = {},
 ): Promise<CardAppearanceProfile> {
 	if (((await sharp(input).metadata()).pages ?? 1) > 1)
-		throw new Error('卡片可见度分析不支持动画图片')
+		throw new Error('Card appearance analysis does not support animated images')
 	const analyzeTheme = async (theme: 'light' | 'dark') => {
 		const colors = palette[theme]
 		const source = options.svg
