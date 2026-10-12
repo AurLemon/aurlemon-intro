@@ -11,7 +11,7 @@ interface CoverDeck {
 	remaining: string[]
 }
 const covers = coverSources.filter((cover): cover is AcgCover =>
-	Boolean(cover.title && cover.author?.length && cover.category),
+	Boolean(cover.title && cover.author?.length && cover.category && cover.href),
 )
 if (covers.length !== coverSources.length || covers.length < 3)
 	throw new Error('ACG_COVER_METADATA_MISSING')
@@ -26,7 +26,7 @@ const shuffle = (ids: string[]) => {
 	return ids
 }
 
-export const useAcgPreference = () => {
+export const useAcgPreference = (paused: Ref<boolean> = ref(false)) => {
 	const deck = useState<CoverDeck>('homepage-acg-cover-deck', () => ({
 		visible: covers
 			.slice(0, 3)
@@ -51,7 +51,7 @@ export const useAcgPreference = () => {
 			}
 	}
 	if (import.meta.client && !useNuxtApp().isHydrating) advance()
-	const deferFor = usePreferenceRotation(advance)
+	const deferFor = usePreferenceRotation(advance, paused)
 	const visibleCovers = computed(() =>
 		deck.value.visible.map((id) => covers.find((cover) => cover.id === id)!),
 	)

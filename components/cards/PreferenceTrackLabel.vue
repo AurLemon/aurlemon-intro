@@ -1,40 +1,95 @@
 <template>
-	<span
-		ref="viewport"
-		class="relative block h-4 min-w-0 max-w-[min(55%,14rem)] overflow-hidden transition-[width] duration-400 ease-in-out motion-reduce:transition-none font-semibold text-slate-600 dark:text-slate-300"
-		:class="{ 'preference-track-edge-mask': hasOverflow && !reducedMotion }"
-		:style="{ width: labelWidth === null ? 'max-content' : `${labelWidth}px` }"
-		:title="label"
-		:aria-label="label"
+	<UPopover
+		v-model:open="open"
+		:portal="false"
+		:content="{ side: 'bottom', align: 'center' }"
+		:ui="{ content: 'z-[40000]' }"
 	>
-		<span
-			ref="measure"
-			class="invisible absolute w-max whitespace-nowrap"
-			aria-hidden="true"
-			>{{ label }}</span
-		>
-		<Transition
-			name="preference-label"
-			mode="out-in"
-			@before-leave="freezeTrack"
+		<button
+			type="button"
+			ref="viewport"
+			class="relative block h-4 min-w-0 max-w-[min(55%,14rem)] cursor-pointer p-0 transition-[width] duration-400 ease-in-out motion-reduce:transition-none font-semibold text-slate-600 dark:text-slate-300"
+			:style="{
+				width: labelWidth === null ? 'max-content' : `${labelWidth}px`,
+			}"
+			:title="label"
+			:aria-label="label"
 		>
 			<span
-				ref="track"
-				:key="contentKey ?? label"
-				class="block w-max min-w-full whitespace-nowrap text-center"
-				:class="{
-					'px-3': hasOverflow && !reducedMotion,
-					truncate: reducedMotion,
-				}"
-				aria-hidden="true"
-				>{{ label }}</span
+				class="relative block overflow-hidden"
+				:class="{ 'preference-track-edge-mask': hasOverflow && !reducedMotion }"
 			>
-		</Transition>
-	</span>
+				<span
+					ref="measure"
+					class="invisible absolute w-max whitespace-nowrap"
+					aria-hidden="true"
+					>{{ label }}</span
+				>
+				<Transition
+					name="preference-label"
+					mode="out-in"
+					@before-leave="freezeTrack"
+				>
+					<span
+						ref="track"
+						:key="contentKey ?? label"
+						class="block w-max min-w-full whitespace-nowrap text-center"
+						:class="{
+							'px-3': hasOverflow && !reducedMotion,
+							truncate: reducedMotion,
+						}"
+						aria-hidden="true"
+						>{{ label }}</span
+					>
+				</Transition>
+			</span>
+			<svg
+				viewBox="0 0 10 6"
+				fill="none"
+				aria-hidden="true"
+				class="pointer-events-none absolute left-full top-1/2 ml-1 h-1.5 w-2.5 -translate-y-1/2 opacity-0 transition-opacity duration-200 group-hover/card:opacity-100 group-focus-within/card:opacity-100"
+			>
+				<path
+					d="M1 1L5 5L9 1"
+					stroke="currentColor"
+					stroke-width="1.4"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				/>
+			</svg>
+		</button>
+		<template #content>
+			<div
+				class="w-max min-w-40 max-w-[min(14rem,calc(100vw-2rem))] space-y-1.5 p-3 text-left"
+			>
+				<a
+					:href="work.href"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="block break-words rounded-sm text-sm leading-5 font-semibold text-slate-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 dark:text-slate-200"
+				>
+					{{ work.title }}
+					<UIcon
+						name="i-lucide-external-link"
+						mode="svg"
+						class="ml-1 inline-block size-3.5 align-middle text-slate-500 dark:text-slate-400"
+					/>
+				</a>
+				<p
+					class="break-words text-xs leading-5 text-slate-500 dark:text-slate-400"
+				>
+					{{ work.author.join(' / ') }}
+				</p>
+			</div>
+		</template>
+	</UPopover>
 </template>
 
 <script setup lang="ts">
+import type { CardCoverMetadata } from '~/shared/types/card-image-atlas'
+
 interface Props {
+	work: CardCoverMetadata
 	label: string
 	contentKey?: string
 	pixelsPerSecond?: number
@@ -49,6 +104,7 @@ const props = withDefaults(defineProps<Props>(), {
 	contentKey: undefined,
 	pixelsPerSecond: 56,
 })
+const open = defineModel<boolean>('open', { default: false })
 const emit = defineEmits<{ readWindow: [duration: number] }>()
 const viewport = ref<HTMLElement | null>(null)
 const measure = ref<HTMLElement | null>(null)

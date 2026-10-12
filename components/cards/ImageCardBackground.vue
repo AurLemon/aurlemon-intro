@@ -19,6 +19,7 @@
 			:motifs="motifs"
 			:options="patternOptions"
 			:profiles="profiles"
+			:focus-active="focusActive"
 		>
 			<template #motif="{ motif }">
 				<svg
@@ -50,11 +51,13 @@ import type { CardPatternOptions } from './cardPattern'
 import CardPatternBackground from './CardPatternBackground.vue'
 
 interface Props {
+	focusActive?: boolean
 	atlas: CardImageAtlas
 	imageWidth?: number
 	options?: CardPatternOptions
 }
 const props = withDefaults(defineProps<Props>(), {
+	focusActive: true,
 	imageWidth: undefined,
 	options: () => ({}),
 })
