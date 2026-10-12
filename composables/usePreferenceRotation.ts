@@ -18,7 +18,7 @@ export const usePreferenceRotation = (advance: () => void | Promise<void>) => {
 				} finally {
 					advancing = false
 					baseline = Date.now() + 10_000
-					pausedRemaining = 10_000
+					pausedRemaining = Math.max(10_000, readingDeadline - Date.now())
 					schedule()
 				}
 			},

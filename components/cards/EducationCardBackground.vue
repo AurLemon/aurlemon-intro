@@ -1,6 +1,5 @@
 <template>
 	<CardPatternBackground
-		class="education-background"
 		:motifs="badges"
 		:profiles="profiles"
 		:options="{ density: 0.95, blurLevel: 'soft', strengthLevel: 'subtle' }"

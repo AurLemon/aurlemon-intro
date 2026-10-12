@@ -6,8 +6,6 @@ import type {
 export interface CardPatternTheme {
 	visibility: number
 	activeVisibility: number
-	selectedVisibility: number
-	activeSelectedVisibility: number
 	blur: number
 	activeBlur: number
 }
@@ -33,7 +31,6 @@ export const CARD_STRENGTH_LEVELS: Record<CardStrengthLevel, number> = {
 	standard: 1,
 	distinct: 1.2,
 }
-export const CARD_SELECTION_DIM = 0.72
 
 export interface CardPatternOptions {
 	layout?: 'diagonal' | 'catalog'
@@ -70,16 +67,12 @@ export const CARD_PATTERN_DEFAULTS: Readonly<CardPatternSettings> = {
 	light: {
 		visibility: 0.036,
 		activeVisibility: 0.075,
-		selectedVisibility: 0.0486,
-		activeSelectedVisibility: 0.0648,
 		blur: 3,
 		activeBlur: 1.5,
 	},
 	dark: {
 		visibility: 0.057,
 		activeVisibility: 0.0762,
-		selectedVisibility: 0.06156,
-		activeSelectedVisibility: 0.082296,
 		blur: 3,
 		activeBlur: 1.5,
 	},
@@ -135,14 +128,6 @@ export function calculateCardAppearance(
 			contrastAt(activeBlur),
 			settings.activeVisibility,
 		),
-		selectedOpacity: calculateCardOpacity(
-			contrastAt(blur),
-			settings.selectedVisibility,
-		),
-		activeSelectedOpacity: calculateCardOpacity(
-			contrastAt(activeBlur),
-			settings.activeSelectedVisibility,
-		),
 	}
 }
 
@@ -176,8 +161,6 @@ export function resolveCardPatternSettings(
 		values.activeBlur *= blurFactor
 		values.visibility *= strengthFactor
 		values.activeVisibility *= strengthFactor
-		values.selectedVisibility *= strengthFactor
-		values.activeSelectedVisibility *= strengthFactor
 	}
 	return settings
 }

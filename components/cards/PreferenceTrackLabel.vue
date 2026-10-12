@@ -44,20 +44,14 @@ let revision = 0
 let mounted = false
 
 const restart = async () => {
-	const currentRevision = ++revision
 	await nextTick()
-	if (
-		!mounted ||
-		currentRevision !== revision ||
-		!viewport.value ||
-		!measure.value ||
-		!track.value
-	)
-		return
+	if (!mounted || !viewport.value || !measure.value || !track.value) return
 	const width = viewport.value.clientWidth
 	const textWidth = Math.ceil(measure.value.getBoundingClientRect().width)
 	const layout = `${props.label}:${width}:${textWidth}:${reducedMotion.value}`
 	if (layout === previousLayout) return
+	// 相同尺寸的通知不能使正在等待 DOM 更新的初始化失效。
+	const currentRevision = ++revision
 	previousLayout = layout
 	animation?.cancel()
 	animation = undefined
@@ -113,7 +107,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
 	mounted = false
 	revision++
-	// 保留离场时的当前位置，避免 opacity/blur 退场期间跳回文本开头。
+	// 保留离场时的当前位置，避免 opacity 退场期间跳回文本开头。
 	if (animation && track.value)
 		track.value.style.transform = getComputedStyle(track.value).transform
 	animation?.cancel()

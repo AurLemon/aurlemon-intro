@@ -396,7 +396,7 @@ import onlineCoverUrl from '~/assets/resources/homepage/night/cover.svg?url'
 
 type EducationStage = 'bachelor' | 'specialty' | 'highSchool' | 'juniorSchool'
 
-const { t, te, tm, locale } = useI18n({ useScope: 'global' })
+const { t, te, locale } = useI18n({ useScope: 'global' })
 const {
 	covers: acgCovers,
 	current: acgCurrent,
@@ -412,16 +412,7 @@ const musicSongTitle = computed(() =>
 const musicCategoryKey = computed(
 	() => `main.index.card.music.categories.${musicCover.value.category}`,
 )
-const musicSubtitle = computed(() => {
-	const subtitles: unknown = tm(`${musicCategoryKey.value}.subtitles`)
-	const count = Array.isArray(subtitles) ? subtitles.length : 1
-	// 按封面分配发癫文案，SSR、hydration 和即时语言切换使用同一索引。
-	const seed = [...musicCover.value.id].reduce(
-		(total, character) => total + character.charCodeAt(0),
-		0,
-	)
-	return t(`${musicCategoryKey.value}.subtitles.${seed % Math.max(1, count)}`)
-})
+const musicSubtitle = computed(() => t(`${musicCategoryKey.value}.subtitles.0`))
 
 const profile = usePersonalProfile()
 const introductionLine2 = computed(() => {
