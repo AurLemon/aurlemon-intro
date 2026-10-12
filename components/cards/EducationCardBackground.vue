@@ -2,7 +2,7 @@
 	<CardPatternBackground
 		:motifs="badges"
 		:profiles="profiles"
-		:options="{ density: 0.95, blurLevel: 'soft', strengthLevel: 'subtle' }"
+		:options="{ density: 0.95, blurLevel: 'standard', strengthLevel: 'subtle' }"
 		:focus-active="!menuOpen"
 	/>
 </template>

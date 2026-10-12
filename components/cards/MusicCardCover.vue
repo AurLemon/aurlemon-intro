@@ -1,5 +1,7 @@
 <template>
-	<div class="relative h-full w-full overflow-hidden rounded-lg">
+	<div
+		class="relative h-full w-full overflow-hidden rounded-lg bg-slate-200/60 dark:bg-slate-800/60"
+	>
 		<Transition name="music-cover" :duration="700">
 			<div :key="cover.id" class="absolute inset-0 h-full w-full">
 				<img
@@ -13,7 +15,7 @@
 		</Transition>
 		<span
 			aria-hidden="true"
-			class="pointer-events-none absolute inset-0 z-2 rounded-lg border border-slate-300/60"
+			class="pointer-events-none absolute inset-0 z-2 rounded-lg border border-slate-300/60 dark:border-slate-800/60"
 		/>
 	</div>
 </template>

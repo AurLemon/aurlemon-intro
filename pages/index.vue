@@ -210,10 +210,8 @@
 				<template #title>{{ $t('main.index.card.acg.title') }}</template>
 				<template #subtitle>
 					<Transition name="preference-text" mode="out-in">
-						<span :key="`${acgCurrent.id}:${locale}`" class="inline-block">{{
-							t(
-								`main.index.card.acg.categories.${acgCurrent.category}.subtitle`,
-							)
+						<span :key="acgSubtitle" class="inline-block">{{
+							acgSubtitle
 						}}</span>
 					</Transition>
 				</template>
@@ -222,13 +220,11 @@
 						class="flex min-w-0 max-w-full items-center justify-center gap-1 px-4"
 					>
 						<span class="shrink-0">{{ $t('main.index.card.acg.type') }}</span>
-						<Transition name="preference-label" mode="out-in">
-							<PreferenceTrackLabel
-								:key="`${acgCurrent.id}:${locale}`"
-								:label="acgCurrent.title"
-								@read-window="deferAcg"
-							/>
-						</Transition>
+						<PreferenceTrackLabel
+							:content-key="`${acgCurrent.id}:${locale}`"
+							:label="acgCurrent.title"
+							@read-window="deferAcg"
+						/>
 					</div>
 				</template>
 			</InfoCard>
@@ -255,7 +251,7 @@
 				<template #title>{{ $t('main.index.card.music.title') }}</template>
 				<template #subtitle>
 					<Transition name="preference-slide" mode="out-in">
-						<span :key="`${musicCover.id}:${locale}`" class="inline-block">{{
+						<span :key="musicSubtitle" class="inline-block">{{
 							musicSubtitle
 						}}</span>
 					</Transition>
@@ -265,13 +261,12 @@
 						class="flex min-w-0 max-w-full items-center justify-center gap-1 px-4"
 					>
 						<span class="shrink-0">{{ $t('main.index.card.music.type') }}</span>
-						<Transition name="preference-label" mode="out-in">
-							<PreferenceTrackLabel
-								:key="`${musicCover.id}:${locale}`"
-								:label="`${t(`${musicCategoryKey}.title`)} / ${musicSongTitle}`"
-								@read-window="deferMusic"
-							/>
-						</Transition>
+						<PreferenceTrackLabel
+							:content-key="`${musicCover.id}:${locale}`"
+							:label="musicTrackLabel"
+							:pixels-per-second="48"
+							@read-window="deferMusic"
+						/>
 					</div>
 				</template>
 			</InfoCard>
@@ -402,6 +397,9 @@ const {
 	current: acgCurrent,
 	deferFor: deferAcg,
 } = useAcgPreference()
+const acgSubtitle = computed(() =>
+	t(`main.index.card.acg.categories.${acgCurrent.value.category}.subtitle`),
+)
 const { cover: musicCover, deferFor: deferMusic } = useMusicPreference()
 const musicSongTitle = computed(() =>
 	musicCover.value.category === 'chilichill'
@@ -412,6 +410,15 @@ const musicSongTitle = computed(() =>
 const musicCategoryKey = computed(
 	() => `main.index.card.music.categories.${musicCover.value.category}`,
 )
+const musicTrackLabel = computed(() => {
+	const cover = musicCover.value
+	const authors = ['vocaloid', 'chineseVocaloid', 'cnCreators'].includes(
+		cover.category,
+	)
+		? ` (${cover.author.join(' / ')})`
+		: ''
+	return `${t(`${musicCategoryKey.value}.title`)} / ${musicSongTitle.value}${authors}`
+})
 const musicSubtitle = computed(() => t(`${musicCategoryKey.value}.subtitles.0`))
 
 const profile = usePersonalProfile()
@@ -516,20 +523,16 @@ const onlineLinkClass = (index: number) => [
 </script>
 
 <style scoped>
-.preference-label-enter-active,
-.preference-label-leave-active {
-	transition: opacity 220ms ease;
-}
-.preference-label-enter-from,
-.preference-label-leave-to {
-	opacity: 0;
-}
 .preference-slide-enter-active,
 .preference-slide-leave-active {
 	transition:
-		opacity 300ms ease,
-		filter 300ms ease,
-		transform 300ms ease;
+		opacity 260ms ease,
+		filter 260ms ease,
+		transform 260ms ease;
+}
+.preference-slide-leave-active {
+	/* 作品名先开始交接，副标题稍后以略慢的节奏接上。 */
+	transition-delay: 120ms;
 }
 .preference-slide-enter-from {
 	opacity: 0;
@@ -542,8 +545,6 @@ const onlineLinkClass = (index: number) => [
 	transform: translateX(12px);
 }
 @media (prefers-reduced-motion: reduce) {
-	.preference-label-enter-active,
-	.preference-label-leave-active,
 	.preference-slide-enter-active,
 	.preference-slide-leave-active {
 		transition: none;
@@ -558,8 +559,11 @@ const onlineLinkClass = (index: number) => [
 .preference-text-enter-active,
 .preference-text-leave-active {
 	transition:
-		opacity 220ms ease,
-		filter 220ms ease;
+		opacity 260ms ease,
+		filter 260ms ease;
+}
+.preference-text-leave-active {
+	transition-delay: 120ms;
 }
 .preference-text-enter-from,
 .preference-text-leave-to {
