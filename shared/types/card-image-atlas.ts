@@ -24,6 +24,7 @@ export interface CardCoverMetadata {
 	category: string
 	album?: string
 	href: string
+	releaseDate: string
 }
 
 export interface CardImageCover extends Partial<CardCoverMetadata> {

@@ -7,7 +7,8 @@
 			"title": "二人称",
 			"author": ["ヨルシカ"],
 			"category": "yorushika",
-			"href": "https://music.163.com/#/album?id=364564348"
+			"href": "https://music.163.com/#/album?id=364564348",
+			"releaseDate": "2026-03-04"
 		},
 		{
 			"id": "netease-109951168523411427",
@@ -16,7 +17,8 @@
 			"title": "幻灯",
 			"author": ["ヨルシカ"],
 			"category": "yorushika",
-			"href": "https://music.163.com/#/album?id=163093570"
+			"href": "https://music.163.com/#/album?id=163093570",
+			"releaseDate": "2023-04-05"
 		},
 		{
 			"id": "netease-109951165180340452",
@@ -25,7 +27,8 @@
 			"title": "盗作",
 			"author": ["ヨルシカ"],
 			"category": "yorushika",
-			"href": "https://music.163.com/#/album?id=93148762"
+			"href": "https://music.163.com/#/album?id=93148762",
+			"releaseDate": "2020-07-29"
 		},
 		{
 			"id": "netease-109951165616927101",
@@ -34,7 +37,8 @@
 			"title": "春泥棒",
 			"author": ["ヨルシカ"],
 			"category": "yorushika",
-			"href": "https://music.163.com/#/song?id=1810759765"
+			"href": "https://music.163.com/#/song?id=1810759765",
+			"releaseDate": "2021-01-09"
 		},
 		{
 			"id": "netease-109951172937804770",
@@ -43,7 +47,8 @@
 			"title": "形藻土",
 			"author": ["ずっと真夜中でいいのに。"],
 			"category": "zuttomayo",
-			"href": "https://music.163.com/#/album?id=367623972"
+			"href": "https://music.163.com/#/album?id=367623972",
+			"releaseDate": "2026-03-25"
 		},
 		{
 			"id": "netease-109951174077481119",
@@ -52,7 +57,8 @@
 			"title": "あかねさす頃",
 			"author": ["ずっと真夜中でいいのに。"],
 			"category": "zuttomayo",
-			"href": "https://music.163.com/#/song?id=3445419179"
+			"href": "https://music.163.com/#/song?id=3445419179",
+			"releaseDate": "2026-10-08"
 		},
 		{
 			"id": "netease-109951173178899480",
@@ -61,7 +67,8 @@
 			"title": "樱花雨",
 			"author": ["Sakura_Rain"],
 			"category": "cnCreators",
-			"href": "https://music.163.com/#/song?id=3378731532"
+			"href": "https://music.163.com/#/song?id=3378731532",
+			"releaseDate": "2026-05-01"
 		},
 		{
 			"id": "netease-109951169036464483",
@@ -70,7 +77,8 @@
 			"title": "夏末递归定义",
 			"author": ["s62"],
 			"category": "cnCreators",
-			"href": "https://music.163.com/#/song?id=2097125583"
+			"href": "https://music.163.com/#/song?id=2097125583",
+			"releaseDate": "2023-11-01"
 		},
 		{
 			"id": "netease-109951172979397953",
@@ -79,7 +87,8 @@
 			"title": "夜未艾",
 			"author": ["s62"],
 			"category": "cnCreators",
-			"href": "https://music.163.com/#/song?id=3365688319"
+			"href": "https://music.163.com/#/song?id=3365688319",
+			"releaseDate": "2026-04-01"
 		},
 		{
 			"id": "netease-109951173180770409",
@@ -88,7 +97,8 @@
 			"title": "辞职信 (Resignation Letter)",
 			"author": ["ChiliChill"],
 			"category": "chilichill",
-			"href": "https://music.163.com/#/song?id=3378909144"
+			"href": "https://music.163.com/#/song?id=3378909144",
+			"releaseDate": "2026-05-07"
 		},
 		{
 			"id": "netease-109951169872259384",
@@ -97,7 +107,8 @@
 			"title": "衡山路宛平路 (Hengshan Road Wanping Road)",
 			"author": ["ChiliChill"],
 			"category": "chilichill",
-			"href": "https://music.163.com/#/song?id=2617356789"
+			"href": "https://music.163.com/#/song?id=2617356789",
+			"releaseDate": "2024-08-17"
 		},
 		{
 			"id": "netease-109951169854682128",
@@ -106,7 +117,8 @@
 			"title": "屑屑 (Thxnks)",
 			"author": ["ChiliChill"],
 			"category": "chilichill",
-			"href": "https://music.163.com/#/song?id=2615403834"
+			"href": "https://music.163.com/#/song?id=2615403834",
+			"releaseDate": "2024-08-10"
 		},
 		{
 			"id": "netease-109951163731798406",
@@ -115,7 +127,8 @@
 			"title": "少女レイ",
 			"author": ["みきとP"],
 			"category": "vocaloid",
-			"href": "https://music.163.com/#/song?id=1334077117"
+			"href": "https://music.163.com/#/song?id=1334077117",
+			"releaseDate": "2018-07-18"
 		},
 		{
 			"id": "netease-109951169507943723",
@@ -124,7 +137,8 @@
 			"title": "ちっちゃな私",
 			"author": ["マサラダ"],
 			"category": "vocaloid",
-			"href": "https://music.163.com/#/song?id=2084302199"
+			"href": "https://music.163.com/#/song?id=2084302199",
+			"releaseDate": "2023-08-09"
 		},
 		{
 			"id": "netease-109951173913642828",
@@ -133,7 +147,8 @@
 			"title": "QED (feat. saewool & 重音テト)",
 			"author": ["MIMI", "saewool"],
 			"category": "vocaloid",
-			"href": "https://music.163.com/#/song?id=3434220196"
+			"href": "https://music.163.com/#/song?id=3434220196",
+			"releaseDate": "2026-09-09"
 		},
 		{
 			"id": "netease-109951170712603497",
@@ -143,7 +158,8 @@
 			"author": ["花水r"],
 			"category": "chineseVocaloid",
 			"album": "黑色磁带 (Black Tape)",
-			"href": "https://music.163.com/#/song?id=2727215107"
+			"href": "https://music.163.com/#/song?id=2727215107",
+			"releaseDate": "2025-04-11"
 		},
 		{
 			"id": "netease-109951171416110081",
@@ -152,7 +168,8 @@
 			"title": "カワユイ星",
 			"author": ["ナユタン星人"],
 			"category": "vocaloid",
-			"href": "https://music.163.com/#/song?id=2723402036"
+			"href": "https://music.163.com/#/song?id=2723402036",
+			"releaseDate": "2025-07-16"
 		},
 		{
 			"id": "netease-109951172328365472",
@@ -161,7 +178,8 @@
 			"title": "散歩の邪魔",
 			"author": ["いよわ"],
 			"category": "vocaloid",
-			"href": "https://music.163.com/#/song?id=3320782167"
+			"href": "https://music.163.com/#/song?id=3320782167",
+			"releaseDate": "2025-11-28"
 		},
 		{
 			"id": "netease-109951169357826527",
@@ -170,7 +188,8 @@
 			"title": "空間、事情、時間、事象。",
 			"author": ["kinoue64"],
 			"category": "vocaloid",
-			"href": "https://music.163.com/#/album?id=166876411"
+			"href": "https://music.163.com/#/album?id=166876411",
+			"releaseDate": "2022-02-04"
 		},
 		{
 			"id": "netease-7886796906969685",
@@ -179,7 +198,8 @@
 			"title": "神のまにまに",
 			"author": ["れるりり"],
 			"category": "vocaloid",
-			"href": "https://music.163.com/#/song?id=32431066"
+			"href": "https://music.163.com/#/song?id=32431066",
+			"releaseDate": "2014-02-07"
 		},
 		{
 			"id": "netease-109951171012726491",
@@ -188,7 +208,8 @@
 			"title": "クリームで会いにいけますか",
 			"author": ["ずっと真夜中でいいのに。"],
 			"category": "zuttomayo",
-			"href": "https://music.163.com/#/song?id=2707450677"
+			"href": "https://music.163.com/#/song?id=2707450677",
+			"releaseDate": "2025-05-22"
 		},
 		{
 			"id": "netease-109951170190509766",
@@ -197,7 +218,8 @@
 			"title": "星期零",
 			"author": ["s62"],
 			"category": "cnCreators",
-			"href": "https://music.163.com/#/song?id=2650358037"
+			"href": "https://music.163.com/#/song?id=2650358037",
+			"releaseDate": "2024-11-30"
 		},
 		{
 			"id": "netease-109951166099784628",
@@ -206,7 +228,8 @@
 			"title": "あいつら全員同窓会",
 			"author": ["ずっと真夜中でいいのに。"],
 			"category": "zuttomayo",
-			"href": "https://music.163.com/#/song?id=1854474192"
+			"href": "https://music.163.com/#/song?id=1854474192",
+			"releaseDate": "2021-06-18"
 		},
 		{
 			"id": "netease-109951167712319656",
@@ -215,7 +238,8 @@
 			"title": "左右盲",
 			"author": ["ヨルシカ"],
 			"category": "yorushika",
-			"href": "https://music.163.com/#/song?id=1966766526"
+			"href": "https://music.163.com/#/song?id=1966766526",
+			"releaseDate": "2022-07-25"
 		},
 		{
 			"id": "netease-109951168289561881",
@@ -224,7 +248,8 @@
 			"title": "アルジャーノン",
 			"author": ["ヨルシカ"],
 			"category": "yorushika",
-			"href": "https://music.163.com/#/song?id=2020247157"
+			"href": "https://music.163.com/#/song?id=2020247157",
+			"releaseDate": "2023-02-06"
 		},
 		{
 			"id": "netease-109951168657437538",
@@ -233,7 +258,8 @@
 			"title": "花一匁",
 			"author": ["ずっと真夜中でいいのに。"],
 			"category": "zuttomayo",
-			"href": "https://music.163.com/#/song?id=2052933626"
+			"href": "https://music.163.com/#/song?id=2052933626",
+			"releaseDate": "2023-06-04"
 		},
 		{
 			"id": "netease-109951164927614269",
@@ -242,7 +268,8 @@
 			"title": "花に亡霊",
 			"author": ["ヨルシカ"],
 			"category": "yorushika",
-			"href": "https://music.163.com/#/song?id=1442466883"
+			"href": "https://music.163.com/#/song?id=1442466883",
+			"releaseDate": "2020-04-22"
 		},
 		{
 			"id": "netease-109951163393412039",
@@ -251,7 +278,8 @@
 			"title": "少女A",
 			"author": ["椎名もた"],
 			"category": "vocaloid",
-			"href": "https://music.163.com/#/song?id=33516239"
+			"href": "https://music.163.com/#/song?id=33516239",
+			"releaseDate": "2013-10-07"
 		},
 		{
 			"id": "netease-109951172804116153",
@@ -260,7 +288,8 @@
 			"title": "透明エレジー",
 			"author": ["n-buna"],
 			"category": "vocaloid",
-			"href": "https://music.163.com/#/song?id=33367339"
+			"href": "https://music.163.com/#/song?id=33367339",
+			"releaseDate": "2015-07-22"
 		}
 	]
 }

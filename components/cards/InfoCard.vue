@@ -21,7 +21,11 @@
 					class="absolute inset-0 flex items-center gap-3 px-4.5 py-3 lg:justify-center lg:gap-4"
 					:class="animatedTitle ? 'justify-center' : 'justify-between'"
 				>
-					<div ref="logo" class="h-20 w-20 shrink-0 select-none">
+					<div
+						ref="logo"
+						class="h-20 w-20 shrink-0 select-none [&_*]:select-none [&_img]:[-webkit-user-drag:none]"
+						@dragstart.prevent
+					>
 						<slot name="logo" />
 					</div>
 					<div
@@ -59,7 +63,11 @@
 				ref="contentRow"
 				class="flex h-full w-full items-center justify-between gap-3 px-4.5 py-3 lg:justify-center lg:gap-4"
 			>
-				<div ref="logo" class="h-20 w-20 shrink-0 select-none">
+				<div
+					ref="logo"
+					class="h-20 w-20 shrink-0 select-none [&_*]:select-none [&_img]:[-webkit-user-drag:none]"
+					@dragstart.prevent
+				>
 					<slot name="logo" />
 				</div>
 				<div

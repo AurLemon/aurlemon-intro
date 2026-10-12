@@ -33,7 +33,7 @@ import cover from '~/assets/resources/photo.png?w=640&h=480&q=85&thumbnail'
 
 首页背景图片集合使用 `*.card-atlas.json?atlas` 静态导入，清单格式为 `{"images":[{"id":"cover","file":"cover.webp"}]}`。路径相对清单，素材必须位于 `assets/` 内。单图直接复用上面的 320px/q90 缩略图；多图由 `build/card-atlas/module.ts` 通过现有 sharp 依赖合成为一个 WebP，客户端只获得一个 URL 与裁切区域，避免图片数量决定背景请求数量。
 
-ACG 与音乐条目额外保存 `title`、`author` 数组、`category`、`href`，可选 `album`；这些元数据通过 `?covers` 与本地缩略图 URL 一起导出，`source` 封面来源直链不进入客户端，`href` 为已核对的 Bangumi 作品或网易云单曲 / 专辑网页链接，随 `?covers` 导出供弹窗使用。新增分类同时补齐三种语言的 `main.index.card.acg.categories` 或 `main.index.card.music.categories` 文案。
+ACG 与音乐条目额外保存 `title`、`author` 数组、`category`、`href`、`releaseDate`，可选 `album`；这些元数据通过 `?covers` 与本地缩略图 URL 一起导出，`source` 封面来源直链不进入客户端，`href` 为已核对的 Bangumi 作品或网易云单曲 / 专辑网页链接，随 `?covers` 导出供弹窗使用。`releaseDate` 保存 `YYYY-MM-DD` 日期：ACG 按 Bangumi 发售 / 上映日，音乐按所链接单曲或专辑的网易云发行日期；单曲 `publishTime` 为空时采用其所属唱片日期，时间戳按 Asia/Shanghai 转为日历日期，禁止将零时间戳展示成 1970 年。新增分类同时补齐三种语言的 `main.index.card.acg.categories` 或 `main.index.card.music.categories` 文案。
 
 默认每格 160px、最多 32 张、图集不超过 200 KiB；生成文件和内容指纹缓存位于已忽略的 Nuxt 构建目录 `card-atlases/`，不提交产物、不删除原图。新增素材只修改清单，不在浏览器或 API 请求中逐张下载、实时拼接。Dev 会在清单和引用素材修改后刷新，Build 使用带内容哈希的资源 URL。详细视觉与参数入口见 [首页卡片动态背景](UI_GUIDELINES.md#首页卡片动态背景)。
 
