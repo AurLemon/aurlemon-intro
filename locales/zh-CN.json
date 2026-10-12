@@ -1,7 +1,13 @@
 {
 	"header": {
 		"siteName": "AurLemon Intro",
-		"switchLanguage": "切换语言"
+		"switchLanguage": "切换语言",
+		"theme": {
+			"label": "主题模式",
+			"light": "浅色",
+			"dark": "深色",
+			"system": "跟随系统"
+		}
 	},
 	"localeNotice": {
 		"title": "检测到你的系统语言偏好为 {targetLanguage}",
@@ -120,18 +126,53 @@
 				},
 				"tech": {
 					"title": "全栈开发",
-					"subtitle": "TypeScript / Web / DevOps",
+					"subtitle": "TypeScript / Node.js / DevOps",
 					"type": "技术方向"
 				},
 				"acg": {
 					"title": "GIRL LOVE",
-					"subtitle": "GL 即仙品 不得不品",
-					"type": "ACG 偏好"
+					"type": "ACG 偏好",
+					"categories": {
+						"adashima": {
+							"subtitle": "安岛 99"
+						},
+						"liz": {
+							"subtitle": "小蓝鸟牛逼"
+						},
+						"kaguya": {
+							"subtitle": "超时空辉夜姬牛逼"
+						}
+					}
 				},
 				"music": {
-					"title": "J-POP 和术",
-					"subtitle": "ヨルシカ + ずとまよ最常听",
-					"type": "音乐偏好"
+					"type": "音乐偏好",
+					"categories": {
+						"yorushika": {
+							"title": "ヨルシカ",
+							"subtitles": ["我爱拿不拿"]
+						},
+						"zuttomayo": {
+							"title": "ずっとまよ",
+							"subtitles": ["我爱ACANE"]
+						},
+						"chilichill": {
+							"title": "ChiliChill",
+							"subtitles": ["七里桥是神"]
+						},
+						"vocaloid": {
+							"title": "Vocaloid",
+							"subtitles": ["我是初音未来"]
+						},
+						"chineseVocaloid": {
+							"title": "中V",
+							"subtitles": ["我是洛天依"]
+						},
+						"cnCreators": {
+							"title": "国创 Vocaloid",
+							"subtitles": ["我真的要跪下了"]
+						}
+					},
+					"title": "J-POP 和术"
 				},
 				"online": {
 					"title": "夜间出没",

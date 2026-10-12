@@ -29,7 +29,7 @@
 						size="xs"
 						class="h-9 w-9 rounded-full hover:bg-slate-500/10 active:bg-slate-500/20"
 						icon-only
-						:aria-label="'主题模式'"
+						:aria-label="t('header.theme.label')"
 					>
 						<UIcon :name="themeButtonIcon" class="h-5 w-5" />
 					</UButton>
@@ -52,7 +52,7 @@
 								@click="selectTheme(mode.value)"
 							>
 								<UIcon :name="mode.icon" class="text-base" />
-								<span>{{ mode.label }}</span>
+								<span>{{ t(mode.labelKey) }}</span>
 								<UIcon
 									v-if="selectedThemeMode === mode.value"
 									name="i-lucide-check"
@@ -145,10 +145,20 @@ const localeItems: { label: string; value: LocaleCode; badge?: string }[] = [
 	{ label: 'English', value: 'en-US', badge: 'AI' },
 ]
 
-const themeModes: { value: ThemeMode; label: string; icon: string }[] = [
-	{ value: 'light', label: '浅色', icon: themeIconMap.light },
-	{ value: 'dark', label: '深色', icon: themeIconMap.dark },
-	{ value: 'system', label: '跟随系统', icon: getThemeModeIcon('system') },
+interface ThemeOption {
+	value: ThemeMode
+	labelKey: string
+	icon: string
+}
+
+const themeModes: ThemeOption[] = [
+	{ value: 'light', labelKey: 'header.theme.light', icon: themeIconMap.light },
+	{ value: 'dark', labelKey: 'header.theme.dark', icon: themeIconMap.dark },
+	{
+		value: 'system',
+		labelKey: 'header.theme.system',
+		icon: getThemeModeIcon('system'),
+	},
 ]
 
 const selectedThemeMode = computed<ThemeMode>(() => {

@@ -29,6 +29,20 @@ import cover from '~/assets/resources/photo.png?w=640&h=480&q=85&thumbnail'
 - 同一原图、同一参数复用缓存 URL；不同尺寸独立生成。Dev 原图变更会重新生成并自动刷新页面（图片 URL 稳定，因此使用整页刷新保证更新），Build 将生成文件作为普通资源打包到 `.output/`。删除 `.nuxt/` 后会自动重建，不必提交产物或单独执行生成命令。
 - 组件继续使用普通 URL（如 `<SkeletonImage :src="cover" />`），压缩逻辑属于构建层，不放进客户端组件；批量资源也应明确导入需要的尺寸，避免为整仓图片生成没有引用的变体。
 
+## 卡片图片图集
+
+首页背景图片集合使用 `*.card-atlas.json?atlas` 静态导入，清单格式为 `{"images":[{"id":"cover","file":"cover.webp"}]}`。路径相对清单，素材必须位于 `assets/` 内。单图直接复用上面的 320px/q90 缩略图；多图由 `build/card-atlas/module.ts` 通过现有 sharp 依赖合成为一个 WebP，客户端只获得一个 URL 与裁切区域，避免图片数量决定背景请求数量。
+
+音乐条目额外保存 `title`、`author` 数组、`category`，可选 `album`；这些元数据通过 `?covers` 与本地缩略图 URL 一起导出，`source` 来源直链不进入客户端。新增分类同时补齐三种语言的 `main.index.card.music.categories` 文案。
+
+默认每格 160px、最多 32 张、图集不超过 200 KiB；生成文件和内容指纹缓存位于已忽略的 Nuxt 构建目录 `card-atlases/`，不提交产物、不删除原图。新增素材只修改清单，不在浏览器或 API 请求中逐张下载、实时拼接。Dev 会在清单和引用素材修改后刷新，Build 使用带内容哈希的资源 URL。详细视觉与参数入口见 [首页卡片动态背景](UI_GUIDELINES.md#首页卡片动态背景)。
+
+## 卡片背景自动可见度
+
+`build/card-appearance/nuxt.ts` 使用现有 sharp 在构建时测量素材的明暗主题色差和边缘保留率。校徽通过 `*.webp?appearance` 导出 `CardAppearanceProfile`；技术、足迹与语言通过 `*.card-motifs.json?appearance` 同时导出受信任的本地 SVG 和 profile，确保分析与显示使用同一份图形。图片图集则在区域元数据中携带每张素材的 profile，不增加客户端图片 URL。
+
+公共目标、透明度上限、参考模糊与计算函数位于 `components/cards/cardPattern.ts`。默认浅色目标略弱于深色，根据素材自动计算实际 opacity 和随单元格尺寸变化的模糊。分析按显示尺度并读取项目色票；浏览器只执行数值计算和既有 SVG 渲染，不下载原图进行测量。SVG 文字受构建主机字体影响，指标用于近似统一装饰背景强度，不替代真实浏览器验收。详见 [UI 规范](UI_GUIDELINES.md#首页卡片动态背景)。
+
 ## 验证与提交
 
 - 本地缩略图由 `build/thumbnails/nuxt.ts` 的 Nuxt/Vite 模块按需处理，Dev、Build、Generate 都自动执行，不需要预生成脚本。按原图内容、尺寸、质量与 sharp 版本校验缓存，重复启动复用结果；产物仅写入已忽略的 `.nuxt/thumbnails/`，不进入 `assets/` 或 Git。具体引用方式见下节。

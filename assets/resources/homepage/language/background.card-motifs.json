@@ -1,0 +1,52 @@
+{
+	"motifs": [
+		{
+			"id": "letter-0",
+			"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><text x=\"12\" y=\"12\" dy=\"0.35em\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"serif\" font-size=\"18\" font-weight=\"600\">中</text></svg>"
+		},
+		{
+			"id": "letter-1",
+			"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><text x=\"12\" y=\"12\" dy=\"0.35em\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"serif\" font-size=\"18\" font-weight=\"600\">A</text></svg>"
+		},
+		{
+			"id": "letter-2",
+			"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><text x=\"12\" y=\"12\" dy=\"0.35em\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"serif\" font-size=\"18\" font-weight=\"600\">あ</text></svg>"
+		},
+		{
+			"id": "letter-3",
+			"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><text x=\"12\" y=\"12\" dy=\"0.35em\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"serif\" font-size=\"18\" font-weight=\"600\">文</text></svg>"
+		},
+		{
+			"id": "letter-4",
+			"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><text x=\"12\" y=\"12\" dy=\"0.35em\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"serif\" font-size=\"18\" font-weight=\"600\">B</text></svg>"
+		},
+		{
+			"id": "letter-5",
+			"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><text x=\"12\" y=\"12\" dy=\"0.35em\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"serif\" font-size=\"18\" font-weight=\"600\">い</text></svg>"
+		},
+		{
+			"id": "letter-6",
+			"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><text x=\"12\" y=\"12\" dy=\"0.35em\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"serif\" font-size=\"18\" font-weight=\"600\">字</text></svg>"
+		},
+		{
+			"id": "letter-7",
+			"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><text x=\"12\" y=\"12\" dy=\"0.35em\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"serif\" font-size=\"18\" font-weight=\"600\">C</text></svg>"
+		},
+		{
+			"id": "letter-8",
+			"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><text x=\"12\" y=\"12\" dy=\"0.35em\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"serif\" font-size=\"18\" font-weight=\"600\">う</text></svg>"
+		},
+		{
+			"id": "letter-9",
+			"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><text x=\"12\" y=\"12\" dy=\"0.35em\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"serif\" font-size=\"18\" font-weight=\"600\">语</text></svg>"
+		},
+		{
+			"id": "letter-10",
+			"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><text x=\"12\" y=\"12\" dy=\"0.35em\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"serif\" font-size=\"18\" font-weight=\"600\">D</text></svg>"
+		},
+		{
+			"id": "letter-11",
+			"svg": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><text x=\"12\" y=\"12\" dy=\"0.35em\" text-anchor=\"middle\" fill=\"currentColor\" font-family=\"serif\" font-size=\"18\" font-weight=\"600\">え</text></svg>"
+		}
+	]
+}

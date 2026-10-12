@@ -35,6 +35,10 @@ export default defineNuxtConfig({
 	modules: [
 		// 按引用尺寸生成本地静态图片缩略图，产物只进入构建缓存。
 		'./build/thumbnails/nuxt',
+		// 把本地图片清单构建成单资源图集，单图复用缩略图。
+		'./build/card-atlas/module',
+		// 按真实素材统计明暗主题的背景强度与细节保留率。
+		'./build/card-appearance/nuxt',
 		['./build/emoji-font/nuxt', emojiFontOptions],
 		'@nuxt/eslint',
 		'@pinia/nuxt',
