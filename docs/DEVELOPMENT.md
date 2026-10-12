@@ -33,7 +33,7 @@ import cover from '~/assets/resources/photo.png?w=640&h=480&q=85&thumbnail'
 
 首页背景图片集合使用 `*.card-atlas.json?atlas` 静态导入，清单格式为 `{"images":[{"id":"cover","file":"cover.webp"}]}`。路径相对清单，素材必须位于 `assets/` 内。单图直接复用上面的 320px/q90 缩略图；多图由 `build/card-atlas/module.ts` 通过现有 sharp 依赖合成为一个 WebP，客户端只获得一个 URL 与裁切区域，避免图片数量决定背景请求数量。
 
-音乐条目额外保存 `title`、`author` 数组、`category`，可选 `album`；这些元数据通过 `?covers` 与本地缩略图 URL 一起导出，`source` 来源直链不进入客户端。新增分类同时补齐三种语言的 `main.index.card.music.categories` 文案。
+ACG 与音乐条目额外保存 `title`、`author` 数组、`category`，可选 `album`；这些元数据通过 `?covers` 与本地缩略图 URL 一起导出，`source` 来源直链不进入客户端。新增分类同时补齐三种语言的 `main.index.card.acg.categories` 或 `main.index.card.music.categories` 文案。
 
 默认每格 160px、最多 32 张、图集不超过 200 KiB；生成文件和内容指纹缓存位于已忽略的 Nuxt 构建目录 `card-atlases/`，不提交产物、不删除原图。新增素材只修改清单，不在浏览器或 API 请求中逐张下载、实时拼接。Dev 会在清单和引用素材修改后刷新，Build 使用带内容哈希的资源 URL。详细视觉与参数入口见 [首页卡片动态背景](UI_GUIDELINES.md#首页卡片动态背景)。
 
@@ -57,3 +57,10 @@ import cover from '~/assets/resources/photo.png?w=640&h=480&q=85&thumbnail'
 - `AGENTS.md` 负责规则入口与按需阅读索引；专题规则和实现说明存放在 `docs/`。
 - 新专题仅在已有文档无法容纳独立职责时增加，并在入口登记适用范围；不要为同一规则维护多份正文。
 - 项目指引和本次实现一起维护：路径、配置入口、命令和行为变化时同步更新对应说明。
+
+## 首页卡片维护与验收
+
+- 素材、清单按六张卡片同目录归档，使用可辨识的作者 / 作品 / 卷号文件名；图片保留真实来源，统一 WebP。背景排列、前景切换与文字规则以 [UI 规范](UI_GUIDELINES.md#首页卡片动态背景) 为准，采用对话中最后确认的版本，不恢复已被后续要求替代的旧方案。
+- 扩展素材时同时核对清单 id、文件、作者数组、分类和三语言文案；追踪静态 import 与清单内 file，不能仅凭文件名搜索判断素材无用。检查旧路径、旧 cover、旧背景图和无调用方的参数，确认没有引用再删除。构建缓存与 .output 为忽略产物，不作为残余 assets 清理或提交。
+- 提交前自己 review 版式、阴影裁切、边框、固定标题、前景动画、长文字首尾停留与阅读完成后换图；不等用户逐项反馈。动画必须抓取真实中间帧与结束状态，静态截图和 Build 不能证明没有硬切。浏览器工作尽量在后台执行，只关闭自己创建的预览和服务器。
+- 用户反馈卡顿时优先记录生产构建 Performance trace，覆盖滚动、hover、连续换图、窄屏及语言变化；区分脚本、布局、绘制、图像解码与 DevTools 启动采样开销。不因平均耗时低就宣称没有掉帧，也不把 Dev 首次编译算成产品动画。先保持效果、常驻 DOM 与逐张资源准备，再据证据优化；报告本机样本范围与未测情况。

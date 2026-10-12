@@ -27,7 +27,7 @@ export const useMusicPreference = () => {
 		sameSite: 'lax',
 		maxAge: 60 * 60 * 24 * 30,
 	})
-	const nextCover = () => {
+	const prepareNextCover = () => {
 		const ids = new Set(musicCovers.map((cover) => cover.id))
 		let remaining = Array.isArray(cycle.value?.remaining)
 			? [...new Set(cycle.value.remaining.filter((id) => ids.has(id)))]
@@ -47,11 +47,15 @@ export const useMusicPreference = () => {
 			}
 		}
 		const id = remaining.shift()!
-		cycle.value = { remaining, lastId: id }
-		return id
+		return { id, remaining }
+	}
+	const nextCover = () => {
+		const next = prepareNextCover()
+		cycle.value = { remaining: next.remaining, lastId: next.id }
+		return next.id
 	}
 	const selectedId = useState('homepage-music-cover-id', nextCover)
-	// 首次 hydration 复用 SSR；返回首页和可见页面的每个十秒周期推进队列。
+	// 首次 hydration 复用 SSR；返回首页推进，停留时等待最小展示与阅读窗口。
 	if (import.meta.client && !useNuxtApp().isHydrating)
 		selectedId.value = nextCover()
 	let disposed = false
@@ -59,16 +63,19 @@ export const useMusicPreference = () => {
 	const advance = async () => {
 		if (disposed || preparing || document.hidden) return
 		preparing = true
-		const id = nextCover()
+		const { id, remaining } = prepareNextCover()
 		const cover = musicCovers.find((cover) => cover.id === id)!
 		try {
 			// 只准备下一张；图片解码完成后同步交接封面、文案和作品名。
 			const image = new Image()
 			image.src = cover.url
 			await image.decode()
-			if (!disposed && !document.hidden) selectedId.value = id
+			if (!disposed && !document.hidden) {
+				cycle.value = { remaining, lastId: id }
+				selectedId.value = id
+			}
 		} catch {
-			// 下载失败时保留当前封面，下个周期继续队列。
+			// 下载失败不消耗队列，下一周期重试，避免未展示的作品被跳过。
 		} finally {
 			preparing = false
 		}

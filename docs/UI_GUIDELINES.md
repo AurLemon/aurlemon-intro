@@ -14,11 +14,11 @@
 ### 共用层与默认值
 
 - `CardPatternBackground` 统一接管固定排列、密度、列错位、倾斜、遮罩、明暗配色、透明度、模糊过渡、阴影、滚动、视口/页面隐藏暂停与减少动态效果。素材组件只负责校徽、图片裁切或 SVG 镂空，不自行复制动效和视觉参数。
-- `components/cards/cardPattern.ts` 是参数唯一入口。`visibility` 表示与主题底色的目标 RMS 色差，不是 CSS opacity；默认浅色 0.045、深色 0.057，hover/内部聚焦分别为 0.060、0.0762（较上一版再降低 20%）。教育背景不随学历选择高亮或压暗，切换只更新前景校徽与文字。六张卡片使用相同基础目标，素材差异通过公共档位处理，不在卡片内散落独立数值。浅色视觉强度略弱于深色；具体 CSS opacity 可能反而更高，因为浅色底与灰色素材的对比更低。
+- `components/cards/cardPattern.ts` 是参数唯一入口。`visibility` 表示与主题底色的目标 RMS 色差，不是 CSS opacity；默认浅色 0.036、深色 0.057，hover/内部聚焦分别为 0.075、0.0762。教育背景不随学历选择高亮或压暗，切换只更新前景校徽与文字。已删除无调用方的 selectedMotif、背景分层选中高亮及独立选中透明度配置。六张卡片使用相同基础目标，素材差异通过公共档位处理，不在卡片内散落独立数值。浅色视觉强度略弱于深色；具体 CSS opacity 可能反而更高，因为浅色底与灰色素材的对比更低。
 - 每个素材独立计算 `opacity = min(0.6, visibility / contrast)`，纯透明或与底色完全同色的素材保持不可见，不无限放大。使用亮度权重的 sRGB 色差 RMS 作为项目内的近似视觉指标，包含透明覆盖面积、色彩和饱和度调整效果；它不保证不同图案的主观观感完全相等，也不是正文 WCAG 对比度。静态径向遮罩与阴影仍统一施加，不把前景附近的刻意渐隐补偿回来。
 - `build/card-appearance/nuxt.ts` 在 Dev/Build 中按 48px 单元格、42px 素材测量各主题；色票读取当前 `assets/styles/base/tailwind.css` 的 surface-0、neutral-500/400。素材先按实际 contain/cover 裁切、保留 alpha、按共用 `saturate(1.15)` 增强饱和度，再模拟 Gaussian blur，输出色差和梯度 RMS 的保留率。测量只在构建侧发生，不由客户端逐张下载原图或用 Canvas 分析。
 - 模糊统一以 64px 单元格为配置基准：普通状态 3px，hover/内部聚焦 1.5px，实际值按 `clamp(36px, 14cqw, 64px) / 64` 同比计算。采样表按 48px 单元格换算并线性插值色差，再反算透明度；不会继续用边缘保留阈值把用户设定的模糊压到过小，也不会让静态与 hover 算成相同值。构建输出的边缘保留率作为测量元数据保留。SVG 文本采样使用构建主机 serif 字体，浏览器继续用项目 serif 字体，字形差异会带来小幅测量误差。
-- 公共档位位于 `cardPattern.ts`：`blurLevel` 的 `clear / standard / soft` 分别乘 0.65 / 1 / 1.15；`strengthLevel` 的 `quiet / subtle / standard / distinct` 分别乘 0.5 / 0.8 / 1 / 1.2。先继承公共默认值和部分字段覆盖，再应用档位。语言使用 clear 和 `density: 1.3`，横纵格距除以 1.3，文字字号从 14 调至 18，使字的实际大小接近原值、排列更紧凑；ACG 与音乐都使用 clear + distinct，保持相同目标可见度；教育使用 soft + subtle 和 `density: 0.95`，较默认 0.8 略密，在常见桌面卡片宽度下约多一列，保持更柔和的校徽背景。
+- 公共档位位于 `cardPattern.ts`：`blurLevel` 的 `clear / standard / soft` 分别乘 0.65 / 1 / 1.15；`strengthLevel` 的 `quiet / subtle / standard / distinct` 分别乘 0.5 / 0.8 / 1 / 1.2。先继承公共默认值和部分字段覆盖，再应用档位。技术、夜间与语言当前使用 `density: 1` 和默认 standard 档位，语言文字字号为 18；ACG 与音乐都使用 clear + distinct，保持相同目标可见度；教育使用 soft + subtle 和 `density: 0.95`，较默认 0.8 略密，在常见桌面卡片宽度下约多一列，保持更柔和的校徽背景。
 - `options.density` 按比例缩小单元格；布局测量、模糊与移动距离同步使用该单元格尺寸。`columnStep` / `rowStep` 分别独立控制横向列距和纵向行距，默认均为 1 个单元格，不改变素材大小；图片背景默认按素材显示宽度加 0.12 格留白计算，竖版封面为 0.62 + 0.12 = 0.74，未指定尺寸的方形图片仍为 1，可通过 options 覆盖列距。音乐通过 `imageWidth: 0.62` 与 ACG 使用相同显示宽度、density 0.7 和 0.12 格间隙，正方形素材行距为 0.74，不沿用竖图的 1 格行距。音乐使用 catalog 排列，四列、八行覆盖全部 29 张，补齐空位的少量图片重复；悬停以原速度持续向下滚动完整八行周期（40 秒），循环接缝与起点图案重合。其他背景同样移动各自完整的平铺周期，保持既有排列。`options` 按需提供 `light`、`dark` 的目标可见度与参考尺寸 blur、`shadow` 部分字段，以及 `transitionMs`、`driftSecondsPerRow`。未提供字段继承公共默认值。常规卡片只传素材和构建输出的 `profiles`，不得再手填每个素材的透明度。色票、图片或 SVG 清单修改后重新生成测量结果。
 - 普通与 hover 各渲染一份固定 blur、固定素材 opacity 的 SVG 图案，hover 用外层 HTML 的 500ms ease-out opacity 交叉淡化模拟清晰度与强度变化。禁止逐帧改变重复 SVG 素材的 opacity 或 blur/filter；这会让快速换卡片时的退场过渡一起重绘。两份图案共享素材 URL，不增加下载。主题数值在挂载后读取 `useColorMode`，SSR 与首次 hydration 使用相同默认值，避免深色主题样式不一致；素材内联取值，不依赖 SVG use 引用树的祖先主题/hover 选择器。教育菜单打开时通过 `focusActive` 关闭焦点播放，保持既有交互。
 - 四类素材通过 `motifs` 和 `motif` 插槽接入：`EducationCardBackground` 只传校徽与测量值，`TechnologyCardBackground` 和 `PersonalCardBackground` 通过 `SvgCardBackground` 使用受信任的本地 `*.card-motifs.json?appearance` 清单，渲染和测量共用同一份 SVG，`ImageCardBackground` 从一个图集 URL 按区域裁切。六张卡片的每个静态状态均合并为一个 SVG pattern 层；教育阶段切换不改变背景图案或强度。图案层数不等于图片请求数。公共层统一交互和视觉参数，素材层保留不同的外轮廓，不要求每个主题都套相同的圆角底块。
@@ -36,19 +36,61 @@
 - 首页素材统一放在 `assets/resources/homepage/` 的六个子目录：`education / technology / acg / music / night / language`。各卡片的图片清单和 SVG 清单与素材同目录，统一命名为 `background.card-atlas.json` 或 `background.card-motifs.json`，前景单图为 `cover.svg` / `cover.webp`；教育目录保存四个校徽。ACG 封面使用作品名与卷数命名，统一保存全尺寸 WebP，条目来源仍可通过清单 id 中的 Bangumi 编号追溯。
 
 - ACG 和音乐分别使用 `assets/resources/homepage/acg/background.card-atlas.json`、`music/background.card-atlas.json` 保存实际素材清单：每项包含稳定 `id` 和相对清单的本地 `file`。ACG 使用用户选定的六张 Bangumi 竖版封面（本地 `acg/`），通过清单 `fit: "portrait"` 固定宽度并按原图宽高比自动计算高度，不裁切；音乐背景使用用户提供的二十九张网易云封面直链，清单 `source` 字段保留来源记录，构建与浏览器不会从这些直链实时抓取；前景通过 `MusicCardCover` 从同一清单的 `?covers` 导出中只显示一张 320px 缩略图，`cover.webp` 已删除。不自动抓取网络图片、不临时填充示例素材。
-- 使用静态导入 `import atlas from '~/assets/resources/homepage/acg/background.card-atlas.json?atlas'`。`build/card-atlas/module.ts` 在 Dev/Build 中解析清单；单图复用已有 `?w=320&q=90&thumbnail` URL，前景和背景只下载同一个资源。多图构建为一个 WebP 图集，每格 160 × 160，最多 32 张，单图集不超过 200 KiB，质量 85。图集只写入已忽略的构建目录 `card-atlases/`，原图保留，最终 URL 由 Vite 打包并缓存。清单可设置 `fit: "contain"` 在透明方格内完整容纳图片；ACG 使用 `fit: "portrait"`，图集区域宽度固定为 112px，高度按原图宽高比等比缩放，打包行高按最高素材自动扩展，不随机、不裁切、不拉伸。显示宽度统一为单元格的 62%，高度按区域比例变化，ACG 单独使用 `density: 0.7`，较公共 0.8 在同宽卡片上约少一列，其他公共参数保持不变；默认 `cover` 保留既有方形裁切。
+- 使用静态导入 `import atlas from '~/assets/resources/homepage/acg/background.card-atlas.json?atlas'`。`build/card-atlas/module.ts` 在 Dev/Build 中解析清单；单图复用已有 `?w=320&q=90&thumbnail` URL，单图模式前景和背景复用同一个资源；多图模式背景图集与按需前景缩略图各自独立。多图构建为一个 WebP 图集，每格 160 × 160，最多 32 张，单图集不超过 200 KiB，质量 85。图集只写入已忽略的构建目录 `card-atlases/`，原图保留，最终 URL 由 Vite 打包并缓存。清单可设置 `fit: "contain"` 在透明方格内完整容纳图片；ACG 使用 `fit: "portrait"`，图集区域宽度固定为 112px，高度按原图宽高比等比缩放，打包行高按最高素材自动扩展，不随机、不裁切、不拉伸。显示宽度统一为单元格的 62%，高度按区域比例变化，ACG 与音乐均使用 `density: 0.7`，较公共 0.8 在同宽卡片上约少一列，其他公共参数保持不变；默认 `cover` 保留既有方形裁切。
 - 多图的 `CardImageAtlas` 只含一个 URL、尺寸和裁切区域；客户端不接收原图 URL 列表，不对每个格子发起独立请求。尺寸与裁切在构建时确定，浏览器仍实时做列排列、旋转与移动，不能把图集理解成旧式整张背景图。
 - 图集按清单、原图内容、尺寸和 sharp 版本计算缓存指纹。清单或已引用素材变化时 Dev 刷新并重建；缺失、不支持、重复 id、超过数量或体积预算时明确报错。仅支持仓库 `assets/` 内静态 PNG/JPEG/WebP/AVIF，不在请求处理时现场拼接图片。
 - 教育的四个校徽本来就供前景切换使用，前景、预加载和背景共享 320px/q90 缩略图 URL，重复图案不增加独立下载；保留用户已确认的预加载行为；`*.webp?appearance` 仅导出分析数值，不生成另一张图片。技术、夜间与语言背景使用内联 SVG/文字，不新增图片请求。后续下载用户选定链接后保存原图并修改清单即可；需要自动更新时另行设计定时获取、生成、原子发布与失败时保留上一版，不默认加入后端更新服务。
 
-### 前景与主题素材
+### 前景布局与颜色
 
-- 音乐随机前景与背景共用 `music/background.card-atlas.json`；条目保存作品 `title`、`author` 数组、`category` 和可选 `album`，文件按作者和作品名命名。分类显示为ヨルシカ、ずっとまよ、ChiliChill、Vocaloid、中V、国创 Vocaloid（清单 category 仍使用稳定的 yorushika / zuttomayo 标识），属于本站偏好标签，不作为合成歌声引擎的严格分类。`?covers` 只导出本地缩略图 URL，不预加载全部图片；SSR 选中一张，hydration 复用该选择，后续返回首页以及页面可见时以 10 秒为最小窗口推进一次，长作品名可延长，离开首页销毁定时器，后台页面暂停推进。随机封面外层圆角同 ACG，图片铺满 80px 容器，仅外层裁切圆角；`border border-slate-300/60` 由绝对定位覆盖层绘制，不挤占图片尺寸、不随内部图片切换重建。通过保存有效素材 id、剩余队列与上次 id 的偏好 Cookie 进行不重复洗牌（30 天）：一轮全部展示完才重新洗牌，跨轮避免连续重复；清单变化时过滤失效 id。保证持续停留或返回首页时一轮覆盖全部。`useMusicPreference` 统一管理队列与定时器，切换前只下载并解码下一张，准备成功后同步更新封面和文案；失败时保留当前封面。`MusicCardCover` 使用原生图片和稳定容器，避免已解码图片再经过 SkeletonImage 的二次淡入；保留不透明的旧封面作为底层，新封面在其上从完整一幅宽度之外水平移入并淡入，700ms 后移除旧层，避免露出背景；稳定状态只保留一张，边框覆盖层常驻。主标题固定使用原来的 J-POP 与ボカロ标题，不随封面分类改变；副标题读取对应 locale 的 categories 短文案，英文、日文保持短句；各分类当前保留一条副标题，Vocaloid 不再轮换多条文案；中文 ChiliChill / Vocaloid / 中V / 国创 Vocaloid 分别为「七里桥是神」「我是初音未来」「我是洛天依」「我真的要跪下了」，对应英文、日文译文不加标点。音乐保持 InfoCard 和前景行 DOM 常驻，仅封面与副标题分别做水平位移 + opacity + blur 切换，固定主标题不参与切换；ACG 与音乐启用 InfoCard 的 smoothWidth，根据标题和副标题的自然文本宽度及可用空间测量文字列，使用 500ms width 过渡平滑推动封面位置，底部类型文字后用非交互 `PreferenceTrackLabel` 加粗显示「分类 / 歌名」，整段最多占容器 55% 且不超过 14rem；超宽时两端使用 12px 渐隐遮罩，按阅读顺序从开头到结尾滚动一次并停住，开头停留 3.5 秒，以 32px/s 恒速滚到末尾，再停留 2 秒；超过十秒时延长当前封面的展示窗口，阅读完成后再换图；短文本静止，换图、切换语言或尺寸变化时重新测量，页面隐藏暂停。减少动态效果时不滚动，通过 title 提供全名。ChiliChill 显示歌名去掉括号里的英文，完整元数据保留在清单，底部标签切换仅做 opacity 过渡，不加 blur；切换语言无需等待下一轮；减少动态效果时取消过渡。
+- 六张卡片继承 `InfoCard` 的同一套外边框和文字颜色：外层 `h-40 rounded-xl border-6 border-slate-200 dark:border-slate-800`；标题 `text-slate-800 dark:text-slate-300`，副标题 `text-slate-700 dark:text-slate-400`。技术卡不再单独覆盖为更浅颜色。背景滚动、图片分类和副标题切换不得改变主标题。
+- ACG 与音乐前景使用完整的 80 × 80 容器，外层 `rounded-lg overflow-hidden` 和常驻边框覆盖层；图片贴满边缘，不加 margin、padding 或会挤占图片的布局边框。ACG 内层封面只使用 `rounded-sm`，层间有阴影，阴影不能漏出容器。教育背景也按内圆角裁切；教育菜单仍可溢出前景，不能直接裁掉整个 InfoCard。
+- ACG 与音乐的 InfoCard 和前景行 DOM 常驻，只切换内部封面、副标题和作品名，不通过 contentKey 重建整行。启用 smoothWidth：分别测量固定标题与副标题的自然宽度，以可用空间为上限，用 500ms width 过渡推动文字列与封面；自然测量不能受到 line-clamp 或省略号影响。教育继续沿用其独立的校名过渡。
+- 音乐主标题固定使用原来的 J-POP / Voca 文案；ACG 固定 GIRL LOVE。英文、日文副标题保持短句，并遵守文字列最大宽度，不能挤出卡片。底部作品名是加粗的非交互文本，不创建链接。
 
-- ACG 与音乐使用 `usePreferenceRotation` 接收底部标签的阅读窗口，十秒只作为最小间隔。字体、语言或尺寸变化会按新测量重新规划；页面隐藏时同时暂停滚动与换图倒计时，返回后继续剩余窗口。
+### 音乐分类与切换
 
-- ACG 前景由 `useAcgPreference` 和 `AcgCardCover` 从同一六张封面清单的 `?covers` 导出轮播。初始沿用漫画 7 / 8 / 9 卷的三层构图；以 10 秒为最小窗口从左侧补入一张，长作品名阅读完成后再推进，原左、中封面向右移动，最右侧旧封面离场。非当前三张素材进行不重复洗牌，保证六张都能进入主封面位置；SSR 与 hydration 共用 deck，页面隐藏暂停、离开首页销毁定时器。TransitionGroup 使用 FLIP 位移以及 opacity + blur 进出过渡模拟手机多任务，保留裁切、层间阴影、外层圆角和边框。各层宽度 68%、高度铺满，前景 object-cover 可少量裁切，背景仍保留竖图原比例。
-- ACG 主标题 GIRL LOVE 不变。最右侧封面的 category 决定副标题：安达与岛村（小说、漫画合并）、利兹与青鸟、超时空辉夜姬；三语言短文案放在 `main.index.card.acg.categories`，中文为「安岛 99」「小蓝鸟牛逼」「超时空辉夜姬牛逼」。底部「ACG 偏好」后显示当前作品原文（漫画卷号不带括号，SS3 前有空格），不做点击入口，复用 `PreferenceTrackLabel` 的最大宽度、单次滚动与两侧渐隐，副标题保留 opacity + blur 过渡，底部作品名切换仅做 opacity 过渡；语言切换即时生效。
+- 音乐前景与背景共用 `music/background.card-atlas.json`，当前 29 张真实封面；文件按作者和作品名命名，元数据保留 title、author 数组、category 和可选 album，source 仅作本地来源记录。以后增加封面或分类继续扩展清单，不把映射写死在组件。分类是本站偏好标签，按用户指定分组，不扩大为泛化 C-POP / J-POP，也不按合成歌声引擎重新归类。
+- 展示名使用 ヨルシカ、ずっとまよ、ChiliChill，不能展示 YRSK / ZTMY 缩写，ChiliChill 中间的 C 大写。其余分类保留 Vocaloid、中V、国创 Vocaloid；翻译分组名沿用三种 locale 的配置。每个分类只保留一条副标题，以下中文文案为最终版本，替代本对话早期的多条发癫文案。
+
+| category        | 中文分类名    | 中文副标题     |
+| --------------- | ------------- | -------------- |
+| yorushika       | ヨルシカ      | 我爱拿不拿     |
+| zuttomayo       | ずっとまよ    | 我爱ACANE      |
+| chilichill      | ChiliChill    | 七里桥是神     |
+| vocaloid        | Vocaloid      | 我是初音未来   |
+| chineseVocaloid | 中V           | 我是洛天依     |
+| cnCreators      | 国创 Vocaloid | 我真的要跪下了 |
+
+- 分类与作者按已确认清单维护：s62 的「夜未艾」「夏末递归定义」「星期零」及 Sakura_Rain 的「樱花雨」归国创 Vocaloid；花水r 的「南京夜无电波讯号」归中V，黑色磁带作为 album 元数据；其余用户指定的 P 主作品归 Vocaloid。日文作者与作品名以清单原文为准，不用描述性旧文件名 blue cube / black tape 等替代正式名称。
+- 各语言文案位于 `main.index.card.music.categories`，subtitles 当前每类一项；不保留旧的封面哈希选句逻辑。ChiliChill 的英文、日文副标题直接使用 ChiliChill 名称，分别为「ChiliChill is god」「ChiliChillは神」，不翻译为七里桥；英文、日文翻译不添加标点，尤其逗号、句点和引号；作品名、作者原文不按这条翻译规则改写。切换语言即时更新文案，不等待换图。
+- 底部显示「音乐偏好 分类 / 歌名」，分类与歌名之间用带空格的 `/`。ChiliChill 展示时去掉末尾括号里的英文，完整标题仍保留在 JSON；其他作品名保留原文及其标点。
+- SSR 随机选择一张，hydration 复用该选择；返回首页推进队列。Cookie 保存有效素材 id、剩余队列与上次 id，保留 30 天；一轮全部展示后才重洗，跨轮避免连续重复，清单改变时过滤失效 id。保证持续停留或返回首页时覆盖全部封面；下载失败不消耗待展示队列，下一周期重试。
+- `useMusicPreference` 每次只准备下一张缩略图，先下载并解码，成功且页面仍可见后同步更新封面、分类文案和歌名；失败、页面隐藏或已离开首页时保留原图，不预加载全部封面。
+- `MusicCardCover` 用原生图片和稳定容器做内部交接，不叠加 SkeletonImage 的第二次淡入。旧封面保持不透明，新封面从左侧完整一幅宽度之外滑入，700ms 水平位移 + opacity + blur；旧层在交接结束后移除，稳定状态一张，交接时两张。不能改成硬切、垂直切换或中途露出背景。副标题同样水平位移 + opacity + blur；主标题和边框不参与切换。
+
+### ACG 分类与切换
+
+- `useAcgPreference` 与 `AcgCardCover` 使用同一六张封面清单的 ?covers。初始漫画 7 / 8 / 9 卷从左到右排三层；从左侧补入一张，原左、中封面向右移动，最右旧封面离场。只在非当前三张中不重复洗牌，保证六张都进入最右主封面位置；SSR 与 hydration 共用 deck。
+- 最右封面的 category 决定当前副标题和底部作品名；小说与漫画都属于安达与岛村。主标题 GIRL LOVE 不变，底部「ACG 偏好」后只显示作品原文，不显示额外分类前缀。漫画标题为「安達としまむら 7 / 8 / 9」中的对应卷号，不加括号；小说为「安達としまむら SS3」，SS3 前有空格。
+
+| category | 分类         | 中文副标题       |
+| -------- | ------------ | ---------------- |
+| adashima | 安达与岛村   | 安岛 99          |
+| liz      | 利兹与青鸟   | 小蓝鸟牛逼       |
+| kaguya   | 超时空辉夜姬 | 超时空辉夜姬牛逼 |
+
+- 三语言文案位于 `main.index.card.acg.categories`，语言切换即时生效。TransitionGroup 使用 FLIP 水平位移和 opacity + blur 模拟手机多任务，保留层间阴影与裁切；各层宽 68%，左侧位置为 0% / 12% / 32%，高度铺满。前景允许 object-cover 的少量裁切，背景仍保留竖图原比例；高度必须由实际宽高比决定，早期“随机高度”说法已被后续要求替代。
+- ACG 进出过渡 600ms，移动时的 opacity / blur 关键帧 500ms，必须短于 transform transition，保证 Vue 能识别 FLIP 移动；副标题保留 opacity + blur 过渡。最右层不能固定不换，不能把三张作品直接平铺叠放而没有层次。
+
+### 底部作品名阅读窗口
+
+- ACG 与音乐共用非交互 PreferenceTrackLabel，最多占父容器 55% 且不超过 14rem。实际超过宽度才滚动，能放下就静止；溢出时两侧使用 12px 透明渐隐遮罩，让首尾自然进出。作品名切换只用 opacity，不加 blur；正文副标题和图片的 blur 规则独立。
+- 开头先停留 3.5 秒，再以固定 32px/s 从开头滚到末尾，末尾停留 2 秒；滚动距离包含渐隐区域的内边距，不压缩速度来赶十秒。滚动只播放一遍并保持末尾，不来回弹、不刚出现就滚。
+- `usePreferenceRotation` 以十秒作为最小展示间隔，接收标签的实际阅读时长，加 400ms 交接余量后决定下一次换图。长作品没读完就 delay；语言、字体、容器尺寸变化重新测量并规划阅读窗口。相同尺寸的 ResizeObserver 通知不打断初始化或重播。
+- 页面隐藏时同时暂停滚动与倒计时，返回后继续剩余阅读窗口；离开首页清理定时器、观察器和动画。离场时冻结当前位移再取消动画，避免淡出时跳回开头。减少动态效果时静态显示，通过 title 提供全名。
+
+### 其余主题素材
 
 - 技术卡前景 TS 保持 64px，在原 80px 区域居中。背景使用 TypeScript、Vue、Nuxt、Git、Node.js、Tailwind CSS、Docker、Prisma 低饱和品牌色标识，直接显示图标轮廓，移除芯片底块、引脚和附属细节；沿用夜间背景的共用错列排列、倾斜、阴影与动效，不引入图标依赖。`technology/background.card-motifs.json` 保留原 TypeScript 封面、现有 Font Awesome 品牌标识以及 Nuxt/Tailwind/Prisma 路径来源；清单中的 SVG 原样内联，不接受网络 HTML 或用户输入。
 - 夜间出没背景使用独立的月亮、星星、咖啡、终端轮廓，不再统一套实心底块，保留更多空隙。语言背景交错使用汉字、英文与平假名，仅保留居中的文字，不添加对话气泡或底块；文字轮廓沿用公共阴影。两者仍继承公共配色、透明度、模糊、阴影和滚动默认值，不另设一套动效。夜间前景继续使用`night/cover.svg`，不添加被撤销的受光和扫光动画。

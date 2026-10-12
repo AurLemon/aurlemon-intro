@@ -32,14 +32,7 @@
 			>
 				<div class="card-pattern-background-pattern absolute inset-0">
 					<svg
-						v-for="(layer, index) in layers"
-						:key="layer.motif"
-						:data-selected="layer.motif === selectedMotif"
 						:style="{
-							opacity:
-								hasSelection && layer.motif !== selectedMotif
-									? CARD_SELECTION_DIM
-									: 1,
 							filter: `blur(${scaledBlur(theme, active)}) saturate(1.15)`,
 						}"
 						:viewBox="`0 0 ${planeSize.columns} ${planeSize.rows}`"
@@ -47,7 +40,7 @@
 					>
 						<defs>
 							<filter
-								:id="`${patternId}-shadow-${active}-${index}`"
+								:id="`${patternId}-shadow-${active}`"
 								filterUnits="userSpaceOnUse"
 								x="-0.18"
 								y="-0.18"
@@ -66,9 +59,9 @@
 							</filter>
 							<g
 								v-for="motif in new Set(
-									layer.positions.map((position) => position.motif),
+									positions.map((position) => position.motif),
 								)"
-								:id="`${patternId}-material-${active}-${index}-${motifIndexKey(motif)}`"
+								:id="`${patternId}-material-${active}-${motifIndexKey(motif)}`"
 								:key="motif"
 								:style="{ opacity: motifOpacity(motif, active) }"
 							>
@@ -82,19 +75,19 @@
 								</slot>
 							</g>
 							<pattern
-								:id="`${patternId}-${active}-${index}`"
+								:id="`${patternId}-${active}`"
 								patternUnits="userSpaceOnUse"
 								:width="tileColumns * settings.columnStep"
 								:height="tileRows * settings.rowStep"
 							>
 								<g
-									v-for="(position, motifIndex) in layer.positions"
+									v-for="(position, motifIndex) in positions"
 									:key="motifIndex"
 									:transform="`translate(${position.x} ${position.y})`"
-									:filter="`url(#${patternId}-shadow-${active}-${index})`"
+									:filter="`url(#${patternId}-shadow-${active})`"
 								>
 									<use
-										:href="`#${patternId}-material-${active}-${index}-${motifIndexKey(position.motif)}`"
+										:href="`#${patternId}-material-${active}-${motifIndexKey(position.motif)}`"
 									/>
 								</g>
 							</pattern>
@@ -102,7 +95,7 @@
 						<rect
 							width="100%"
 							height="100%"
-							:fill="`url(#${patternId}-${active}-${index})`"
+							:fill="`url(#${patternId}-${active})`"
 						/>
 					</svg>
 				</div>
@@ -118,7 +111,6 @@ import {
 	calculateCardAppearance,
 	CARD_PATTERN_REFERENCE_SIZE,
 	CARD_APPEARANCE_SAMPLE_SIZE,
-	CARD_SELECTION_DIM,
 	type CardPatternOptions,
 } from './cardPattern'
 import type { CardAppearanceProfile } from '~/shared/types/card-appearance'
@@ -126,13 +118,11 @@ import type { CardAppearanceProfile } from '~/shared/types/card-appearance'
 interface Props {
 	focusActive?: boolean
 	motifs: readonly string[]
-	selectedMotif?: string
 	options?: CardPatternOptions
 	profiles: Readonly<Record<string, CardAppearanceProfile>>
 }
 
 const props = withDefaults(defineProps<Props>(), {
-	selectedMotif: '',
 	focusActive: true,
 	options: () => ({}),
 })
@@ -142,11 +132,6 @@ interface TilePosition {
 	motif: string
 	x: number
 	y: number
-}
-
-interface MotifLayer {
-	motif: string
-	positions: TilePosition[]
 }
 
 const colorMode = useColorMode()
@@ -195,15 +180,8 @@ const appearances = computed(() =>
 	),
 )
 const motifOpacity = (motif: string, active: boolean) => {
-	const selected = motif === props.selectedMotif
 	const values = appearances.value[motif]![theme.value]!
-	return selected
-		? active
-			? values.activeSelectedOpacity
-			: values.selectedOpacity
-		: active
-			? values.activeOpacity
-			: values.opacity
+	return active ? values.activeOpacity : values.opacity
 }
 const motifIndexKey = (motif: string) => props.motifs.indexOf(motif)
 const patternId = useId()
@@ -222,10 +200,9 @@ const tileColumns = computed(() =>
 			? tileRows.value
 			: tileRows.value * 2,
 )
-// 只有选中高亮需要分层；等权素材合并为一层，避免图标增多时增加合成层。
-const hasSelection = computed(() => Boolean(props.selectedMotif))
-const layers = computed<MotifLayer[]>(() => {
-	const motifLayers = props.motifs.map((motif, motifIndex) => {
+// 所有素材等权，合并为一个平铺层，不随素材数量增加合成层。
+const positions = computed<TilePosition[]>(() =>
+	props.motifs.flatMap((motif, motifIndex) => {
 		const positions: TilePosition[] = []
 		const addPosition = (column: number, row: number) => {
 			const x =
@@ -258,17 +235,9 @@ const layers = computed<MotifLayer[]>(() => {
 				addPosition(column, row)
 			}
 		}
-		return { motif, positions }
-	})
-	return hasSelection.value
-		? motifLayers
-		: [
-				{
-					motif: 'combined',
-					positions: motifLayers.flatMap((layer) => layer.positions),
-				},
-			]
-})
+		return positions
+	}),
+)
 const background = ref<HTMLElement | null>(null)
 const visible = ref(false)
 const pageHidden = ref(false)
