@@ -7,7 +7,8 @@
 			"title": "安達としまむら 9",
 			"author": ["入間人間", "柚原もけ"],
 			"category": "adashima",
-			"href": "https://bgm.tv/subject/698438"
+			"href": "https://bgm.tv/subject/698438",
+			"releaseDate": "2026-10-27"
 		},
 		{
 			"id": "bgm-625665",
@@ -15,7 +16,8 @@
 			"title": "安達としまむら 8",
 			"author": ["入間人間", "柚原もけ"],
 			"category": "adashima",
-			"href": "https://bgm.tv/subject/625665"
+			"href": "https://bgm.tv/subject/625665",
+			"releaseDate": "2026-04-10"
 		},
 		{
 			"id": "bgm-560445",
@@ -23,7 +25,8 @@
 			"title": "安達としまむら 7",
 			"author": ["入間人間", "柚原もけ"],
 			"category": "adashima",
-			"href": "https://bgm.tv/subject/560445"
+			"href": "https://bgm.tv/subject/560445",
+			"releaseDate": "2025-06-27"
 		},
 		{
 			"id": "bgm-604826",
@@ -31,7 +34,8 @@
 			"title": "超かぐや姫！",
 			"author": ["山下清悟"],
 			"category": "kaguya",
-			"href": "https://bgm.tv/subject/604826"
+			"href": "https://bgm.tv/subject/604826",
+			"releaseDate": "2026-01-22"
 		},
 		{
 			"id": "bgm-216371",
@@ -39,7 +43,8 @@
 			"title": "リズと青い鳥",
 			"author": ["武田綾乃", "山田尚子"],
 			"category": "liz",
-			"href": "https://bgm.tv/subject/216371"
+			"href": "https://bgm.tv/subject/216371",
+			"releaseDate": "2018-04-21"
 		},
 		{
 			"id": "bgm-666005",
@@ -47,7 +52,8 @@
 			"title": "安達としまむら SS3",
 			"author": ["入間人間"],
 			"category": "adashima",
-			"href": "https://bgm.tv/subject/666005"
+			"href": "https://bgm.tv/subject/666005",
+			"releaseDate": "2026-09-10"
 		}
 	]
 }

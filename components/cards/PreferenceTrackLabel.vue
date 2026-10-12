@@ -60,13 +60,13 @@
 		</button>
 		<template #content>
 			<div
-				class="w-max min-w-40 max-w-[min(14rem,calc(100vw-2rem))] space-y-1.5 p-3 text-left"
+				class="w-max min-w-40 max-w-[min(14rem,calc(100vw-2rem))] space-y-0.5 px-3 py-2 text-left"
 			>
 				<a
 					:href="work.href"
 					target="_blank"
 					rel="noopener noreferrer"
-					class="block break-words rounded-sm text-sm leading-5 font-semibold text-slate-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 dark:text-slate-200"
+					class="block break-words rounded-sm text-base leading-5 font-semibold text-slate-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 dark:text-slate-200"
 				>
 					{{ work.title }}
 					<UIcon
@@ -75,8 +75,15 @@
 						class="ml-1 inline-block size-3.5 align-middle text-slate-500 dark:text-slate-400"
 					/>
 				</a>
+				<time
+					v-if="work.releaseDate"
+					:datetime="work.releaseDate"
+					class="block text-xs leading-4 tabular-nums text-slate-500 dark:text-slate-400"
+				>
+					{{ work.releaseDate }}
+				</time>
 				<p
-					class="break-words text-xs leading-5 text-slate-500 dark:text-slate-400"
+					class="break-words text-xs leading-4 text-slate-500 dark:text-slate-400"
 				>
 					{{ work.author.join(' / ') }}
 				</p>
