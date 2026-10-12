@@ -1,0 +1,59 @@
+/** 十秒是最小展示窗口；作品名可以延长窗口，后台时间不消耗阅读时间。 */
+export const usePreferenceRotation = (advance: () => void | Promise<void>) => {
+	let timer: ReturnType<typeof setTimeout> | undefined
+	let mounted = false
+	let baseline = 0
+	let readingDeadline = 0
+	let pausedRemaining = 10_000
+	let advancing = false
+	const schedule = () => {
+		if (timer !== undefined) clearTimeout(timer)
+		if (!mounted || document.hidden || advancing) return
+		timer = setTimeout(
+			async () => {
+				advancing = true
+				readingDeadline = 0
+				try {
+					await advance()
+				} finally {
+					advancing = false
+					baseline = Date.now() + 10_000
+					pausedRemaining = 10_000
+					schedule()
+				}
+			},
+			Math.max(0, Math.max(baseline, readingDeadline) - Date.now()),
+		)
+	}
+	const deferFor = (duration: number) => {
+		if (!Number.isFinite(duration) || duration < 0) return
+		readingDeadline = Date.now() + duration
+		if (document.hidden) pausedRemaining = Math.max(pausedRemaining, duration)
+		schedule()
+	}
+	const syncVisibility = () => {
+		if (document.hidden) {
+			pausedRemaining = Math.max(
+				0,
+				Math.max(baseline, readingDeadline) - Date.now(),
+			)
+			if (timer !== undefined) clearTimeout(timer)
+		} else {
+			baseline = Date.now() + pausedRemaining
+			readingDeadline = 0
+			schedule()
+		}
+	}
+	onMounted(() => {
+		mounted = true
+		baseline = Date.now() + 10_000
+		document.addEventListener('visibilitychange', syncVisibility)
+		schedule()
+	})
+	onBeforeUnmount(() => {
+		mounted = false
+		if (timer !== undefined) clearTimeout(timer)
+		document.removeEventListener('visibilitychange', syncVisibility)
+	})
+	return deferFor
+}

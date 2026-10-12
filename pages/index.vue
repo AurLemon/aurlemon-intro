@@ -60,7 +60,10 @@
 
 		<!-- 信息卡片 -->
 		<div class="mt-16 pb-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
-			<div class="group/education relative">
+			<div
+				class="group/education relative"
+				:class="{ 'z-10': isEducationMenuOpen }"
+			>
 				<InfoCard
 					:content-key="`${locale}-${selectedEducationStage}`"
 					animated-title
@@ -68,7 +71,8 @@
 					<template #background>
 						<EducationCardBackground
 							:badges="educationBackgroundBadges"
-							:selected-badge="String(currentEducationLogo)"
+							:profiles="educationAppearanceProfiles"
+							:menu-open="isEducationMenuOpen"
 						/>
 					</template>
 					<template #logo>
@@ -105,6 +109,8 @@
 								{{ $t('main.index.card.education.type') }}
 							</span>
 							<UPopover
+								v-model:open="isEducationMenuOpen"
+								:portal="false"
 								:popper="{ placement: 'bottom-end' }"
 								:ui="{ content: 'z-[40000]' }"
 							>
@@ -170,54 +176,110 @@
 				</InfoCard>
 			</div>
 
-			<InfoCard :background-src="techBg" :darkInvert="true">
+			<InfoCard>
+				<template #background><TechnologyCardBackground /></template>
 				<template #logo>
-					<SkeletonImage
-						:src="techCoverUrl"
-						:alt="$t('main.index.card.tech.title')"
-						class="block h-full w-full"
-						image-class="block h-full w-full rounded-lg object-cover"
-						skeleton-class="rounded-lg"
-					/>
+					<div class="flex h-full w-full items-center justify-center">
+						<SkeletonImage
+							:src="techCoverUrl"
+							:alt="$t('main.index.card.tech.title')"
+							class="block h-16 w-16"
+							image-class="block h-full w-full rounded-lg object-cover"
+							skeleton-class="rounded-lg"
+						/>
+					</div>
 				</template>
 				<template #title>{{ $t('main.index.card.tech.title') }}</template>
 				<template #subtitle>{{ $t('main.index.card.tech.subtitle') }}</template>
 				<template #type>{{ $t('main.index.card.tech.type') }}</template>
 			</InfoCard>
 
-			<InfoCard :background-src="acgPreferenceBg">
+			<InfoCard smooth-width>
+				<template #background
+					><ImageCardBackground
+						:atlas="acgBackgroundAtlas"
+						:options="{
+							density: 0.7,
+							blurLevel: 'clear',
+							strengthLevel: 'distinct',
+						}"
+				/></template>
 				<template #logo>
-					<SkeletonImage
-						:src="acgPreferenceCover"
-						:alt="$t('main.index.card.acg.title')"
-						class="block h-full w-full"
-						image-class="block h-full w-full rounded-lg object-cover"
-						skeleton-class="rounded-lg"
-					/>
+					<AcgCardCover :covers="acgCovers" :alt="acgCurrent.title" />
 				</template>
 				<template #title>{{ $t('main.index.card.acg.title') }}</template>
-				<template #subtitle>{{ $t('main.index.card.acg.subtitle') }}</template>
-				<template #type>{{ $t('main.index.card.acg.type') }}</template>
+				<template #subtitle>
+					<Transition name="preference-text" mode="out-in">
+						<span :key="`${acgCurrent.id}:${locale}`" class="inline-block">{{
+							t(
+								`main.index.card.acg.categories.${acgCurrent.category}.subtitle`,
+							)
+						}}</span>
+					</Transition>
+				</template>
+				<template #type>
+					<div
+						class="flex min-w-0 max-w-full items-center justify-center gap-1 px-4"
+					>
+						<span class="shrink-0">{{ $t('main.index.card.acg.type') }}</span>
+						<Transition name="preference-label" mode="out-in">
+							<PreferenceTrackLabel
+								:key="`${acgCurrent.id}:${locale}`"
+								:label="acgCurrent.title"
+								@read-window="deferAcg"
+							/>
+						</Transition>
+					</div>
+				</template>
 			</InfoCard>
 
-			<InfoCard :background-src="musicPreferenceBg">
+			<InfoCard smooth-width>
+				<template #background
+					><ImageCardBackground
+						:atlas="musicBackgroundAtlas"
+						:image-width="0.62"
+						:options="{
+							density: 0.7,
+							rowStep: 0.74,
+							layout: 'catalog',
+							blurLevel: 'clear',
+							strengthLevel: 'distinct',
+						}"
+				/></template>
 				<template #logo>
-					<SkeletonImage
-						:src="musicPreferenceCover"
-						:alt="$t('main.index.card.music.title')"
-						class="block h-full w-full rounded-lg border border-slate-300/60"
-						image-class="block h-full w-full rounded-lg object-cover"
-						skeleton-class="rounded-lg"
+					<MusicCardCover
+						:cover="musicCover"
+						:alt="`${musicCover.title} — ${musicCover.author.join(' / ')}`"
 					/>
 				</template>
 				<template #title>{{ $t('main.index.card.music.title') }}</template>
-				<template #subtitle>{{
-					$t('main.index.card.music.subtitle')
-				}}</template>
-				<template #type>{{ $t('main.index.card.music.type') }}</template>
+				<template #subtitle>
+					<Transition name="preference-slide" mode="out-in">
+						<span :key="`${musicCover.id}:${locale}`" class="inline-block">{{
+							musicSubtitle
+						}}</span>
+					</Transition>
+				</template>
+				<template #type>
+					<div
+						class="flex min-w-0 max-w-full items-center justify-center gap-1 px-4"
+					>
+						<span class="shrink-0">{{ $t('main.index.card.music.type') }}</span>
+						<Transition name="preference-label" mode="out-in">
+							<PreferenceTrackLabel
+								:key="`${musicCover.id}:${locale}`"
+								:label="`${t(`${musicCategoryKey}.title`)} / ${musicSongTitle}`"
+								@read-window="deferMusic"
+							/>
+						</Transition>
+					</div>
+				</template>
 			</InfoCard>
 
-			<InfoCard :background-src="onlineBg" :darkInvert="true">
+			<InfoCard>
+				<template #background
+					><PersonalCardBackground theme="night"
+				/></template>
 				<template #logo>
 					<SkeletonImage
 						:src="onlineCoverUrl"
@@ -267,19 +329,32 @@
 				<template #type>{{ $t('main.index.card.online.type') }}</template>
 			</InfoCard>
 
-			<InfoCard
-				:background-src="languageAbilityBg"
-				:darkInvert="true"
-				:backgroundBlur="2"
-			>
+			<InfoCard>
+				<template #background
+					><PersonalCardBackground theme="language"
+				/></template>
 				<template #logo>
-					<SkeletonImage
-						:src="languageAbilityCover"
-						:alt="$t('main.index.card.language.title')"
-						class="block h-full w-full rounded-lg border border-slate-300/60 bg-slate-200/60 backdrop-blur-xl dark:border-slate-800/60 dark:bg-slate-800/60"
-						image-class="block h-full w-full rounded-lg object-cover"
-						skeleton-class="rounded-lg"
-					/>
+					<div
+						class="relative h-full w-full overflow-hidden rounded-lg border border-slate-300/60 bg-slate-200/60 select-none backdrop-blur-xl dark:border-slate-800/60 dark:bg-slate-800/60"
+						role="img"
+						:aria-label="$t('main.index.card.language.title')"
+					>
+						<span
+							class="absolute left-1/8 bottom-2.5 -translate-x-1/2 text-[38px] leading-none"
+							aria-hidden="true"
+							>🇯🇵</span
+						>
+						<span
+							class="absolute left-1/2 bottom-2.5 -translate-x-1/2 text-[46px] leading-none"
+							aria-hidden="true"
+							>🇺🇸</span
+						>
+						<span
+							class="absolute left-5/6 bottom-1.5 -translate-x-1/2 text-[64px] leading-none"
+							aria-hidden="true"
+							>🇨🇳</span
+						>
+					</div>
 				</template>
 				<template #title>{{ $t('main.index.card.language.title') }}</template>
 				<template #subtitle>{{
@@ -295,29 +370,58 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import InfoCard from '~/components/cards/InfoCard.vue'
+import { useAcgPreference } from '~/composables/useAcgPreference'
 import EducationCardBackground from '~/components/cards/EducationCardBackground.vue'
+import TechnologyCardBackground from '~/components/cards/TechnologyCardBackground.vue'
+import PersonalCardBackground from '~/components/cards/PersonalCardBackground.vue'
+import ImageCardBackground from '~/components/cards/ImageCardBackground.vue'
 import HighlightText from '~/components/common/HighlightText.vue'
 
 import avatarMark from '~/assets/resources/sitemark/avatar_mark.webp'
-import FPMSLogo from '~/assets/resources/school_badge/FPMS.webp?w=320&q=90&thumbnail'
-import FEESLogo from '~/assets/resources/school_badge/FEES.webp?w=320&q=90&thumbnail'
-import FJCCCLogo from '~/assets/resources/school_badge/FJCCC.webp?w=320&q=90&thumbnail'
-import FJUTLogo from '~/assets/resources/school_badge/FJUT.webp?w=320&q=90&thumbnail'
+import FPMSLogo from '~/assets/resources/homepage/education/fpms.webp?w=320&q=90&thumbnail'
+import FPMSAppearance from '~/assets/resources/homepage/education/fpms.webp?appearance'
+import FEESLogo from '~/assets/resources/homepage/education/fees.webp?w=320&q=90&thumbnail'
+import FEESAppearance from '~/assets/resources/homepage/education/fees.webp?appearance'
+import FJCCCLogo from '~/assets/resources/homepage/education/fjccc.webp?w=320&q=90&thumbnail'
+import FJCCCAppearance from '~/assets/resources/homepage/education/fjccc.webp?appearance'
+import FJUTLogo from '~/assets/resources/homepage/education/fjut.webp?w=320&q=90&thumbnail'
+import FJUTAppearance from '~/assets/resources/homepage/education/fjut.webp?appearance'
 
-import techCoverUrl from '~/assets/resources/homepage/tech_cover.svg?url'
-import techBg from '~/assets/resources/homepage/tech_bg.webp'
-import acgPreferenceBg from '~/assets/resources/homepage/acg_preference_bg.webp'
-import acgPreferenceCover from '~/assets/resources/homepage/acg_preference_cover.webp'
-import musicPreferenceBg from '~/assets/resources/homepage/music_preference_bg.webp'
-import musicPreferenceCover from '~/assets/resources/homepage/music_preference_cover.webp'
-import onlineBg from '~/assets/resources/homepage/online_bg.webp'
-import onlineCoverUrl from '~/assets/resources/homepage/online_cover.svg?url'
-import languageAbilityBg from '~/assets/resources/homepage/language_ability_bg.webp'
-import languageAbilityCover from '~/assets/resources/homepage/language_ability_cover.webp'
+import techCoverUrl from '~/assets/resources/homepage/technology/cover.svg?url'
+import acgBackgroundAtlas from '~/assets/resources/homepage/acg/background.card-atlas.json?atlas'
+import AcgCardCover from '~/components/cards/AcgCardCover.vue'
+import musicBackgroundAtlas from '~/assets/resources/homepage/music/background.card-atlas.json?atlas'
+import MusicCardCover from '~/components/cards/MusicCardCover.vue'
+import onlineCoverUrl from '~/assets/resources/homepage/night/cover.svg?url'
 
 type EducationStage = 'bachelor' | 'specialty' | 'highSchool' | 'juniorSchool'
 
-const { t, te, locale } = useI18n({ useScope: 'global' })
+const { t, te, tm, locale } = useI18n({ useScope: 'global' })
+const {
+	covers: acgCovers,
+	current: acgCurrent,
+	deferFor: deferAcg,
+} = useAcgPreference()
+const { cover: musicCover, deferFor: deferMusic } = useMusicPreference()
+const musicSongTitle = computed(() =>
+	musicCover.value.category === 'chilichill'
+		? musicCover.value.title.replace(/\s*[(（][^()（）]*[)）]\s*$/u, '')
+		: musicCover.value.title,
+)
+
+const musicCategoryKey = computed(
+	() => `main.index.card.music.categories.${musicCover.value.category}`,
+)
+const musicSubtitle = computed(() => {
+	const subtitles: unknown = tm(`${musicCategoryKey.value}.subtitles`)
+	const count = Array.isArray(subtitles) ? subtitles.length : 1
+	// 按封面分配发癫文案，SSR、hydration 和即时语言切换使用同一索引。
+	const seed = [...musicCover.value.id].reduce(
+		(total, character) => total + character.charCodeAt(0),
+		0,
+	)
+	return t(`${musicCategoryKey.value}.subtitles.${seed % Math.max(1, count)}`)
+})
 
 const profile = usePersonalProfile()
 const introductionLine2 = computed(() => {
@@ -361,6 +465,7 @@ const selectedEducationStage = useState<EducationStage>(
 	() => 'bachelor',
 )
 const hasEducationLogoSettled = ref(false)
+const isEducationMenuOpen = ref(false)
 const hoveredOnlineLink = ref<number | null>(null)
 
 const educationLogos: Record<EducationStage, any> = {
@@ -393,6 +498,12 @@ const currentEducationLogoIsComponent = computed(
 	() => typeof currentEducationLogo.value !== 'string',
 )
 const educationBackgroundBadges = [FPMSLogo, FJUTLogo, FEESLogo, FJCCCLogo]
+const educationAppearanceProfiles = {
+	[FPMSLogo]: FPMSAppearance,
+	[FJUTLogo]: FJUTAppearance,
+	[FEESLogo]: FEESAppearance,
+	[FJCCCLogo]: FJCCCAppearance,
+}
 
 const isLogoComponent = (logo: any) => typeof logo !== 'string'
 
@@ -412,3 +523,66 @@ const onlineLinkClass = (index: number) => [
 			: ONLINE_LINK_DIM_CLASS,
 ]
 </script>
+
+<style scoped>
+.preference-label-enter-active,
+.preference-label-leave-active {
+	transition: opacity 220ms ease;
+}
+.preference-label-enter-from,
+.preference-label-leave-to {
+	opacity: 0;
+}
+.preference-slide-enter-active,
+.preference-slide-leave-active {
+	transition:
+		opacity 300ms ease,
+		filter 300ms ease,
+		transform 300ms ease;
+}
+.preference-slide-enter-from {
+	opacity: 0;
+	filter: blur(4px);
+	transform: translateX(-12px);
+}
+.preference-slide-leave-to {
+	opacity: 0;
+	filter: blur(4px);
+	transform: translateX(12px);
+}
+@media (prefers-reduced-motion: reduce) {
+	.preference-label-enter-active,
+	.preference-label-leave-active,
+	.preference-slide-enter-active,
+	.preference-slide-leave-active {
+		transition: none;
+	}
+	.preference-slide-enter-from,
+	.preference-slide-leave-to {
+		transform: none;
+		filter: none;
+	}
+}
+
+.preference-text-enter-active,
+.preference-text-leave-active {
+	transition:
+		opacity 220ms ease,
+		filter 220ms ease;
+}
+.preference-text-enter-from,
+.preference-text-leave-to {
+	opacity: 0;
+	filter: blur(4px);
+}
+@media (prefers-reduced-motion: reduce) {
+	.preference-text-enter-active,
+	.preference-text-leave-active {
+		transition: none;
+	}
+	.preference-text-enter-from,
+	.preference-text-leave-to {
+		filter: none;
+	}
+}
+</style>

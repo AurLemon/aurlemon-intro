@@ -1,11 +1,15 @@
-import { computed, ref, type Ref } from 'vue'
-import type { Options } from 'motion-v'
+import { computed, onBeforeUnmount, ref, type Ref } from 'vue'
 
 interface PillBounds {
 	x: number
 	y: number
 	width: number
 	height: number
+}
+
+interface MenuPointerSample {
+	clientX: number
+	clientY: number
 }
 
 interface MenuGesture {
@@ -34,69 +38,74 @@ export const usePageMenuPreview = ({
 	const selectedPill = ref<PillBounds | null>(null)
 	const previewPill = ref<PillBounds | null>(null)
 	const previewOrigin = ref<PillBounds | null>(null)
-	const previewSession = ref(0)
+
 	const menuPressed = ref(false)
 	let menuGesture: MenuGesture | null = null
 	let suppressGestureClick = false
 	let previewLink: HTMLElement | null = null
+	let geometry = new Map<HTMLElement, PillBounds>()
+	let innerWidth = 0
+	let previewRaf = 0
+	let pointerSample: MenuPointerSample | null = null
 
-	const pillTransition = computed(() =>
-		prefersReducedMotion.value
-			? { duration: 0 }
-			: {
-					type: 'spring' as const,
-					stiffness: 260,
-					damping: 25,
-					mass: 1,
-					opacity: { duration: 0.12 },
-					width: {
-						type: 'tween' as const,
-						duration: 0.22,
-						ease: 'easeOut' as const,
-					},
-					height: { duration: 0 },
-				},
+	const measureGeometry = () => {
+		const inner = menuInner.value
+		innerWidth = inner?.offsetWidth ?? 0
+		geometry = new Map()
+		if (!inner || !innerWidth) return
+		for (const link of inner.querySelectorAll<HTMLElement>(
+			'[data-menu-link]',
+		)) {
+			geometry.set(link, {
+				x: link.offsetLeft + 1,
+				y: link.offsetTop + 4,
+				width: Math.max(0, link.offsetWidth - 2),
+				height: Math.max(0, link.offsetHeight - 8),
+			})
+		}
+	}
+
+	const pillStyle = (
+		bounds: PillBounds | null,
+		visible: boolean,
+		scale = 1,
+	) => ({
+		width: `${bounds?.width ?? 0}px`,
+		height: `${bounds?.height ?? 0}px`,
+		transform: `translate3d(${bounds?.x ?? 0}px, ${bounds?.y ?? 0}px, 0) scale(${scale})`,
+		opacity: visible ? 1 : 0,
+	})
+	const selectedPillStyle = computed(() =>
+		pillStyle(selectedPill.value, !!selectedPill.value),
 	)
-	const selectedPillMotion = computed<Options>(() => ({
-		initial: false,
-		animate: { ...selectedPill.value, opacity: selectedPill.value ? 1 : 0 },
-		transition: pillTransition.value,
-	}))
-	const previewTransition = computed(() =>
-		prefersReducedMotion.value
-			? { duration: 0 }
-			: {
-					type: 'spring' as const,
-					stiffness: 360,
-					damping: 34,
-					mass: 0.9,
-					opacity: { duration: 0.18, ease: 'easeOut' as const },
-				},
+	const previewPillStyle = computed(() =>
+		pillStyle(
+			previewPill.value ?? previewOrigin.value,
+			!!previewPill.value,
+			prefersReducedMotion.value
+				? 1
+				: previewPill.value
+					? menuPressed.value
+						? 0.985
+						: 1
+					: 0.97,
+		),
 	)
 
 	const showPreview = (bounds: PillBounds, origin = bounds) => {
 		if (!previewPill.value) {
 			previewOrigin.value = origin
-			previewSession.value += 1
 		}
 		previewPill.value = bounds
 	}
 
 	const getPillBounds = (link: HTMLElement): PillBounds | null => {
-		const inner = menuInner.value
-		if (!inner || !inner.offsetWidth) return null
-		const parent = inner.getBoundingClientRect()
-		const bounds = link.getBoundingClientRect()
-		const scale = parent.width / inner.offsetWidth || 1
-		return {
-			x: (bounds.left - parent.left) / scale + 1,
-			y: (bounds.top - parent.top) / scale + 4,
-			width: Math.max(0, bounds.width / scale - 2),
-			height: Math.max(0, bounds.height / scale - 8),
-		}
+		if (!geometry.size) measureGeometry()
+		return geometry.get(link) ?? null
 	}
 
 	const syncPills = () => {
+		measureGeometry()
 		const active = menuInner.value?.querySelector<HTMLElement>(
 			'[data-menu-link][aria-current="page"]',
 		)
@@ -107,12 +116,16 @@ export const usePageMenuPreview = ({
 	}
 
 	const clearPreview = () => {
+		if (previewRaf) cancelAnimationFrame(previewRaf)
+		previewRaf = 0
+		pointerSample = null
+		if (previewPill.value) previewOrigin.value = previewPill.value
 		previewLink = null
 		previewPill.value = null
 		menuPressed.value = false
 	}
 
-	const previewAtPointer = (event: PointerEvent) => {
+	const previewAtPointer = (event: MenuPointerSample) => {
 		const viewport = menuViewport.value
 		if (!viewport) return
 		const area = viewport.getBoundingClientRect()
@@ -125,25 +138,24 @@ export const usePageMenuPreview = ({
 			clearPreview()
 			return
 		}
-		const links = [
-			...viewport.querySelectorAll<HTMLElement>('[data-menu-link]'),
-		]
+		if (!geometry.size) measureGeometry()
+		const links = [...geometry.keys()]
+		const inner = menuInner.value
+		if (!inner || !innerWidth) return
+		const parent = inner.getBoundingClientRect()
+		const scale = parent.width / innerWidth || 1
+		const pointerX = (event.clientX - parent.left) / scale
 		const link = links.reduce<HTMLElement | null>((closest, item) => {
-			const center = (el: HTMLElement) => {
-				const box = el.getBoundingClientRect()
-				return Math.abs(event.clientX - (box.left + box.width / 2))
+			const distance = (el: HTMLElement) => {
+				const bounds = geometry.get(el)!
+				return Math.abs(pointerX - (bounds.x + bounds.width / 2))
 			}
-			return !closest || center(item) < center(closest) ? item : closest
+			return !closest || distance(item) < distance(closest) ? item : closest
 		}, null)
 		if (!link) return
 		previewLink = link
 		const bounds = getPillBounds(link)
 		if (!bounds) return
-		const inner = menuInner.value
-		if (!inner) return
-		const parent = inner.getBoundingClientRect()
-		const scale = parent.width / inner.offsetWidth || 1
-		const pointerX = (event.clientX - parent.left) / scale
 		// Blend nearby item centres continuously instead of snapping at their midpoint.
 		let weightSum = 0
 		let centreSum = 0
@@ -164,20 +176,30 @@ export const usePageMenuPreview = ({
 		const centre = prefersReducedMotion.value
 			? bounds.x + bounds.width / 2
 			: pointerX * 0.65 + (weightSum ? centreSum / weightSum : pointerX) * 0.35
-		const x = Math.max(
-			1,
-			Math.min(inner.offsetWidth - width - 1, centre - width / 2),
-		)
+		const x = Math.max(1, Math.min(innerWidth - width - 1, centre - width / 2))
 		const originX = Math.max(
 			1,
-			Math.min(inner.offsetWidth - width - 1, pointerX - width / 2),
+			Math.min(innerWidth - width - 1, pointerX - width / 2),
 		)
 		showPreview({ ...bounds, width, x }, { ...bounds, width, x: originX })
 	}
 
+	// Pointermove may arrive several times per frame; read geometry and publish once.
+	const schedulePreview = (event: PointerEvent) => {
+		pointerSample = { clientX: event.clientX, clientY: event.clientY }
+		if (previewRaf) return
+		previewRaf = requestAnimationFrame(() => {
+			previewRaf = 0
+			if (pointerSample) previewAtPointer(pointerSample)
+			pointerSample = null
+		})
+	}
+	onBeforeUnmount(() => {
+		if (previewRaf) cancelAnimationFrame(previewRaf)
+	})
+
 	const onPreviewPointerEnter = (event: PointerEvent) => {
-		if (event.isPrimary && event.pointerType !== 'touch')
-			previewAtPointer(event)
+		if (event.isPrimary && event.pointerType !== 'touch') schedulePreview(event)
 	}
 
 	const onPreviewPointerDown = (event: PointerEvent) => {
@@ -213,7 +235,7 @@ export const usePageMenuPreview = ({
 				menuViewport.value.scrollLeft = menuGesture.scrollLeft - delta
 			}
 		}
-		previewAtPointer(event)
+		schedulePreview(event)
 	}
 
 	const onPreviewPointerUp = (event: PointerEvent) => {
@@ -256,11 +278,10 @@ export const usePageMenuPreview = ({
 	}
 
 	return {
-		selectedPillMotion,
+		selectedPillStyle,
+		previewPillStyle,
 		previewPill,
 		previewOrigin,
-		previewSession,
-		previewTransition,
 		menuPressed,
 		syncPills,
 		clearPreview,

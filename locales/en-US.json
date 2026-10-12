@@ -1,7 +1,13 @@
 {
 	"header": {
 		"siteName": "AurLemon Intro",
-		"switchLanguage": "Switch language"
+		"switchLanguage": "Switch language",
+		"theme": {
+			"label": "Theme mode",
+			"light": "Light",
+			"dark": "Dark",
+			"system": "System"
+		}
 	},
 	"localeNotice": {
 		"title": "Your system language looks like {targetLanguage}",
@@ -120,18 +126,53 @@
 				},
 				"tech": {
 					"title": "Full-stack",
-					"subtitle": "TypeScript / Web / DevOps",
+					"subtitle": "TypeScript / Node.js / DevOps",
 					"type": "Focus"
 				},
 				"acg": {
 					"title": "GIRL LOVE",
-					"subtitle": "Soft & cute",
-					"type": "Taste"
+					"type": "Taste",
+					"categories": {
+						"adashima": {
+							"subtitle": "AdaShima forever"
+						},
+						"liz": {
+							"subtitle": "Blue bird supremacy"
+						},
+						"kaguya": {
+							"subtitle": "Kaguya supremacy"
+						}
+					}
 				},
 				"music": {
-					"title": "J-POP & Voca",
-					"subtitle": "Yorushika + Zutomayo",
-					"type": "Music"
+					"type": "Music",
+					"categories": {
+						"yorushika": {
+							"title": "ヨルシカ",
+							"subtitles": ["I love n-buna"]
+						},
+						"zuttomayo": {
+							"title": "ずっとまよ",
+							"subtitles": ["I love ACAね"]
+						},
+						"chilichill": {
+							"title": "ChiliChill",
+							"subtitles": ["Qiliqiao is god"]
+						},
+						"vocaloid": {
+							"title": "Vocaloid",
+							"subtitles": ["I am Hatsune Miku"]
+						},
+						"chineseVocaloid": {
+							"title": "Chinese Vocaloid",
+							"subtitles": ["I am Luo Tianyi"]
+						},
+						"cnCreators": {
+							"title": "Chinese Vocaloid Creators",
+							"subtitles": ["I am on my knees"]
+						}
+					},
+					"title": "J-POP & Voca"
 				},
 				"online": {
 					"title": "Night owl",

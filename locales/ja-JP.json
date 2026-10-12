@@ -1,7 +1,13 @@
 {
 	"header": {
 		"siteName": "AurLemon Intro",
-		"switchLanguage": "言語を切り替え"
+		"switchLanguage": "言語を切り替え",
+		"theme": {
+			"label": "テーマ",
+			"light": "ライト",
+			"dark": "ダーク",
+			"system": "システム設定"
+		}
 	},
 	"localeNotice": {
 		"title": "システム言語は {targetLanguage} のようです",
@@ -99,7 +105,7 @@
 							"label": "専科",
 							"title": "福建船政交通職業学院",
 							"subtitle": "2024 - 2026",
-							"hint": "",
+							"hint": "短大相当",
 							"shortTitle": "船政交通学院"
 						},
 						"highSchool": {
@@ -120,18 +126,53 @@
 				},
 				"tech": {
 					"title": "フルスタック",
-					"subtitle": "TypeScript / Web / DevOps",
+					"subtitle": "TypeScript / Node.js / DevOps",
 					"type": "技術"
 				},
 				"acg": {
 					"title": "GIRL LOVE",
-					"subtitle": "やさしめ",
-					"type": "趣味"
+					"type": "趣味",
+					"categories": {
+						"adashima": {
+							"subtitle": "安しま、末永く"
+						},
+						"liz": {
+							"subtitle": "青い鳥、最高"
+						},
+						"kaguya": {
+							"subtitle": "超かぐや姫、最高"
+						}
+					}
 				},
 				"music": {
-					"title": "J-POP とボカロ",
-					"subtitle": "ヨルシカ + ずとまよ",
-					"type": "音楽"
+					"type": "音楽",
+					"categories": {
+						"yorushika": {
+							"title": "ヨルシカ",
+							"subtitles": ["n-bunaが大好き"]
+						},
+						"zuttomayo": {
+							"title": "ずっとまよ",
+							"subtitles": ["ACAねが大好き"]
+						},
+						"chilichill": {
+							"title": "ChiliChill",
+							"subtitles": ["七里橋は神"]
+						},
+						"vocaloid": {
+							"title": "Vocaloid",
+							"subtitles": ["私は初音ミク"]
+						},
+						"chineseVocaloid": {
+							"title": "中国語ボカロ",
+							"subtitles": ["私は洛天依"]
+						},
+						"cnCreators": {
+							"title": "中国発ボカロ",
+							"subtitles": ["もうひざまずくしかない"]
+						}
+					},
+					"title": "J-POP とボカロ"
 				},
 				"online": {
 					"title": "夜更かし",

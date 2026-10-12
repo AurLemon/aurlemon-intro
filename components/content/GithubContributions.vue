@@ -80,6 +80,12 @@
 
 				<div
 					ref="calendarScrollRef"
+					@pointerover="onDayPointerOver"
+					@pointerout="onDayPointerOut"
+					@pointerleave="clearDayTooltip"
+					@focusin="onDayFocus"
+					@focusout="clearDayTooltip"
+					@scroll="clearDayTooltip"
 					class="grid grid-flow-col auto-cols-[12px] gap-1 overflow-x-auto py-2"
 				>
 					<div
@@ -91,43 +97,23 @@
 							v-for="(day, dayIndex) in week.contributionDays"
 							:key="day?.date ?? `empty-${weekIndex}-${dayIndex}`"
 						>
-							<UTooltip v-if="day" :delay-duration="50">
-								<span
-									class="block size-3 rounded-[3px] border border-black/5 dark:border-white/10"
-									:class="
-										day.contributionCount <= 0
-											? 'bg-slate-200 dark:bg-slate-700'
-											: ''
-									"
-									:style="
-										day.contributionCount > 0
-											? { backgroundColor: resolveDayColor(day) }
-											: undefined
-									"
-								/>
-
-								<template #content>
-									<div
-										class="flex items-center gap-1.5 text-xs leading-[normal]"
-									>
-										<span class="flex items-center gap-1">
-											<UIcon name="i-lucide-calendar-days" class="size-2.5" />
-											<span class="tabular-nums">{{
-												formatTooltipDate(day.date)
-											}}</span>
-										</span>
-										<span class="flex items-center gap-0.5">
-											<UIcon
-												name="i-lucide-git-commit-horizontal"
-												class="size-2.5"
-											/>
-											<span class="tabular-nums">{{
-												day.contributionCount
-											}}</span>
-										</span>
-									</div>
-								</template>
-							</UTooltip>
+							<span
+								v-if="day"
+								:data-contribution-day="day.date"
+								:aria-label="`${formatTooltipDate(day.date)} ${day.contributionCount}`"
+								tabindex="0"
+								class="block size-3 rounded-[3px] border border-black/5 dark:border-white/10"
+								:class="
+									day.contributionCount <= 0
+										? 'bg-slate-200 dark:bg-slate-700'
+										: ''
+								"
+								:style="
+									day.contributionCount > 0
+										? { backgroundColor: resolveDayColor(day) }
+										: undefined
+								"
+							/>
 
 							<span
 								v-else
@@ -139,6 +125,30 @@
 				</div>
 			</div>
 		</Transition>
+		<UTooltip
+			:reference="activeDayElement ?? undefined"
+			:open="dayTooltipOpen"
+			:disabled="!activeDay"
+			@update:open="dayTooltipOpen = $event"
+		>
+			<template #content>
+				<div
+					v-if="activeDay"
+					class="flex items-center gap-1.5 text-xs leading-[normal]"
+				>
+					<span class="flex items-center gap-1">
+						<UIcon name="i-lucide-calendar-days" class="size-2.5" />
+						<span class="tabular-nums">{{
+							formatTooltipDate(activeDay.date)
+						}}</span>
+					</span>
+					<span class="flex items-center gap-0.5">
+						<UIcon name="i-lucide-git-commit-horizontal" class="size-2.5" />
+						<span class="tabular-nums">{{ activeDay.contributionCount }}</span>
+					</span>
+				</div>
+			</template>
+		</UTooltip>
 	</section>
 </template>
 
@@ -192,6 +202,64 @@ const isPlaceholder = computed(() => calendar.value?.isPlaceholder === true)
 const isLoading = computed(
 	() => pending.value || !calendar.value || isPlaceholder.value,
 )
+
+const activeDay = shallowRef<GithubContributionDay | null>(null)
+const activeDayElement = shallowRef<HTMLElement | null>(null)
+const dayTooltipOpen = ref(false)
+let dayTooltipTimer: ReturnType<typeof setTimeout> | undefined
+const daysByDate = computed(
+	() =>
+		new Map(
+			(calendar.value?.weeks ?? []).flatMap((week) =>
+				week.contributionDays
+					.filter((day) => day !== null)
+					.map((day) => [day.date, day] as const),
+			),
+		),
+)
+const clearDayTooltip = () => {
+	if (dayTooltipTimer) clearTimeout(dayTooltipTimer)
+	dayTooltipTimer = undefined
+	dayTooltipOpen.value = false
+}
+const showDayTooltip = (target: EventTarget | null, delay: number) => {
+	const element =
+		target instanceof HTMLElement
+			? target.closest<HTMLElement>('[data-contribution-day]')
+			: null
+	const day = daysByDate.value.get(element?.dataset.contributionDay ?? '')
+	if (!element || !day) {
+		clearDayTooltip()
+		return
+	}
+	if (
+		activeDayElement.value === element &&
+		(dayTooltipOpen.value || dayTooltipTimer)
+	)
+		return
+	clearDayTooltip()
+	activeDay.value = day
+	activeDayElement.value = element
+	dayTooltipTimer = setTimeout(() => {
+		dayTooltipTimer = undefined
+		dayTooltipOpen.value = true
+	}, delay)
+}
+const onDayPointerOver = (event: PointerEvent) => {
+	if (event.pointerType !== 'touch') showDayTooltip(event.target, 50)
+}
+const onDayPointerOut = (event: PointerEvent) => {
+	const next =
+		event.relatedTarget instanceof HTMLElement
+			? event.relatedTarget.closest('[data-contribution-day]')
+			: null
+	if (next !== activeDayElement.value) clearDayTooltip()
+}
+const onDayFocus = (event: FocusEvent) => showDayTooltip(event.target, 0)
+
+watch(isLoading, (loading) => {
+	if (loading) clearDayTooltip()
+})
 
 let placeholderRefreshTimer: ReturnType<typeof setInterval> | undefined
 
@@ -257,6 +325,9 @@ watch(
 watch(
 	calendar,
 	(value) => {
+		clearDayTooltip()
+		activeDay.value = null
+		activeDayElement.value = null
 		if (!value || value.isPlaceholder) {
 			return
 		}
@@ -267,19 +338,23 @@ watch(
 )
 
 onBeforeUnmount(() => {
+	clearDayTooltip()
 	if (placeholderRefreshTimer) {
 		clearInterval(placeholderRefreshTimer)
 		placeholderRefreshTimer = undefined
 	}
 })
 
-const formatTooltipDate = (isoDate: string): string => {
-	return new Intl.DateTimeFormat(locale.value, {
-		year: 'numeric',
-		month: '2-digit',
-		day: '2-digit',
-	}).format(new Date(isoDate))
-}
+const tooltipDateFormatter = computed(
+	() =>
+		new Intl.DateTimeFormat(locale.value, {
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+		}),
+)
+const formatTooltipDate = (isoDate: string): string =>
+	tooltipDateFormatter.value.format(new Date(isoDate))
 
 const resolveDayColor = (day: GithubContributionDay): string => {
 	const fallback = [

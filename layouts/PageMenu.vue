@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { AnimatePresence, motion, useReducedMotion, vMotion } from 'motion-v'
+import { motion, useReducedMotion, vMotion } from 'motion-v'
 import {
 	usePageMenuNavigation,
 	type MenuItem,
@@ -57,11 +57,8 @@ const {
 } = usePageMenuActiveItem({ menuViewport })
 
 const {
-	selectedPillMotion,
-	previewPill,
-	previewOrigin,
-	previewSession,
-	previewTransition,
+	selectedPillStyle,
+	previewPillStyle,
 	menuPressed,
 	syncPills,
 	clearPreview,
@@ -348,30 +345,16 @@ onBeforeUnmount(() => {
 							class="relative inline-flex w-max flex-none flex-nowrap items-center justify-center gap-1"
 						>
 							<div
-								v-motion="selectedPillMotion"
-								class="pointer-events-none absolute left-0 top-0 rounded-xl bg-menu-highlight/28 dark:bg-menu-highlight/16"
+								:style="selectedPillStyle"
+								class="menu-selected pointer-events-none absolute left-0 top-0 rounded-xl will-change-[transform,opacity] motion-reduce:will-change-auto bg-menu-highlight/28 dark:bg-menu-highlight/16"
 								aria-hidden="true"
 							/>
-							<AnimatePresence>
-								<motion.div
-									v-if="previewPill"
-									:key="previewSession"
-									:initial="{
-										...previewOrigin,
-										opacity: 0,
-										scale: prefersReducedMotion ? 1 : 0.94,
-									}"
-									:animate="{
-										...previewPill,
-										opacity: 1,
-										scale: menuPressed ? 0.985 : 1,
-									}"
-									:exit="{ opacity: 0, scale: prefersReducedMotion ? 1 : 0.97 }"
-									:transition="previewTransition"
-									class="pointer-events-none absolute left-0 top-0 rounded-xl bg-menu-highlight/12 dark:bg-menu-highlight/8"
-									aria-hidden="true"
-								/>
-							</AnimatePresence>
+							<div
+								:style="previewPillStyle"
+								class="menu-preview pointer-events-none absolute left-0 top-0 rounded-xl will-change-[transform,opacity] motion-reduce:will-change-auto bg-menu-highlight/12 dark:bg-menu-highlight/8"
+								aria-hidden="true"
+							/>
+
 							<NuxtLink
 								v-for="item in baseNavItems"
 								:key="item.key"
@@ -414,13 +397,23 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+.menu-selected,
+.menu-preview {
+	transition:
+		transform 380ms cubic-bezier(0.22, 1, 0.36, 1),
+		opacity 180ms ease-out,
+		width 220ms ease-out;
+}
+
 .menu-shell {
 	transform: translateX(-50%);
 	transition: width 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.menu-shell {
+	.menu-shell,
+	.menu-selected,
+	.menu-preview {
 		transition: none;
 	}
 }
