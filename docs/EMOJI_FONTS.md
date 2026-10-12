@@ -13,11 +13,19 @@ pnpm dev
 - `include` / `exclude` 调整扫描范围；`extraEmoji` 可补充不能从源码中扫描出的
   固定运行时内容。不会扫描数据库、接口响应或访问页面来收集字符。
 - 识别完整 Unicode Emoji 序列，并处理 Unicode 转义和数字 HTML 实体。
-  子集化保留 GSUB 布局规则与彩色位图。
+  子集化保留 GSUB 布局规则与彩色位图，并将相同 PNG 嵌入 OpenType SVG。
+  Chromium 使用 CBDT / CBLC；Firefox 可使用 SVG，兼容 Windows / macOS 下
+  不接受纯 CBDT / CBLC 网页字体的字体后端，不依赖浏览器识别或关闭字体校验。
 - 首次生成下载固定版本字体并验证 SHA-256。原字体和子集缓存均在
   `.cache/emoji/`，不进入 Git 或部署产物。
-- Nuxt 生成目录下的 `emoji/emoji.woff2`、`emoji.css`、`manifest.json`
-  分别是字体、字体声明和扫描诊断信息。Vite 将字体打包到客户端资源目录。
+- Nuxt 生成目录下的 `emoji/emoji-bitmap.woff2` 与 `emoji/emoji-svg.woff2`
+  分别是独立的位图版与 SVG 版，`emoji.css` 是字体声明，`manifest.json` 是扫描
+  诊断信息。Vite 将两份字体打包到客户端资源目录。
+- CSS 使用 `tech(color-SVG)` 优先选择 SVG，支持该技术的 Firefox 加载 SVG 版，
+  Chromium 跳过它并加载位图版；正常只请求一份，不使用 JS 或 User-Agent 判断。
+  前置普通 `src` 声明供不识别 `tech()` 的旧浏览器回退到位图版，仍保留系统字体兜底。
+  两份字体共用缓存指纹和字符范围；manifest 中 `bitmapBytes`、`svgBytes` 分别记录
+  两份体积，`subsetBytes` 是两份构建产物的总大小，不是单次字体请求的下载量。
 - 缓存键包含源字体校验值、字体名称、生成器版本和 Emoji 集合。
   只改普通文字不会再次子集化。开发时增加或删除 Emoji 会重新生成并刷新页面。
 - `nuxt prepare` 不下载字体、不生成子集。正式 Build 的下载或生成失败会中止
@@ -27,11 +35,20 @@ pnpm dev
 fontTools 与 Brotli，不需要系统安装 Python；这些依赖仅用于构建。
 采用该方案是因为 `subset-font` 自带的 HarfBuzz WASM 会丢弃此字体的彩色位图表。
 
+`build/emoji-font/compatibility.ts` 在子集化后生成独立 SVG 字体，添加 SVG 所需的
+`glyf` / `loca` 表。使用源位图的 bearing、尺寸和 ppem 换算定位，保留原图像、
+水平度量和 GSUB 组合规则；`.notdef` 提供缺字轮廓，其余字形由彩色表绘制。
+位图版直接保留原子集，SVG 版移除 CBDT / CBLC，SVG 文档启用 gzip，避免同一文件
+重复包含图像。转换仅在构建层执行，产物继续留在已忽略的缓存和 Nuxt 生成目录；
+旧的双格式 `emoji.woff2` 会从当前输出目录清理，不删除旧缓存或源字体。
+
 ## 来源与网络
 
 默认固定 `samuelngs/apple-emoji-ttf` 的 `v18.4` 发布字体。它同时包含
 CBDT / CBLC 彩色表和 GSUB，适用于当前子集流程。较新的 Linux 发布字体
-可能使用 AAT / morx，不能作为可直接互换的输入。
+可能使用 AAT / morx，不能作为可直接互换的输入。SVG 转换要求当前源字体的
+单个位图 strike 和 format 17 PNG / SmallGlyphMetrics，其他布局会中止构建，
+避免更换来源后漏掉字形。
 
 若网络需要代理，可在 `.env` 中设置：
 
@@ -66,3 +83,5 @@ CI 可缓存 `.cache/emoji/`，避免每次重新下载。
 - [Node fontTools 适配器](https://github.com/web-alchemy/fonttools)
 - [fontTools 子集化](https://fonttools.readthedocs.io/en/stable/subset/)
 - [Unicode Emoji 序列识别](https://github.com/mathiasbynens/emoji-regex)
+- [Firefox CBDT / CBLC 平台支持差异](https://bugzilla.mozilla.org/show_bug.cgi?id=1418818)
+- [OpenType SVG 与嵌入 PNG](https://learn.microsoft.com/en-us/typography/opentype/spec/svg)
