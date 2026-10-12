@@ -27,7 +27,9 @@ export async function generateCardAtlas(
 	fit: 'contain' | 'cover' | 'portrait' = 'cover',
 ): Promise<GeneratedCardAtlas> {
 	if (images.length < 2 || images.length > MAX_CARD_ATLAS_IMAGES)
-		throw new Error(`多图图集需要 2–${MAX_CARD_ATLAS_IMAGES} 张图片`)
+		throw new Error(
+			`Multi-image atlases require between 2 and ${MAX_CARD_ATLAS_IMAGES} images`,
+		)
 	const inputs = await Promise.all(images.map((image) => readFile(image.file)))
 	const fingerprint = createHash('sha256').update(
 		JSON.stringify({
@@ -50,7 +52,7 @@ export async function generateCardAtlas(
 		const resized = await Promise.all(
 			inputs.map(async (input) => {
 				if (((await sharp(input).metadata()).pages ?? 1) > 1)
-					throw new Error('卡片图集不支持动画图片')
+					throw new Error('Card atlases do not support animated images')
 				const image = sharp(input).autoOrient()
 				if (fit === 'portrait') image.resize({ width: 112 })
 				else image.resize(TILE_SIZE, TILE_SIZE, { fit, background: '#0000' })
@@ -73,7 +75,8 @@ export async function generateCardAtlas(
 		}))
 		try {
 			const cached = await readFile(file)
-			if (cached.byteLength > MAX_BYTES) throw new Error('图集缓存超过体积预算')
+			if (cached.byteLength > MAX_BYTES)
+				throw new Error('Cached atlas exceeds the size budget')
 			return { file, width, height, regions }
 		} catch {
 			// 未命中缓存时一次生成，原始图片不变。
@@ -95,7 +98,9 @@ export async function generateCardAtlas(
 			.webp({ quality: QUALITY, alphaQuality: 100, effort: 6 })
 			.toBuffer()
 		if (data.byteLength > MAX_BYTES)
-			throw new Error('单张卡片图集超过 200 KiB，请减少图片或压缩素材')
+			throw new Error(
+				'Card atlas exceeds 200 KiB; reduce the number of images or compress the assets',
+			)
 		await mkdir(cacheDirectory, { recursive: true })
 		await writeFile(file, data)
 		return { file, width, height, regions }

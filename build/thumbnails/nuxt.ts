@@ -40,7 +40,9 @@ async function generate(image: Thumbnail) {
 		}
 		const metadata = await sharp(input).metadata()
 		if ((metadata.pages ?? 1) > 1)
-			throw new Error('缩略图只支持静态图片，请直接引用动画资源')
+			throw new Error(
+				'Thumbnails only support static images; reference animated assets directly',
+			)
 		const data = await sharp(input)
 			.autoOrient()
 			.resize({
@@ -71,7 +73,9 @@ function integer(
 ) {
 	const value = Number(params.get(key) ?? fallback)
 	if (!Number.isInteger(value) || value < 1 || value > max)
-		throw new Error(`缩略图参数 ${key} 必须为 1–${max} 的整数`)
+		throw new Error(
+			`Thumbnail parameter ${key} must be an integer between 1 and ${max}`,
+		)
 	return value
 }
 
@@ -90,19 +94,21 @@ export default defineNuxtModule({
 				if (!params.has('thumbnail')) return null
 				for (const key of params.keys())
 					if (!['thumbnail', 'w', 'h', 'q'].includes(key))
-						throw new Error(`不支持的缩略图参数：${key}`)
+						throw new Error(`Unsupported thumbnail parameter: ${key}`)
 				const resolved = await this.resolve(id.slice(0, index), importer, {
 					skipSelf: true,
 				})
 				if (!resolved || resolved.external)
-					throw new Error(`无法解析本地缩略图：${id}`)
+					throw new Error(`Unable to resolve local thumbnail: ${id}`)
 				const source = resolved.id.split('?')[0]!
 				if (
 					!['.png', '.jpg', '.jpeg', '.webp', '.avif'].includes(
 						extname(source).toLowerCase(),
 					)
 				)
-					throw new Error('缩略图仅支持本地 PNG、JPEG、WebP、AVIF 图片')
+					throw new Error(
+						'Thumbnails only support local PNG, JPEG, WebP, and AVIF images',
+					)
 				const width = integer(params, 'w', 320, 4096)
 				const height = integer(params, 'h', width, 4096)
 				const quality = integer(params, 'q', 90, 100)
