@@ -153,7 +153,7 @@
 						},
 						"zuttomayo": {
 							"title": "ずっとまよ",
-							"subtitles": ["我爱ACANE"]
+							"subtitles": ["我爱 ACANE"]
 						},
 						"chilichill": {
 							"title": "ChiliChill",
@@ -164,7 +164,7 @@
 							"subtitles": ["我是初音未来"]
 						},
 						"chineseVocaloid": {
-							"title": "中V",
+							"title": "中 V",
 							"subtitles": ["我是洛天依"]
 						},
 						"cnCreators": {
@@ -185,6 +185,17 @@
 					"title": "中文母语者",
 					"subtitle": "CET-4 / CET-6 / N4",
 					"type": "语言能力"
+				},
+				"navigation": {
+					"profile": "前往{page}了解我的教育经历",
+					"project": "前往{page}查看我的作品",
+					"acg": "前往{page}了解我的 ACG 偏好",
+					"music": "前往{page}了解我的音乐偏好",
+					"pages": {
+						"profile": "自述页",
+						"project": "项目页",
+						"preference": "偏好页"
+					}
 				}
 			}
 		},

@@ -68,6 +68,14 @@
 					:content-key="`${locale}-${selectedEducationStage}`"
 					animated-title
 				>
+					<template #navigation="{ hovered }">
+						<CardNavigationHint
+							:hovered="hovered"
+							to="/profile"
+							label-key="main.index.card.navigation.profile"
+							:page-label="$t('main.index.card.navigation.pages.profile')"
+						/>
+					</template>
 					<template #background>
 						<EducationCardBackground
 							:badges="educationBackgroundBadges"
@@ -177,6 +185,14 @@
 			</div>
 
 			<InfoCard>
+				<template #navigation="{ hovered }">
+					<CardNavigationHint
+						:hovered="hovered"
+						to="/project"
+						label-key="main.index.card.navigation.project"
+						:page-label="$t('main.index.card.navigation.pages.project')"
+					/>
+				</template>
 				<template #background><TechnologyCardBackground /></template>
 				<template #logo>
 					<div class="flex h-full w-full items-center justify-center">
@@ -195,6 +211,14 @@
 			</InfoCard>
 
 			<InfoCard smooth-width :class="{ 'z-10': isAcgMenuOpen }">
+				<template #navigation="{ hovered }">
+					<CardNavigationHint
+						:hovered="hovered"
+						to="/preference"
+						label-key="main.index.card.navigation.acg"
+						:page-label="$t('main.index.card.navigation.pages.preference')"
+					/>
+				</template>
 				<template #background
 					><ImageCardBackground
 						:atlas="acgBackgroundAtlas"
@@ -233,6 +257,14 @@
 			</InfoCard>
 
 			<InfoCard smooth-width :class="{ 'z-10': isMusicMenuOpen }">
+				<template #navigation="{ hovered }">
+					<CardNavigationHint
+						:hovered="hovered"
+						to="/preference"
+						label-key="main.index.card.navigation.music"
+						:page-label="$t('main.index.card.navigation.pages.preference')"
+					/>
+				</template>
 				<template #background
 					><ImageCardBackground
 						:atlas="musicBackgroundAtlas"
