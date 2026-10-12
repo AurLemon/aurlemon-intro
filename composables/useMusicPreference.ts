@@ -16,12 +16,14 @@ interface CoverCycle {
 
 const musicCovers = covers.filter(
 	(cover: CardImageCover): cover is MusicCover =>
-		Boolean(cover.title && cover.author?.length && cover.category),
+		Boolean(
+			cover.title && cover.author?.length && cover.category && cover.href,
+		),
 )
 if (musicCovers.length !== covers.length || !musicCovers.length)
 	throw new Error('MUSIC_COVER_METADATA_MISSING')
 
-export const useMusicPreference = () => {
+export const useMusicPreference = (paused: Ref<boolean> = ref(false)) => {
 	const cycle = useCookie<CoverCycle>('homepage-music-cover-cycle', {
 		default: () => ({ remaining: [], lastId: '' }),
 		sameSite: 'lax',
@@ -70,7 +72,7 @@ export const useMusicPreference = () => {
 			const image = new Image()
 			image.src = cover.url
 			await image.decode()
-			if (!disposed && !document.hidden) {
+			if (!disposed && !document.hidden && !paused.value) {
 				cycle.value = { remaining, lastId: id }
 				selectedId.value = id
 			}
@@ -80,7 +82,7 @@ export const useMusicPreference = () => {
 			preparing = false
 		}
 	}
-	const deferFor = usePreferenceRotation(advance)
+	const deferFor = usePreferenceRotation(advance, paused)
 	onBeforeUnmount(() => {
 		disposed = true
 	})

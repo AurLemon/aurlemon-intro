@@ -1,16 +1,20 @@
 /** 六秒是最小展示窗口；作品名可以延长窗口，后台时间不消耗阅读时间。 */
 const MIN_DISPLAY_MS = 6000
 
-export const usePreferenceRotation = (advance: () => void | Promise<void>) => {
+export const usePreferenceRotation = (
+	advance: () => void | Promise<void>,
+	paused: Ref<boolean> = ref(false),
+) => {
 	let timer: ReturnType<typeof setTimeout> | undefined
 	let mounted = false
 	let baseline = 0
 	let readingDeadline = 0
 	let pausedRemaining = MIN_DISPLAY_MS
 	let advancing = false
+	let playbackPaused = false
 	const schedule = () => {
 		if (timer !== undefined) clearTimeout(timer)
-		if (!mounted || document.hidden || advancing) return
+		if (!mounted || document.hidden || paused.value || advancing) return
 		timer = setTimeout(
 			async () => {
 				advancing = true
@@ -33,11 +37,16 @@ export const usePreferenceRotation = (advance: () => void | Promise<void>) => {
 	const deferFor = (duration: number) => {
 		if (!Number.isFinite(duration) || duration < 0) return
 		readingDeadline = Date.now() + duration
-		if (document.hidden) pausedRemaining = Math.max(pausedRemaining, duration)
+		if (document.hidden || paused.value)
+			pausedRemaining = Math.max(pausedRemaining, duration)
 		schedule()
 	}
 	const syncVisibility = () => {
-		if (document.hidden) {
+		if (!mounted) return
+		const shouldPause = document.hidden || paused.value
+		if (shouldPause === playbackPaused) return
+		playbackPaused = shouldPause
+		if (shouldPause) {
 			pausedRemaining = Math.max(
 				0,
 				Math.max(baseline, readingDeadline) - Date.now(),
@@ -49,8 +58,10 @@ export const usePreferenceRotation = (advance: () => void | Promise<void>) => {
 			schedule()
 		}
 	}
+	watch(paused, syncVisibility)
 	onMounted(() => {
 		mounted = true
+		playbackPaused = document.hidden || paused.value
 		baseline = Date.now() + MIN_DISPLAY_MS
 		document.addEventListener('visibilitychange', syncVisibility)
 		schedule()

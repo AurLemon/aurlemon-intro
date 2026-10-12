@@ -23,6 +23,7 @@ export interface CardCoverMetadata {
 	author: readonly string[]
 	category: string
 	album?: string
+	href: string
 }
 
 export interface CardImageCover extends Partial<CardCoverMetadata> {

@@ -194,10 +194,11 @@
 				<template #type>{{ $t('main.index.card.tech.type') }}</template>
 			</InfoCard>
 
-			<InfoCard smooth-width>
+			<InfoCard smooth-width :class="{ 'z-10': isAcgMenuOpen }">
 				<template #background
 					><ImageCardBackground
 						:atlas="acgBackgroundAtlas"
+						:focus-active="!isAcgMenuOpen"
 						:options="{
 							density: 0.7,
 							blurLevel: 'clear',
@@ -221,6 +222,8 @@
 					>
 						<span class="shrink-0">{{ $t('main.index.card.acg.type') }}</span>
 						<PreferenceTrackLabel
+							v-model:open="isAcgMenuOpen"
+							:work="acgCurrent"
 							:content-key="`${acgCurrent.id}:${locale}`"
 							:label="acgCurrent.title"
 							@read-window="deferAcg"
@@ -229,10 +232,11 @@
 				</template>
 			</InfoCard>
 
-			<InfoCard smooth-width>
+			<InfoCard smooth-width :class="{ 'z-10': isMusicMenuOpen }">
 				<template #background
 					><ImageCardBackground
 						:atlas="musicBackgroundAtlas"
+						:focus-active="!isMusicMenuOpen"
 						:image-width="0.62"
 						:options="{
 							density: 0.7,
@@ -262,6 +266,8 @@
 					>
 						<span class="shrink-0">{{ $t('main.index.card.music.type') }}</span>
 						<PreferenceTrackLabel
+							v-model:open="isMusicMenuOpen"
+							:work="musicCover"
 							:content-key="`${musicCover.id}:${locale}`"
 							:label="musicTrackLabel"
 							:pixels-per-second="48"
@@ -392,15 +398,18 @@ import onlineCoverUrl from '~/assets/resources/homepage/night/cover.svg?url'
 type EducationStage = 'bachelor' | 'specialty' | 'highSchool' | 'juniorSchool'
 
 const { t, te, locale } = useI18n({ useScope: 'global' })
+const isAcgMenuOpen = ref(false)
+const isMusicMenuOpen = ref(false)
 const {
 	covers: acgCovers,
 	current: acgCurrent,
 	deferFor: deferAcg,
-} = useAcgPreference()
+} = useAcgPreference(isAcgMenuOpen)
 const acgSubtitle = computed(() =>
 	t(`main.index.card.acg.categories.${acgCurrent.value.category}.subtitle`),
 )
-const { cover: musicCover, deferFor: deferMusic } = useMusicPreference()
+const { cover: musicCover, deferFor: deferMusic } =
+	useMusicPreference(isMusicMenuOpen)
 const musicSongTitle = computed(() =>
 	musicCover.value.category === 'chilichill'
 		? musicCover.value.title.replace(/\s*[(（][^()（）]*[)）]\s*$/u, '')

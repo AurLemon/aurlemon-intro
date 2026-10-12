@@ -6,42 +6,48 @@
 			"file": "adachi_and_shimamura_comic_vol_9.webp",
 			"title": "安達としまむら 9",
 			"author": ["入間人間", "柚原もけ"],
-			"category": "adashima"
+			"category": "adashima",
+			"href": "https://bgm.tv/subject/698438"
 		},
 		{
 			"id": "bgm-625665",
 			"file": "adachi_and_shimamura_comic_vol_8.webp",
 			"title": "安達としまむら 8",
 			"author": ["入間人間", "柚原もけ"],
-			"category": "adashima"
+			"category": "adashima",
+			"href": "https://bgm.tv/subject/625665"
 		},
 		{
 			"id": "bgm-560445",
 			"file": "adachi_and_shimamura_comic_vol_7.webp",
 			"title": "安達としまむら 7",
 			"author": ["入間人間", "柚原もけ"],
-			"category": "adashima"
+			"category": "adashima",
+			"href": "https://bgm.tv/subject/560445"
 		},
 		{
 			"id": "bgm-604826",
 			"file": "cosmic_princess_kaguya.webp",
 			"title": "超かぐや姫！",
 			"author": ["山下清悟"],
-			"category": "kaguya"
+			"category": "kaguya",
+			"href": "https://bgm.tv/subject/604826"
 		},
 		{
 			"id": "bgm-216371",
 			"file": "liz_and_blue_bird.webp",
 			"title": "リズと青い鳥",
 			"author": ["武田綾乃", "山田尚子"],
-			"category": "liz"
+			"category": "liz",
+			"href": "https://bgm.tv/subject/216371"
 		},
 		{
 			"id": "bgm-666005",
 			"file": "adachi_and_shimamura_ss_vol_3.webp",
 			"title": "安達としまむら SS3",
 			"author": ["入間人間"],
-			"category": "adashima"
+			"category": "adashima",
+			"href": "https://bgm.tv/subject/666005"
 		}
 	]
 }

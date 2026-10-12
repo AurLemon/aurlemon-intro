@@ -27,7 +27,11 @@ const COVERS_PREFIX = '\0card-image-covers:'
 const VIRTUAL_PREFIX = '\0card-image-atlas:'
 
 function hasValidCoverMetadata(image: object): boolean {
-	if (!['title', 'author', 'category', 'album'].some((key) => key in image))
+	if (
+		!['title', 'author', 'category', 'album', 'href'].some(
+			(key) => key in image,
+		)
+	)
 		return true
 	return (
 		'title' in image &&
@@ -42,7 +46,12 @@ function hasValidCoverMetadata(image: object): boolean {
 		'category' in image &&
 		typeof image.category === 'string' &&
 		/^[a-zA-Z][a-zA-Z0-9]*$/.test(image.category) &&
-		(!('album' in image) || typeof image.album === 'string')
+		(!('album' in image) || typeof image.album === 'string') &&
+		'href' in image &&
+		typeof image.href === 'string' &&
+		/^https:\/\/(bgm\.tv\/subject\/\d+|music\.163\.com\/#\/(song|album)\?id=\d+)$/.test(
+			image.href,
+		)
 	)
 }
 
@@ -139,7 +148,7 @@ export default defineNuxtModule({
 					const entries = manifest.images
 						.map(
 							(image, index) =>
-								`{...${JSON.stringify({ id: image.id, title: image.title, author: image.author, category: image.category, album: image.album })},url:cover${index}}`,
+								`{...${JSON.stringify({ id: image.id, title: image.title, author: image.author, category: image.category, album: image.album, href: image.href })},url:cover${index}}`,
 						)
 						.join(',')
 					return `${imports};export default [${entries}]`
