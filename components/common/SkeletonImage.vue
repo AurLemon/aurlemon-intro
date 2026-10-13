@@ -11,7 +11,7 @@
 			:src="src"
 			:alt="alt"
 			:class="[
-				'transition-opacity duration-300',
+				immediateReveal ? 'transition-none' : 'transition-opacity duration-300',
 				imageClass,
 				imageVisible ? 'opacity-100' : 'opacity-0',
 			]"
@@ -42,6 +42,7 @@ interface SkeletonImageProps {
 	imageClass?: string
 	skeletonClass?: string
 	showSkeleton?: boolean
+	revealCachedImmediately?: boolean
 	revealDelayMs?: number
 	loading?: 'eager' | 'lazy'
 	decoding?: 'async' | 'auto' | 'sync'
@@ -56,6 +57,7 @@ const props = withDefaults(defineProps<SkeletonImageProps>(), {
 	imageClass: '',
 	skeletonClass: '',
 	showSkeleton: true,
+	revealCachedImmediately: false,
 	revealDelayMs: 0,
 	loading: 'lazy',
 	decoding: 'async',
@@ -70,6 +72,7 @@ const imageRef = ref<HTMLImageElement | null>(null)
 const renderSkeleton = ref(props.showSkeleton)
 const skeletonVisible = ref(props.showSkeleton)
 const imageVisible = ref(false)
+const immediateReveal = ref(false)
 let revealFrame = 0
 let skeletonCleanupTimer: ReturnType<typeof setTimeout> | null = null
 let revealDelayTimer: ReturnType<typeof setTimeout> | null = null
@@ -97,9 +100,17 @@ const resetVisibility = (): void => {
 	renderSkeleton.value = props.showSkeleton
 	skeletonVisible.value = props.showSkeleton
 	imageVisible.value = false
+	immediateReveal.value = false
 }
 
 const applyRevealState = (): void => {
+	if (immediateReveal.value) {
+		renderSkeleton.value = false
+		skeletonVisible.value = false
+		imageVisible.value = true
+		emit('ready')
+		return
+	}
 	cancelAnimationFrame(revealFrame)
 	clearSkeletonCleanupTimer()
 
@@ -165,6 +176,8 @@ const syncCachedImageState = async (): Promise<void> => {
 	await nextTick()
 
 	if (imageRef.value?.complete) {
+		immediateReveal.value =
+			props.revealCachedImmediately && imageRef.value.naturalWidth > 0
 		void revealWhenDecoded()
 	}
 }

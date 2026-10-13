@@ -1,13 +1,19 @@
 <template>
 	<div
 		ref="card"
+		:data-mobile-motion="isMobileMotion"
 		class="group group/card relative h-40 rounded-xl border-6 border-slate-200 dark:border-slate-800"
-		@mouseenter="isHovered = true"
-		@mouseleave="isHovered = false"
-		@focusin="isFocused = true"
+		@pointerenter="handlePointerEnter"
+		@pointerleave="isHovered = false"
+		@focusin="handleFocusIn"
 		@focusout="handleFocusOut"
 	>
-		<slot name="navigation" :hovered="isHovered" :focused="isFocused" />
+		<slot
+			v-if="!isCompact"
+			name="navigation"
+			:hovered="isHovered"
+			:focused="isFocused"
+		/>
 		<div
 			class="pointer-events-none absolute inset-[-6px] z-2 rounded-xl border-6 border-slate-400/60 opacity-0 transition-opacity duration-120 group-hover:opacity-100 dark:border-slate-700/80"
 			aria-hidden="true"
@@ -24,7 +30,11 @@
 					:key="contentKey"
 					ref="contentRow"
 					class="absolute inset-0 flex items-center gap-3 px-4.5 py-3 lg:justify-center lg:gap-4"
-					:class="animatedTitle ? 'justify-center' : 'justify-between'"
+					:class="
+						animatedTitle
+							? 'justify-between lg:justify-center'
+							: 'justify-between'
+					"
 				>
 					<div
 						ref="logo"
@@ -35,8 +45,7 @@
 					</div>
 					<div
 						ref="textColumn"
-						class="min-w-0 text-center"
-						:class="animatedTitle ? 'flex-none' : 'flex-1 lg:flex-none'"
+						class="min-w-0 flex-1 text-center lg:flex-none"
 						:style="animatedTitle ? animatedColumnStyle : undefined"
 					>
 						<div
@@ -165,13 +174,30 @@ const props = withDefaults(defineProps<Props>(), {
 	smoothWidth: false,
 })
 
+const { isCompact, canHover, isMobileMotion } = useDisplayMode()
+const emit = defineEmits<{ visibilityChange: [visible: boolean] }>()
 const isHovered = ref(false)
 const isFocused = ref(false)
 const card = ref<HTMLElement | null>(null)
+const visible = useElementVisibility(card)
+watch(visible, (value) => emit('visibilityChange', value), { immediate: true })
+const handlePointerEnter = (event: PointerEvent) => {
+	isHovered.value = canHover.value && event.pointerType !== 'touch'
+}
+const handleFocusIn = (event: FocusEvent) => {
+	isFocused.value =
+		event.target instanceof HTMLElement &&
+		event.target.matches(':focus-visible')
+}
+watch(isMobileMotion, () => {
+	isHovered.value = false
+})
 const handleFocusOut = (event: FocusEvent) => {
 	isFocused.value =
 		event.relatedTarget instanceof Node &&
-		card.value?.contains(event.relatedTarget) === true
+		card.value?.contains(event.relatedTarget) === true &&
+		event.relatedTarget instanceof HTMLElement &&
+		event.relatedTarget.matches(':focus-visible')
 }
 const contentRow = ref<HTMLElement | null>(null)
 const textColumn = ref<HTMLElement | null>(null)
@@ -202,13 +228,17 @@ const textWidth = (element: HTMLElement | null) => {
 	return Math.ceil(range.getBoundingClientRect().width)
 }
 
-const animatedColumnStyle = computed(() => ({
-	width: 'max-content',
-	maxWidth:
-		availableTitleWidth.value > 0
-			? `${availableTitleWidth.value}px`
-			: 'calc(100% - 6rem)',
-}))
+const animatedColumnStyle = computed(() =>
+	isCompact.value
+		? {}
+		: {
+				width: 'max-content',
+				maxWidth:
+					availableTitleWidth.value > 0
+						? `${availableTitleWidth.value}px`
+						: 'calc(100% - 6rem)',
+			},
+)
 
 const measureTitleSpace = () => {
 	if ((!props.animatedTitle && !props.smoothWidth) || !contentRow.value) return

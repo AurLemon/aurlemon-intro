@@ -1,3 +1,4 @@
+import { prepareCardCover } from '~/utils/prepareCardCover'
 import coverSources from '~/assets/resources/homepage/acg/background.card-atlas.json?covers'
 import type { CardCoverMetadata } from '~/shared/types/card-image-atlas'
 import { usePreferenceRotation } from '~/composables/usePreferenceRotation'
@@ -34,7 +35,8 @@ export const useAcgPreference = (paused: Ref<boolean> = ref(false)) => {
 			.map((cover) => cover.id),
 		remaining: shuffle(covers.slice(3).map((cover) => cover.id)),
 	}))
-	const advance = () => {
+	let disposed = false
+	const advance = async () => {
 		const remaining = deck.value.remaining.length
 			? [...deck.value.remaining]
 			: shuffle(
@@ -44,13 +46,32 @@ export const useAcgPreference = (paused: Ref<boolean> = ref(false)) => {
 				)
 		// 新封面从左侧进入，原来的左、中封面依次向右；最右侧决定当前作品。
 		const incoming = remaining.shift()
-		if (incoming)
+		if (
+			incoming &&
+			(await prepareCardCover(
+				covers.find((cover) => cover.id === incoming)!.url,
+			)) &&
+			!disposed &&
+			!paused.value &&
+			!document.hidden
+		)
 			deck.value = {
 				visible: [incoming, ...deck.value.visible.slice(0, 2)],
 				remaining,
 			}
 	}
-	if (import.meta.client && !useNuxtApp().isHydrating) advance()
+	if (import.meta.client && !useNuxtApp().isHydrating) void advance()
+	watch(
+		() => deck.value.remaining[0],
+		(id) => {
+			const next = covers.find((cover) => cover.id === id)
+			if (next) void prepareCardCover(next.url)
+		},
+		{ immediate: true },
+	)
+	onBeforeUnmount(() => {
+		disposed = true
+	})
 	const deferFor = usePreferenceRotation(advance, paused)
 	const visibleCovers = computed(() =>
 		deck.value.visible.map((id) => covers.find((cover) => cover.id === id)!),

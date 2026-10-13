@@ -4,6 +4,7 @@
 		class="card-pattern-background pointer-events-none absolute inset-0 text-slate-500 dark:text-slate-400"
 		:data-paused="!visible || pageHidden"
 		:data-focus-active="focusActive"
+		:data-static="isMobileMotion"
 		aria-hidden="true"
 		:style="{
 			'--motif-density': settings.density,
@@ -16,15 +17,17 @@
 		}"
 	>
 		<div
-			v-for="active in [false, true]"
+			v-for="active in states"
 			:key="String(active)"
 			class="card-pattern-background-state absolute inset-0 transition-opacity duration-(--motif-transition) ease-out motion-reduce:transition-none"
 			:data-active="active"
 			:data-focus-active="focusActive"
 			:class="
-				active
-					? 'opacity-0 group-hover/card:opacity-100 group-focus-within/card:data-[focus-active=true]:opacity-100'
-					: 'opacity-100 group-hover/card:opacity-0 group-focus-within/card:data-[focus-active=true]:opacity-0'
+				isMobileMotion
+					? 'opacity-100'
+					: active
+						? 'opacity-0 group-hover/card:opacity-100 group-focus-within/card:data-[focus-active=true]:opacity-100'
+						: 'opacity-100 group-hover/card:opacity-0 group-focus-within/card:data-[focus-active=true]:opacity-0'
 			"
 		>
 			<div
@@ -128,19 +131,11 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 defineSlots<{ motif(props: { motif: string }): unknown }>()
-interface TilePosition {
-	motif: string
-	x: number
-	y: number
-}
-
 const colorMode = useColorMode()
 const hydrated = ref(false)
 const theme = computed(() =>
 	hydrated.value && colorMode.value === 'dark' ? 'dark' : 'light',
 )
-const planeSize = ref({ columns: 12, rows: 8 })
-let resizeObserver: ResizeObserver | undefined
 const settings = computed(() => resolveCardPatternSettings(props.options))
 const blurLevels = computed(
 	() =>
@@ -185,60 +180,15 @@ const motifOpacity = (motif: string, active: boolean) => {
 }
 const motifIndexKey = (motif: string) => props.motifs.indexOf(motif)
 const patternId = useId()
-const tileRows = computed(() =>
-	Math.max(
-		1,
-		settings.value.layout === 'catalog'
-			? Math.ceil(props.motifs.length / 4)
-			: props.motifs.length,
-	),
-)
-const tileColumns = computed(() =>
-	settings.value.layout === 'catalog'
-		? 4
-		: tileRows.value % 2 === 0
-			? tileRows.value
-			: tileRows.value * 2,
-)
-// 所有素材等权，合并为一个平铺层，不随素材数量增加合成层。
-const positions = computed<TilePosition[]>(() =>
-	props.motifs.flatMap((motif, motifIndex) => {
-		const positions: TilePosition[] = []
-		const addPosition = (column: number, row: number) => {
-			const x =
-				column * settings.value.columnStep +
-				(settings.value.columnStep - 0.88) / 2
-			const y =
-				(row + (column % 2 ? 0.5 : 0)) * settings.value.rowStep +
-				(settings.value.rowStep - 0.88) / 2
-			positions.push({ x, y, motif })
-			if (y + 0.88 > tileRows.value * settings.value.rowStep)
-				positions.push({
-					x,
-					y: y - tileRows.value * settings.value.rowStep,
-					motif,
-				})
-		}
-		for (let column = 0; column < tileColumns.value; column += 1) {
-			if (settings.value.layout === 'catalog') {
-				for (let row = 0; row < tileRows.value; row++) {
-					if (
-						(row * tileColumns.value + column) % props.motifs.length ===
-						motifIndex
-					)
-						addPosition(column, row)
-				}
-			} else {
-				const row =
-					(motifIndex - (column % tileRows.value) + tileRows.value) %
-					tileRows.value
-				addPosition(column, row)
-			}
-		}
-		return positions
-	}),
-)
 const background = ref<HTMLElement | null>(null)
+const { isMobileMotion } = useDisplayMode()
+const states = computed(() => (isMobileMotion.value ? [false] : [false, true]))
+const { planeSize, tileRows, tileColumns, positions } = useCardPatternLayout({
+	background,
+	motifs: toRef(props, 'motifs'),
+	settings,
+	staticMode: isMobileMotion,
+})
 const visible = ref(false)
 const pageHidden = ref(false)
 let intersectionObserver: IntersectionObserver | undefined
@@ -249,25 +199,6 @@ const updatePageVisibility = () => {
 
 onMounted(() => {
 	hydrated.value = true
-	resizeObserver = new ResizeObserver(([entry]) => {
-		if (!entry) return
-		const { width, height } = entry.contentRect
-		const step =
-			Math.max(36, Math.min(64, width * 0.14)) / settings.value.density
-		const angle = Math.PI / 15
-		// 移动完整平铺周期，双侧补足周期高度，循环回到起点时图案完全重合。
-		planeSize.value = {
-			columns: Math.ceil(
-				(width * Math.cos(angle) + height * Math.sin(angle)) / step + 1,
-			),
-			rows: Math.ceil(
-				(height * Math.cos(angle) + width * Math.sin(angle)) / step +
-					2 * tileRows.value * settings.value.rowStep +
-					1,
-			),
-		}
-	})
-	if (background.value) resizeObserver.observe(background.value)
 	updatePageVisibility()
 	document.addEventListener('visibilitychange', updatePageVisibility)
 	intersectionObserver = new IntersectionObserver(([entry]) => {
@@ -282,7 +213,6 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-	resizeObserver?.disconnect()
 	intersectionObserver?.disconnect()
 	document.removeEventListener('visibilitychange', updatePageVisibility)
 })
@@ -336,6 +266,26 @@ onBeforeUnmount(() => {
 
 .card-pattern-background[data-paused='true'] .card-pattern-background-pattern {
 	animation-play-state: paused;
+}
+
+.card-pattern-background[data-static='true'] .card-pattern-background-state,
+.card-pattern-background[data-static='true'] .card-pattern-background-pattern {
+	will-change: auto;
+	animation: none;
+	transition: none;
+}
+
+/* hydration 之前也不在触摸/窄屏启动第二层与漂移。 */
+@media (width < 64rem), (hover: none) {
+	.card-pattern-background-state[data-active='true'] {
+		display: none;
+	}
+	.card-pattern-background-state,
+	.card-pattern-background-pattern {
+		will-change: auto;
+		animation: none;
+		transition: none;
+	}
 }
 
 @keyframes card-pattern-background-drift {

@@ -14,6 +14,8 @@
 				:style="{ left: `${[0, 12, 32][index]}%`, zIndex: index }"
 			>
 				<SkeletonImage
+					loading="eager"
+					:reveal-cached-immediately="true"
 					:src="cover.url"
 					alt=""
 					class="h-full w-full overflow-hidden rounded-sm shadow-[-4px_0_6px_0_rgb(15_23_42/45%)]"

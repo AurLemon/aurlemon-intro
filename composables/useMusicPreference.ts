@@ -1,3 +1,4 @@
+import { prepareCardCover } from '~/utils/prepareCardCover'
 import covers from '~/assets/resources/homepage/music/background.card-atlas.json?covers'
 import { usePreferenceRotation } from '~/composables/usePreferenceRotation'
 import type {
@@ -69,9 +70,7 @@ export const useMusicPreference = (paused: Ref<boolean> = ref(false)) => {
 		const cover = musicCovers.find((cover) => cover.id === id)!
 		try {
 			// 只准备下一张；图片解码完成后同步交接封面、文案和作品名。
-			const image = new Image()
-			image.src = cover.url
-			await image.decode()
+			if (!(await prepareCardCover(cover.url))) return
 			if (!disposed && !document.hidden && !paused.value) {
 				cycle.value = { remaining, lastId: id }
 				selectedId.value = id
@@ -82,6 +81,14 @@ export const useMusicPreference = (paused: Ref<boolean> = ref(false)) => {
 			preparing = false
 		}
 	}
+	watch(
+		() => cycle.value?.remaining?.[0],
+		(id) => {
+			const next = musicCovers.find((cover) => cover.id === id)
+			if (next) void prepareCardCover(next.url)
+		},
+		{ immediate: true },
+	)
 	const deferFor = usePreferenceRotation(advance, paused)
 	onBeforeUnmount(() => {
 		disposed = true

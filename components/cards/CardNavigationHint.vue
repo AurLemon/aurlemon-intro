@@ -73,45 +73,53 @@ interface Props {
 
 const props = defineProps<Props>()
 const localePath = useLocalePath()
+const { isMobileMotion } = useDisplayMode()
 const dismissed = ref(false)
 const reducedMotion = useReducedMotion()
 const visible = computed(
-	() => !dismissed.value && (props.hovered || props.focused),
+	() =>
+		!dismissed.value &&
+		((!isMobileMotion.value && props.hovered) || props.focused),
 )
 
 const revealMotion = computed<Options>(() => ({
 	initial: {
 		opacity: 0,
-		y: reducedMotion.value ? 0 : -2,
-		filter: reducedMotion.value ? 'blur(0px)' : 'blur(4px)',
+		y: reducedMotion.value || isMobileMotion.value ? 0 : -2,
+		filter:
+			reducedMotion.value || isMobileMotion.value ? 'blur(0px)' : 'blur(4px)',
 	},
 	animate: {
 		opacity: visible.value ? 1 : 0,
-		y: visible.value || reducedMotion.value ? 0 : -2,
-		filter: visible.value || reducedMotion.value ? 'blur(0px)' : 'blur(4px)',
+		y: visible.value || reducedMotion.value || isMobileMotion.value ? 0 : -2,
+		filter:
+			visible.value || reducedMotion.value || isMobileMotion.value
+				? 'blur(0px)'
+				: 'blur(4px)',
 	},
-	transition: reducedMotion.value
-		? { duration: 0 }
-		: visible.value
-			? {
-					type: 'spring',
-					stiffness: 230,
-					damping: 12,
-					mass: 0.7,
-					opacity: { duration: 0.38, delay: 0.12, ease: 'easeOut' },
-					filter: { duration: 0.5, delay: 0.12, ease: 'easeOut' },
-				}
-			: {
-					type: 'tween',
-					duration: 0.32,
-					ease: 'easeOut',
-					y: { duration: 0, delay: 0.32 },
-					filter: { duration: 0, delay: 0.32 },
-				},
+	transition:
+		reducedMotion.value || isMobileMotion.value
+			? { duration: 0 }
+			: visible.value
+				? {
+						type: 'spring',
+						stiffness: 230,
+						damping: 12,
+						mass: 0.7,
+						opacity: { duration: 0.38, delay: 0.12, ease: 'easeOut' },
+						filter: { duration: 0.5, delay: 0.12, ease: 'easeOut' },
+					}
+				: {
+						type: 'tween',
+						duration: 0.32,
+						ease: 'easeOut',
+						y: { duration: 0, delay: 0.32 },
+						filter: { duration: 0, delay: 0.32 },
+					},
 }))
 
 const shapeTransition = computed<Options['transition']>(() =>
-	reducedMotion.value
+	reducedMotion.value || isMobileMotion.value
 		? { duration: 0 }
 		: visible.value
 			? { type: 'spring', stiffness: 180, damping: 20, mass: 0.9 }
@@ -159,6 +167,12 @@ onBeforeUnmount(clearHideTimer)
 </script>
 
 <style scoped>
+@media (width < 64rem) {
+	.card-navigation {
+		display: none;
+	}
+}
+
 /* 常驻 DOM：外壳、箭头、文字分层进入，不在每次 hover 时重新挂载。 */
 .card-navigation {
 	pointer-events: none;
