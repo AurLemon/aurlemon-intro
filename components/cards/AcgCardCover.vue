@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="relative h-full w-full overflow-hidden rounded-lg bg-slate-200/60 dark:bg-slate-800/60"
+		class="relative isolate h-full w-full overflow-hidden rounded-lg bg-slate-200/60 [clip-path:inset(0_round_var(--radius-lg))] dark:bg-slate-800/60"
 		role="img"
 		:aria-label="alt"
 	>
@@ -16,8 +16,8 @@
 				<SkeletonImage
 					:src="cover.url"
 					alt=""
-					class="h-full w-full shadow-[-4px_0_6px_0_rgb(15_23_42/45%)]"
-					:image-class="`block h-full w-full object-cover ${index ? 'rounded-sm' : ''}`"
+					class="h-full w-full overflow-hidden rounded-sm shadow-[-4px_0_6px_0_rgb(15_23_42/45%)]"
+					image-class="block h-full w-full rounded-sm object-cover"
 					skeleton-class="rounded-sm"
 				/>
 			</div>
