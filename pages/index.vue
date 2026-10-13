@@ -68,9 +68,10 @@
 					:content-key="`${locale}-${selectedEducationStage}`"
 					animated-title
 				>
-					<template #navigation="{ hovered }">
+					<template #navigation="{ hovered, focused }">
 						<CardNavigationHint
 							:hovered="hovered"
+							:focused="focused"
 							to="/profile"
 							label-key="main.index.card.navigation.profile"
 							:page-label="$t('main.index.card.navigation.pages.profile')"
@@ -185,9 +186,10 @@
 			</div>
 
 			<InfoCard>
-				<template #navigation="{ hovered }">
+				<template #navigation="{ hovered, focused }">
 					<CardNavigationHint
 						:hovered="hovered"
+						:focused="focused"
 						to="/project"
 						label-key="main.index.card.navigation.project"
 						:page-label="$t('main.index.card.navigation.pages.project')"
@@ -211,9 +213,10 @@
 			</InfoCard>
 
 			<InfoCard smooth-width :class="{ 'z-10': isAcgMenuOpen }">
-				<template #navigation="{ hovered }">
+				<template #navigation="{ hovered, focused }">
 					<CardNavigationHint
 						:hovered="hovered"
+						:focused="focused"
 						to="/preference"
 						label-key="main.index.card.navigation.acg"
 						:page-label="$t('main.index.card.navigation.pages.preference')"
@@ -257,9 +260,10 @@
 			</InfoCard>
 
 			<InfoCard smooth-width :class="{ 'z-10': isMusicMenuOpen }">
-				<template #navigation="{ hovered }">
+				<template #navigation="{ hovered, focused }">
 					<CardNavigationHint
 						:hovered="hovered"
+						:focused="focused"
 						to="/preference"
 						label-key="main.index.card.navigation.music"
 						:page-label="$t('main.index.card.navigation.pages.preference')"
