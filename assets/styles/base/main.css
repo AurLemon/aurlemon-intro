@@ -54,6 +54,17 @@ html {
 	background-color: var(--color-surface-0);
 }
 
+/* 按内容语言继承换行规则，与屏幕尺寸无关；nowrap、代码等局部规则仍可覆盖。 */
+@layer base {
+	:where([lang]:lang(zh), [lang]:lang(ja)) {
+		word-break: break-all;
+	}
+
+	:where([lang]:lang(en)) {
+		word-break: normal;
+	}
+}
+
 body {
 	margin: 0;
 	padding: 0;

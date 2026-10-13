@@ -118,6 +118,10 @@
 				</UPopover>
 			</div>
 		</div>
+		<div
+			data-mobile-card-navigation
+			class="absolute inset-x-6 top-full z-30 mt-3 lg:hidden"
+		/>
 	</header>
 </template>
 

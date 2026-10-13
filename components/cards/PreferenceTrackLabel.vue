@@ -8,6 +8,7 @@
 		<button
 			type="button"
 			ref="viewport"
+			:data-mobile-motion="isMobileMotion"
 			class="relative block h-4 min-w-0 max-w-[min(55%,14rem)] cursor-pointer p-0 transition-[width] duration-400 ease-in-out motion-reduce:transition-none font-semibold text-slate-600 dark:text-slate-300"
 			:style="{
 				width: labelWidth === null ? 'max-content' : `${labelWidth}px`,
@@ -100,6 +101,7 @@ interface Props {
 	label: string
 	contentKey?: string
 	pixelsPerSecond?: number
+	paused?: boolean
 }
 interface LabelMeasurements {
 	label: string
@@ -110,7 +112,9 @@ interface LabelMeasurements {
 const props = withDefaults(defineProps<Props>(), {
 	contentKey: undefined,
 	pixelsPerSecond: 56,
+	paused: false,
 })
+const { isMobileMotion } = useDisplayMode()
 const open = defineModel<boolean>('open', { default: false })
 const emit = defineEmits<{ readWindow: [duration: number] }>()
 const viewport = ref<HTMLElement | null>(null)
@@ -187,7 +191,7 @@ const restart = async () => {
 	syncPlayback()
 }
 const syncPlayback = () => {
-	if (document.hidden) animation?.pause()
+	if (document.hidden || props.paused) animation?.pause()
 	else if (animation?.playState === 'paused') animation.play()
 }
 const onMotionChange = () => {
@@ -221,6 +225,8 @@ const onFontsLoaded = () => {
 watch(() => props.label, measureText)
 watch([() => props.contentKey, () => props.pixelsPerSecond], restart)
 watch(track, restart)
+watch(isMobileMotion, restart)
+watch(() => props.paused, syncPlayback)
 onMounted(() => {
 	mounted = true
 	motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -264,6 +270,9 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped>
+button[data-mobile-motion='true'] {
+	transition: none;
+}
 .preference-label-enter-active {
 	transition: opacity 240ms ease-out;
 }

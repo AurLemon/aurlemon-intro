@@ -51,6 +51,7 @@
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { createSchoolNameAnimations } from './educationSchoolMotion'
 
 interface Props {
 	fullName: string
@@ -68,6 +69,7 @@ const props = withDefaults(defineProps<Props>(), {
 	availableWidth: 0,
 	minimumWidth: 0,
 })
+const { isCompact } = useDisplayMode()
 const viewport = ref<HTMLElement | null>(null)
 const fullText = ref<HTMLElement | null>(null)
 const shortText = ref<HTMLElement | null>(null)
@@ -79,14 +81,14 @@ const paused = ref(false)
 const visible = ref(true)
 const pageHidden = ref(false)
 const usesShortName = computed(
-	() => Boolean(props.shortName) && hasOverflow.value && !reducedMotion.value,
+	() =>
+		!isCompact.value &&
+		Boolean(props.shortName) &&
+		hasOverflow.value &&
+		!reducedMotion.value,
 )
 
 // 简称多停留一会儿；全称两端留出阅读时间，按固定像素速度线性展示。
-const SHORT_HOLD = 3000
-const FULL_HOLD = 1200
-const FADE = 360
-const PIXELS_PER_SECOND = 56
 const EDGE_PADDING = 48
 let animations: Animation[] = []
 let resizeObserver: ResizeObserver | undefined
@@ -96,6 +98,7 @@ let mounted = false
 let revision = 0
 
 interface AnimationLayout {
+	compact: boolean
 	fullName: string
 	shortName: string
 	availableWidth: number
@@ -163,10 +166,9 @@ const restart = async () => {
 		fullMeasure.value.getBoundingClientRect().width,
 	)
 	hasOverflow.value = fullTextWidth - availableWidth > 1
-	const fullWidth = Math.min(
-		availableWidth,
-		Math.max(fullTextWidth, props.minimumWidth),
-	)
+	const fullWidth = isCompact.value
+		? availableWidth
+		: Math.min(availableWidth, Math.max(fullTextWidth, props.minimumWidth))
 	const compactWidth = Math.min(
 		availableWidth,
 		// 精确测量后留 2px，避免末尾字母误触发省略号。
@@ -176,6 +178,7 @@ const restart = async () => {
 		),
 	)
 	const layout: AnimationLayout = {
+		compact: isCompact.value,
 		fullName: props.fullName,
 		shortName: props.shortName,
 		availableWidth,
@@ -204,101 +207,24 @@ const restart = async () => {
 	// 校徽的位置差可以用 transform 表达，无需每帧重新布局。
 	const layoutTarget = props.layoutTarget
 	const logoTarget = props.logoTarget
-	if (layoutTarget) layoutTarget.style.width = `${fullWidth}px`
+	if (layoutTarget)
+		layoutTarget.style.width = isCompact.value ? '' : `${fullWidth}px`
 	if (logoTarget) logoTarget.style.transform = ''
 	if (reducedMotion.value || !hasOverflow.value) {
 		return
 	}
 	const distance = Math.max(0, fullTextWidth + EDGE_PADDING - fullWidth)
 
-	const travel = (distance / PIXELS_PER_SECOND) * 1000
-	const start = usesShortName.value ? SHORT_HOLD + FADE : 0
-	const scrollStart = start + FULL_HOLD
-	const scrollEnd = scrollStart + travel
-	const fadeStart = scrollEnd + FULL_HOLD
-	const fadeEnd = fadeStart + FADE
-	const duration = fadeEnd + (usesShortName.value ? 0 : FADE)
-	const offset = (time: number) => time / duration
-	const endTransform = `translateX(-${distance}px)`
-	const fullOpacity = usesShortName.value ? 0 : 1
-	const compactOffset = usesShortName.value ? (fullWidth - compactWidth) / 2 : 0
-	const compactTransform = `translateX(${compactOffset}px)`
-	if (props.logoTarget) {
-		animations.push(
-			props.logoTarget.animate(
-				[
-					{ offset: 0, transform: compactTransform },
-					{
-						offset: offset(usesShortName.value ? SHORT_HOLD : 0),
-						transform: compactTransform,
-						easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-					},
-					{ offset: offset(start), transform: 'translateX(0)' },
-					{
-						offset: offset(fadeStart),
-						transform: 'translateX(0)',
-						easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-					},
-					{ offset: 1, transform: compactTransform },
-				],
-				{ duration, iterations: Infinity, easing: 'linear' },
-			),
-		)
-	}
-	animations.push(
-		fullText.value!.animate(
-			[
-				{ offset: 0, opacity: fullOpacity, transform: compactTransform },
-				{
-					offset: offset(usesShortName.value ? SHORT_HOLD : 0),
-					opacity: fullOpacity,
-					transform: compactTransform,
-					easing: 'ease-in-out',
-				},
-				{ offset: offset(start), opacity: 1, transform: 'translateX(0)' },
-				{ offset: offset(scrollStart), opacity: 1, transform: 'translateX(0)' },
-				{ offset: offset(scrollEnd), opacity: 1, transform: endTransform },
-				{
-					offset: offset(fadeStart),
-					opacity: 1,
-					transform: endTransform,
-					easing: 'ease-in-out',
-				},
-				{
-					offset: offset(fadeEnd),
-					opacity: 0,
-					transform: `translateX(${compactOffset - distance}px)`,
-				},
-				...(usesShortName.value
-					? []
-					: [
-							{
-								offset: offset(fadeEnd),
-								opacity: 0,
-								transform: 'translateX(0)',
-								easing: 'ease-in-out',
-							},
-							{ offset: 1, opacity: 1, transform: 'translateX(0)' },
-						]),
-			],
-			{ duration, iterations: Infinity, easing: 'linear' },
-		),
-	)
-
-	if (usesShortName.value && shortText.value) {
-		animations.push(
-			shortText.value.animate(
-				[
-					{ offset: 0, opacity: 1 },
-					{ offset: offset(SHORT_HOLD), opacity: 1, easing: 'ease-in-out' },
-					{ offset: offset(start), opacity: 0 },
-					{ offset: offset(fadeStart), opacity: 0, easing: 'ease-in-out' },
-					{ offset: 1, opacity: 1 },
-				],
-				{ duration, iterations: Infinity, easing: 'linear' },
-			),
-		)
-	}
+	animations = createSchoolNameAnimations({
+		fullText: fullText.value,
+		shortText: shortText.value,
+		logoTarget: props.logoTarget,
+		distance,
+		fullWidth,
+		compactWidth,
+		usesShortName: usesShortName.value,
+		animatedLayout: !isCompact.value,
+	})
 	syncPlayback()
 }
 
@@ -322,6 +248,7 @@ watch(
 	restart,
 )
 watch([paused, visible, pageHidden], syncPlayback)
+watch(isCompact, restart)
 
 onMounted(() => {
 	mounted = true

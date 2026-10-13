@@ -16,6 +16,8 @@
 		<div class="mx-2">
 			<div class="relative h-38 w-38 sm:h-42 sm:w-42">
 				<SkeletonImage
+					loading="eager"
+					:reveal-cached-immediately="true"
 					:src="avatarMark"
 					alt="AurLemon avatar"
 					class="block h-full w-full rounded-full border-2 border-[#236F95] shadow-[0_0_32px_rgba(190,215,212,0.6)] dark:shadow-[0_0_32px_rgba(190,215,212,0.1)]"
@@ -48,7 +50,7 @@
 				<br />
 				<span
 					:lang="locale"
-					class="block pt-1 lg:mt-0 break-normal"
+					class="block pt-1 lg:mt-0"
 					:class="{
 						'hyphens-auto text-balance text-[34px] leading-snug sm:text-4xl sm:text-wrap':
 							locale === 'en-US',
@@ -59,12 +61,19 @@
 		</div>
 
 		<!-- 信息卡片 -->
-		<div class="mt-16 pb-10 grid grid-cols-1 lg:grid-cols-2 gap-5">
+		<ClientOnly>
+			<MobileCardNavigationStack :container="cardGrid" />
+		</ClientOnly>
+		<div
+			ref="cardGrid"
+			class="mt-16 pb-10 grid grid-cols-1 lg:grid-cols-2 gap-5"
+		>
 			<div
 				class="group/education relative"
 				:class="{ 'z-10': isEducationMenuOpen }"
 			>
 				<InfoCard
+					data-navigation-card="profile"
 					:content-key="`${locale}-${selectedEducationStage}`"
 					animated-title
 				>
@@ -86,6 +95,8 @@
 					</template>
 					<template #logo>
 						<SkeletonImage
+							loading="eager"
+							:reveal-cached-immediately="true"
 							v-if="!currentEducationLogoIsComponent"
 							:src="String(currentEducationLogo)"
 							:alt="currentEducationStage.title"
@@ -93,7 +104,6 @@
 							class="block h-full w-full"
 							image-class="block h-full w-full rounded-lg object-cover"
 							skeleton-class="rounded-lg"
-							loading="eager"
 							@ready="handleEducationLogoReady"
 						/>
 						<component v-else :is="currentEducationLogo" class="block" />
@@ -185,7 +195,7 @@
 				</InfoCard>
 			</div>
 
-			<InfoCard>
+			<InfoCard data-navigation-card="project">
 				<template #navigation="{ hovered, focused }">
 					<CardNavigationHint
 						:hovered="hovered"
@@ -199,6 +209,8 @@
 				<template #logo>
 					<div class="flex h-full w-full items-center justify-center">
 						<SkeletonImage
+							loading="eager"
+							:reveal-cached-immediately="true"
 							:src="techCoverUrl"
 							:alt="$t('main.index.card.tech.title')"
 							class="block h-16 w-16"
@@ -212,7 +224,12 @@
 				<template #type>{{ $t('main.index.card.tech.type') }}</template>
 			</InfoCard>
 
-			<InfoCard smooth-width :class="{ 'z-10': isAcgMenuOpen }">
+			<InfoCard
+				data-navigation-card="acg"
+				smooth-width
+				:class="{ 'z-10': isAcgMenuOpen }"
+				@visibility-change="isAcgVisible = $event"
+			>
 				<template #navigation="{ hovered, focused }">
 					<CardNavigationHint
 						:hovered="hovered"
@@ -250,6 +267,7 @@
 						<span class="shrink-0">{{ $t('main.index.card.acg.type') }}</span>
 						<PreferenceTrackLabel
 							v-model:open="isAcgMenuOpen"
+							:paused="!isAcgVisible || isAcgMenuOpen"
 							:work="acgCurrent"
 							:content-key="`${acgCurrent.id}:${locale}`"
 							:label="acgCurrent.title"
@@ -259,7 +277,12 @@
 				</template>
 			</InfoCard>
 
-			<InfoCard smooth-width :class="{ 'z-10': isMusicMenuOpen }">
+			<InfoCard
+				data-navigation-card="music"
+				smooth-width
+				:class="{ 'z-10': isMusicMenuOpen }"
+				@visibility-change="isMusicVisible = $event"
+			>
 				<template #navigation="{ hovered, focused }">
 					<CardNavigationHint
 						:hovered="hovered"
@@ -303,6 +326,7 @@
 						<span class="shrink-0">{{ $t('main.index.card.music.type') }}</span>
 						<PreferenceTrackLabel
 							v-model:open="isMusicMenuOpen"
+							:paused="!isMusicVisible || isMusicMenuOpen"
 							:work="musicCover"
 							:content-key="`${musicCover.id}:${locale}`"
 							:label="musicTrackLabel"
@@ -319,9 +343,11 @@
 				/></template>
 				<template #logo>
 					<SkeletonImage
+						loading="eager"
+						:reveal-cached-immediately="true"
 						:src="onlineCoverUrl"
 						:alt="$t('main.index.card.online.title')"
-						class="block h-full w-full rounded-lg border border-slate-300/60 bg-slate-200/60 backdrop-blur-xl dark:border-slate-800/60 dark:bg-slate-800/60"
+						class="block h-full w-full rounded-lg border border-slate-300/60 bg-slate-200/60 card-logo-glass backdrop-blur-none lg:backdrop-blur-xl dark:border-slate-800/60 dark:bg-slate-800/60"
 						image-class="block h-full w-full rounded-lg object-cover"
 						skeleton-class="rounded-lg"
 					/>
@@ -372,7 +398,7 @@
 				/></template>
 				<template #logo>
 					<div
-						class="relative h-full w-full overflow-hidden rounded-lg border border-slate-300/60 bg-slate-200/60 select-none backdrop-blur-xl dark:border-slate-800/60 dark:bg-slate-800/60"
+						class="relative h-full w-full overflow-hidden rounded-lg border border-slate-300/60 bg-slate-200/60 select-none card-logo-glass backdrop-blur-none lg:backdrop-blur-xl dark:border-slate-800/60 dark:bg-slate-800/60"
 						role="img"
 						:aria-label="$t('main.index.card.language.title')"
 					>
@@ -413,6 +439,7 @@ import TechnologyCardBackground from '~/components/cards/TechnologyCardBackgroun
 import PersonalCardBackground from '~/components/cards/PersonalCardBackground.vue'
 import ImageCardBackground from '~/components/cards/ImageCardBackground.vue'
 import HighlightText from '~/components/common/HighlightText.vue'
+import MobileCardNavigationStack from '~/components/cards/MobileCardNavigationStack.vue'
 
 import avatarMark from '~/assets/resources/sitemark/avatar_mark.webp'
 import FPMSLogo from '~/assets/resources/homepage/education/fpms.webp?w=320&q=90&thumbnail'
@@ -434,18 +461,22 @@ import onlineCoverUrl from '~/assets/resources/homepage/night/cover.svg?url'
 type EducationStage = 'bachelor' | 'specialty' | 'highSchool' | 'juniorSchool'
 
 const { t, te, locale } = useI18n({ useScope: 'global' })
+const cardGrid = ref<HTMLElement | null>(null)
+const isAcgVisible = ref(false)
+const isMusicVisible = ref(false)
 const isAcgMenuOpen = ref(false)
 const isMusicMenuOpen = ref(false)
 const {
 	covers: acgCovers,
 	current: acgCurrent,
 	deferFor: deferAcg,
-} = useAcgPreference(isAcgMenuOpen)
+} = useAcgPreference(computed(() => isAcgMenuOpen.value || !isAcgVisible.value))
 const acgSubtitle = computed(() =>
 	t(`main.index.card.acg.categories.${acgCurrent.value.category}.subtitle`),
 )
-const { cover: musicCover, deferFor: deferMusic } =
-	useMusicPreference(isMusicMenuOpen)
+const { cover: musicCover, deferFor: deferMusic } = useMusicPreference(
+	computed(() => isMusicMenuOpen.value || !isMusicVisible.value),
+)
 const musicSongTitle = computed(() =>
 	musicCover.value.category === 'chilichill'
 		? musicCover.value.title.replace(/\s*[(（][^()（）]*[)）]\s*$/u, '')
@@ -568,6 +599,11 @@ const onlineLinkClass = (index: number) => [
 </script>
 
 <style scoped>
+@media (hover: none) {
+	.card-logo-glass {
+		backdrop-filter: none;
+	}
+}
 .preference-slide-enter-active,
 .preference-slide-leave-active {
 	transition:
