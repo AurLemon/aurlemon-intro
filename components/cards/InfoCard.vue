@@ -78,7 +78,7 @@
 					class="min-w-0 text-center"
 					:class="
 						smoothWidth
-							? 'flex-none transition-[width] duration-500 ease-out motion-reduce:transition-none'
+							? 'flex-1 lg:flex-none transition-none lg:transition-[width] lg:duration-500 lg:ease-out motion-reduce:transition-none'
 							: 'flex-1 lg:flex-none'
 					"
 					:style="smoothWidth ? smoothColumnStyle : undefined"

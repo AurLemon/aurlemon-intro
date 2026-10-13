@@ -8,7 +8,7 @@
 			:tabindex="dismissed ? -1 : undefined"
 			color="neutral"
 			variant="soft"
-			class="card-navigation-surface group/hint relative max-w-full shrink-0 gap-1.5 rounded-full bg-transparent px-3 py-1.25 text-xs font-normal text-slate-500 shadow-none hover:bg-transparent hover:text-slate-500 focus-visible:ring-2 focus-visible:ring-slate-400 dark:bg-transparent dark:text-slate-400 dark:hover:bg-transparent dark:hover:text-slate-400"
+			class="card-navigation-surface group/hint relative max-w-full shrink-0 gap-1.5 overflow-hidden rounded-full bg-transparent px-3 py-1.25 text-xs font-normal text-slate-500 shadow-none hover:bg-transparent hover:text-slate-500 focus-visible:ring-2 focus-visible:ring-slate-400 dark:bg-transparent dark:text-slate-400 dark:hover:bg-transparent dark:hover:text-slate-400"
 		>
 			<span
 				class="card-navigation-shell pointer-events-none absolute inset-0 rounded-full border-2 border-[color-mix(in_srgb,var(--color-slate-400)_60%,var(--color-slate-200))] bg-(--color-surface-0) group-hover/hint:bg-(--color-surface-1) group-focus-visible/hint:bg-(--color-surface-1) dark:border-[color-mix(in_srgb,var(--color-slate-700)_80%,var(--color-slate-800))] dark:bg-(--color-surface-1) dark:group-hover/hint:bg-(--color-surface-2) dark:group-focus-visible/hint:bg-(--color-surface-2)"
@@ -95,7 +95,10 @@ onBeforeUnmount(clearHideTimer)
 
 .card-navigation-surface {
 	opacity: 0;
-	transition: opacity 420ms ease;
+	clip-path: inset(17.5% 41% round 999px);
+	transition:
+		opacity 650ms ease,
+		clip-path 800ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* 只缩放装饰外壳，文字不跟随缩放；不测量或逐帧修改宽高。 */
@@ -103,14 +106,14 @@ onBeforeUnmount(clearHideTimer)
 	transform: scale(0.18, 0.65);
 	transform-origin: center;
 	transition:
-		transform 560ms cubic-bezier(0.22, 1, 0.36, 1),
+		transform 800ms cubic-bezier(0.22, 1, 0.36, 1),
 		background-color 180ms ease;
 }
 
 .card-navigation-arrow,
 .card-navigation-label {
 	opacity: 0;
-	transition: opacity 260ms ease;
+	transition: opacity 380ms ease;
 }
 
 :global(.group\/card:hover .card-navigation:not(.is-dismissed)),
@@ -129,7 +132,9 @@ onBeforeUnmount(clearHideTimer)
 		.card-navigation-surface
 ) {
 	opacity: 1;
-	transition-duration: 200ms;
+	clip-path: inset(0% 0% round 999px);
+	transition-duration: 360ms, 800ms;
+	transition-delay: 0ms, 100ms;
 }
 
 :global(
@@ -154,7 +159,7 @@ onBeforeUnmount(clearHideTimer)
 ) {
 	opacity: 1;
 	transform: none;
-	transition-delay: 220ms;
+	transition-delay: 300ms;
 }
 
 :global(
@@ -167,11 +172,11 @@ onBeforeUnmount(clearHideTimer)
 ) {
 	opacity: 1;
 	transform: none;
-	transition-delay: 260ms;
+	transition-delay: 360ms;
 }
 
 .card-navigation-nudge {
-	animation: card-arrow-nudge 1400ms ease-in-out 620ms infinite;
+	animation: card-arrow-nudge 1400ms ease-in-out 820ms infinite;
 	animation-play-state: paused;
 }
 
@@ -199,7 +204,7 @@ onBeforeUnmount(clearHideTimer)
 .card-navigation-stroke {
 	stroke-dasharray: 1;
 	stroke-dashoffset: 1;
-	transition: stroke-dashoffset 400ms ease;
+	transition: stroke-dashoffset 520ms ease;
 }
 
 :global(
@@ -211,7 +216,7 @@ onBeforeUnmount(clearHideTimer)
 		.card-navigation-stroke
 ) {
 	stroke-dashoffset: 0;
-	transition-delay: 220ms;
+	transition-delay: 300ms;
 }
 
 /* 透明入口保留键盘可达性，聚焦后由所属卡片展开。 */
