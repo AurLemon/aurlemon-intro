@@ -4,8 +4,10 @@
 		class="group group/card relative h-40 rounded-xl border-6 border-slate-200 dark:border-slate-800"
 		@mouseenter="isHovered = true"
 		@mouseleave="isHovered = false"
+		@focusin="isFocused = true"
+		@focusout="handleFocusOut"
 	>
-		<slot name="navigation" :hovered="isHovered" />
+		<slot name="navigation" :hovered="isHovered" :focused="isFocused" />
 		<div
 			class="pointer-events-none absolute inset-[-6px] z-2 rounded-xl border-6 border-slate-400/60 opacity-0 transition-opacity duration-120 group-hover:opacity-100 dark:border-slate-700/80"
 			aria-hidden="true"
@@ -137,6 +139,7 @@ interface TitleSlotProps {
 
 interface NavigationSlotProps {
 	hovered: boolean
+	focused: boolean
 }
 
 interface Slots {
@@ -163,7 +166,13 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const isHovered = ref(false)
+const isFocused = ref(false)
 const card = ref<HTMLElement | null>(null)
+const handleFocusOut = (event: FocusEvent) => {
+	isFocused.value =
+		event.relatedTarget instanceof Node &&
+		card.value?.contains(event.relatedTarget) === true
+}
 const contentRow = ref<HTMLElement | null>(null)
 const textColumn = ref<HTMLElement | null>(null)
 const logo = ref<HTMLElement | null>(null)

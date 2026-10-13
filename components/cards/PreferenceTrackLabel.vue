@@ -66,13 +66,13 @@
 					:href="work.href"
 					target="_blank"
 					rel="noopener noreferrer"
-					class="block break-words rounded-sm text-base leading-5 font-semibold text-slate-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 dark:text-slate-200"
+					class="flex items-center gap-1 rounded-sm text-base leading-5 font-semibold text-slate-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 dark:text-slate-200"
 				>
-					{{ work.title }}
+					<span class="min-w-0 break-words">{{ work.title }}</span>
 					<UIcon
 						name="i-lucide-external-link"
 						mode="svg"
-						class="ml-1 inline-block size-3.5 align-middle text-slate-500 dark:text-slate-400"
+						class="size-3.5 shrink-0 text-slate-500 dark:text-slate-400"
 					/>
 				</a>
 				<time
