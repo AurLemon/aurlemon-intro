@@ -71,7 +71,7 @@
 			"name": "柠檬",
 			"line1Tail": "。",
 			"lemonEmoji": "🍋",
-			"line2": "TypeScript 全栈开发{education}，{age} 岁，INF/TJ，福建福州人。",
+			"line2": "TypeScript 全栈开发者{education}，{age} 岁，INF/TJ，福建福州人。",
 			"educationSegment": "，{grade}",
 			"studyYears": {
 				"undergraduate": {
