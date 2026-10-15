@@ -1,6 +1,7 @@
 <template>
 	<div
 		ref="card"
+		data-reading-card
 		:data-mobile-motion="isMobileMotion"
 		class="group group/card relative h-40 rounded-xl border-6 border-slate-200 dark:border-slate-800"
 		@pointerenter="handlePointerEnter"

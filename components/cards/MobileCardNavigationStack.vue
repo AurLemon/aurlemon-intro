@@ -11,7 +11,7 @@
 					:to="localePath(hint.to)"
 					:tabindex="index === 0 ? undefined : -1"
 					:aria-hidden="index > 0 ? true : undefined"
-					class="mobile-card-hint absolute top-0 flex w-72 max-w-full items-center justify-center gap-1.5 rounded-full border-2 border-slate-300 px-3 py-1 text-xs leading-4 font-normal text-slate-500 dark:border-slate-700 dark:text-slate-400"
+					class="mobile-card-hint absolute top-0 flex w-72 max-w-full items-center justify-center gap-1.5 rounded-full border-2 border-slate-300 px-3 py-[5px] text-xs leading-4 font-normal text-slate-500 dark:border-slate-700 dark:text-slate-400"
 					:class="
 						index === 0
 							? 'pointer-events-auto bg-(--color-surface-0) shadow-md shadow-slate-950/10 dark:bg-(--color-surface-1) dark:shadow-black/25'
