@@ -51,7 +51,7 @@
 			</div>
 		</Transition>
 		<div
-			class="bangumi-footer mt-3 grid items-start gap-x-3 gap-y-1.5 font-sans text-sm font-normal text-slate-600 dark:text-slate-300"
+			class="bangumi-footer mt-3 grid items-start gap-x-3 gap-y-3.5 font-sans text-sm font-normal text-slate-600 dark:text-slate-300"
 		>
 			<div class="flex min-w-0 items-center gap-2">
 				<div
@@ -119,12 +119,12 @@
 					</TransitionGroup>
 				</div>
 			</div>
-			<div ref="accountRow" class="bangumi-account justify-self-end">
+			<div ref="accountRow" class="bangumi-account sm:justify-self-end">
 				<NuxtLink
 					:to="profileUrl"
 					target="_blank"
 					rel="noopener noreferrer"
-					class="group/bangumi inline-flex items-center gap-1.5"
+					class="group/bangumi inline-flex items-center gap-1.5 ml-1 sm:ml-0"
 				>
 					<BangumiLogo aria-hidden="true" class="h-[17px] w-auto shrink-0" />
 					<span
