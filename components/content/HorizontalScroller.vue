@@ -14,6 +14,7 @@
 			<slot />
 		</div>
 		<CarouselNavigation
+			blur-edges
 			:can-scroll-left="canLeft"
 			:can-scroll-right="canRight"
 			:show-edge-overlay="showEdgeOverlay"
