@@ -11,7 +11,12 @@
 				:data-cover-id="cover.id"
 				aria-hidden="true"
 				class="acg-stack-layer absolute inset-y-0 w-[68%]"
-				:style="{ left: `${[0, 12, 32][index]}%`, zIndex: index }"
+				:style="{
+					left: `${[0, 12, 32][index]}%`,
+					zIndex: index,
+					'--cover-focus-blur': `${[0.9, 0.45, 0][index]}px`,
+					'--cover-focus-opacity': [0.88, 0.94, 1][index],
+				}"
 			>
 				<SkeletonImage
 					loading="eager"
@@ -41,45 +46,43 @@ defineProps<Props>()
 </script>
 
 <style scoped>
+.acg-stack-layer {
+	filter: blur(var(--cover-focus-blur));
+	opacity: var(--cover-focus-opacity);
+	transition:
+		filter 520ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+		opacity 280ms ease-out;
+}
 .acg-stack-move,
 .acg-stack-enter-active,
 .acg-stack-leave-active {
 	transition:
-		transform 600ms cubic-bezier(0.22, 1, 0.36, 1),
-		opacity 600ms ease,
-		filter 600ms ease;
-}
-.acg-stack-move {
-	/* Vue 的 FLIP 检测要求 transform transition 比 CSS animation 更长。 */
-	animation: acg-stack-rearrange 500ms ease;
+		transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+		opacity 280ms ease-out,
+		filter 520ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 .acg-stack-enter-from {
 	transform: translateX(-16px) scale(0.92);
 	opacity: 0;
 	filter: blur(4px);
 }
-.acg-stack-leave-to {
-	transform: translateX(16px) scale(0.92);
-	opacity: 0;
-	filter: blur(4px);
+.acg-stack-leave-active {
+	transition:
+		transform 320ms ease-in,
+		opacity 220ms ease-in,
+		filter 280ms ease-in;
 }
-@keyframes acg-stack-rearrange {
-	0%,
-	100% {
-		opacity: 1;
-		filter: blur(0);
-	}
-	50% {
-		opacity: 0.75;
-		filter: blur(1.5px);
-	}
+.acg-stack-leave-to {
+	transform: translateX(10px) scale(0.96);
+	opacity: 0;
+	filter: blur(2px);
 }
 @media (prefers-reduced-motion: reduce) {
+	.acg-stack-layer,
 	.acg-stack-move,
 	.acg-stack-enter-active,
 	.acg-stack-leave-active {
 		transition: none;
-		animation: none;
 	}
 	.acg-stack-enter-from,
 	.acg-stack-leave-to {

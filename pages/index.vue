@@ -254,11 +254,16 @@
 				</template>
 				<template #title>{{ $t('main.index.card.acg.title') }}</template>
 				<template #subtitle>
-					<Transition name="preference-text" mode="out-in">
-						<span :key="acgSubtitle" class="inline-block">{{
-							acgSubtitle
-						}}</span>
-					</Transition>
+					<span class="relative grid w-full">
+						<Transition name="preference-text">
+							<span
+								:key="acgSubtitle"
+								data-preference-subtitle
+								class="col-start-1 row-start-1 inline-block w-max justify-self-center"
+								>{{ acgSubtitle }}</span
+							>
+						</Transition>
+					</span>
 				</template>
 				<template #type>
 					<div
@@ -313,11 +318,16 @@
 				</template>
 				<template #title>{{ $t('main.index.card.music.title') }}</template>
 				<template #subtitle>
-					<Transition name="preference-slide" mode="out-in">
-						<span :key="musicSubtitle" class="inline-block">{{
-							musicSubtitle
-						}}</span>
-					</Transition>
+					<span class="relative grid w-full">
+						<Transition name="preference-slide">
+							<span
+								:key="musicSubtitle"
+								data-preference-subtitle
+								class="col-start-1 row-start-1 inline-block w-max justify-self-center"
+								>{{ musicSubtitle }}</span
+							>
+						</Transition>
+					</span>
 				</template>
 				<template #type>
 					<div
@@ -604,60 +614,60 @@ const onlineLinkClass = (index: number) => [
 		backdrop-filter: none;
 	}
 }
+/* 轮廓先显现、随后对焦，最后由位移减速收尾。 */
 .preference-slide-enter-active,
-.preference-slide-leave-active {
+.preference-text-enter-active {
 	transition:
-		opacity 260ms ease,
-		filter 260ms ease,
-		transform 260ms ease;
+		opacity 220ms ease-out 140ms,
+		filter 380ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 140ms,
+		transform 500ms cubic-bezier(0.22, 1, 0.36, 1) 140ms;
 }
-.preference-slide-leave-active {
-	/* 作品名先开始交接，副标题稍后以略慢的节奏接上。 */
-	transition-delay: 120ms;
+.preference-slide-leave-active,
+.preference-text-leave-active {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	/* 独立 translate 负责居中，transform 只负责离场位移。 */
+	translate: -50% 0;
+	transition:
+		opacity 180ms ease-in 60ms,
+		filter 220ms ease-in 60ms,
+		transform 220ms ease-in 60ms;
+}
+.preference-slide-enter-from,
+.preference-text-enter-from {
+	opacity: 0;
+	filter: blur(4px);
 }
 .preference-slide-enter-from {
+	transform: translateX(-10px);
+}
+.preference-text-enter-from {
+	transform: translateY(6px);
+}
+.preference-slide-leave-to,
+.preference-text-leave-to {
 	opacity: 0;
-	filter: blur(4px);
-	transform: translateX(-12px);
+	filter: blur(2px);
 }
 .preference-slide-leave-to {
-	opacity: 0;
-	filter: blur(4px);
-	transform: translateX(12px);
+	transform: translateX(5px);
+}
+.preference-text-leave-to {
+	transform: translateY(-3px);
 }
 @media (prefers-reduced-motion: reduce) {
 	.preference-slide-enter-active,
-	.preference-slide-leave-active {
-		transition: none;
-	}
-	.preference-slide-enter-from,
-	.preference-slide-leave-to {
-		transform: none;
-		filter: none;
-	}
-}
-
-.preference-text-enter-active,
-.preference-text-leave-active {
-	transition:
-		opacity 260ms ease,
-		filter 260ms ease;
-}
-.preference-text-leave-active {
-	transition-delay: 120ms;
-}
-.preference-text-enter-from,
-.preference-text-leave-to {
-	opacity: 0;
-	filter: blur(4px);
-}
-@media (prefers-reduced-motion: reduce) {
+	.preference-slide-leave-active,
 	.preference-text-enter-active,
 	.preference-text-leave-active {
 		transition: none;
 	}
+	.preference-slide-enter-from,
+	.preference-slide-leave-to,
 	.preference-text-enter-from,
 	.preference-text-leave-to {
+		transform: none;
 		filter: none;
 	}
 }
