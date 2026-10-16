@@ -77,9 +77,7 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 
 		return options.cycle.value !== false
 	})
-	const cycleEnabled = computed(
-		() => hasSideCopies.value && buttonAlwaysVisible.value,
-	)
+	const cycleEnabled = computed(() => hasSideCopies.value)
 	const carouselImages = computed<CarouselImageItem[]>(() => {
 		const images = orderedNormalizedImages.value
 
@@ -107,8 +105,6 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 			return 0
 		}
 
-		if (!cycleEnabled.value)
-			return Math.min(Math.max(index, 0), imageCount.value - 1)
 		return ((index % imageCount.value) + imageCount.value) % imageCount.value
 	}
 
@@ -130,15 +126,11 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 			)
 		}
 
-		if (cycleEnabled.value && direction === 'left' && fromOrderedIndex === 0) {
+		if (direction === 'left' && fromOrderedIndex === 0) {
 			return realItemStartIndex - 1
 		}
 
-		if (
-			cycleEnabled.value &&
-			direction === 'right' &&
-			fromOrderedIndex === imageCount.value - 1
-		) {
+		if (direction === 'right' && fromOrderedIndex === imageCount.value - 1) {
 			return realItemStartIndex + imageCount.value
 		}
 
@@ -160,12 +152,12 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		getCarouselSidePadding(normalizedImages.value.at(-1)?.width),
 	)
 	const leftButtonClass = computed(() =>
-		cycleEnabled.value || currentImageIndex.value > 0
+		buttonAlwaysVisible.value || currentImageIndex.value > 0
 			? 'scale-100 opacity-100'
 			: 'pointer-events-none scale-90 opacity-0',
 	)
 	const rightButtonClass = computed(() =>
-		cycleEnabled.value || currentImageIndex.value < imageCount.value - 1
+		buttonAlwaysVisible.value || currentImageIndex.value < imageCount.value - 1
 			? 'scale-100 opacity-100'
 			: 'pointer-events-none scale-90 opacity-0',
 	)
@@ -265,9 +257,8 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 			return
 		}
 
-		canScrollLeft.value = cycleEnabled.value || currentImageIndex.value > 0
-		canScrollRight.value =
-			cycleEnabled.value || currentImageIndex.value < imageCount.value - 1
+		canScrollLeft.value = true
+		canScrollRight.value = true
 	}
 
 	const clearManualScrollTimeout = (): void => {
@@ -564,7 +555,6 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		const targetOrderedIndex = normalizeOrderedIndex(fromOrderedIndex + delta)
 		if (targetOrderedIndex === fromOrderedIndex) return
 		currentImageIndex.value = targetOrderedIndex
-		updateScrollState()
 		scrollToDisplayIndex(
 			getDisplayIndexForOrderedIndex(targetOrderedIndex, {
 				direction,
@@ -632,6 +622,7 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		carouselImages,
 		carouselSidePaddingLeft,
 		carouselSidePaddingRight,
+		imageCount,
 		handlePreviewOpenChange,
 		handleScroll,
 		isLoopDecorationItem,

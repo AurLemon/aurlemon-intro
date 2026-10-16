@@ -53,6 +53,7 @@
 				:can-scroll-right="canScrollRight"
 				:hover-only="false"
 				hide-compact-edges
+				:strong-edge-overlay="imageCount >= 3"
 				:button-position-class="navigationButtonClass"
 				:button-style="navigationButtonStyle"
 				:left-button-class="leftButtonClass"
@@ -127,6 +128,7 @@ const {
 	carouselImages,
 	carouselSidePaddingLeft,
 	carouselSidePaddingRight,
+	imageCount,
 	handlePreviewOpenChange,
 	handleScroll,
 	isLoopDecorationItem,

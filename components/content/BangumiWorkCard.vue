@@ -13,25 +13,36 @@
 				ref="frame"
 				class="relative isolate aspect-[5/7] w-full overflow-hidden rounded-lg select-none bg-(--color-surface-2) [clip-path:inset(0_round_var(--radius-lg))] dark:bg-(--color-surface-1)"
 			>
-				<img
-					v-for="layer in coverLayers"
-					:key="layer.src"
-					:src="layer.src"
-					:alt="layer.previous ? '' : item.name"
-					:aria-hidden="layer.previous || undefined"
-					decoding="async"
-					referrerpolicy="no-referrer"
-					draggable="false"
-					@dragstart.prevent
-					class="absolute inset-0 h-full w-full object-cover"
-					:class="
-						layer.previous
-							? 'bangumi-cover-previous'
-							: ['bangumi-cover z-1', { 'bangumi-cover-covered': coverCovered }]
-					"
-					@transitionend="!layer.previous && finishCover($event)"
-					@error="!layer.previous && onDisplayedCoverError($event)"
-				/>
+				<template v-for="layer in coverLayers" :key="layer.src">
+					<img
+						v-if="layer.previous"
+						:src="layer.src"
+						alt=""
+						aria-hidden="true"
+						decoding="async"
+						referrerpolicy="no-referrer"
+						draggable="false"
+						class="absolute inset-0 h-full w-full object-cover bangumi-cover-previous"
+						@dragstart.prevent
+					/>
+					<SkeletonImage
+						v-else
+						:src="layer.src"
+						:alt="item.name"
+						:loading="visible ? 'eager' : 'lazy'"
+						decoding="async"
+						referrerpolicy="no-referrer"
+						class="absolute inset-0 z-1 h-full w-full"
+						image-class="h-full w-full object-cover"
+						skeleton-class="rounded-lg"
+						:class="[
+							'bangumi-cover',
+							{ 'bangumi-cover-covered': coverCovered },
+						]"
+						@transitionend="finishCover"
+						@error="onDisplayedCoverError"
+					/>
+				</template>
 				<p
 					v-if="failedUrl"
 					class="absolute inset-0 flex items-center justify-center px-3 pb-12 text-center font-sans text-xs text-slate-500"
@@ -55,7 +66,7 @@
 				/>
 				<span
 					aria-hidden="true"
-					class="pointer-events-none absolute inset-0 z-20 rounded-lg border border-slate-300/80 transition-colors duration-200 group-hover/work:border-slate-400 dark:border-slate-600/80 dark:group-hover/work:border-slate-500 motion-reduce:transition-none"
+					class="pointer-events-none absolute inset-0 z-20 rounded-lg border border-slate-200 dark:border-slate-800"
 				/>
 			</div>
 			<p
@@ -124,8 +135,9 @@ const completeCover = () => {
 	completionTimer = undefined
 	void updateCover()
 }
-const finishCover = (event: TransitionEvent) => {
-	if (event.propertyName === 'opacity' && !coverCovered.value) completeCover()
+const finishCover = (event?: TransitionEvent) => {
+	if ((!event || event.propertyName === 'opacity') && !coverCovered.value)
+		completeCover()
 }
 const intersectsViewport = (): boolean => {
 	const element = frame.value
