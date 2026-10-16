@@ -35,11 +35,14 @@ export const usePageMenuNavigation = () => {
 		item: MenuItem,
 		currentPath: string = route.path,
 	): boolean => {
-		const target = resolveTo(item)
+		const normalizedCurrentPath = normalizePath(currentPath)
 		if (item.to === '/') {
-			return currentPath === target
+			return normalizedCurrentPath === '/'
 		}
-		return currentPath === target || currentPath.startsWith(`${target}/`)
+		return (
+			normalizedCurrentPath === item.to ||
+			normalizedCurrentPath.startsWith(`${item.to}/`)
+		)
 	}
 
 	const currentFallback = computed<MenuItem | null>(() => {

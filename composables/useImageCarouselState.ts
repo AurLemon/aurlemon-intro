@@ -69,7 +69,7 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 	const normalizedImages = computed(() =>
 		orderedNormalizedImages.value.map(({ sourceIndex: _, ...image }) => image),
 	)
-	const cycleEnabled = computed(() => normalizedImages.value.length > 1)
+	const hasSideCopies = computed(() => normalizedImages.value.length > 1)
 	const buttonAlwaysVisible = computed(() => {
 		if (typeof options.cycle.value === 'string') {
 			return options.cycle.value !== 'false'
@@ -77,10 +77,13 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 
 		return options.cycle.value !== false
 	})
+	const cycleEnabled = computed(
+		() => hasSideCopies.value && buttonAlwaysVisible.value,
+	)
 	const carouselImages = computed<CarouselImageItem[]>(() => {
 		const images = orderedNormalizedImages.value
 
-		if (!cycleEnabled.value || images.length <= 1) {
+		if (!hasSideCopies.value || images.length <= 1) {
 			return images
 		}
 
@@ -97,13 +100,15 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 	const imageCount = computed(() => normalizedImages.value.length)
 
 	const getRealItemStartIndex = (): number =>
-		cycleEnabled.value && imageCount.value > 1 ? imageCount.value : 0
+		hasSideCopies.value && imageCount.value > 1 ? imageCount.value : 0
 
 	const normalizeOrderedIndex = (index: number): number => {
 		if (imageCount.value <= 0) {
 			return 0
 		}
 
+		if (!cycleEnabled.value)
+			return Math.min(Math.max(index, 0), imageCount.value - 1)
 		return ((index % imageCount.value) + imageCount.value) % imageCount.value
 	}
 
@@ -118,18 +123,22 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		const direction = options?.direction
 		const fromOrderedIndex = options?.fromOrderedIndex ?? orderedIndex
 
-		if (!cycleEnabled.value || imageCount.value <= 1) {
+		if (!hasSideCopies.value || imageCount.value <= 1) {
 			return Math.min(
 				Math.max(orderedIndex, 0),
 				Math.max(imageCount.value - 1, 0),
 			)
 		}
 
-		if (direction === 'left' && fromOrderedIndex === 0) {
+		if (cycleEnabled.value && direction === 'left' && fromOrderedIndex === 0) {
 			return realItemStartIndex - 1
 		}
 
-		if (direction === 'right' && fromOrderedIndex === imageCount.value - 1) {
+		if (
+			cycleEnabled.value &&
+			direction === 'right' &&
+			fromOrderedIndex === imageCount.value - 1
+		) {
 			return realItemStartIndex + imageCount.value
 		}
 
@@ -151,12 +160,12 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		getCarouselSidePadding(normalizedImages.value.at(-1)?.width),
 	)
 	const leftButtonClass = computed(() =>
-		buttonAlwaysVisible.value || currentImageIndex.value > 0
+		cycleEnabled.value || currentImageIndex.value > 0
 			? 'scale-100 opacity-100'
 			: 'pointer-events-none scale-90 opacity-0',
 	)
 	const rightButtonClass = computed(() =>
-		buttonAlwaysVisible.value || currentImageIndex.value < imageCount.value - 1
+		cycleEnabled.value || currentImageIndex.value < imageCount.value - 1
 			? 'scale-100 opacity-100'
 			: 'pointer-events-none scale-90 opacity-0',
 	)
@@ -175,7 +184,7 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 	}
 
 	const isLoopDecorationItem = (displayIndex: number): boolean => {
-		if (!cycleEnabled.value || imageCount.value <= 1) {
+		if (!hasSideCopies.value || imageCount.value <= 1) {
 			return false
 		}
 
@@ -256,8 +265,9 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 			return
 		}
 
-		canScrollLeft.value = true
-		canScrollRight.value = true
+		canScrollLeft.value = cycleEnabled.value || currentImageIndex.value > 0
+		canScrollRight.value =
+			cycleEnabled.value || currentImageIndex.value < imageCount.value - 1
 	}
 
 	const clearManualScrollTimeout = (): void => {
@@ -434,6 +444,7 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		hasUserNavigated.value = true
 		scrollMode.value = 'manual'
 		syncCurrentIndexFromViewport()
+		updateScrollState()
 		scheduleManualScrollSettle()
 	}
 
@@ -551,7 +562,9 @@ export const useImageCarouselState = (options: ImageCarouselStateOptions) => {
 		const delta = direction === 'right' ? 1 : -1
 		const fromOrderedIndex = currentImageIndex.value
 		const targetOrderedIndex = normalizeOrderedIndex(fromOrderedIndex + delta)
+		if (targetOrderedIndex === fromOrderedIndex) return
 		currentImageIndex.value = targetOrderedIndex
+		updateScrollState()
 		scrollToDisplayIndex(
 			getDisplayIndexForOrderedIndex(targetOrderedIndex, {
 				direction,

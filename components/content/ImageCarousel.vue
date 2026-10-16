@@ -1,5 +1,5 @@
 <template>
-	<div class="my-6 max-w-full min-w-0">
+	<div class="my-6 max-w-full min-w-0 [container-type:inline-size]">
 		<div class="relative">
 			<div
 				ref="scrollContainer"
@@ -48,35 +48,17 @@
 				</div>
 			</div>
 
-			<div
-				class="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-linear-to-r from-[#FAFAFA] to-transparent opacity-0 transition-opacity duration-200 dark:from-[#192024]"
-				:class="{ 'opacity-100': canScrollLeft }"
+			<CarouselNavigation
+				:can-scroll-left="canScrollLeft"
+				:can-scroll-right="canScrollRight"
+				:hover-only="false"
+				hide-compact-edges
+				:button-position-class="navigationButtonClass"
+				:button-style="navigationButtonStyle"
+				:left-button-class="leftButtonClass"
+				:right-button-class="rightButtonClass"
+				@navigate="scrollImages"
 			/>
-			<div
-				class="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-linear-to-l from-[#FAFAFA] to-transparent opacity-0 transition-opacity duration-200 dark:from-[#192024]"
-				:class="{ 'opacity-100': canScrollRight }"
-			/>
-
-			<button
-				type="button"
-				class="absolute left-3 z-20 flex h-10 w-10 -translate-y-1/2 touch-manipulation items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-lg ring-1 ring-slate-200/80 backdrop-blur transition duration-200 hover:bg-white hover:text-slate-950 dark:bg-slate-950/80 dark:text-slate-300 dark:ring-white/10 dark:hover:bg-slate-950 dark:hover:text-slate-50"
-				:class="[navigationButtonClass, leftButtonClass]"
-				:style="navigationButtonStyle"
-				:aria-label="t('content.imageCarousel.scrollLeft')"
-				@click.stop="scrollImages('left')"
-			>
-				<UIcon name="i-lucide-chevron-left" class="text-xl" />
-			</button>
-			<button
-				type="button"
-				class="absolute right-3 z-20 flex h-10 w-10 -translate-y-1/2 touch-manipulation items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-lg ring-1 ring-slate-200/80 backdrop-blur transition duration-200 hover:bg-white hover:text-slate-950 dark:bg-slate-950/80 dark:text-slate-300 dark:ring-white/10 dark:hover:bg-slate-950 dark:hover:text-slate-50"
-				:class="[navigationButtonClass, rightButtonClass]"
-				:style="navigationButtonStyle"
-				:aria-label="t('content.imageCarousel.scrollRight')"
-				@click.stop="scrollImages('right')"
-			>
-				<UIcon name="i-lucide-chevron-right" class="text-xl" />
-			</button>
 		</div>
 
 		<figcaption
@@ -236,9 +218,13 @@ const getFigureStyle = (
 	if (isAutoWidth.value) {
 		const aspectRatio = getImageAspectRatio(image)
 
-		style.width = `calc(var(--content-image-height) * ${aspectRatio})`
+		style['--content-image-height'] = image.height
+		style['--content-image-aspect-ratio'] = `${aspectRatio}`
+		style['--content-image-width'] =
+			`calc(var(--content-image-height) * ${aspectRatio})`
 
 		if (props.mobileHeight) {
+			style['--content-image-mobile-height'] = props.mobileHeight
 			style['--content-image-mobile-width'] =
 				`calc(var(--content-image-mobile-height) * ${aspectRatio})`
 		}
@@ -291,7 +277,10 @@ const navigationButtonStyle = computed<ResponsiveImageStyle>(() => {
 		'--content-image-nav-height': resolvedDefaultHeight.value,
 	}
 
-	if (props.mobileHeight) {
+	if (isAutoWidth.value && carouselImages.value[0]) {
+		style['--content-image-nav-mobile-height'] =
+			`min(${props.mobileHeight || resolvedDefaultHeight.value}, calc(84cqw / ${getImageAspectRatio(carouselImages.value[0])}))`
+	} else if (props.mobileHeight) {
 		style['--content-image-nav-mobile-height'] = props.mobileHeight
 	}
 
@@ -332,30 +321,37 @@ const navigationButtonStyle = computed<ResponsiveImageStyle>(() => {
 	filter: grayscale(0.22) saturate(0.72) brightness(0.9);
 }
 
-.content-image-carousel-nav-button {
-	top: calc(var(--content-image-nav-height) / 2);
-}
-
 @media (max-width: 767.98px) {
-	.content-image-carousel-nav-button {
-		top: calc(
-			var(--content-image-nav-mobile-height, var(--content-image-nav-height)) /
-				2
+	.content-image-width-bound {
+		width: min(
+			84cqw,
+			var(--content-image-mobile-width, var(--content-image-width))
+		);
+		flex-basis: min(
+			84cqw,
+			var(--content-image-mobile-width, var(--content-image-width))
 		);
 	}
 
-	.content-image-width-bound {
-		width: var(--content-image-mobile-width, var(--content-image-width));
-		flex-basis: var(--content-image-mobile-width, var(--content-image-width));
-	}
-
 	.content-image-auto-width-bound {
-		width: var(--content-image-mobile-width, var(--content-image-width));
-		flex-basis: var(--content-image-mobile-width, var(--content-image-width));
+		width: min(
+			84cqw,
+			var(--content-image-mobile-width, var(--content-image-width))
+		);
+		flex-basis: min(
+			84cqw,
+			var(--content-image-mobile-width, var(--content-image-width))
+		);
 	}
 
 	.content-image-height-bound {
 		height: var(--content-image-mobile-height, var(--content-image-height));
+	}
+	.content-image-auto-width-bound .content-image-height-bound {
+		height: min(
+			var(--content-image-mobile-height, var(--content-image-height)),
+			calc(84cqw / var(--content-image-aspect-ratio, 1))
+		);
 	}
 }
 </style>

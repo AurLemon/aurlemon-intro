@@ -360,7 +360,7 @@ onBeforeUnmount(() => {
 								:key="item.key"
 								:to="resolveTo(item)"
 								data-menu-link
-								class="menu-link relative z-10 inline-flex h-8.5 items-center rounded-full px-2 text-base leading-none whitespace-nowrap transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+								class="menu-link relative z-10 inline-flex h-8.5 items-center rounded-full px-2 text-base leading-none whitespace-nowrap transition-colors duration-200 ease-in-out motion-reduce:transition-none"
 								:class="
 									isPathActive(item)
 										? 'font-semibold text-primary dark:text-sky-300'
@@ -382,7 +382,7 @@ onBeforeUnmount(() => {
 									:key="displayedFallback.to"
 									:to="resolveTo(displayedFallback)"
 									data-menu-link
-									class="menu-link relative z-10 flex h-8.5 items-center rounded-full px-2 text-base leading-none whitespace-nowrap font-semibold text-primary transition-colors duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] dark:text-sky-300"
+									class="menu-link relative z-10 flex h-8.5 items-center rounded-full px-2 text-base leading-none whitespace-nowrap font-semibold text-primary transition-colors duration-200 ease-in-out motion-reduce:transition-none dark:text-sky-300"
 									aria-current="page"
 								>
 									{{ displayedFallback.label }}

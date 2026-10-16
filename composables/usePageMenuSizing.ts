@@ -78,7 +78,8 @@ export const usePageMenuSizing = ({
 			return
 		}
 
-		const nextWidth = Math.ceil(inner.scrollWidth)
+		// Decorative pills can overflow while animating; measure intrinsic layout only.
+		const nextWidth = inner.offsetWidth
 		if (!animate || shellWidth.value === null) {
 			shellWidth.value = nextWidth
 			onMeasured()

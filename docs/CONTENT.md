@@ -15,3 +15,4 @@
 - MD / MDC 的 `::component{...}` 单行调用里，如果某个参数本身用单引号包裹整段 JSON 或长字符串，例如 `images='[...]'`，内部不要再出现原始 ASCII 单引号 `'`；英文里的所有格、缩写优先改写，或改成 Unicode 弯引号 `’`，因为这类问题会在 `JSON.parse` 之前先把 MDC 参数层打坏。
 - 遇到 `::image-grid` / `::image-carousel` 这类单行 MDC 组件时，修改后要单独搜索一遍 `::` 调用并人工复查渲染敏感字符；英文图片 caption 是高风险区，不能只看正文 diff。
 - Markdown / Content 里的 LaTeX 默认直接使用 `$$ ... $$` 块级写法；不要在这类内容文件里留下容易被 Markdown / MDC 解析歧义吞掉的临时数学写法。
+- `createdAt` 记录每份 Markdown（包括各语言版本）沿重命名追溯的 Git 首次新增提交作者时间。它表示仓库中可追溯的创建时间，后续编辑保留不变；`updatedAt` 继续按内容修改时间维护。

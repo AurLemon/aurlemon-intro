@@ -1,58 +1,31 @@
 <template>
-	<div>
+	<div class="min-w-0">
 		<ContentHeader
-			:bg-src="bgSrc"
-			:title="title"
-			:enable-opacity="enableOpacity"
-			:use-clean-slot="useCleanSlot"
-			:stats-text="statsText"
-		>
-			<slot />
-		</ContentHeader>
-		<ContentContainer
 			:page="page"
-			:fallback-locale="fallbackLocale"
+			:title="$t(`main.contentPages.${page}.title`)"
 			:doc="doc"
-		/>
+		>
+			<slot v-if="$slots.overview" name="overview" />
+		</ContentHeader>
+		<div>
+			<ContentContainer
+				:page="page"
+				:fallback-locale="fallbackLocale"
+				:doc="doc"
+			/>
+		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from 'vue-i18n'
-import { getContentStats } from '~/utils/content-stats'
+interface Props {
+	page: string
+	fallbackLocale?: string
+}
 
-const props = withDefaults(
-	defineProps<{
-		page: string
-		title: string
-		bgSrc: string
-		enableOpacity?: boolean
-		useCleanSlot?: boolean
-		fallbackLocale?: string
-	}>(),
-	{
-		enableOpacity: false,
-		useCleanSlot: false,
-		fallbackLocale: 'zh-cn',
-	},
-)
-
-const { t } = useI18n({ useScope: 'global' })
+const props = withDefaults(defineProps<Props>(), { fallbackLocale: 'zh-cn' })
 const { data: doc } = await useLocalizedContentDoc(
 	() => props.page,
 	() => props.fallbackLocale,
 )
-
-const statsText = computed(() => {
-	if (!doc.value?.body) {
-		return ''
-	}
-
-	const { totalCount, readingMinutes } = getContentStats(doc.value.body)
-
-	return t('main.contentFooter.stats', {
-		count: totalCount,
-		minutes: readingMinutes,
-	})
-})
 </script>

@@ -1,7 +1,21 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
+import { resetPageEnter, resolvePageEnter } from '~/utils/page-scroll'
 
 const pageContainerReady = ref(false)
+
+const handlePageEnter = (element: Element): void => {
+	// Commit enter-from after insertion. Otherwise a ready page can reach
+	// enter-to before the browser establishes its initial transparent style.
+	element.getBoundingClientRect()
+
+	// Enter runs after insertion; the destination must have a scrollable layout.
+	requestAnimationFrame(() => {
+		if (!element.isConnected) return
+		const path = element.getAttribute('data-page-path')
+		if (path) resolvePageEnter(path)
+	})
+}
 
 onMounted(() => {
 	const revealContainer = () => {
@@ -22,13 +36,34 @@ onMounted(() => {
 <template>
 	<main
 		id="page-container"
-		class="mx-auto max-w-4xl w-full h-full flex-1 flex flex-col px-6 pt-8 pb-28 lg:pb-16"
+		class="mx-auto max-w-4xl w-full h-full flex-1 flex flex-col px-6 pb-28 lg:pb-16"
 		:class="{
 			'page-container-shell': true,
 			'page-container-shell--ready': pageContainerReady,
 		}"
 	>
-		<NuxtPage />
+		<NuxtPage
+			v-slot="{ Component, route: pageRoute }"
+			:transition="{
+				name: 'page',
+				mode: 'out-in',
+				onBeforeLeave: resetPageEnter,
+				onEnter: handlePageEnter,
+			}"
+		>
+			<div
+				:key="pageRoute.path"
+				:data-page-path="pageRoute.path"
+				class="min-w-0 flex flex-1 flex-col"
+				:class="
+					/^\/(?:\w{2}-\w{2}\/?)*$/.test(pageRoute.path)
+						? 'pt-8'
+						: 'pt-2 lg:pt-0'
+				"
+			>
+				<component :is="Component" />
+			</div>
+		</NuxtPage>
 	</main>
 </template>
 

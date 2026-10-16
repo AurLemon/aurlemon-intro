@@ -1,34 +1,13 @@
 <template>
-	<section
-		class="my-4 rounded-2xl border border-slate-200/80 p-4 dark:border-slate-700/80"
-	>
-		<div v-if="isLoading" key="skeleton" class="space-y-1 animate-pulse">
-			<div class="flex w-full items-start justify-between gap-3">
-				<div class="flex flex-col gap-2">
-					<USkeleton
-						class="h-3 w-24 rounded-md bg-slate-200 dark:bg-slate-700"
-					/>
-					<USkeleton
-						class="h-6 w-32 rounded-md bg-slate-200 dark:bg-slate-700"
-					/>
-				</div>
-				<USkeleton class="h-6 w-20 rounded-md bg-slate-200 dark:bg-slate-700" />
-			</div>
-
-			<div
-				class="grid grid-flow-col auto-cols-[12px] gap-1 overflow-x-auto py-2"
-			>
-				<div
-					v-for="week in skeletonWeekCount"
-					:key="`skeleton-week-${week}`"
-					class="grid grid-rows-7 gap-1"
-				>
-					<USkeleton
-						v-for="day in 7"
-						:key="`skeleton-day-${week}-${day}`"
-						class="size-3 rounded-[3px] bg-slate-200 dark:bg-slate-700"
-					/>
-				</div>
+	<section class="min-w-0">
+		<div
+			v-if="isLoading && !error"
+			key="skeleton"
+			class="space-y-3 animate-pulse"
+		>
+			<USkeleton class="h-28 w-full rounded-md" />
+			<div class="flex justify-between">
+				<USkeleton class="h-4 w-28" /><USkeleton class="h-4 w-24" />
 			</div>
 		</div>
 
@@ -43,85 +22,104 @@
 				key="error"
 				class="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-600 dark:border-rose-700/60 dark:bg-rose-900/20 dark:text-rose-300"
 			>
-				<p class="mb-2">Failed to load contribution calendar.</p>
+				<p class="mb-2">{{ t('main.project.githubLoadFailed') }}</p>
 				<UButton size="xs" variant="soft" color="neutral" @click="refresh()">
-					Retry
+					{{ t('main.project.githubRetry') }}
 				</UButton>
 			</div>
 
 			<div v-else-if="calendar" key="content" class="space-y-1">
-				<div class="flex w-full items-start justify-between gap-3">
-					<div>
-						<p class="text-xs text-slate-500 dark:text-slate-400 mb-0.5">
-							{{ t('main.project.githubContributionsTitle') }}
-						</p>
-						<p
-							class="font-(family-name:--font-family) text-xl font-semibold text-slate-900 dark:text-slate-100"
-						>
-							{{
-								t('main.project.commitsInLastYear', {
-									count: calendar.totalContributions,
-								})
-							}}
-						</p>
-					</div>
-					<UButton
-						v-if="calendar.username"
-						class="font-mono"
-						:to="`https://github.com/${calendar.username}`"
-						target="_blank"
-						variant="link"
-						color="neutral"
-						size="xs"
-					>
-						@{{ calendar.username }}
-					</UButton>
-				</div>
-
-				<div
-					ref="calendarScrollRef"
-					@pointerover="onDayPointerOver"
-					@pointerout="onDayPointerOut"
-					@pointerleave="clearDayTooltip"
-					@focusin="onDayFocus"
-					@focusout="clearDayTooltip"
+				<HorizontalScroller
+					ref="scroller"
+					snap
+					compact-swipe-only
+					:show-edge-overlay="false"
+					:scroll-step="cellSize + 4"
+					@resize="onCalendarResize"
 					@scroll="clearDayTooltip"
-					class="grid grid-flow-col auto-cols-[12px] gap-1 overflow-x-auto py-2"
 				>
 					<div
-						v-for="(week, weekIndex) in calendar?.weeks ?? []"
-						:key="`week-${weekIndex}-${week.firstDay}`"
-						class="grid grid-rows-7 gap-1"
+						@pointerover="onDayPointerOver"
+						@pointerout="onDayPointerOut"
+						@pointerleave="clearDayTooltip"
+						@focusin="onDayFocus"
+						@focusout="clearDayTooltip"
+						class="grid w-max grid-flow-col gap-1 py-1"
+						:style="{ gridAutoColumns: `${cellSize}px` }"
 					>
-						<template
-							v-for="(day, dayIndex) in week.contributionDays"
-							:key="day?.date ?? `empty-${weekIndex}-${dayIndex}`"
+						<div
+							v-for="(week, weekIndex) in calendar?.weeks ?? []"
+							:key="`week-${weekIndex}-${week.firstDay}`"
+							class="grid snap-start grid-rows-7 gap-1"
 						>
-							<span
-								v-if="day"
-								:data-contribution-day="day.date"
-								:aria-label="`${formatTooltipDate(day.date)} ${day.contributionCount}`"
-								tabindex="0"
-								class="block size-3 rounded-[3px] border border-black/5 dark:border-white/10"
-								:class="
-									day.contributionCount <= 0
-										? 'bg-slate-200 dark:bg-slate-700'
-										: ''
-								"
-								:style="
-									day.contributionCount > 0
-										? { backgroundColor: resolveDayColor(day) }
-										: undefined
-								"
+							<template
+								v-for="(day, dayIndex) in week.contributionDays"
+								:key="day?.date ?? `empty-${weekIndex}-${dayIndex}`"
+							>
+								<span
+									v-if="day"
+									:data-contribution-day="day.date"
+									:aria-label="`${formatTooltipDate(day.date)} ${day.contributionCount}`"
+									tabindex="0"
+									class="block aspect-square w-full rounded-[3px] border border-black/5 focus-visible:outline-2 focus-visible:outline-primary dark:border-white/10"
+									:class="
+										day.contributionCount <= 0
+											? 'bg-slate-200 dark:bg-slate-700'
+											: ''
+									"
+									:style="
+										day.contributionCount > 0
+											? { backgroundColor: resolveDayColor(day) }
+											: undefined
+									"
+								/>
+
+								<span
+									v-else
+									class="block aspect-square w-full rounded-[3px] border border-black/5 bg-slate-200 dark:border-white/10 dark:bg-slate-700"
+									aria-hidden="true"
+								/>
+							</template>
+						</div>
+					</div>
+				</HorizontalScroller>
+				<div
+					class="mt-2 flex items-center justify-between gap-3 text-sm text-slate-600 dark:text-slate-300"
+				>
+					<NuxtLink
+						:to="`https://github.com/${calendar?.username}`"
+						target="_blank"
+						rel="noopener noreferrer"
+						class="group/github inline-flex items-center gap-1.5"
+					>
+						<UIcon name="i-lucide-github" class="size-4" />
+						<span
+							class="transition-colors duration-200 group-hover/github:text-slate-800 group-focus-visible/github:text-slate-800 dark:group-hover/github:text-slate-100 dark:group-focus-visible/github:text-slate-100"
+							>@{{ calendar?.username }}</span
+						>
+					</NuxtLink>
+					<UTooltip
+						:text="
+							t('main.project.githubRange', {
+								from: formatRangeDate(calendar?.from ?? ''),
+								to: formatRangeDate(calendar?.to ?? ''),
+							})
+						"
+					>
+						<span
+							tabindex="0"
+							class="inline-flex items-center gap-1.5 font-(family-name:--font-family) tabular-nums"
+						>
+							<UIcon
+								name="i-lucide-git-branch"
+								aria-hidden="true"
+								class="size-4 shrink-0"
 							/>
 
-							<span
-								v-else
-								class="block size-3 rounded-[3px] opacity-0"
-								aria-hidden="true"
-							/>
-						</template>
-					</div>
+							{{ calendar?.totalContributions.toLocaleString(locale) }}
+							Commits
+						</span>
+					</UTooltip>
 				</div>
 			</div>
 		</Transition>
@@ -171,8 +169,21 @@ const props = withDefaults(
 )
 
 const { locale, t } = useI18n({ useScope: 'global' })
-const skeletonWeekCount = 53
-const calendarScrollRef = ref<HTMLElement | null>(null)
+const scroller = ref<{
+	viewport: HTMLElement | null
+	updateEdges: () => void
+} | null>(null)
+const calendarWidth = ref(0)
+const cellSize = computed(() => {
+	const width = calendarWidth.value
+	if (!width) return 12
+	const weeks = calendar.value?.weeks.length || 53
+	const visibleWeeks = Math.min(
+		weeks,
+		Math.max(1, Math.floor((width + 4) / 16)),
+	)
+	return (width - (visibleWeeks - 1) * 4) / visibleWeeks
+})
 
 const key = computed(
 	() =>
@@ -200,7 +211,8 @@ const {
 
 const isPlaceholder = computed(() => calendar.value?.isPlaceholder === true)
 const isLoading = computed(
-	() => pending.value || !calendar.value || isPlaceholder.value,
+	() =>
+		!error.value && (pending.value || !calendar.value || isPlaceholder.value),
 )
 
 const activeDay = shallowRef<GithubContributionDay | null>(null)
@@ -270,12 +282,16 @@ const waitForNextFrame = (): Promise<void> => {
 }
 
 const jumpCalendarToLatest = (): void => {
-	const el = calendarScrollRef.value
+	const el = scroller.value?.viewport
 	if (!el) {
 		return
 	}
 
-	el.scrollLeft = Math.max(0, el.scrollWidth - el.clientWidth)
+	el.scrollTo({
+		left: Math.max(0, el.scrollWidth - el.clientWidth),
+		behavior: 'instant',
+	})
+	scroller.value?.updateEdges()
 }
 
 const scrollCalendarToLatest = async (): Promise<void> => {
@@ -290,6 +306,11 @@ const scrollCalendarToLatest = async (): Promise<void> => {
 	jumpCalendarToLatest()
 	await waitForNextFrame()
 	jumpCalendarToLatest()
+}
+
+const onCalendarResize = (width: number): void => {
+	calendarWidth.value = width
+	void scrollCalendarToLatest()
 }
 
 onMounted(() => {
@@ -355,6 +376,24 @@ const tooltipDateFormatter = computed(
 )
 const formatTooltipDate = (isoDate: string): string =>
 	tooltipDateFormatter.value.format(new Date(isoDate))
+
+const rangeDateFormatter = computed(
+	() =>
+		new Intl.DateTimeFormat(locale.value, {
+			year: 'numeric',
+			month: /^(zh|ja)/.test(locale.value) ? 'numeric' : 'long',
+			day: 'numeric',
+			timeZone: 'UTC',
+		}),
+)
+const formatRangeDate = (isoDate: string): string => {
+	const parts = rangeDateFormatter.value.formatToParts(new Date(isoDate))
+	const part = (type: Intl.DateTimeFormatPartTypes) =>
+		parts.find((item) => item.type === type)?.value ?? ''
+	return /^(zh|ja)/.test(locale.value)
+		? `${part('year')}年${part('month')}月${part('day')}日`
+		: `${part('day')} ${part('month')} ${part('year')}`
+}
 
 const resolveDayColor = (day: GithubContributionDay): string => {
 	const fallback = [

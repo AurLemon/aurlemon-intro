@@ -1,16 +1,17 @@
 <template>
-	<div class="space-y-6 flex flex-col flex-1">
-		<ContentHeader :bg-src="linksCover" :title="$t('menu.friends')"
-			>👂👃👂</ContentHeader
-		>
+	<div class="flex min-w-0 flex-col flex-1">
+		<ContentHeader
+			page="friends"
+			:title="$t('main.contentPages.friends.title')"
+		/>
 
-		<div v-if="!friends.length" class="px-6">
+		<div v-if="!friends.length" class="py-6 lg:px-6">
 			<div class="text-center text-slate-600 dark:text-slate-300 text-sm">
 				{{ $t('social.friendLinks.emptyLinks') }}
 			</div>
 		</div>
 
-		<div v-else class="grid gap-5 grid-cols-1 lg:grid-cols-2 px-6">
+		<div v-else class="grid gap-5 grid-cols-1 lg:grid-cols-2 lg:px-6 mt-6">
 			<NuxtLink
 				v-for="friend in friends"
 				:key="friend.id"
@@ -47,7 +48,7 @@
 			</NuxtLink>
 		</div>
 
-		<div class="flex flex-wrap items-center justify-center gap-3 px-6 mt-auto">
+		<div class="flex flex-wrap items-center justify-center gap-3 pt-6 mt-auto">
 			<AccountStatusBar compact />
 			<UButton color="primary" size="xs" @click="applyOpen = true">
 				<span class="leading-[normal]">
@@ -70,28 +71,17 @@ import ContentHeader from '~/components/content/ContentHeader.vue'
 import AccountStatusBar from '~/components/common/AccountStatusBar.vue'
 import FriendLinkAdminModal from '~/components/friends/FriendLinkAdminModal.vue'
 import FriendLinkApplyModal from '~/components/friends/FriendLinkApplyModal.vue'
-import linksCoverLight from '~/assets/resources/pages/links_cover_light.webp'
-import linksCoverDark from '~/assets/resources/pages/links_cover_dark.webp'
 import type { FriendLinksResponse } from '~/shared/types/social'
 
 const applyOpen = ref(false)
 const adminOpen = ref(false)
 const route = useRoute()
-const colorMode = useColorMode()
-const isMounted = ref(false)
 
 onMounted(() => {
-	isMounted.value = true
 	if (route.query.social === 'friend-links') {
 		adminOpen.value = true
 	}
 })
-
-const linksCover = computed(() =>
-	isMounted.value && colorMode.value === 'dark'
-		? linksCoverDark
-		: linksCoverLight,
-)
 
 const openAdminFromApply = async () => {
 	applyOpen.value = false

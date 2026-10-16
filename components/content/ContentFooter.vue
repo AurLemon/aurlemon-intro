@@ -2,13 +2,30 @@
 	<div
 		class="flex flex-wrap justify-center items-center gap-x-4 lg:gap-x-6 gap-y-2 text-sm font-(family-name:--font-family) text-slate-400 dark:border-slate-700 dark:text-slate-400"
 	>
-		<p v-if="updatedText" class="flex items-center gap-1.5 leading-[normal]">
-			<UIcon
-				name="i-lucide-history"
-				class="size-4 shrink-0 text-slate-400 dark:text-slate-500"
-			/>
-			<span>{{ updatedText }}</span>
-		</p>
+		<UTooltip v-if="createdText" :text="createdFullText" :delay-duration="50">
+			<p
+				tabindex="0"
+				class="flex items-center gap-1.5 leading-[normal] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+			>
+				<UIcon
+					name="i-lucide-calendar-plus"
+					class="size-4 shrink-0 text-slate-400 dark:text-slate-500"
+				/>
+				<time :datetime="doc.createdAt">{{ createdText }}</time>
+			</p>
+		</UTooltip>
+		<UTooltip v-if="updatedText" :text="updatedFullText" :delay-duration="50">
+			<p
+				tabindex="0"
+				class="flex items-center gap-1.5 leading-[normal] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+			>
+				<UIcon
+					name="i-lucide-history"
+					class="size-4 shrink-0 text-slate-400 dark:text-slate-500"
+				/>
+				<time :datetime="doc.updatedAt">{{ updatedText }}</time>
+			</p>
+		</UTooltip>
 		<p v-if="statsText" class="flex items-center gap-1.5 leading-[normal]">
 			<UIcon
 				name="i-lucide-file-text"
@@ -23,7 +40,8 @@
 import { useI18n } from 'vue-i18n'
 import { getContentStats } from '~/utils/content-stats'
 
-type ContentDoc = {
+interface ContentDoc {
+	createdAt?: string
 	body?: unknown
 	updatedAt?: string
 }
@@ -43,47 +61,41 @@ const statsText = computed(() =>
 	}),
 )
 
-const formatUpdatedDate = (date: Date) => {
-	const year = date.getFullYear()
-	const month = date.getMonth() + 1
-	const day = date.getDate()
-	const hour = date.getHours()
-	const minute = String(date.getMinutes()).padStart(2, '0')
-
-	if (locale.value.startsWith('ja')) {
-		return `${year} 年 ${month} 月 ${day} 日 ${hour}:${minute}`
-	}
-
-	if (locale.value.startsWith('zh')) {
-		return `${year} 年 ${month} 月 ${day} 日 ${hour}:${minute}`
-	}
-
-	return new Intl.DateTimeFormat(locale.value, {
+const formatDateText = (
+	value: string | undefined,
+	key: 'createdAt' | 'updatedAt',
+	includeTime = false,
+): string => {
+	if (!value) return ''
+	const date = new Date(value)
+	if (Number.isNaN(date.getTime())) return ''
+	const formattedDate = new Intl.DateTimeFormat(locale.value, {
 		year: 'numeric',
 		month: 'numeric',
 		day: 'numeric',
-		hour: 'numeric',
-		minute: '2-digit',
-		hour12: false,
 		timeZone: 'Asia/Shanghai',
+		...(includeTime
+			? ({
+					hour: '2-digit',
+					minute: '2-digit',
+					second: '2-digit',
+					hour12: false,
+				} as const)
+			: {}),
 	}).format(date)
+	return t(`main.contentFooter.${key}`, { date: formattedDate })
 }
 
-const updatedText = computed(() => {
-	if (!props.doc.updatedAt) {
-		return ''
-	}
-
-	const updatedDate = new Date(props.doc.updatedAt)
-
-	if (Number.isNaN(updatedDate.getTime())) {
-		return ''
-	}
-
-	const formattedDate = formatUpdatedDate(updatedDate)
-
-	return t('main.contentFooter.updatedAt', {
-		date: formattedDate,
-	})
-})
+const createdText = computed(() =>
+	formatDateText(props.doc.createdAt, 'createdAt'),
+)
+const updatedText = computed(() =>
+	formatDateText(props.doc.updatedAt, 'updatedAt'),
+)
+const createdFullText = computed(() =>
+	formatDateText(props.doc.createdAt, 'createdAt', true),
+)
+const updatedFullText = computed(() =>
+	formatDateText(props.doc.updatedAt, 'updatedAt', true),
+)
 </script>

@@ -1,5 +1,6 @@
 ---
-updatedAt: 2026-08-25T16:58:57+08:00
+createdAt: 2026-07-02T05:31:41+08:00
+updatedAt: 2026-10-16T01:36:06+08:00
 ---
 
 This page is called Journey, but most of it is really my own black history. Some parts may feel bleak or heavy. So I want to say this up front: my life is not made only of bad things. I am only selecting a part of it here to remind myself.

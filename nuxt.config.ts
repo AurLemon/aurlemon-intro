@@ -136,6 +136,8 @@ export default defineNuxtConfig({
 				'lucide:messages-square',
 				'lucide:calendar-days',
 				'lucide:git-commit-horizontal',
+				'lucide:git-branch',
+				'lucide:chart-column',
 				'lucide:file-text',
 				'lucide:history',
 				'lucide:x',

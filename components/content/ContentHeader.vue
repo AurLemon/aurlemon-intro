@@ -1,50 +1,49 @@
 <template>
-	<div>
+	<header
+		data-content-header
+		:data-content-page="page"
+		class="py-12 pb-10 sm:pt-6 lg:px-6"
+	>
 		<div
-			class="-mt-32 h-54 rounded-b-3xl border-x-2 border-b-2 border-slate-100 dark:border-slate-900/80 bg-white dark:bg-slate-900 overflow-hidden block shadow-[0_32px_48px_rgba(0,0,0,0.03)] relative"
+			aria-hidden="true"
+			class="mb-4 text-6xl leading-none sm:mb-5 sm:text-7xl"
 		>
-			<SkeletonImage
-				:src="bgSrc"
-				alt=""
-				class="h-full w-full"
-				image-class="mask-[linear-gradient(to_bottom,transparent_0%,rgba(0,0,0,0.1)_30%,black_100%)] h-full w-full object-cover select-none"
-				skeleton-class="h-full w-full"
-				:class="enableOpacity ? 'opacity-60' : ''"
-			/>
-			<div
-				class="absolute top-0 right-0 left-0 bottom-0 flex justify-center items-end"
-			>
-				<div
-					:class="
-						useCleanSlot
-							? ''
-							: 'flex justify-center items-center gap-1 px-3 py-2 rounded-full bg-white/50 dark:bg-slate-900/50 backdrop-blur-lg m-2 border border-slate-200 dark:border-slate-800 text-base text-slate-800 dark:text-slate-100'
-					"
-				>
-					<slot />
-				</div>
-			</div>
+			{{ pageEmoji }}
 		</div>
 		<h1
-			class="mt-10 text-4xl font-medium text-center text-slate-800 dark:text-slate-200 tracking-wide"
+			class="max-w-3xl font-serif font-bold tracking-tight text-slate-900/95 dark:text-slate-100"
+			:class="
+				isCjk
+					? 'text-[clamp(2rem,10vw,2.5rem)] leading-[1.45] sm:text-[3.5rem]'
+					: 'text-pretty text-4xl leading-snug sm:text-5xl sm:leading-snug'
+			"
 		>
 			{{ title }}
 		</h1>
-		<p
-			v-if="statsText"
-			class="mt-3 text-center text-sm font-(family-name:--font-family) text-slate-500 dark:text-slate-400"
-		>
-			{{ statsText }}
-		</p>
-	</div>
+		<ContentMetadata v-if="doc" class="mt-2 ml-1" :doc="doc" />
+		<div v-if="$slots.default" class="mt-8"><slot /></div>
+	</header>
 </template>
 
 <script setup lang="ts">
-defineProps<{
-	bgSrc: string
+import type { ContentDocumentMeta } from '~/utils/content-stats'
+
+interface Props {
+	page: string
 	title: string
-	statsText?: string
-	enableOpacity?: boolean
-	useCleanSlot?: boolean
-}>()
+	doc?: ContentDocumentMeta | null
+}
+
+const props = defineProps<Props>()
+const { locale } = useI18n({ useScope: 'global' })
+const isCjk = computed(() => /^(zh|ja)/.test(locale.value))
+const emojis: Record<string, string> = {
+	profile: '🤔',
+	project: '🤓',
+	journey: '🥺',
+	preference: '😋',
+	about: '🧐',
+	friends: '🥵',
+}
+const pageEmoji = computed(() => emojis[props.page] ?? '🙂')
 </script>

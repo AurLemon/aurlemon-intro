@@ -199,20 +199,43 @@
 				}
 			}
 		},
-		"contentFooter": {
-			"stats": "{count} 字 / {minutes} 分钟",
-			"updatedAt": "{date}"
-		},
 		"project": {
-			"line1": "Hey Codex，帮我把这个页面的内容写一下。",
+			"portfolio": {
+				"intro": "基于 Nuxt 和 TypeScript 的个人网站，也就是本站！现在你看到的这版是 26 年 4 月重构后的。功能没有很多，主要是给自己写的小作文找个地方放。",
+				"hydcraft": "给自己 MC 服务器做的网站，把账号绑定、玩家档案和服务器信息什么的放进去了，具体可以去 GitHub 的 Hydroline 组织里面看，还有别的几个项目。",
+				"teps": "2024 年中职升高职转段考试期间给自己和班上同学做的刷题网站。2025 年又服务了最后一届学弟之后就退役了，现在作为纪念站留着。"
+			},
+			"githubRange": "统计时间从 {from} 到 {to}",
+			"githubLoadFailed": "GitHub 贡献图加载失败。",
+			"githubRetry": "重试",
 			"githubContributionsTitle": "GitHub Contributions",
-			"commitsInLastYear": "近一年提交了 {count} 次"
+			"commitsInLastYear": "近一年提交了 {count} 次",
+			"entries": {
+				"github": {
+					"type": "代码仓库",
+					"description": "项目、源码和还在进行中的尝试。"
+				},
+				"hydcraft": {
+					"type": "服务器门户",
+					"description": "为自己的 Minecraft 服务器做一个入口。"
+				},
+				"wikijs": {
+					"type": "主题样式",
+					"description": "给 Wiki.js 换一套 Citizen 风格的外观。"
+				}
+			}
 		},
 		"preference": {
+			"bangumiAnimeTab": "番剧",
+			"bangumiBooksTab": "书籍",
+			"bangumiCategory": "收藏分类",
+			"bangumiAnimeData": "番剧数据",
+			"bangumiBooksData": "书籍数据",
+			"bangumiWorksCount": "{count} 个作品",
 			"bangumiAnimeTitle": "Bangumi 番剧",
 			"bangumiBooksTitle": "Bangumi 书籍",
-			"bangumiAnimeSummary": "在看的有 {doing} 个，想看的有 {wish} 个，看过 {done} 个作品",
-			"bangumiBooksSummary": "在读的有 {doing} 个，想读的有 {wish} 个，读过 {done} 个作品",
+			"bangumiAnimeSummary": "想看 {wish} / 在看 {doing} / 已看 {done}",
+			"bangumiBooksSummary": "想读 {wish} / 在读 {doing} / 已读 {done}",
 			"bangumiAnimeStatusWish": "想看",
 			"bangumiAnimeStatusDoing": "在看",
 			"bangumiAnimeStatusDone": "看过",
@@ -222,8 +245,37 @@
 			"bangumiWishCount": "想看/想读 {count}",
 			"bangumiDoneCount": "看过/读过 {count}",
 			"bangumiLoadFailed": "Bangumi 数据加载失败。",
+			"bangumiCoverFailed": "封面加载失败",
 			"bangumiRetry": "重试",
 			"bangumiEmpty": "暂无可展示条目。"
+		},
+		"contentPages": {
+			"profile": {
+				"title": "我是谁？"
+			},
+			"project": {
+				"title": "我会做什么？"
+			},
+			"journey": {
+				"title": "我怎么走到这的？"
+			},
+			"preference": {
+				"title": "我喜欢什么？"
+			},
+			"about": {
+				"title": "本站怎么来的？"
+			},
+			"friends": {
+				"title": "我的朋友们。"
+			}
+		},
+		"contentMetadata": {
+			"stats": "{count} 字 / {minutes} 分钟"
+		},
+		"contentFooter": {
+			"stats": "{count} 字 / {minutes} 分钟",
+			"updatedAt": "更新于 {date}",
+			"createdAt": "创建于 {date}"
 		}
 	},
 	"content": {
@@ -372,7 +424,8 @@
 			"replyTo": "回复 {login} #{floor}",
 			"likeCount": "{count}",
 			"likedCount": "{count}",
-			"noLikesYet": "还没有人点赞"
+			"noLikesYet": "还没有人点赞",
+			"likedByUsers": "点赞用户"
 		},
 		"friendLinks": {
 			"applyTitle": "申请友链",

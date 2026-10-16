@@ -110,44 +110,30 @@
 					>
 						{{ formatTime(item.createdAt) }}
 					</span>
-					<UTooltip
-						v-if="item.likedByUsernames.length > 0"
-						:delay-duration="50"
-						:ui="{ content: 'z-[43120]' }"
+					<MessageLikeUsers
+						v-if="item.likedByUsers.length"
+						:users="item.likedByUsers"
 					>
-						<span class="inline-flex">
-							<UButton
-								size="xs"
-								color="neutral"
-								variant="ghost"
-								class="px-1 sm:px-1.5"
-								@click="handleLike(item.id)"
-							>
-								<UIcon name="i-lucide-heart" class="h-4 w-4" />
-								<span class="leading-[normal]">
-									{{ t('social.message.likeCount', { count: item.likeCount }) }}
-								</span>
-							</UButton>
-						</span>
-						<template #content>
-							<div class="max-w-56 text-xs leading-tight">
-								<div class="flex flex-wrap gap-x-1.5 gap-y-0.5">
-									<span
-										v-for="login in item.likedByUsernames.slice(0, 3)"
-										:key="login"
-									>
-										@{{ login }}
-									</span>
-									<span
-										v-if="item.likedByUsernames.length > 3"
-										class="text-slate-400"
-									>
-										...
-									</span>
-								</div>
-							</div>
-						</template>
-					</UTooltip>
+						<UButton
+							size="xs"
+							color="neutral"
+							variant="ghost"
+							class="px-1 sm:px-1.5"
+							:aria-label="
+								t(
+									item.hasLiked
+										? 'social.tooltip.siteLiked'
+										: 'social.tooltip.siteLike',
+								)
+							"
+							@click="handleLike(item.id)"
+						>
+							<UIcon name="i-lucide-heart" class="h-4 w-4" />
+							<span class="leading-[normal]">{{
+								t('social.message.likeCount', { count: item.likeCount })
+							}}</span>
+						</UButton>
+					</MessageLikeUsers>
 					<UButton
 						v-else
 						size="xs"

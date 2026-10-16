@@ -81,5 +81,10 @@ export const usePageMenuMotion = ({
 				: { duration: 0.08, ease: 'easeOut' },
 	}))
 
-	return { menuRevealMotion, menuSurfaceMotion, menuClipMotion, menuTextMotion }
+	return {
+		menuRevealMotion,
+		menuSurfaceMotion,
+		menuClipMotion,
+		menuTextMotion,
+	}
 }
