@@ -14,32 +14,27 @@
 				class="relative isolate aspect-[5/7] w-full overflow-hidden rounded-lg select-none bg-(--color-surface-2) [clip-path:inset(0_round_var(--radius-lg))] dark:bg-(--color-surface-1)"
 			>
 				<template v-for="layer in coverLayers" :key="layer.src">
-					<img
-						v-if="layer.previous"
-						:src="layer.src"
-						alt=""
-						aria-hidden="true"
-						decoding="async"
-						referrerpolicy="no-referrer"
-						draggable="false"
-						class="absolute inset-0 h-full w-full object-cover bangumi-cover-previous"
-						@dragstart.prevent
-					/>
 					<SkeletonImage
-						v-else
 						:src="layer.src"
-						:alt="item.name"
-						:loading="visible ? 'eager' : 'lazy'"
+						:alt="layer.previous ? '' : item.name"
+						:aria-hidden="layer.previous || undefined"
 						decoding="async"
 						referrerpolicy="no-referrer"
-						class="absolute inset-0 z-1 h-full w-full"
+						:loading="visible ? 'eager' : 'lazy'"
 						image-class="h-full w-full object-cover"
 						skeleton-class="rounded-lg"
-						:class="[
-							'bangumi-cover',
-							{ 'bangumi-cover-covered': coverCovered },
-						]"
-						@transitionend="finishCover"
+						class="absolute inset-0 h-full w-full"
+						:class="
+							layer.previous
+								? 'bangumi-cover-previous'
+								: [
+										'z-1 bangumi-cover',
+										{ 'bangumi-cover-covered': coverCovered },
+									]
+						"
+						@ready="onCoverReady(layer.src)"
+						@dragstart.prevent
+						@transitionend.self="finishCover"
 						@error="onDisplayedCoverError"
 					/>
 				</template>
@@ -110,7 +105,7 @@ interface CoverLayer {
 	src: string
 	previous: boolean
 }
-// Keep the outgoing decoded DOM image; a new URL gets its own hidden layer.
+// Keep the same SkeletonImage instance when the foreground becomes outgoing.
 const coverLayers = computed<CoverLayer[]>(() => [
 	...(previousCover.value
 		? [{ src: previousCover.value, previous: true }]
@@ -221,18 +216,22 @@ const updateCover = async () => {
 	previousCover.value = shownCover.value
 	shownCover.value = url
 	coverCovered.value = true
+}
+const onCoverReady = async (url: string) => {
+	if (url !== shownCover.value || !coverAnimating || !coverCovered.value) return
+	// SkeletonImage starts its own image/skeleton crossfade before the outer
+	// reveal. Keep the outgoing component mounted until both have finished.
 	await nextTick()
-	if (!coverAnimating) return
-	// Finish this reveal before applying the latest queued URL. Prop changes must
-	// not cancel these frames or reset a half-revealed image to opacity zero.
+	if (url !== shownCover.value || !coverAnimating) return
 	revealFrame = requestAnimationFrame(() => {
 		revealNextFrame = requestAnimationFrame(() => {
-			if (!coverAnimating) return
+			if (url !== shownCover.value || !coverAnimating) return
 			coverCovered.value = false
 			completionTimer = setTimeout(completeCover, 650)
 		})
 	})
 }
+
 watch([visible, () => props.item.coverUrl], async ([isVisible, url]) => {
 	const current = ++revision
 	if (failedUrl.value !== url) failedUrl.value = null

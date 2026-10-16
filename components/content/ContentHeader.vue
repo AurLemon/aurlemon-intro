@@ -2,7 +2,7 @@
 	<header
 		data-content-header
 		:data-content-page="page"
-		class="py-12 pb-10 sm:pt-6 lg:px-6"
+		class="py-12 pb-10 sm:pt-6"
 	>
 		<div
 			aria-hidden="true"
