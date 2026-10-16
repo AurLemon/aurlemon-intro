@@ -19,6 +19,24 @@ const {
 	resolveTo,
 	isPathActive,
 } = usePageMenuNavigation()
+const { isCompact } = useDisplayMode()
+const mobileMenuOpen = ref(false)
+const mobileMeasure = ref<HTMLElement | null>(null)
+const currentItem = computed(
+	() =>
+		currentFallback.value ??
+		baseNavItems.value.find((item) => isPathActive(item)) ??
+		baseNavItems.value[0],
+)
+const navigationIcons: Record<string, string> = {
+	overview: 'i-lucide-panels-top-left',
+	project: 'i-lucide-folder-git-2',
+	profile: 'i-lucide-user-round',
+	journey: 'i-lucide-route',
+	preference: 'i-lucide-heart',
+}
+const isMobileItemSelected = (item: MenuItem) =>
+	item.key === currentItem.value?.key
 const menuViewport = ref<HTMLElement | null>(null)
 const menuInner = ref<HTMLElement | null>(null)
 const menuBase = ref<HTMLElement | null>(null)
@@ -44,6 +62,7 @@ const {
 	syncShellWidth,
 	syncViewportWidth,
 } = usePageMenuSizing({
+	mobileMeasure,
 	menuBase,
 	fallbackMeasure,
 	onMeasured: () => syncPills(),
@@ -84,6 +103,10 @@ const {
 } = usePageMenuScrollMotion({ menuVisible, prefersReducedMotion, menuPressed })
 const { menuRevealMotion, menuSurfaceMotion, menuClipMotion, menuTextMotion } =
 	usePageMenuMotion({ menuVisible, prefersReducedMotion })
+
+watch([isCompact, menuVisible], () => {
+	mobileMenuOpen.value = false
+})
 
 const updateBottomState = () => {
 	if (!import.meta.client) {
@@ -209,6 +232,7 @@ watch(
 watch(
 	() => route.fullPath,
 	() => {
+		mobileMenuOpen.value = false
 		resetScrollTracking()
 		void nextTick(updateBottomState)
 		void nextTick(syncPills)
@@ -244,6 +268,7 @@ onMounted(() => {
 	})
 
 	resizeObserver.observe(menuBase.value)
+	if (mobileMeasure.value) resizeObserver.observe(mobileMeasure.value)
 	resizeObserver.observe(fallbackMeasure.value)
 	window.addEventListener('scroll', onScroll, { passive: true })
 	window.addEventListener('resize', onResize, { passive: true })
@@ -279,6 +304,15 @@ const onFallbackTransitionEnd = (event: TransitionEvent) => {
 
 <template>
 	<aside>
+		<div
+			ref="mobileMeasure"
+			class="pointer-events-none fixed left-0 top-0 -z-10 flex w-max items-center gap-2 whitespace-nowrap text-base leading-none font-semibold opacity-0"
+			aria-hidden="true"
+		>
+			<span class="size-5 shrink-0" />
+			<span>{{ currentItem?.label }}</span>
+			<span class="size-4 shrink-0" />
+		</div>
 		<div
 			ref="fallbackMeasure"
 			class="pointer-events-none fixed left-0 top-0 -z-10 opacity-0 whitespace-nowrap rounded-full pl-3 pr-2 py-2 text-base leading-none font-semibold"
@@ -316,10 +350,94 @@ const onFallbackTransitionEnd = (event: TransitionEvent) => {
 						class="pointer-events-none absolute inset-y-0 left-1/2 -translate-x-1/2 rounded-full border-[1.5px] border-slate-400/55 bg-white shadow-menu-floating dark:border-slate-700/80 dark:bg-slate-950 dark:shadow-[0_4rem_5rem_#000a0f33]"
 						aria-hidden="true"
 					/>
+					<div
+						v-motion="menuClipMotion"
+						class="relative w-full rounded-full border-[1.5px] border-transparent px-2.5 lg:hidden"
+						:class="menuVisible ? 'pointer-events-auto' : 'pointer-events-none'"
+					>
+						<UPopover
+							v-model:open="mobileMenuOpen"
+							:content="{ side: 'top', align: 'center', sideOffset: 12 }"
+							:ui="{
+								content: 'z-[40000] w-56 max-w-[calc(100vw-1.5rem)]',
+							}"
+						>
+							<button
+								type="button"
+								class="flex h-8.5 w-full items-center justify-between gap-2 rounded-full text-base leading-none font-semibold text-primary dark:text-sky-300 outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+							>
+								<svg
+									class="size-5 shrink-0"
+									viewBox="0 0 24 24"
+									fill="none"
+									stroke="currentColor"
+									stroke-width="2"
+									stroke-linecap="round"
+									aria-hidden="true"
+								>
+									<path d="M4 8h16M4 16h10" />
+								</svg>
+								<span
+									v-motion="menuTextMotion"
+									class="grid min-w-0 flex-1 text-center"
+								>
+									<Transition name="menu-label">
+										<span
+											:key="currentItem?.label"
+											class="col-start-1 row-start-1 truncate"
+											>{{ currentItem?.label }}</span
+										>
+									</Transition>
+								</span>
+								<UIcon
+									mode="svg"
+									name="i-lucide-chevron-up"
+									class="size-4 shrink-0 text-slate-600 dark:text-slate-200 transition-transform duration-250 ease-in-out motion-reduce:transition-none"
+									:class="{ 'rotate-180': mobileMenuOpen }"
+								/>
+							</button>
+							<template #content>
+								<nav class="flex flex-col gap-1 p-2">
+									<NuxtLink
+										v-for="item in displayNavItems"
+										:key="item.key"
+										:to="resolveTo(item)"
+										:aria-current="
+											isMobileItemSelected(item) ? 'page' : undefined
+										"
+										class="flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-base transition-colors duration-200 motion-reduce:transition-none hover:bg-slate-100 focus-visible:bg-slate-100 dark:hover:bg-slate-800 dark:focus-visible:bg-slate-800 focus-visible:outline-none"
+										:class="
+											isMobileItemSelected(item)
+												? 'bg-menu-highlight/28 font-semibold text-slate-800 dark:bg-menu-highlight/16 dark:text-slate-300'
+												: 'text-slate-800 dark:text-slate-300'
+										"
+										@click="mobileMenuOpen = false"
+									>
+										<span class="flex min-w-0 items-center gap-3">
+											<UIcon
+												mode="svg"
+												:name="
+													navigationIcons[item.key] ?? 'i-lucide-file-text'
+												"
+												class="size-5 shrink-0"
+											/>
+											<span>{{ item.label }}</span>
+										</span>
+										<UIcon
+											v-if="isMobileItemSelected(item)"
+											mode="svg"
+											name="i-lucide-check"
+											class="size-5 shrink-0"
+										/>
+									</NuxtLink>
+								</nav>
+							</template>
+						</UPopover>
+					</div>
 					<nav
 						ref="menuViewport"
 						v-motion="menuClipMotion"
-						class="menu-viewport relative inline-flex w-full touch-none select-none flex-nowrap items-center justify-center gap-1 rounded-full border-[1.5px] border-transparent px-2.5"
+						class="menu-viewport relative hidden lg:inline-flex w-full touch-none select-none flex-nowrap items-center justify-center gap-1 rounded-full border-[1.5px] border-transparent px-2.5"
 						@pointerdown="onPreviewPointerDown"
 						@pointerenter="onPreviewPointerEnter"
 						@pointermove="onPreviewPointerMove"
@@ -406,7 +524,29 @@ const onFallbackTransitionEnd = (event: TransitionEvent) => {
 		width 220ms ease-out;
 }
 
+.menu-label-enter-active,
+.menu-label-leave-active {
+	transition:
+		opacity 250ms ease,
+		transform 250ms ease,
+		filter 250ms ease;
+}
+
+.menu-label-enter-from {
+	opacity: 0;
+	transform: translateY(4px);
+	filter: blur(3px);
+}
+
+.menu-label-leave-to {
+	opacity: 0;
+	transform: translateY(-4px);
+	filter: blur(3px);
+}
+
 .menu-shell {
+	width: var(--mobile-menu-width, 148px);
+	max-width: calc(100vw - 1.5rem);
 	transform: translateX(-50%);
 }
 
@@ -415,11 +555,20 @@ const onFallbackTransitionEnd = (event: TransitionEvent) => {
 	transition: width 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+@media (width >= 64rem) {
+	.menu-shell {
+		width: var(--desktop-menu-width);
+		max-width: none;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.menu-shell,
 	.menu-fallback-slot,
 	.menu-selected,
-	.menu-preview {
+	.menu-preview,
+	.menu-label-enter-active,
+	.menu-label-leave-active {
 		transition: none;
 	}
 }

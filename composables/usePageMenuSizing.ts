@@ -1,17 +1,20 @@
 import { computed, nextTick, ref, type Ref } from 'vue'
 
 interface PageMenuSizingOptions {
+	mobileMeasure: Ref<HTMLElement | null>
 	menuBase: Ref<HTMLElement | null>
 	fallbackMeasure: Ref<HTMLElement | null>
 	onMeasured: () => void
 }
 
 export const usePageMenuSizing = ({
+	mobileMeasure,
 	menuBase,
 	fallbackMeasure,
 	onMeasured,
 }: PageMenuSizingOptions) => {
 	const shellWidth = ref<number | null>(null)
+	const mobileWidth = ref<number | null>(null)
 	const viewportWidth = ref<number | null>(null)
 	const fallbackSlotWidth = ref(0)
 	const SIDE_GUTTER = 12
@@ -29,28 +32,16 @@ export const usePageMenuSizing = ({
 		)
 	})
 
-	const menuShellStyle = computed(() => {
-		if (shellWidth.value === null) {
-			return undefined
-		}
-
-		const contentWidth = shellWidth.value + SIDE_GUTTER * 2
-		if (
-			viewportWidth.value === null ||
-			viewportWidth.value >= MOBILE_BREAKPOINT
-		) {
-			return { width: `${contentWidth}px` }
-		}
-
-		const maxMobileWidth = Math.max(
-			0,
-			viewportWidth.value - MOBILE_SIDE_GUTTER * 2,
-		)
-
-		return {
-			width: `${Math.min(contentWidth, maxMobileWidth)}px`,
-		}
-	})
+	const menuShellStyle = computed(() => ({
+		'--desktop-menu-width':
+			shellWidth.value === null
+				? undefined
+				: `${shellWidth.value + SIDE_GUTTER * 2}px`,
+		'--mobile-menu-width':
+			mobileWidth.value === null
+				? undefined
+				: `${mobileWidth.value + SIDE_GUTTER * 2}px`,
+	}))
 
 	const measureFallbackWidth = async () => {
 		await nextTick()
@@ -81,6 +72,7 @@ export const usePageMenuSizing = ({
 		// Use target geometry, never the extra slot's intermediate animated width.
 		// offsetWidth excludes decorative pills overflowing the positioned menu inner.
 		shellWidth.value = base.offsetWidth + fallbackSlotWidth.value
+		mobileWidth.value = mobileMeasure.value?.offsetWidth ?? null
 		onMeasured()
 	}
 
