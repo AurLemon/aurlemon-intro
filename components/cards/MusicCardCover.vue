@@ -38,8 +38,8 @@ defineProps<Props>()
 .music-cover-leave-active {
 	transition:
 		transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
-		opacity 700ms ease,
-		filter 700ms ease;
+		opacity 280ms ease-out,
+		filter 520ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 40ms;
 }
 .music-cover-enter-active {
 	z-index: 1;

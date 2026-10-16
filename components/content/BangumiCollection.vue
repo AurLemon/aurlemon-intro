@@ -368,22 +368,29 @@ onBeforeUnmount(() => {
 	}
 }
 
-.bangumi-stats-enter-active,
-.bangumi-stats-leave-active {
+.bangumi-stats-enter-active {
 	transition:
-		opacity 260ms ease,
-		filter 260ms ease,
-		transform 260ms ease;
+		opacity 200ms ease-out 60ms,
+		filter 320ms ease-out 60ms,
+		transform 400ms cubic-bezier(0.22, 1, 0.36, 1) 60ms;
 }
 .bangumi-stats-leave-active {
 	position: absolute;
 	width: 100%;
+	transition:
+		opacity 140ms ease-in,
+		filter 180ms ease-in,
+		transform 180ms ease-in;
 }
-.bangumi-stats-enter-from,
+.bangumi-stats-enter-from {
+	opacity: 0;
+	filter: blur(3px);
+	transform: translateY(3px);
+}
 .bangumi-stats-leave-to {
 	opacity: 0;
-	filter: blur(4px);
-	transform: translateY(2px);
+	filter: blur(1.5px);
+	transform: translateY(-2px);
 }
 
 .bangumi-fade-enter-active,

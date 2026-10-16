@@ -132,7 +132,7 @@ const completeCover = () => {
 	void updateCover()
 }
 const finishCover = (event?: TransitionEvent) => {
-	if ((!event || event.propertyName === 'opacity') && !coverCovered.value)
+	if ((!event || event.propertyName === 'transform') && !coverCovered.value)
 		completeCover()
 }
 const intersectsViewport = (): boolean => {
@@ -279,8 +279,8 @@ onBeforeUnmount(() => {
 	filter: blur(0);
 	transform: translateY(0);
 	transition:
-		opacity 600ms ease,
-		filter 600ms ease,
+		opacity 260ms ease-out,
+		filter 480ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 40ms,
 		transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 .bangumi-cover-covered {
@@ -300,22 +300,27 @@ onBeforeUnmount(() => {
 		filter: blur(2px);
 	}
 }
-.bangumi-title-enter-active,
+.bangumi-title-enter-active {
+	transition:
+		opacity 200ms ease-out 80ms,
+		filter 360ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 80ms,
+		transform 460ms cubic-bezier(0.22, 1, 0.36, 1) 80ms;
+}
 .bangumi-title-leave-active {
 	transition:
-		opacity 280ms ease,
-		filter 280ms ease,
-		transform 280ms ease;
+		opacity 160ms ease-in,
+		filter 200ms ease-in,
+		transform 200ms ease-in;
 }
 .bangumi-title-enter-from {
 	opacity: 0;
-	filter: blur(4px);
+	filter: blur(3px);
 	transform: translateY(6px);
 }
 .bangumi-title-leave-to {
 	opacity: 0;
-	filter: blur(4px);
-	transform: translateY(-6px);
+	filter: blur(1.5px);
+	transform: translateY(-3px);
 }
 .bangumi-badge-enter-active,
 .bangumi-badge-leave-active {

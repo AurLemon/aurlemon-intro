@@ -225,7 +225,11 @@ const smoothColumnStyle = computed(() => ({
 const textWidth = (element: HTMLElement | null) => {
 	if (!element) return 0
 	const range = document.createRange()
-	range.selectNodeContents(element)
+	// 交叠期间只测量新副标题，避免旧层扩大目标宽度。
+	const currentSubtitle = element.querySelector<HTMLElement>(
+		'[data-preference-subtitle]:not([class*="-leave-"])',
+	)
+	range.selectNodeContents(currentSubtitle ?? element)
 	return Math.ceil(range.getBoundingClientRect().width)
 }
 
