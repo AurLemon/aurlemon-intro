@@ -14,9 +14,9 @@ const props = defineProps<{
 const { locale } = useI18n({ useScope: 'global' })
 
 const proseBaseClass =
-	'my-3 w-full break-normal text-pretty text-justify [text-align-last:left]'
-const proseCjkClass = `${proseBaseClass} [text-justify:inter-character] [line-break:loose]`
-const proseEnglishClass = `${proseBaseClass} break-words [text-justify:inter-word]`
+	'my-3 w-full text-pretty text-justify [text-align-last:left]'
+const proseCjkClass = `${proseBaseClass} break-normal [text-justify:inter-character] [line-break:loose]`
+const proseEnglishClass = `${proseBaseClass} break-normal hyphens-auto break-words [text-justify:inter-word]`
 
 const paragraphLang = computed(() => {
 	if (locale.value.startsWith('ja')) {

@@ -5,13 +5,13 @@
 			:title="$t('main.contentPages.friends.title')"
 		/>
 
-		<div v-if="!friends.length" class="py-6 lg:px-6">
+		<div v-if="!friends.length" class="py-6">
 			<div class="text-center text-slate-600 dark:text-slate-300 text-sm">
 				{{ $t('social.friendLinks.emptyLinks') }}
 			</div>
 		</div>
 
-		<div v-else class="grid gap-5 grid-cols-1 lg:grid-cols-2 lg:px-6 mt-6">
+		<div v-else class="grid gap-5 grid-cols-1 lg:grid-cols-2 mt-6">
 			<NuxtLink
 				v-for="friend in friends"
 				:key="friend.id"

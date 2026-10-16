@@ -3,23 +3,27 @@
 		<template v-for="direction in directions" :key="direction">
 			<div
 				v-if="showEdgeOverlay && !(direction === 'left' && hideLeftEdgeOverlay)"
-				class="pointer-events-none absolute inset-y-0 z-10 opacity-0 transition-[opacity,width] duration-200 motion-reduce:transition-none"
+				class="pointer-events-none absolute inset-y-0 z-10 overflow-hidden transition-[width] duration-400 motion-reduce:transition-none"
 				:class="[
 					compactSwipeOnly || hideCompactEdges ? 'max-lg:hidden' : '',
 					strongEdgeOverlay && canScrollLeft && canScrollRight
 						? 'w-24 sm:w-32'
 						: 'w-12 sm:w-16',
 					direction === 'left'
-						? 'left-0 bg-linear-to-r from-(--color-surface-0) from-15% to-transparent'
-						: 'right-0 bg-linear-to-l from-(--color-surface-0) from-15% to-transparent',
+						? 'left-0 carousel-edge-left'
+						: 'right-0 carousel-edge-right',
 					{
-						'opacity-100':
+						'carousel-edge-visible':
 							canScroll(direction) && (fadeEdges || !hoverOnly || touchActive),
-						'group-hover/scroller:opacity-100 group-focus-within/scroller:opacity-100':
+						'carousel-edge-hover':
 							canScroll(direction) && hoverOnly && !fadeEdges,
 					},
 				]"
-			/>
+			>
+				<span
+					class="carousel-edge-fill absolute inset-0 transition-transform duration-400 ease-in-out motion-reduce:transition-none"
+				/>
+			</div>
 			<button
 				type="button"
 				class="absolute z-20 flex -translate-y-1/2 touch-manipulation items-center justify-center rounded-full bg-white/90 text-slate-600 shadow-lg ring-1 ring-slate-200/80 backdrop-blur transition duration-200 hover:bg-white hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-primary dark:bg-slate-950/80 dark:text-slate-300 dark:ring-white/10 dark:hover:bg-slate-950 dark:hover:text-slate-50 motion-reduce:transition-none"
@@ -106,6 +110,26 @@ const buttonClasses = (direction: 'left' | 'right') => {
 </script>
 
 <style scoped>
+.carousel-edge-left .carousel-edge-fill {
+	background: linear-gradient(
+		to right,
+		var(--color-surface-0) 15%,
+		transparent
+	);
+	transform: translateX(-100%);
+}
+.carousel-edge-right .carousel-edge-fill {
+	background: linear-gradient(to left, var(--color-surface-0) 15%, transparent);
+	transform: translateX(100%);
+}
+.carousel-edge-visible .carousel-edge-fill,
+:global(.group\/scroller:hover) .carousel-edge-hover .carousel-edge-fill,
+:global(.group\/scroller:focus-within)
+	.carousel-edge-hover
+	.carousel-edge-fill {
+	transform: translateX(0);
+}
+
 .content-image-carousel-nav-button {
 	top: calc(var(--content-image-nav-height) / 2);
 }

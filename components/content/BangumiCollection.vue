@@ -95,27 +95,17 @@
 						name="bangumi-stats"
 						@before-leave="freezeStatsWidth"
 						tag="div"
-						class="relative grid shrink-0"
+						class="relative grid min-w-0 shrink-0 overflow-hidden"
 						:style="{
 							width: statsWidth === null ? undefined : `${statsWidth}px`,
 						}"
 					>
-						<span
+						<OverflowMarquee
 							:key="activeType"
-							class="flex min-h-5 min-w-0 flex-wrap content-start gap-x-1.5 gap-y-1 [grid-area:1/1]"
+							class="min-h-5 [grid-area:1/1]"
+							:text="summaryParts.join(' / ')"
 							aria-live="polite"
-						>
-							<span
-								v-for="(stat, index) in summaryParts"
-								:key="index"
-								class="whitespace-nowrap"
-							>
-								{{ stat
-								}}<span v-if="index < summaryParts.length - 1" class="ml-1.5"
-									>/</span
-								>
-							</span>
-						</span>
+						/>
 					</TransitionGroup>
 				</div>
 			</div>
@@ -143,20 +133,9 @@
 				:key="category"
 				:data-stats-category="category"
 				aria-hidden="true"
-				class="flex w-max flex-wrap gap-x-1.5 gap-y-1 font-sans text-sm font-normal tabular-nums"
-				:style="{ maxWidth: `${statsAvailableWidth}px` }"
+				class="block w-max whitespace-nowrap font-sans text-sm font-normal tabular-nums"
 			>
-				<span
-					v-for="(stat, index) in getSummaryParts(category)"
-					:key="index"
-					class="whitespace-nowrap"
-					>{{ stat
-					}}<span
-						v-if="index < getSummaryParts(category).length - 1"
-						class="ml-1.5"
-						>/</span
-					></span
-				>
+				{{ getSummaryParts(category).join(' / ') }}
 			</span>
 		</div>
 	</section>
@@ -316,7 +295,11 @@ onMounted(() => {
 		const current = Array.from(measures).find(
 			(element) => element.dataset.statsCategory === activeType.value,
 		)
-		if (current) statsWidth.value = current.getBoundingClientRect().width
+		if (current)
+			statsWidth.value = Math.min(
+				statsAvailableWidth.value,
+				current.getBoundingClientRect().width,
+			)
 	})
 	for (const element of collectionRoot.value?.querySelectorAll<HTMLElement>(
 		'[data-stats-category]',
@@ -331,7 +314,11 @@ watch(activeType, async () => {
 	const current = collectionRoot.value?.querySelector<HTMLElement>(
 		`[data-stats-category="${activeType.value}"]`,
 	)
-	if (current) statsWidth.value = current.getBoundingClientRect().width
+	if (current)
+		statsWidth.value = Math.min(
+			statsAvailableWidth.value,
+			current.getBoundingClientRect().width,
+		)
 })
 const profileUrl = computed(
 	() =>
