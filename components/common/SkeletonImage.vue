@@ -19,7 +19,7 @@
 			:decoding="decoding"
 			:referrerpolicy="referrerpolicy"
 			@load="markImageReady"
-			@error="markImageReady"
+			@error="handleImageError"
 		/>
 	</div>
 </template>
@@ -66,6 +66,7 @@ const props = withDefaults(defineProps<SkeletonImageProps>(), {
 
 const emit = defineEmits<{
 	ready: []
+	error: [event: Event]
 }>()
 
 const imageRef = ref<HTMLImageElement | null>(null)
@@ -170,6 +171,11 @@ const revealWhenDecoded = async (): Promise<void> => {
 
 const markImageReady = (): void => {
 	void revealWhenDecoded()
+}
+
+const handleImageError = (event: Event): void => {
+	emit('error', event)
+	markImageReady()
 }
 
 const syncCachedImageState = async (): Promise<void> => {

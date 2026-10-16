@@ -53,86 +53,85 @@
 		<div
 			class="bangumi-footer mt-3 grid items-start gap-x-3 gap-y-1.5 font-sans text-sm font-normal text-slate-600 dark:text-slate-300"
 		>
-			<div ref="accountRow" class="flex w-max max-w-full items-center gap-3">
+			<div class="flex min-w-0 items-center gap-2">
 				<div
-					class="inline-flex h-5 items-center gap-0.5 rounded bg-(--color-surface-2) p-px"
-					:aria-label="t('main.preference.bangumiCategory')"
+					ref="categoryRow"
+					class="flex w-max max-w-full items-center -translate-y-px"
 				>
-					<button
-						v-for="category in categories"
-						:key="category"
-						type="button"
-						:aria-pressed="activeType === category"
-						class="rounded-xs px-1.5 py-0 text-xs leading-[18px] transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-primary motion-reduce:transition-none"
-						:class="
-							activeType === category
-								? 'bg-(--color-surface-0) text-slate-800 shadow-xs dark:text-slate-100'
-								: 'hover:text-slate-800 dark:hover:text-slate-100'
-						"
-						@click="selectCategory(category)"
+					<div
+						class="inline-flex h-5 items-center gap-0.5 rounded bg-(--color-surface-2) p-px"
+						:aria-label="t('main.preference.bangumiCategory')"
 					>
-						{{
-							t(
-								`main.preference.${category === 'anime' ? 'bangumiAnimeTab' : 'bangumiBooksTab'}`,
-							)
-						}}
-					</button>
+						<button
+							v-for="category in categories"
+							:key="category"
+							type="button"
+							:aria-pressed="activeType === category"
+							class="rounded-xs px-1.5 py-0 text-xs leading-4.5 transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-primary motion-reduce:transition-none"
+							:class="
+								activeType === category
+									? 'bg-(--color-surface-0) text-slate-800 shadow-xs dark:text-slate-100'
+									: 'hover:text-slate-800 dark:hover:text-slate-100'
+							"
+							@click="selectCategory(category)"
+						>
+							{{
+								t(
+									`main.preference.${category === 'anime' ? 'bangumiAnimeTab' : 'bangumiBooksTab'}`,
+								)
+							}}
+						</button>
+					</div>
 				</div>
+				<div
+					v-if="section && !isLoading && !error"
+					class="inline-flex max-w-full items-start gap-1.5 text-sm tabular-nums transition-[width] duration-400 ease-in-out motion-reduce:transition-none"
+					:style="{
+						width: statsWidth === null ? undefined : `${statsWidth}px`,
+						height: `${statsHeight}px`,
+					}"
+				>
+					<TransitionGroup
+						name="bangumi-stats"
+						@before-leave="freezeStatsWidth"
+						tag="div"
+						class="relative grid shrink-0"
+						:style="{
+							width: statsWidth === null ? undefined : `${statsWidth}px`,
+						}"
+					>
+						<span
+							:key="activeType"
+							class="flex min-h-5 min-w-0 flex-wrap content-start gap-x-1.5 gap-y-1 [grid-area:1/1]"
+							aria-live="polite"
+						>
+							<span
+								v-for="(stat, index) in summaryParts"
+								:key="index"
+								class="whitespace-nowrap"
+							>
+								{{ stat
+								}}<span v-if="index < summaryParts.length - 1" class="ml-1.5"
+									>/</span
+								>
+							</span>
+						</span>
+					</TransitionGroup>
+				</div>
+			</div>
+			<div ref="accountRow" class="bangumi-account justify-self-end">
 				<NuxtLink
 					:to="profileUrl"
 					target="_blank"
 					rel="noopener noreferrer"
-					class="group/bangumi inline-flex items-center gap-2"
+					class="group/bangumi inline-flex items-center gap-1.5"
 				>
-					<BangumiLogo aria-hidden="true" class="h-4 w-auto shrink-0" />
+					<BangumiLogo aria-hidden="true" class="h-[17px] w-auto shrink-0" />
 					<span
 						class="transition-colors group-hover/bangumi:text-slate-800 dark:group-hover/bangumi:text-slate-100"
 						>@{{ section?.username || 'aurlemon' }}</span
 					>
 				</NuxtLink>
-			</div>
-			<div
-				v-if="section && !isLoading && !error"
-				class="inline-flex max-w-full items-start gap-1.5 text-sm tabular-nums transition-[width] duration-400 ease-in-out motion-reduce:transition-none"
-				:style="{
-					width: statsWidth === null ? undefined : `${statsWidth}px`,
-					height: `${statsHeight}px`,
-				}"
-			>
-				<UIcon
-					name="i-lucide-chart-column"
-					aria-hidden="true"
-					class="size-4 shrink-0 translate-y-px"
-				/>
-				<TransitionGroup
-					name="bangumi-stats"
-					@before-leave="freezeStatsWidth"
-					tag="div"
-					class="relative grid shrink-0"
-					:style="{
-						width:
-							statsWidth === null
-								? undefined
-								: `${Math.max(0, statsWidth - 22)}px`,
-					}"
-				>
-					<span
-						:key="activeType"
-						class="flex min-h-5 min-w-0 flex-wrap content-start gap-x-1.5 gap-y-1 [grid-area:1/1]"
-						aria-live="polite"
-					>
-						<span
-							v-for="(stat, index) in summaryParts"
-							:key="index"
-							class="whitespace-nowrap"
-						>
-							{{ stat
-							}}<span v-if="index < summaryParts.length - 1" class="ml-1.5"
-								>/</span
-							>
-						</span>
-					</span>
-				</TransitionGroup>
 			</div>
 		</div>
 		<div
@@ -285,6 +284,7 @@ const collectionRoot = ref<HTMLElement | null>(null)
 const statsWidth = ref<number | null>(null)
 const statsHeight = ref(20)
 const accountRow = ref<HTMLElement | null>(null)
+const categoryRow = ref<HTMLElement | null>(null)
 const statsAvailableWidth = ref(1000)
 const freezeStatsWidth = (element: Element) => {
 	if (element instanceof HTMLElement)
@@ -297,7 +297,10 @@ onMounted(() => {
 		const accountWidth = accountRow.value?.getBoundingClientRect().width ?? 0
 		statsAvailableWidth.value = Math.max(
 			0,
-			width - 22 - (width >= 672 ? accountWidth + 12 : 0),
+			width -
+				(categoryRow.value?.getBoundingClientRect().width ?? 0) -
+				12 -
+				(width >= 672 ? accountWidth + 12 : 0),
 		)
 		const measures = collectionRoot.value?.querySelectorAll<HTMLElement>(
 			'[data-stats-category]',
@@ -313,7 +316,7 @@ onMounted(() => {
 		const current = Array.from(measures).find(
 			(element) => element.dataset.statsCategory === activeType.value,
 		)
-		if (current) statsWidth.value = current.getBoundingClientRect().width + 22
+		if (current) statsWidth.value = current.getBoundingClientRect().width
 	})
 	for (const element of collectionRoot.value?.querySelectorAll<HTMLElement>(
 		'[data-stats-category]',
@@ -321,13 +324,14 @@ onMounted(() => {
 		statsObserver.observe(element)
 	if (collectionRoot.value) statsObserver.observe(collectionRoot.value)
 	if (accountRow.value) statsObserver.observe(accountRow.value)
+	if (categoryRow.value) statsObserver.observe(categoryRow.value)
 })
 watch(activeType, async () => {
 	await nextTick()
 	const current = collectionRoot.value?.querySelector<HTMLElement>(
 		`[data-stats-category="${activeType.value}"]`,
 	)
-	if (current) statsWidth.value = current.getBoundingClientRect().width + 22
+	if (current) statsWidth.value = current.getBoundingClientRect().width
 })
 const profileUrl = computed(
 	() =>

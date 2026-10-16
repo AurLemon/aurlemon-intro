@@ -2,11 +2,13 @@
 	<div class="contents">
 		<template v-for="direction in directions" :key="direction">
 			<div
-				v-if="showEdgeOverlay"
+				v-if="showEdgeOverlay && !(direction === 'left' && hideLeftEdgeOverlay)"
 				class="pointer-events-none absolute inset-y-0 z-10 opacity-0 transition-[opacity,width] duration-200 motion-reduce:transition-none"
 				:class="[
 					compactSwipeOnly || hideCompactEdges ? 'max-lg:hidden' : '',
-					canScrollLeft && canScrollRight ? 'w-24 sm:w-32' : 'w-12 sm:w-16',
+					strongEdgeOverlay && canScrollLeft && canScrollRight
+						? 'w-24 sm:w-32'
+						: 'w-12 sm:w-16',
 					direction === 'left'
 						? 'left-0 bg-linear-to-r from-(--color-surface-0) from-15% to-transparent'
 						: 'right-0 bg-linear-to-l from-(--color-surface-0) from-15% to-transparent',
@@ -56,6 +58,8 @@ interface Props {
 	canScrollLeft: boolean
 	canScrollRight: boolean
 	showEdgeOverlay?: boolean
+	strongEdgeOverlay?: boolean
+	hideLeftEdgeOverlay?: boolean
 	fadeEdges?: boolean
 	hoverOnly?: boolean
 	touchActive?: boolean
@@ -69,6 +73,8 @@ interface Props {
 }
 const props = withDefaults(defineProps<Props>(), {
 	showEdgeOverlay: true,
+	strongEdgeOverlay: false,
+	hideLeftEdgeOverlay: false,
 	fadeEdges: false,
 	hoverOnly: true,
 	touchActive: false,
