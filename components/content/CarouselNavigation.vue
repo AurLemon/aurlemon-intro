@@ -6,6 +6,7 @@
 				class="pointer-events-none absolute inset-y-0 z-10 overflow-hidden transition-[width] duration-400 motion-reduce:transition-none"
 				:class="[
 					compactSwipeOnly || hideCompactEdges ? 'max-lg:hidden' : '',
+					{ 'carousel-edge-blur': blurEdges },
 					strongEdgeOverlay && canScrollLeft && canScrollRight
 						? 'w-24 sm:w-32'
 						: 'w-12 sm:w-16',
@@ -21,7 +22,7 @@
 				]"
 			>
 				<span
-					class="carousel-edge-fill absolute inset-0 transition-transform duration-400 ease-in-out motion-reduce:transition-none"
+					class="carousel-edge-fill absolute inset-0 transition-[transform,filter,opacity] duration-400 ease-in-out motion-reduce:transition-none"
 				/>
 			</div>
 			<button
@@ -62,6 +63,7 @@ interface Props {
 	canScrollLeft: boolean
 	canScrollRight: boolean
 	showEdgeOverlay?: boolean
+	blurEdges?: boolean
 	strongEdgeOverlay?: boolean
 	hideLeftEdgeOverlay?: boolean
 	fadeEdges?: boolean
@@ -77,6 +79,7 @@ interface Props {
 }
 const props = withDefaults(defineProps<Props>(), {
 	showEdgeOverlay: true,
+	blurEdges: false,
 	strongEdgeOverlay: false,
 	hideLeftEdgeOverlay: false,
 	fadeEdges: false,
@@ -122,12 +125,18 @@ const buttonClasses = (direction: 'left' | 'right') => {
 	background: linear-gradient(to left, var(--color-surface-0) 15%, transparent);
 	transform: translateX(100%);
 }
+.carousel-edge-blur .carousel-edge-fill {
+	filter: blur(6px);
+	opacity: 0;
+}
 .carousel-edge-visible .carousel-edge-fill,
 :global(.group\/scroller:hover) .carousel-edge-hover .carousel-edge-fill,
 :global(.group\/scroller:focus-within)
 	.carousel-edge-hover
 	.carousel-edge-fill {
 	transform: translateX(0);
+	filter: blur(0);
+	opacity: 1;
 }
 
 .content-image-carousel-nav-button {

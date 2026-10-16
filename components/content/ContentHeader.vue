@@ -2,11 +2,11 @@
 	<header
 		data-content-header
 		:data-content-page="page"
-		class="py-12 pb-10 sm:pt-6"
+		class="py-12 pb-8 sm:pt-6"
 	>
 		<div
 			aria-hidden="true"
-			class="mb-4 text-6xl leading-none sm:mb-5 sm:text-7xl"
+			class="mb-4 text-6xl leading-none sm:mb-5 sm:text-7xl select-none"
 		>
 			{{ pageEmoji }}
 		</div>
