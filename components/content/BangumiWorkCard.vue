@@ -13,31 +13,32 @@
 				ref="frame"
 				class="relative isolate aspect-[5/7] w-full overflow-hidden rounded-lg select-none bg-(--color-surface-2) [clip-path:inset(0_round_var(--radius-lg))] dark:bg-(--color-surface-1)"
 			>
-				<template v-for="layer in coverLayers" :key="layer.src">
+				<div
+					v-for="layer in coverLayers"
+					:key="layer.src"
+					class="absolute inset-0 h-full w-full"
+					:class="
+						layer.previous
+							? 'bangumi-cover-previous'
+							: ['z-1 bangumi-cover', { 'bangumi-cover-covered': coverCovered }]
+					"
+					:aria-hidden="layer.previous || undefined"
+					@transitionend.self="finishCover"
+				>
 					<SkeletonImage
 						:src="layer.src"
 						:alt="layer.previous ? '' : item.name"
-						:aria-hidden="layer.previous || undefined"
 						decoding="async"
 						referrerpolicy="no-referrer"
 						:loading="visible ? 'eager' : 'lazy'"
 						image-class="h-full w-full object-cover"
 						skeleton-class="rounded-lg"
-						class="absolute inset-0 h-full w-full"
-						:class="
-							layer.previous
-								? 'bangumi-cover-previous'
-								: [
-										'z-1 bangumi-cover',
-										{ 'bangumi-cover-covered': coverCovered },
-									]
-						"
+						class="h-full w-full"
 						@ready="onCoverReady(layer.src)"
 						@dragstart.prevent
-						@transitionend.self="finishCover"
 						@error="onDisplayedCoverError"
 					/>
-				</template>
+				</div>
 				<p
 					v-if="failedUrl"
 					class="absolute inset-0 flex items-center justify-center px-3 pb-12 text-center font-sans text-xs text-slate-500"
