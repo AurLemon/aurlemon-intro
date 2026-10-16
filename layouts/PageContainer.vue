@@ -3,18 +3,46 @@ import { onMounted, ref } from 'vue'
 import { resetPageEnter, resolvePageEnter } from '~/utils/page-scroll'
 
 const pageContainerReady = ref(false)
+const pageEnterAnimations = new WeakMap<Element, Animation>()
+const pageEnterFrames = new WeakMap<Element, number>()
 
-const handlePageEnter = (element: Element): void => {
-	// Commit enter-from after insertion. Otherwise a ready page can reach
-	// enter-to before the browser establishes its initial transparent style.
-	element.getBoundingClientRect()
-
+const handlePageEnter = (element: Element, done: () => void): void => {
 	// Enter runs after insertion; the destination must have a scrollable layout.
-	requestAnimationFrame(() => {
+	const frame = requestAnimationFrame(() => {
+		pageEnterFrames.delete(element)
 		if (!element.isConnected) return
 		const path = element.getAttribute('data-page-path')
 		if (path) resolvePageEnter(path)
+
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			done()
+			return
+		}
+
+		// Start the clock after mounting, so page setup cannot consume the fade.
+		const animation = element.animate(
+			[
+				{ opacity: 0, transform: 'translateY(6px)' },
+				{ opacity: 1, transform: 'translateY(0)' },
+			],
+			{ duration: 220, easing: 'ease', fill: 'both' },
+		)
+		pageEnterAnimations.set(element, animation)
+		animation.onfinish = () => {
+			done()
+			animation.cancel()
+			pageEnterAnimations.delete(element)
+		}
 	})
+	pageEnterFrames.set(element, frame)
+}
+
+const cancelPageEnter = (element: Element): void => {
+	const frame = pageEnterFrames.get(element)
+	if (frame !== undefined) cancelAnimationFrame(frame)
+	pageEnterFrames.delete(element)
+	pageEnterAnimations.get(element)?.cancel()
+	pageEnterAnimations.delete(element)
 }
 
 onMounted(() => {
@@ -49,6 +77,7 @@ onMounted(() => {
 				mode: 'out-in',
 				onBeforeLeave: resetPageEnter,
 				onEnter: handlePageEnter,
+				onEnterCancelled: cancelPageEnter,
 			}"
 		>
 			<div
