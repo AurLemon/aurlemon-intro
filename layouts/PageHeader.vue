@@ -12,6 +12,7 @@
 			<div>
 				<ReadingProgress targetSelector="#page-container" />
 			</div>
+			<ReadingPageTitle />
 			<div
 				data-theme-controls
 				class="flex shrink-0 items-center gap-2 [view-transition-name:header-controls]"
@@ -27,7 +28,7 @@
 						color="neutral"
 						variant="ghost"
 						size="xs"
-						class="h-9 w-9 rounded-full hover:bg-slate-500/10 active:bg-slate-500/20"
+						class="h-9 w-9 rounded-full not-dark:text-slate-800 hover:bg-slate-500/10 active:bg-slate-500/20"
 						icon-only
 						:aria-label="t('header.theme.label')"
 					>
@@ -46,7 +47,7 @@
 								:class="{
 									'bg-primary-100/60 text-primary-600 dark:bg-primary-500/20 dark:text-primary-200':
 										selectedThemeMode === mode.value,
-									'text-slate-600 dark:text-slate-300':
+									'text-slate-800 dark:text-slate-300':
 										selectedThemeMode !== mode.value,
 								}"
 								@click="selectTheme(mode.value)"
@@ -75,7 +76,7 @@
 						color="neutral"
 						variant="ghost"
 						size="xs"
-						class="h-9 w-9 rounded-full hover:bg-slate-500/10 active:bg-slate-500/20"
+						class="h-9 w-9 rounded-full not-dark:text-slate-800 hover:bg-slate-500/10 active:bg-slate-500/20"
 						icon-only
 						:aria-label="t('header.switchLanguage')"
 					>
@@ -94,7 +95,7 @@
 								:class="{
 									'bg-primary-100/60 text-primary-600 dark:bg-primary-500/20 dark:text-primary-200':
 										selectedLocale === item.value,
-									'text-slate-600 dark:text-slate-300':
+									'text-slate-800 dark:text-slate-300':
 										selectedLocale !== item.value,
 								}"
 								@click="selectLocale(item.value)"

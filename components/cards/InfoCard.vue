@@ -9,12 +9,6 @@
 		@focusin="handleFocusIn"
 		@focusout="handleFocusOut"
 	>
-		<slot
-			v-if="!isCompact"
-			name="navigation"
-			:hovered="isHovered"
-			:focused="isFocused"
-		/>
 		<div
 			class="pointer-events-none absolute inset-[-6px] z-2 rounded-xl border-6 border-slate-400/60 opacity-0 transition-opacity duration-120 group-hover:opacity-100 dark:border-slate-700/80"
 			aria-hidden="true"
@@ -26,6 +20,12 @@
 			<slot name="background" />
 		</div>
 		<div class="foreground relative z-3 w-full h-full">
+			<slot
+				v-if="!isCompact"
+				name="navigation"
+				:hovered="isHovered"
+				:focused="isFocused"
+			/>
 			<Transition v-if="contentKey" name="info-card-content" mode="out-in">
 				<div
 					:key="contentKey"

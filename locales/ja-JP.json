@@ -199,20 +199,43 @@
 				}
 			}
 		},
-		"contentFooter": {
-			"stats": "{count} 文字 / {minutes} 分",
-			"updatedAt": "{date}"
-		},
 		"project": {
-			"line1": "Hey Codex、このページの内容を書いてくれませんか。",
+			"portfolio": {
+				"intro": "Nuxt と TypeScript で作った個人サイト。このサイトのこと！今見えているのは、26 年 4 月に作り直したあとのバージョン。機能はそんなに多くなくて、主に自分の小作文を置く場所が欲しかった。",
+				"hydcraft": "自分の MC サーバーのために作ったサイト。アカウント連携やプレイヤープロフィール、サーバー情報なんかをまとめてある。詳しくは GitHub の Hydroline を見てもらえれば。ほかにもいくつかプロジェクトがある。",
+				"teps": "2024 年、中等職業教育から高等職業教育へ進む試験の時期に、自分とクラスメイトのために作った問題演習サイト。2025 年に最後の後輩たちにも使ってもらってから引退し、今は記念に残している。"
+			},
+			"githubRange": "集計期間は {from} から {to} まで",
+			"githubLoadFailed": "GitHub の貢献グラフを読み込めませんでした。",
+			"githubRetry": "再試行",
 			"githubContributionsTitle": "GitHub Contributions",
-			"commitsInLastYear": "直近1年のコミット {count} 回"
+			"commitsInLastYear": "直近1年のコミット {count} 回",
+			"entries": {
+				"github": {
+					"type": "リポジトリ",
+					"description": "プロジェクト、ソースコード、進行中の試み。"
+				},
+				"hydcraft": {
+					"type": "サーバーポータル",
+					"description": "自分の Minecraft サーバーの入口づくり。"
+				},
+				"wikijs": {
+					"type": "テーマ",
+					"description": "Wiki.js を Citizen 風のデザインに。"
+				}
+			}
 		},
 		"preference": {
+			"bangumiAnimeTab": "アニメ",
+			"bangumiBooksTab": "書籍",
+			"bangumiCategory": "コレクション分類",
+			"bangumiAnimeData": "アニメ記録",
+			"bangumiBooksData": "読書記録",
+			"bangumiWorksCount": "{count} 作品",
 			"bangumiAnimeTitle": "Bangumi アニメ",
 			"bangumiBooksTitle": "Bangumi 書籍",
-			"bangumiAnimeSummary": "視聴中 {doing} 件、見たい {wish} 件、視聴済み {done} 作品",
-			"bangumiBooksSummary": "読書中 {doing} 件、読みたい {wish} 件、読了 {done} 作品",
+			"bangumiAnimeSummary": "見たい {wish} / 視聴中 {doing} / 視聴済 {done}",
+			"bangumiBooksSummary": "読みたい {wish} / 読書中 {doing} / 読了 {done}",
 			"bangumiAnimeStatusWish": "見たい",
 			"bangumiAnimeStatusDoing": "視聴中",
 			"bangumiAnimeStatusDone": "視聴済み",
@@ -222,8 +245,37 @@
 			"bangumiWishCount": "見たい/読みたい {count}",
 			"bangumiDoneCount": "見た/読了 {count}",
 			"bangumiLoadFailed": "Bangumi データの読み込みに失敗しました。",
+			"bangumiCoverFailed": "表紙を読み込めませんでした",
 			"bangumiRetry": "再試行",
 			"bangumiEmpty": "表示できる項目がありません。"
+		},
+		"contentPages": {
+			"profile": {
+				"title": "私は誰？"
+			},
+			"project": {
+				"title": "何ができる？"
+			},
+			"journey": {
+				"title": "どうやってここまで来た？"
+			},
+			"preference": {
+				"title": "何が好き？"
+			},
+			"about": {
+				"title": "このサイトって？"
+			},
+			"friends": {
+				"title": "私の友達。"
+			}
+		},
+		"contentMetadata": {
+			"stats": "{count} 字 / {minutes} 分"
+		},
+		"contentFooter": {
+			"stats": "{count} 文字 / {minutes} 分",
+			"updatedAt": "更新日 {date}",
+			"createdAt": "作成日 {date}"
 		}
 	},
 	"content": {
@@ -372,7 +424,8 @@
 			"replyTo": "{login} #{floor} に返信",
 			"likeCount": "{count}",
 			"likedCount": "{count}",
-			"noLikesYet": "まだいいねはありません"
+			"noLikesYet": "まだいいねはありません",
+			"likedByUsers": "いいねしたユーザー"
 		},
 		"friendLinks": {
 			"applyTitle": "相互リンク申請",

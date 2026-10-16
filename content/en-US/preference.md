@@ -1,15 +1,13 @@
 ---
-updatedAt: 2026-07-02T05:55:47+08:00
+createdAt: 2026-04-04T16:12:10+08:00
+updatedAt: 2026-10-16T19:49:04+08:00
 ---
 
 I will not dissect my preferences too carefully in public. When people talk about preferences, they usually end up talking about anime and similar things anyway. Some interests are better enjoyed within a smaller circle. So I will just write whatever comes to mind here.
 
-## Anime
+## Anime and books
 
-::BangumiAnime
-::
-
-::BangumiBooks
+::BangumiCollection
 ::
 
 The list above shows the anime and books I have gone through. To be honest, I have watched very little anime in recent years, let alone read physical books. Over the last year, most of the physical books I bought were just exam-prep materials for CET-4 and CET-6. If you asked what I usually watch, I would probably say yuri, light yuri, slice-of-life, and that is about it. I used to watch some BG too. It is not that I never watch it anymore, just much less than before.

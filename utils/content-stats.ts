@@ -1,3 +1,9 @@
+export interface ContentDocumentMeta {
+	createdAt?: string
+	body?: unknown
+	updatedAt?: string
+}
+
 export interface ContentStats {
 	cjkCharCount: number
 	englishWordCount: number

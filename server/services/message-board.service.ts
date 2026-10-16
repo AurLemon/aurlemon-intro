@@ -83,7 +83,17 @@ export const listMessageBoard = async (
 			},
 			likes: {
 				include: {
-					user: { select: { username: true } },
+					user: {
+						select: {
+							username: true,
+							displayName: true,
+							preferredAvatarIdentityId: true,
+							identities: {
+								select: { id: true, avatarUrl: true },
+								orderBy: { createdAt: 'asc' },
+							},
+						},
+					},
 				},
 				orderBy: { createdAt: 'asc' },
 			},
@@ -133,9 +143,23 @@ export const listMessageBoard = async (
 			createdAt: comment.createdAt.toISOString(),
 			likeCount: comment.likes.length,
 			hasLiked: likedSet.has(comment.id),
+			// Keep the legacy field for clients opened before this release.
 			likedByUsernames: comment.likes.map(
 				(like) => like.user?.username ?? like.githubLogin,
 			),
+			likedByUsers: comment.likes.map((like) => {
+				const user = like.user
+				const identity =
+					user?.identities.find(
+						(item) => item.id === user.preferredAvatarIdentityId,
+					) ?? user?.identities[0]
+				return {
+					id: like.id,
+					username: user?.username ?? like.githubLogin,
+					displayName: user?.displayName ?? like.githubLogin,
+					avatarUrl: identity?.avatarUrl ?? '',
+				}
+			}),
 			canEdit: owns || currentUser?.isAdmin === true,
 			canDelete: owns || currentUser?.isAdmin === true,
 			canPin: currentUser?.isAdmin === true && comment.parentId === null,

@@ -199,20 +199,43 @@
 				}
 			}
 		},
-		"contentFooter": {
-			"stats": "{count} words / {minutes} min",
-			"updatedAt": "Updated {date}"
-		},
 		"project": {
-			"line1": "Hey Codex, help me write the content for this page.",
+			"portfolio": {
+				"intro": "My personal website, built with Nuxt and TypeScript. You are on it right now! This version is the result of a rebuild in April 2026. It does not do all that much; I mainly needed somewhere to put my little essays.",
+				"hydcraft": "A website I made for my own Minecraft server, with account linking, player profiles, server information, and that sort of thing. You can find more in the Hydroline organization on GitHub, along with a few other projects.",
+				"teps": "A practice site I made for myself and my classmates during our 2024 transition exam from secondary to higher vocational education. It served one final class in 2025 before retiring. I keep it online as a memento."
+			},
+			"githubRange": "Statistics cover the period from {from} to {to}",
+			"githubLoadFailed": "Failed to load GitHub contributions.",
+			"githubRetry": "Retry",
 			"githubContributionsTitle": "GitHub Contributions",
-			"commitsInLastYear": "{count} commits in last year"
+			"commitsInLastYear": "{count} commits in last year",
+			"entries": {
+				"github": {
+					"type": "Repositories",
+					"description": "Projects, source code, and ongoing experiments."
+				},
+				"hydcraft": {
+					"type": "Server portal",
+					"description": "A home for my Minecraft server."
+				},
+				"wikijs": {
+					"type": "Theme",
+					"description": "A Citizen-inspired appearance for Wiki.js."
+				}
+			}
 		},
 		"preference": {
+			"bangumiAnimeTab": "Anime",
+			"bangumiBooksTab": "Books",
+			"bangumiCategory": "Collection category",
+			"bangumiAnimeData": "Anime collection",
+			"bangumiBooksData": "Book collection",
+			"bangumiWorksCount": "{count} works",
 			"bangumiAnimeTitle": "Bangumi Anime",
 			"bangumiBooksTitle": "Bangumi Books",
-			"bangumiAnimeSummary": "{doing} watching, {wish} on wish list, {done} watched",
-			"bangumiBooksSummary": "{doing} reading, {wish} on wish list, {done} read",
+			"bangumiAnimeSummary": "Want to watch {wish} / Watching {doing} / Watched {done}",
+			"bangumiBooksSummary": "Want to read {wish} / Reading {doing} / Read {done}",
 			"bangumiAnimeStatusWish": "Wish",
 			"bangumiAnimeStatusDoing": "Watching",
 			"bangumiAnimeStatusDone": "Watched",
@@ -222,8 +245,37 @@
 			"bangumiWishCount": "Wish {count}",
 			"bangumiDoneCount": "Done {count}",
 			"bangumiLoadFailed": "Failed to load Bangumi data.",
+			"bangumiCoverFailed": "Cover failed to load",
 			"bangumiRetry": "Retry",
 			"bangumiEmpty": "No entries to display."
+		},
+		"contentPages": {
+			"profile": {
+				"title": "Who am I?"
+			},
+			"project": {
+				"title": "What can I do?"
+			},
+			"journey": {
+				"title": "How did I get here?"
+			},
+			"preference": {
+				"title": "What do I like?"
+			},
+			"about": {
+				"title": "Why this website?"
+			},
+			"friends": {
+				"title": "My friends."
+			}
+		},
+		"contentMetadata": {
+			"stats": "{count} words / {minutes} min"
+		},
+		"contentFooter": {
+			"stats": "{count} words / {minutes} min",
+			"updatedAt": "Updated {date}",
+			"createdAt": "Created {date}"
 		}
 	},
 	"content": {
@@ -372,7 +424,8 @@
 			"replyTo": "Reply to {login} #{floor}",
 			"likeCount": "{count}",
 			"likedCount": "{count}",
-			"noLikesYet": "No likes yet"
+			"noLikesYet": "No likes yet",
+			"likedByUsers": "People who liked this comment"
 		},
 		"friendLinks": {
 			"applyTitle": "Apply for Link Exchange",

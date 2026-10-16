@@ -109,6 +109,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, useId } from 'vue'
+import { useReducedMotion } from 'motion-v'
 import {
 	resolveCardPatternSettings,
 	calculateCardAppearance,
@@ -191,6 +192,19 @@ const { planeSize, tileRows, tileColumns, positions } = useCardPatternLayout({
 })
 const visible = ref(false)
 const pageHidden = ref(false)
+const reducedMotion = useReducedMotion()
+useCardPatternDrift({
+	background,
+	enabled: computed(
+		() =>
+			visible.value &&
+			!pageHidden.value &&
+			!isMobileMotion.value &&
+			!reducedMotion.value,
+	),
+	focusActive: toRef(props, 'focusActive'),
+})
+
 let intersectionObserver: IntersectionObserver | undefined
 
 const updatePageVisibility = () => {
@@ -246,17 +260,6 @@ onBeforeUnmount(() => {
 	animation: card-pattern-background-drift var(--motif-drift-duration) linear
 		infinite;
 	animation-play-state: paused;
-}
-
-@media (hover: hover) {
-	:global(.group\/card:hover .card-pattern-background-pattern),
-	:global(
-		.group\/card:focus-within
-			.card-pattern-background[data-focus-active='true']
-			.card-pattern-background-pattern
-	) {
-		animation-play-state: running;
-	}
 }
 
 .card-pattern-background[data-paused='true'] .card-pattern-background-state,

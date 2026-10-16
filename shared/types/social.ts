@@ -208,6 +208,13 @@ export interface PendingFriendLinkExpiredEvent {
 	expiredAt: string
 }
 
+export interface MessageCommentLikeUser {
+	id: string
+	username: string
+	displayName: string
+	avatarUrl: string
+}
+
 export interface MessageCommentItem {
 	id: string
 	floor: number
@@ -222,7 +229,9 @@ export interface MessageCommentItem {
 	createdAt: string
 	likeCount: number
 	hasLiked: boolean
+	/** @deprecated Use likedByUsers; retained for already-open clients. */
 	likedByUsernames: string[]
+	likedByUsers: MessageCommentLikeUser[]
 	canEdit: boolean
 	canDelete: boolean
 	canPin: boolean

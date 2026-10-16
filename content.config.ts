@@ -8,6 +8,7 @@ export default defineContentConfig({
 			source: '**/*.md',
 			schema: z
 				.object({
+					createdAt: z.string().optional(),
 					updatedAt: z.string().optional(),
 				})
 				.passthrough(),
