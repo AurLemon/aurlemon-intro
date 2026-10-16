@@ -21,10 +21,9 @@ const {
 } = usePageMenuNavigation()
 const menuViewport = ref<HTMLElement | null>(null)
 const menuInner = ref<HTMLElement | null>(null)
-const fallbackSlot = ref<HTMLElement | null>(null)
+const menuBase = ref<HTMLElement | null>(null)
 const fallbackMeasure = ref<HTMLElement | null>(null)
 const displayedFallback = ref<MenuItem | null>(null)
-const fallbackSlotVisible = ref(false)
 const isAtBottom = ref(false)
 const menuReady = ref(false)
 const prefersReducedMotion = useReducedMotion()
@@ -32,11 +31,9 @@ const menuVisible = computed(() => menuReady.value && !isAtBottom.value)
 const rawAtBottom = ref(false)
 const BOTTOM_HIDE_DELAY = 180
 const BOTTOM_SHOW_DELAY = 120
-const FALLBACK_SLOT_TRANSITION_MS = 350
 let resizeObserver: ResizeObserver | null = null
 let bottomHideTimer: ReturnType<typeof setTimeout> | null = null
 let bottomShowTimer: ReturnType<typeof setTimeout> | null = null
-let fallbackLeaveTimer: ReturnType<typeof setTimeout> | null = null
 let scrollRaf = 0
 
 const {
@@ -47,7 +44,7 @@ const {
 	syncShellWidth,
 	syncViewportWidth,
 } = usePageMenuSizing({
-	menuInner,
+	menuBase,
 	fallbackMeasure,
 	onMeasured: () => syncPills(),
 })
@@ -168,14 +165,8 @@ const onResize = () => {
 watch(
 	currentFallback,
 	async (next) => {
-		if (fallbackLeaveTimer) {
-			clearTimeout(fallbackLeaveTimer)
-			fallbackLeaveTimer = null
-		}
-
 		if (next) {
 			displayedFallback.value = next
-			fallbackSlotVisible.value = true
 			await syncFallbackWidth()
 			scheduleScrollActiveItemIntoView('smooth')
 			scheduleFollowupScrollActiveItemIntoView('smooth')
@@ -183,18 +174,15 @@ watch(
 		}
 
 		if (!displayedFallback.value) {
-			fallbackSlotVisible.value = false
 			fallbackSlotWidth.value = 0
 			return
 		}
 
 		fallbackSlotWidth.value = 0
 		void syncShellWidth()
-		fallbackLeaveTimer = setTimeout(() => {
+		if (prefersReducedMotion.value) {
 			displayedFallback.value = null
-			fallbackSlotVisible.value = false
-			fallbackLeaveTimer = null
-		}, FALLBACK_SLOT_TRANSITION_MS)
+		}
 	},
 	{ immediate: true },
 )
@@ -230,7 +218,7 @@ watch(
 
 onMounted(() => {
 	syncViewportWidth()
-	void syncShellWidth(false).then(() => {
+	void syncShellWidth().then(() => {
 		menuReady.value = true
 	})
 	updateBottomState()
@@ -239,7 +227,7 @@ onMounted(() => {
 		void syncFallbackWidth()
 	}
 
-	if (!menuInner.value) {
+	if (!menuBase.value || !fallbackMeasure.value) {
 		return
 	}
 
@@ -248,10 +236,15 @@ onMounted(() => {
 			return
 		}
 
-		void syncShellWidth(false)
+		if (currentFallback.value) {
+			void syncFallbackWidth()
+		} else {
+			void syncShellWidth()
+		}
 	})
 
-	resizeObserver.observe(menuInner.value)
+	resizeObserver.observe(menuBase.value)
+	resizeObserver.observe(fallbackMeasure.value)
 	window.addEventListener('scroll', onScroll, { passive: true })
 	window.addEventListener('resize', onResize, { passive: true })
 })
@@ -273,18 +266,22 @@ onBeforeUnmount(() => {
 		clearTimeout(bottomShowTimer)
 		bottomShowTimer = null
 	}
-	if (fallbackLeaveTimer) {
-		clearTimeout(fallbackLeaveTimer)
-		fallbackLeaveTimer = null
-	}
 })
+const onFallbackTransitionEnd = (event: TransitionEvent) => {
+	if (event.target !== event.currentTarget || event.propertyName !== 'width')
+		return
+	if (!currentFallback.value && fallbackSlotWidth.value === 0) {
+		displayedFallback.value = null
+	}
+	void nextTick(syncPills)
+}
 </script>
 
 <template>
 	<aside>
 		<div
 			ref="fallbackMeasure"
-			class="pointer-events-none fixed left-0 top-0 -z-10 opacity-0 whitespace-nowrap rounded-full px-2 py-2 text-base leading-none font-semibold"
+			class="pointer-events-none fixed left-0 top-0 -z-10 opacity-0 whitespace-nowrap rounded-full pl-3 pr-2 py-2 text-base leading-none font-semibold"
 			aria-hidden="true"
 		>
 			{{ displayedFallback?.label ?? currentFallback?.label ?? '' }}
@@ -342,7 +339,7 @@ onBeforeUnmount(() => {
 						<div
 							ref="menuInner"
 							v-motion="menuTextMotion"
-							class="relative inline-flex w-max flex-none flex-nowrap items-center justify-center gap-1"
+							class="relative inline-flex w-max flex-none flex-nowrap items-center justify-center"
 						>
 							<div
 								:style="selectedPillStyle"
@@ -355,26 +352,30 @@ onBeforeUnmount(() => {
 								aria-hidden="true"
 							/>
 
-							<NuxtLink
-								v-for="item in baseNavItems"
-								:key="item.key"
-								:to="resolveTo(item)"
-								data-menu-link
-								class="menu-link relative z-10 inline-flex h-8.5 items-center rounded-full px-2 text-base leading-none whitespace-nowrap transition-colors duration-200 ease-in-out motion-reduce:transition-none"
-								:class="
-									isPathActive(item)
-										? 'font-semibold text-primary dark:text-sky-300'
-										: 'font-normal text-slate-800 hover:text-primary dark:text-slate-200 dark:hover:text-primary-200'
-								"
-								:aria-current="isPathActive(item) ? 'page' : undefined"
+							<div
+								ref="menuBase"
+								class="inline-flex flex-none items-center gap-1"
 							>
-								{{ item.label }}
-							</NuxtLink>
+								<NuxtLink
+									v-for="item in baseNavItems"
+									:key="item.key"
+									:to="resolveTo(item)"
+									data-menu-link
+									class="menu-link relative z-10 inline-flex h-8.5 items-center rounded-full px-2 text-base leading-none whitespace-nowrap transition-colors duration-200 ease-in-out motion-reduce:transition-none"
+									:class="
+										isPathActive(item)
+											? 'font-semibold text-primary dark:text-sky-300'
+											: 'font-normal text-slate-800 hover:text-primary dark:text-slate-200 dark:hover:text-primary-200'
+									"
+									:aria-current="isPathActive(item) ? 'page' : undefined"
+								>
+									{{ item.label }}
+								</NuxtLink>
+							</div>
 
 							<div
-								v-if="fallbackSlotVisible"
-								ref="fallbackSlot"
-								class="overflow-hidden transition-[width] duration-350 ease-out"
+								class="menu-fallback-slot overflow-hidden"
+								@transitionend="onFallbackTransitionEnd"
 								:style="{ width: `${fallbackSlotWidth}px` }"
 							>
 								<NuxtLink
@@ -382,7 +383,7 @@ onBeforeUnmount(() => {
 									:key="displayedFallback.to"
 									:to="resolveTo(displayedFallback)"
 									data-menu-link
-									class="menu-link relative z-10 flex h-8.5 items-center rounded-full px-2 text-base leading-none whitespace-nowrap font-semibold text-primary transition-colors duration-200 ease-in-out motion-reduce:transition-none dark:text-sky-300"
+									class="menu-link relative z-10 ml-1 flex h-8.5 w-max items-center rounded-full px-2 text-base leading-none whitespace-nowrap font-semibold text-primary transition-colors duration-200 ease-in-out motion-reduce:transition-none dark:text-sky-300"
 									aria-current="page"
 								>
 									{{ displayedFallback.label }}
@@ -407,11 +408,16 @@ onBeforeUnmount(() => {
 
 .menu-shell {
 	transform: translateX(-50%);
+}
+
+.menu-shell,
+.menu-fallback-slot {
 	transition: width 500ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @media (prefers-reduced-motion: reduce) {
 	.menu-shell,
+	.menu-fallback-slot,
 	.menu-selected,
 	.menu-preview {
 		transition: none;

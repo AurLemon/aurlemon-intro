@@ -1,13 +1,13 @@
 import { computed, nextTick, ref, type Ref } from 'vue'
 
 interface PageMenuSizingOptions {
-	menuInner: Ref<HTMLElement | null>
+	menuBase: Ref<HTMLElement | null>
 	fallbackMeasure: Ref<HTMLElement | null>
 	onMeasured: () => void
 }
 
 export const usePageMenuSizing = ({
-	menuInner,
+	menuBase,
 	fallbackMeasure,
 	onMeasured,
 }: PageMenuSizingOptions) => {
@@ -64,29 +64,23 @@ export const usePageMenuSizing = ({
 
 	const syncFallbackWidth = async () => {
 		await measureFallbackWidth()
-		void syncShellWidth(false)
+		void syncShellWidth()
 	}
 
-	const syncShellWidth = async (animate = true) => {
+	const syncShellWidth = async () => {
 		if (!import.meta.client) {
 			return
 		}
 
 		await nextTick()
-		const inner = menuInner.value
-		if (!inner) {
+		const base = menuBase.value
+		if (!base) {
 			return
 		}
 
-		// Decorative pills can overflow while animating; measure intrinsic layout only.
-		const nextWidth = inner.offsetWidth
-		if (!animate || shellWidth.value === null) {
-			shellWidth.value = nextWidth
-			onMeasured()
-			return
-		}
-
-		shellWidth.value = nextWidth
+		// Use target geometry, never the extra slot's intermediate animated width.
+		// offsetWidth excludes decorative pills overflowing the positioned menu inner.
+		shellWidth.value = base.offsetWidth + fallbackSlotWidth.value
 		onMeasured()
 	}
 
