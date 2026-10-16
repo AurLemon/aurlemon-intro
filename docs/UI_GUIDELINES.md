@@ -162,6 +162,8 @@
 
 ## 样式实现
 
+- Nuxt Icon 在 `app.config.ts` 统一使用 `icon.mode: 'svg'`，覆盖 UIcon 及 Nuxt UI 内部图标。CSS 模式首次出现新图标时会向 head 前部插入带 `@layer` 的样式，本机 Chromium 实测会使 Emoji 字体短暂回退，产生闪烁与宽度变化；不要只对 Header 局部修复，也不要用固定 Emoji 宽度或合成层提示掩盖问题。保留图标数据的现有客户端打包与系统 Emoji 兜底。
+
 - 全局换行按内容语言决定，与设备无关：中文、日文使用 `word-break: break-all`，英文使用 `word-break: normal`；通过 `:lang()` 支持局部语言标注。Markdown 的 ProseP 按语言分别设置排版规则：中日文段落使用 `word-break: normal` 覆盖全局 break-all，按自然断行机会排版并按字符两端对齐；英文段落使用 `word-break: normal`、`hyphens: auto` 和按词两端对齐，根据 `lang="en"` 自动断词并添加连字符，保留 break-words 处理超长连续字符。各语言保留 text-pretty、两端对齐与末行左对齐；修改中日文规则时不得移除英文自动连字符。介绍行继续沿用全局策略；nowrap、代码、URL 等有明确用途的局部规则仍可覆盖。
 
 - HTML 结构中，非必要不要直接写 `style` 内联样式，优先使用 Tailwind CSS 与 Nuxt UI 提供的能力完成样式表达。

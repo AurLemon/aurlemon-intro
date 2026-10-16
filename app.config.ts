@@ -1,4 +1,6 @@
 export default defineAppConfig({
+	// 避免新图标插入分层 CSS，导致 Chromium 重建字体并闪烁。
+	icon: { mode: 'svg' },
 	ui: {
 		colors: {
 			primary: 'primary',
