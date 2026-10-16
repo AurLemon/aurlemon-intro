@@ -479,7 +479,7 @@ const onFallbackTransitionEnd = (event: TransitionEvent) => {
 									:key="item.key"
 									:to="resolveTo(item)"
 									data-menu-link
-									class="menu-link relative z-10 inline-flex h-8.5 items-center rounded-full px-2 text-base leading-none whitespace-nowrap transition-colors duration-200 ease-in-out motion-reduce:transition-none"
+									class="menu-link relative z-10 inline-flex h-8.5 items-center rounded-full px-2 text-base leading-none whitespace-nowrap motion-reduce:transition-none"
 									:class="
 										isPathActive(item)
 											? 'font-semibold text-primary dark:text-sky-300'
@@ -501,7 +501,7 @@ const onFallbackTransitionEnd = (event: TransitionEvent) => {
 									:key="displayedFallback.to"
 									:to="resolveTo(displayedFallback)"
 									data-menu-link
-									class="menu-link relative z-10 ml-1 flex h-8.5 w-max items-center rounded-full px-2 text-base leading-none whitespace-nowrap font-semibold text-primary transition-colors duration-200 ease-in-out motion-reduce:transition-none dark:text-sky-300"
+									class="menu-link relative z-10 ml-1 flex h-8.5 w-max items-center rounded-full px-2 text-base leading-none whitespace-nowrap font-semibold text-primary motion-reduce:transition-none dark:text-sky-300"
 									aria-current="page"
 								>
 									{{ displayedFallback.label }}
@@ -516,6 +516,12 @@ const onFallbackTransitionEnd = (event: TransitionEvent) => {
 </template>
 
 <style scoped>
+.menu-link {
+	transition:
+		color 200ms ease-in-out,
+		font-weight 350ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .menu-selected,
 .menu-preview {
 	transition:
@@ -563,6 +569,7 @@ const onFallbackTransitionEnd = (event: TransitionEvent) => {
 }
 
 @media (prefers-reduced-motion: reduce) {
+	.menu-link,
 	.menu-shell,
 	.menu-fallback-slot,
 	.menu-selected,
