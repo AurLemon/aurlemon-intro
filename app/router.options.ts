@@ -1,5 +1,5 @@
 import type { RouterConfig } from '@nuxt/schema'
-import { waitForPageEnter } from '~/utils/page-scroll'
+import { restorePageScroll, waitForPageEnter } from '~/utils/page-scroll'
 
 const scrollPositions = new Map<string, number>()
 
@@ -28,6 +28,7 @@ export default <RouterConfig>{
 			const ready = await waitForPageEnter(to.path)
 			if (!ready || router.currentRoute.value.fullPath !== to.fullPath)
 				return false
+			if (restorePageScroll(to.path, position)) return false
 		}
 
 		const behavior =
