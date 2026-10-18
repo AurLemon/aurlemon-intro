@@ -172,6 +172,8 @@
 
 ## 主题与 Design Token
 
+- `useThemeTransition` 在 `colorMode.unknown` 为 true 的首次 hydration 期间不播放主题过渡。恢复已保存偏好可能与系统主题不同，这属于初始化；此时触发全局颜色 transition 的 `!important` 覆盖，会取消 PageContainer 的 opacity / transform 入场。初始化完成后的手动切换和系统主题变化保留既有动效。
+
 - 优先复用 `app.config.ts` 中的 Nuxt UI 主题配置，以及 `assets/styles/base/tailwind.css` 中的 design token，不要在页面里重新发明一套颜色、表面层级、尺寸语义。
 - 颜色、语义色、表面层级、字号与字体倾向，优先通过 token 与 class 表达，不要在局部组件里散落硬编码色值。
 - `--color-surface-*` 当前定义在 base CSS 中，未注册为 Tailwind `@theme` 颜色；引用时使用 `bg-(--color-surface-2)`、`from-(--color-surface-0)` 等显式变量类，不使用不会生成 CSS 的 `bg-surface-*` / `from-surface-*`。修改后检查构建 CSS 的实际声明，不能仅凭 Build 通过判断视觉类有效。
