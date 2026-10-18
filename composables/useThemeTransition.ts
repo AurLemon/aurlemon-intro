@@ -42,6 +42,9 @@ export const useThemeTransition = (): ThemeTransitionController => {
 		(value, previous) => {
 			if (
 				mounted &&
+				// Restoring the saved theme during hydration is not a theme change.
+				// Its global transition override would cancel the page's first fade.
+				!colorMode.unknown &&
 				value !== previous &&
 				shouldAnimate() &&
 				!isTransitioning.value
