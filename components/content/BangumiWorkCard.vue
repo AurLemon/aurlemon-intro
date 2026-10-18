@@ -97,6 +97,8 @@ interface Props {
 	status: string
 }
 const props = defineProps<Props>()
+// A positive threshold retriggers after an edge-only (zero-area) intersection.
+const COVER_VISIBLE_THRESHOLD = 0.001
 const frame = ref<HTMLElement | null>(null)
 const shownCover = ref('')
 const failedUrl = ref<string | null>(null)
@@ -251,14 +253,13 @@ watch([visible, () => props.item.coverUrl], async ([isVisible, url]) => {
 onMounted(() => {
 	observer = new IntersectionObserver(
 		(entries) => {
-			visible.value = entries.some(
-				(entry) =>
-					entry.isIntersecting &&
-					entry.intersectionRect.width > 0 &&
-					entry.intersectionRect.height > 0,
+			const entry = entries.at(-1)
+			visible.value = Boolean(
+				entry?.isIntersecting &&
+				entry.intersectionRatio >= COVER_VISIBLE_THRESHOLD,
 			)
 		},
-		{ rootMargin: '0px' },
+		{ rootMargin: '0px', threshold: [0, COVER_VISIBLE_THRESHOLD] },
 	)
 	if (frame.value) observer.observe(frame.value)
 })

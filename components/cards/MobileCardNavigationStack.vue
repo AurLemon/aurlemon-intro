@@ -3,6 +3,7 @@
 		<div
 			v-if="isCompact"
 			class="pointer-events-none relative flex justify-center"
+			:class="{ 'mobile-card-hints-fast': fastScrolling }"
 		>
 			<TransitionGroup name="mobile-card-hint">
 				<NuxtLink
@@ -86,7 +87,7 @@ const definitions: MobileNavigationHint[] = [
 		pageKey: 'main.index.card.navigation.pages.preference',
 	},
 ]
-const { hints } = useMobileCardNavigationStack(
+const { hints, fastScrolling } = useMobileCardNavigationStack(
 	toRef(props, 'container'),
 	isCompact,
 	definitions,
@@ -98,25 +99,59 @@ const { hints } = useMobileCardNavigationStack(
 	transform: translateY(calc(var(--hint-index) * 8px))
 		scale(calc(1 - var(--hint-index) * 0.05));
 	transform-origin: top center;
+	filter: blur(0);
 	transition:
-		transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
-		opacity 180ms ease-out;
+		transform 280ms cubic-bezier(0.22, 1, 0.36, 1),
+		opacity 240ms ease-out,
+		filter 440ms ease-out;
 }
-.mobile-card-hint-enter-from,
+.mobile-card-hint-enter-active {
+	transition:
+		transform 600ms cubic-bezier(0.22, 1.35, 0.36, 1),
+		opacity 240ms ease-out,
+		filter 440ms cubic-bezier(0.25, 0.46, 0.45, 0.94) 40ms;
+}
+.mobile-card-hint-enter-from {
+	opacity: 0;
+	filter: blur(5px);
+	transform: translateY(calc(var(--hint-index) * 8px - 18px))
+		scale(calc(1 - var(--hint-index) * 0.05));
+}
 .mobile-card-hint-leave-to {
 	opacity: 0;
-	transform: translateY(calc(var(--hint-index) * 8px - 4px))
+	filter: blur(4px);
+	transform: translateY(calc(var(--hint-index) * 8px + 14px))
 		scale(calc(1 - var(--hint-index) * 0.05));
 }
 .mobile-card-hint-leave-active {
 	pointer-events: none;
 	transition:
-		transform 180ms ease-in,
-		opacity 180ms ease-out;
+		transform 220ms ease-out,
+		opacity 140ms ease-out,
+		filter 180ms ease-out;
+}
+.mobile-card-hints-fast .mobile-card-hint-leave-active {
+	transition:
+		transform 120ms ease-out,
+		opacity 100ms ease-out,
+		filter 120ms ease-out;
+}
+.mobile-card-hints-fast .mobile-card-hint-leave-to {
+	filter: blur(2px);
+	transform: translateY(calc(var(--hint-index) * 8px + 6px))
+		scale(calc(1 - var(--hint-index) * 0.05));
 }
 @media (prefers-reduced-motion: reduce) {
-	.mobile-card-hint {
+	.mobile-card-hint,
+	.mobile-card-hint-enter-active,
+	.mobile-card-hint-leave-active,
+	.mobile-card-hints-fast .mobile-card-hint-leave-active {
 		transition: none;
+	}
+	.mobile-card-hint-enter-from,
+	.mobile-card-hint-leave-to,
+	.mobile-card-hints-fast .mobile-card-hint-leave-to {
+		filter: none;
 	}
 }
 </style>

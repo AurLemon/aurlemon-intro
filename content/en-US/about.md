@@ -1,6 +1,6 @@
 ---
 createdAt: 2026-04-04T16:12:10+08:00
-updatedAt: 2026-10-16T01:36:06+08:00
+updatedAt: 2026-08-25T16:58:57+08:00
 ---
 
 Around April 2026, I spent some time refactoring this site. The old content was too messy, and I did not feel there was any need to expose that much about myself. Anyway, I tried a lot of UI directions, and after several iterations this is where it landed. I even planned to add a sidebar at first, but the overall look was just mediocre, so I removed it. Better to stay restrained.
