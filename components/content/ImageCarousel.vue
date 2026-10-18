@@ -52,7 +52,6 @@
 				:can-scroll-left="canScrollLeft"
 				:can-scroll-right="canScrollRight"
 				:hover-only="false"
-				hide-compact-edges
 				:strong-edge-overlay="imageCount >= 3"
 				:button-position-class="navigationButtonClass"
 				:button-style="navigationButtonStyle"
@@ -281,7 +280,7 @@ const navigationButtonStyle = computed<ResponsiveImageStyle>(() => {
 
 	if (isAutoWidth.value && carouselImages.value[0]) {
 		style['--content-image-nav-mobile-height'] =
-			`min(${props.mobileHeight || resolvedDefaultHeight.value}, calc(84cqw / ${getImageAspectRatio(carouselImages.value[0])}))`
+			`min(${props.mobileHeight || resolvedDefaultHeight.value}, calc(72cqw / ${getImageAspectRatio(carouselImages.value[0])}))`
 	} else if (props.mobileHeight) {
 		style['--content-image-nav-mobile-height'] = props.mobileHeight
 	}
@@ -326,22 +325,22 @@ const navigationButtonStyle = computed<ResponsiveImageStyle>(() => {
 @media (max-width: 767.98px) {
 	.content-image-width-bound {
 		width: min(
-			84cqw,
+			72cqw,
 			var(--content-image-mobile-width, var(--content-image-width))
 		);
 		flex-basis: min(
-			84cqw,
+			72cqw,
 			var(--content-image-mobile-width, var(--content-image-width))
 		);
 	}
 
 	.content-image-auto-width-bound {
 		width: min(
-			84cqw,
+			72cqw,
 			var(--content-image-mobile-width, var(--content-image-width))
 		);
 		flex-basis: min(
-			84cqw,
+			72cqw,
 			var(--content-image-mobile-width, var(--content-image-width))
 		);
 	}
@@ -352,7 +351,7 @@ const navigationButtonStyle = computed<ResponsiveImageStyle>(() => {
 	.content-image-auto-width-bound .content-image-height-bound {
 		height: min(
 			var(--content-image-mobile-height, var(--content-image-height)),
-			calc(84cqw / var(--content-image-aspect-ratio, 1))
+			calc(72cqw / var(--content-image-aspect-ratio, 1))
 		);
 	}
 }

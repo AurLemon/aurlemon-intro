@@ -13,12 +13,19 @@ interface ReadingCard {
 	hint?: MobileNavigationHint
 }
 
+interface NavigationScrollSample {
+	position: number
+	time: number
+}
+
 export const useMobileCardNavigationStack = (
 	container: Ref<HTMLElement | null>,
 	enabled: Ref<boolean>,
 	definitions: readonly MobileNavigationHint[],
 ) => {
 	const hints = ref<MobileNavigationHint[]>([])
+	const fastScrolling = ref(false)
+	let scrollSample: NavigationScrollSample | undefined
 	let mounted = false
 	let scrolling = false
 	let collapsed = false
@@ -103,7 +110,7 @@ export const useMobileCardNavigationStack = (
 			stopHideTimer()
 		}
 		const candidates =
-			current?.hint && !collapsed
+			current?.hint && !collapsed && !fastScrolling.value
 				? cards
 						.filter((card) => {
 							if (!card.hint || !visibleCards.has(card.element)) return false
@@ -161,6 +168,14 @@ export const useMobileCardNavigationStack = (
 		scheduleUpdate()
 	}
 	const onScroll = () => {
+		const sample = { position: window.scrollY, time: performance.now() }
+		if (scrollSample) {
+			const elapsed = Math.max(8, Math.min(64, sample.time - scrollSample.time))
+			const speed = Math.abs(sample.position - scrollSample.position) / elapsed
+			// Latch until scrolling settles so decelerating momentum cannot flash hints.
+			if (speed > 1.8) fastScrolling.value = true
+		}
+		scrollSample = sample
 		scrolling = true
 		stopHideTimer()
 		scheduleUpdate()
@@ -168,7 +183,9 @@ export const useMobileCardNavigationStack = (
 		settleTimer = setTimeout(() => {
 			settleTimer = undefined
 			scrolling = false
-			startHideTimer()
+			fastScrolling.value = false
+			scrollSample = { position: window.scrollY, time: performance.now() }
+			scheduleUpdate()
 		}, 180)
 	}
 	const clear = () => {
@@ -189,12 +206,15 @@ export const useMobileCardNavigationStack = (
 		activeCard = undefined
 		collapsed = false
 		scrolling = false
+		fastScrolling.value = false
+		scrollSample = undefined
 		hints.value = []
 	}
 	const observe = () => {
 		if (!mounted) return
 		clear()
 		if (!enabled.value || !container.value || document.hidden) return
+		scrollSample = { position: window.scrollY, time: performance.now() }
 		cards = Array.from(
 			container.value.querySelectorAll<HTMLElement>('[data-reading-card]'),
 			(element) => ({
@@ -239,5 +259,5 @@ export const useMobileCardNavigationStack = (
 		mounted = false
 		document.removeEventListener('visibilitychange', observe)
 	})
-	return { hints }
+	return { hints, fastScrolling }
 }

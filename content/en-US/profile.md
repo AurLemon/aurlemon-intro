@@ -1,6 +1,6 @@
 ---
 createdAt: 2026-04-04T16:12:10+08:00
-updatedAt: 2026-10-16T01:36:06+08:00
+updatedAt: 2026-08-25T16:58:57+08:00
 ---
 
 Although I already wrote my basic information on the home page, this is supposed to be a "personal statement," so I might as well write it again. It seems that most programmers enjoy writing blogs, but I do not really have that habit. I do have a [Cnblogs blog](https://cnblogs.com/AurLemon), but it has not had a new post in a very long time. I do write notes in Obsidian, though. They are just absolutely not public. Notes, like conversations with AI, are highly private things. So the reason this site is called AurLemon Intro rather than AurLemon Blog is simple: I am too lazy to keep uploading new writing all the time.

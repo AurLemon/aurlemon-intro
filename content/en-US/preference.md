@@ -1,6 +1,6 @@
 ---
 createdAt: 2026-04-04T16:12:10+08:00
-updatedAt: 2026-10-16T19:49:04+08:00
+updatedAt: 2026-07-02T05:55:47+08:00
 ---
 
 I will not dissect my preferences too carefully in public. When people talk about preferences, they usually end up talking about anime and similar things anyway. Some interests are better enjoyed within a smaller circle. So I will just write whatever comes to mind here.

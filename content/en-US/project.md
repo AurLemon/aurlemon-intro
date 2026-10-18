@@ -1,6 +1,6 @@
 ---
 createdAt: 2026-04-04T16:12:10+08:00
-updatedAt: 2026-10-16T15:19:07+08:00
+updatedAt: 2026-06-30T01:42:14+08:00
 ---
 
 The label I put on myself is TypeScript full-stack developer. But I am honestly not very confident about that title, which is why I added the tiny note saying "questionable" after it. I know very well that my current ability and experience are not enough to fully support the word "full-stack."
