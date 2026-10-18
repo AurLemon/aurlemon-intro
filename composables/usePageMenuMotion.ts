@@ -30,44 +30,44 @@ export const usePageMenuMotion = ({
 				: menuVisible.value
 					? {
 							type: 'spring',
-							stiffness: 200,
-							damping: 18,
+							stiffness: 310,
+							damping: 22.5,
 							mass: 1,
-							opacity: { duration: 0.18 },
-							filter: { duration: 0.28 },
+							opacity: { duration: 0.18, ease: 'easeOut' },
+							filter: { duration: 0.26 },
 						}
 					: {
 							type: 'spring',
-							stiffness: 200,
-							damping: 18,
+							stiffness: 310,
+							damping: 22.5,
 							mass: 1,
-							opacity: { duration: 0.36, ease: 'easeInOut' },
-							filter: { duration: 0, delay: 0.36 },
+							opacity: { duration: 0.34, ease: 'easeOut' },
+							filter: { duration: 0.3, ease: 'easeOut' },
 						},
 		}
 	})
 	const menuSurfaceMotion = computed<Options>(() => ({
-		initial: { width: prefersReducedMotion.value ? '100%' : '0%' },
+		initial: { width: prefersReducedMotion.value ? '100%' : '65%' },
 		animate: {
-			width: menuVisible.value || prefersReducedMotion.value ? '100%' : '0%',
+			width: menuVisible.value || prefersReducedMotion.value ? '100%' : '65%',
 		},
 		transition: prefersReducedMotion.value
 			? { duration: 0 }
 			: menuVisible.value
-				? { type: 'spring', stiffness: 260, damping: 30, mass: 1 }
-				: { type: 'tween', duration: 0.32, ease: 'easeInOut' },
+				? { type: 'spring', stiffness: 280, damping: 30, mass: 1 }
+				: { type: 'tween', duration: 0.34, ease: 'easeOut' },
 	}))
 	const menuClipMotion = computed<Options>(() => ({
 		initial: {
 			clipPath: prefersReducedMotion.value
 				? 'inset(0 0% round 999px)'
-				: 'inset(0 50% round 999px)',
+				: 'inset(0 17.5% round 999px)',
 		},
 		animate: {
 			clipPath:
 				menuVisible.value || prefersReducedMotion.value
 					? 'inset(0 0% round 999px)'
-					: 'inset(0 50% round 999px)',
+					: 'inset(0 17.5% round 999px)',
 		},
 		transition: menuSurfaceMotion.value.transition,
 	}))
@@ -77,8 +77,8 @@ export const usePageMenuMotion = ({
 		transition: prefersReducedMotion.value
 			? { duration: 0 }
 			: menuVisible.value
-				? { duration: 0.16, ease: 'easeOut' }
-				: { duration: 0.08, ease: 'easeOut' },
+				? { duration: 0.13, ease: 'easeOut' }
+				: { duration: 0.25, ease: 'easeOut' },
 	}))
 
 	return {

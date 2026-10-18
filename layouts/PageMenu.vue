@@ -47,7 +47,7 @@ const menuReady = ref(false)
 const prefersReducedMotion = useReducedMotion()
 const menuVisible = computed(() => menuReady.value && !isAtBottom.value)
 const rawAtBottom = ref(false)
-const BOTTOM_HIDE_DELAY = 180
+const BOTTOM_HIDE_DELAY = 40
 const BOTTOM_SHOW_DELAY = 120
 let resizeObserver: ResizeObserver | null = null
 let bottomHideTimer: ReturnType<typeof setTimeout> | null = null
