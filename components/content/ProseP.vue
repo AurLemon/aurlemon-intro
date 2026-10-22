@@ -7,9 +7,12 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 
-const props = defineProps<{
+interface ProseParagraphProps {
 	class?: unknown
-}>()
+	lang?: string
+}
+
+const props = defineProps<ProseParagraphProps>()
 
 const { locale } = useI18n({ useScope: 'global' })
 
@@ -19,11 +22,12 @@ const proseCjkClass = `${proseBaseClass} break-normal [text-justify:inter-charac
 const proseEnglishClass = `${proseBaseClass} break-normal hyphens-auto break-words [text-justify:inter-word]`
 
 const paragraphLang = computed(() => {
-	if (locale.value.startsWith('ja')) {
+	const language = props.lang ?? locale.value
+	if (language.startsWith('ja')) {
 		return 'ja'
 	}
 
-	if (locale.value.startsWith('en')) {
+	if (language.startsWith('en')) {
 		return 'en'
 	}
 

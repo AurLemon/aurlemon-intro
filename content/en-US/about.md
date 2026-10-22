@@ -1,6 +1,6 @@
 ---
 createdAt: 2026-04-04T16:12:10+08:00
-updatedAt: 2026-08-25T16:58:57+08:00
+updatedAt: 2026-10-23T01:52:39+08:00
 ---
 
 Around April 2026, I spent some time refactoring this site. The old content was too messy, and I did not feel there was any need to expose that much about myself. Anyway, I tried a lot of UI directions, and after several iterations this is where it landed. I even planned to add a sidebar at first, but the overall look was just mediocre, so I removed it. Better to stay restrained.
@@ -39,7 +39,7 @@ If you like my writing, or if you suddenly feel like you understand me, feel fre
 
 ## Tech Stack
 
-The repository is [here](https://github.com/AurLemon/aurlemon-intro). This site is built with Nuxt, and the fonts were all chosen by me on Google Fonts.
+The repository is [here](https://github.com/AurLemon/aurlemon-intro). This site is built with Nuxt, and the fonts were all chosen by me on Google Fonts. For runtime details, service status and licensing, see [Site Information](/en-US/meta).
 
 - Nuxt 4 + TypeScript
 - Nuxt UI + TailwindCSS + Motion-V

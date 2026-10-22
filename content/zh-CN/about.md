@@ -1,6 +1,6 @@
 ---
 createdAt: 2025-01-17T04:08:55+08:00
-updatedAt: 2026-08-25T16:58:57+08:00
+updatedAt: 2026-10-23T01:52:39+08:00
 ---
 
 2026 年 4 月的时候花时间重构了一下网站，之前的内容太乱了，感觉也没必要暴露太多自己的信息。总之，UI 方案试了很多，最终迭代成了现在这版。本来还打算给网站加个侧栏的，结果总体观感一般就删掉了，克制一点好啊。
@@ -39,7 +39,7 @@ updatedAt: 2026-08-25T16:58:57+08:00
 
 ## 技术栈
 
-项目仓库[在这](https://github.com/AurLemon/aurlemon-intro)，本站基于 Nuxt 框架开发。字体是我在 Google Fonts 上挑的。
+项目仓库[在这](https://github.com/AurLemon/aurlemon-intro)，本站基于 Nuxt 框架开发。字体是我在 Google Fonts 上挑的。具体的运行环境、服务状态和许可说明，可以查看[站点信息](/meta)。
 
 - Nuxt 4 + TypeScript
 - Nuxt UI + TailwindCSS + Motion-V

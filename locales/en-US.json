@@ -303,8 +303,7 @@
 		"aboutSite": "About",
 		"friendLink": "Links",
 		"githubProfile": "GitHub",
-		"miitRegistration": "ICP License",
-		"meta": "Site Information"
+		"miitRegistration": "ICP License"
 	},
 	"error": {
 		"pageTitle": "Error Page",
@@ -537,7 +536,10 @@
 			"theme": "Current theme",
 			"fingerprint": "Browser fingerprint",
 			"like": "Like status",
-			"commit": "Current commit",
+			"commit": "Current Git commit",
+			"nodeVersion": "Node.js version",
+			"userAgent": "User agent",
+			"v8Version": "V8 version",
 			"technologies": "Technologies",
 			"serverTimezone": "Server timezone"
 		},

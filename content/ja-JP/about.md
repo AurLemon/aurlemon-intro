@@ -1,6 +1,6 @@
 ---
 createdAt: 2026-04-04T16:12:10+08:00
-updatedAt: 2026-08-25T16:58:57+08:00
+updatedAt: 2026-10-23T01:52:39+08:00
 ---
 
 2026 年 4 月ごろ、時間を取ってサイトを少し作り直した。前の内容はあまりにも散らかっていたし、自分の情報をそこまで露出する必要もないと感じた。とにかく UI 案はいろいろ試して、最終的に今の版に落ち着いた。最初はサイドバーも付けるつもりだったが、全体の見た目がいまひとつだったので消した。少し抑えたほうがいい。
@@ -39,7 +39,7 @@ Anthropic がすぐ封号してくる件はひとまず置いて、公平に見�
 
 ## 技術スタック
 
-リポジトリは[こちら](https://github.com/AurLemon/aurlemon-intro)。このサイトは Nuxt ベースで、フォントは Google Fonts で自分で選んだ。
+リポジトリは[こちら](https://github.com/AurLemon/aurlemon-intro)。このサイトは Nuxt ベースで、フォントは Google Fonts で自分で選んだ。実行環境やサービス状況、ライセンスについては[サイト情報](/ja-JP/meta)をどうぞ。
 
 - Nuxt 4 + TypeScript
 - Nuxt UI + TailwindCSS + Motion-V

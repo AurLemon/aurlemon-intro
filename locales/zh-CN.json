@@ -303,8 +303,7 @@
 		"aboutSite": "关于本站",
 		"friendLink": "友情链接",
 		"githubProfile": "GitHub",
-		"miitRegistration": "闽ICP备2023007345号-3",
-		"meta": "站点信息"
+		"miitRegistration": "闽ICP备2023007345号-3"
 	},
 	"error": {
 		"pageTitle": "错误页面",
@@ -537,7 +536,10 @@
 			"theme": "当前主题",
 			"fingerprint": "浏览器指纹",
 			"like": "点赞状态",
-			"commit": "当前提交",
+			"commit": "当前 Git 提交",
+			"nodeVersion": "Node.js 版本",
+			"userAgent": "User Agent",
+			"v8Version": "V8 版本",
 			"technologies": "技术栈",
 			"serverTimezone": "服务器时区"
 		},
