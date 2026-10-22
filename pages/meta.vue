@@ -77,7 +77,7 @@ const technologyNames: Record<string, string> = {
 }
 const tooltipUi = {
 	content: 'h-auto max-w-[min(22rem,calc(100vw-2rem))] px-3 py-2',
-	text: 'whitespace-normal text-pretty leading-relaxed',
+	text: 'whitespace-normal text-base text-pretty leading-relaxed',
 }
 const runtimeRows = computed<InformationRow[]>(() => [
 	{
@@ -89,8 +89,14 @@ const runtimeRows = computed<InformationRow[]>(() => [
 		title: commit.value || undefined,
 		committedAt: data.value?.build.committedAt,
 	},
-	{ label: 'Node.js', value: data.value?.runtime.node ?? unknown.value },
-	{ label: 'V8', value: data.value?.runtime.v8 ?? unknown.value },
+	{
+		label: t('meta.fields.nodeVersion'),
+		value: data.value?.runtime.node ?? unknown.value,
+	},
+	{
+		label: t('meta.fields.v8Version'),
+		value: data.value?.runtime.v8 ?? unknown.value,
+	},
 	{
 		label: t('meta.fields.platform'),
 		value: data.value?.runtime.platform ?? unknown.value,
@@ -114,7 +120,10 @@ const runtimeRows = computed<InformationRow[]>(() => [
 	},
 ])
 const clientRows = computed<InformationRow[]>(() => [
-	{ label: 'UA', value: userAgent.value || unknown.value },
+	{
+		label: t('meta.fields.userAgent'),
+		value: userAgent.value || unknown.value,
+	},
 	{
 		label: t('meta.fields.theme'),
 		value: clientReady.value
@@ -204,55 +213,60 @@ onMounted(() => {
 			:show-emoji="false"
 		/>
 
-		<div class="space-y-12 text-sm leading-relaxed sm:text-base">
-			<section :aria-label="$t('meta.sections.license')" class="space-y-5">
-				<NuxtLink
-					to="https://github.com/AurLemon/aurlemon-intro/blob/main/LICENSE"
-					target="_blank"
-					rel="noopener noreferrer"
-					lang="en"
-					:title="$t('meta.openLicense')"
-					class="block rounded-sm font-medium underline decoration-slate-400/40 underline-offset-4 transition-opacity duration-200 hover:opacity-70 focus-visible:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
-				>
-					Copyright (c) 2025 AurLemon. All rights reserved.
-				</NuxtLink>
-				<p>{{ $t('meta.licenseNotice') }}</p>
-				<i18n-t keypath="meta.contentLicenseNotice" tag="p">
-					<template #license>
-						<NuxtLink
-							:to="contentLicenseUrl"
-							target="_blank"
-							rel="license noopener noreferrer"
-							:aria-label="$t('meta.contentLicenseLabel')"
-							class="whitespace-nowrap rounded-sm border-b border-slate-400/40 pb-0.5 transition-opacity duration-200 hover:opacity-70 focus-visible:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none"
-						>
-							<span
-								aria-hidden="true"
-								class="mr-1.5 inline-flex gap-1 align-[-0.125em]"
+		<div class="space-y-12 text-base leading-relaxed">
+			<section
+				:aria-label="$t('meta.sections.license')"
+				class="flex flex-col gap-5 [&>p]:my-0"
+			>
+				<ProseP lang="en" class="text-left!">
+					<NuxtLink
+						to="https://github.com/AurLemon/aurlemon-intro/blob/main/LICENSE"
+						target="_blank"
+						rel="noopener noreferrer"
+						lang="en"
+						:title="$t('meta.openLicense')"
+						class="block w-fit max-w-full rounded-sm font-medium underline decoration-slate-400/40 underline-offset-4 transition-opacity duration-200 hover:opacity-70 focus-visible:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-2 motion-reduce:transition-none"
+					>
+						Copyright (c) 2025 AurLemon. All rights reserved.
+					</NuxtLink>
+				</ProseP>
+				<ProseP>{{ $t('meta.licenseNotice') }}</ProseP>
+				<ProseP>
+					<i18n-t keypath="meta.contentLicenseNotice" tag="span">
+						<template #license>
+							<NuxtLink
+								:to="contentLicenseUrl"
+								target="_blank"
+								rel="license noopener noreferrer"
+								:aria-label="$t('meta.contentLicenseLabel')"
+								class="rounded-sm border-b border-slate-400/40 pb-0.5 transition-opacity duration-200 hover:opacity-70 focus-visible:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none"
 							>
-								<component
-									:is="icon"
-									v-for="(icon, index) in contentLicenseIcons"
-									:key="index"
-									class="size-4 fill-current [&_circle]:fill-none"
-								/>
-							</span>
-							<span>CC BY-NC-SA 4.0</span>
-						</NuxtLink>
-					</template>
-				</i18n-t>
+								<span
+									aria-hidden="true"
+									class="mr-1.5 inline-flex gap-1 align-[-0.125em]"
+								>
+									<component
+										:is="icon"
+										v-for="(icon, index) in contentLicenseIcons"
+										:key="index"
+										class="size-4 fill-current [&_circle]:fill-none"
+									/>
+								</span>
+								<wbr />
+								<span>CC BY-NC-SA 4.0</span>
+							</NuxtLink>
+						</template>
+					</i18n-t>
+				</ProseP>
 			</section>
 
-			<div
-				v-if="error"
-				role="status"
-				class="flex flex-wrap items-center gap-3 text-sm"
-			>
+			<div v-if="error" role="status" class="flex flex-wrap items-center gap-3">
 				<p>{{ $t('meta.loadFailed') }}</p>
 				<UButton
 					color="neutral"
 					variant="soft"
 					size="xs"
+					class="text-base"
 					:loading="status === 'pending'"
 					@click="refresh()"
 					>{{ $t('meta.retry') }}</UButton

@@ -56,7 +56,7 @@ ACG 与音乐条目额外保存 `title`、`author` 数组、`category`、`href`�
 
 ## 站点信息元数据
 
-- 站点信息页统一使用 `/meta`，英文与日文保留对应 locale 前缀，页面标题、页脚、菜单当前页与 SEO 同步维护。
+- 站点信息页统一使用 `/meta`，英文与日文保留对应 locale 前缀，页面标题、关于本站入口、菜单当前页与 SEO 同步维护；不在 sitemap 中排除该页。
 - `/meta` 的版本标识来自 `build/site-meta.ts`：配置加载时读取当前源码 `git rev-parse HEAD` 和该提交的 committer 时间（`git show -s --format=%cI <SHA>`），经 `runtimeConfig.siteBuild` 随产物保存，生产服务器无需 `.git`。无 Git 的源码归档可在构建前设置完整的 `SITE_COMMIT_SHA`；无法确定时显示暂无信息，不使用运行时仓库 HEAD 或手写 hash。提交日期缺失时不显示日期 Badge，不以构建时间代替提交时间。技术栈版本读取实际安装包，不用 package.json 的范围冒充安装版本。
 - `/api/site-meta` 仅返回 commit、所选技术栈版本、服务器实际 Node.js/V8/系统平台/架构/生效时区，以及白名单服务状态，不返回环境变量、数据库地址或内部错误。HTTP 响应不缓存，内部服务状态最多缓存 30 秒；GitHub / Bangumi 只读既有快照和有效期，不主动请求上游。OAuth / SMTP 仅表示是否已配置，数据库执行只读检查，邮件失败状态只读 Outbox。无数据、过期、读取失败分别展示，禁止推断为服务在线。
 

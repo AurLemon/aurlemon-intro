@@ -303,8 +303,7 @@
 		"aboutSite": "サイトについて",
 		"friendLink": "リンク集",
 		"githubProfile": "GitHub",
-		"miitRegistration": "闽ICP備2023007345号-3",
-		"meta": "サイト情報"
+		"miitRegistration": "闽ICP備2023007345号-3"
 	},
 	"error": {
 		"pageTitle": "エラーページ",
@@ -537,7 +536,10 @@
 			"theme": "現在のテーマ",
 			"fingerprint": "ブラウザー指紋",
 			"like": "いいねの状態",
-			"commit": "現在のコミット",
+			"commit": "現在の Git コミット",
+			"nodeVersion": "Node.js バージョン",
+			"userAgent": "User Agent",
+			"v8Version": "V8 バージョン",
 			"technologies": "技術スタック",
 			"serverTimezone": "サーバーのタイムゾーン"
 		},

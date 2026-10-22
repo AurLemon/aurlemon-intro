@@ -35,7 +35,13 @@
 		<div
 			class="w-full flex flex-col items-center justify-between lg:flex-row lg:items-stretch"
 		>
-			<SiteMark />
+			<NuxtLink
+				:to="localePath('/')"
+				:aria-label="$t('menu.overview')"
+				class="w-fit rounded-sm transition-opacity duration-200 hover:opacity-70 focus-visible:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 motion-reduce:transition-none"
+			>
+				<SiteMark />
+			</NuxtLink>
 			<div
 				class="mt-3 lg:mt-0 flex flex-wrap justify-center gap-x-2 lg:items-center lg:justify-start lg:gap-x-4 text-[15px] text-slate-800 dark:text-slate-200 tracking-wide"
 				@mouseleave="hoveredLink = null"
@@ -62,13 +68,6 @@
 					@mouseenter="hoveredLink = 2"
 				>
 					{{ $t('footer.githubProfile') }}
-				</NuxtLink>
-				<NuxtLink
-					:to="localePath('/meta')"
-					:class="linkClass(4)"
-					@mouseenter="hoveredLink = 4"
-				>
-					{{ $t('footer.meta') }}
 				</NuxtLink>
 				<NuxtLink
 					to="https://beian.miit.gov.cn"
