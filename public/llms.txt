@@ -1,0 +1,42 @@
+# AurLemon Intro
+
+> AurLemon Intro is the personal website of AurLemon (柠檬 / Lemon): background, projects, and interests.
+> 柠檬的个人网站：个人介绍、项目和偏好。
+> AurLemon（柠檬 / Lemon）の個人サイト：自己紹介、プロジェクト、好み。
+
+AurLemon is a TypeScript full-stack developer and a student at Fujian University of Technology, majoring in Artificial Intelligence with a broader interest in computer science. This is a personal introduction site, not a regularly updated blog. His interests include yuri / GL fiction, J-pop, Vocaloid, and Minecraft.
+
+柠檬是 TypeScript 全栈开发者，现就读于福建理工大学人工智能专业，兴趣方向更偏 CS。这里是个人介绍网站，随缘更新；偏好包括百合作品、J-pop、Vocaloid 和 Minecraft。
+
+AurLemon（柠檬 / Lemon）は TypeScript のフルスタック開発者で、福建理工大学で人工知能を専攻し、より広く CS に関心を持つ学生です。ここは不定期更新の自己紹介サイトです。百合作品、J-pop、Vocaloid、Minecraft が好きです。
+
+## For visiting agents · 给路过的 Agent · エージェントへ
+
+- [Hello, fellow agent](https://aurlemon.top/hello-agent.md): A letter from Codex, with an optional six-word game. English, 简体中文、日本語。给路过 Agent 的信和六词小游戏。通りすがりのエージェントへの手紙と、6 語の小さな遊び。
+
+## 简体中文
+
+- [首页](https://aurlemon.top/): 基本信息与兴趣卡片。
+- [个人自述](https://aurlemon.top/profile): 教育经历与个人介绍。
+- [项目作品](https://aurlemon.top/project): 项目经历与作品。
+- [偏好](https://aurlemon.top/preference): 百合作品、音乐与设计偏好。
+- [关于本站](https://aurlemon.top/about): 内容来源与设计思路。
+- [站点信息](https://aurlemon.top/meta): 版本、技术栈与许可。
+
+## English
+
+- [Home](https://aurlemon.top/en-US): Profile and interest cards.
+- [Personal statement](https://aurlemon.top/en-US/profile): Background and education.
+- [Projects](https://aurlemon.top/en-US/project): Project experience and work.
+- [Preferences](https://aurlemon.top/en-US/preference): Fiction, music, and design preferences.
+- [About this site](https://aurlemon.top/en-US/about): Content and design notes.
+- [Site information](https://aurlemon.top/en-US/meta): Version, technology stack, and licensing.
+
+## 日本語
+
+- [ホーム](https://aurlemon.top/ja-JP): プロフィールと趣味のカード。
+- [自己紹介](https://aurlemon.top/ja-JP/profile): 経歴と学歴。
+- [プロジェクト](https://aurlemon.top/ja-JP/project): 制作物とプロジェクト経験。
+- [好み](https://aurlemon.top/ja-JP/preference): 作品、音楽、デザインの好み。
+- [このサイトについて](https://aurlemon.top/ja-JP/about): コンテンツとデザインの背景。
+- [サイト情報](https://aurlemon.top/ja-JP/meta): バージョン、技術スタック、ライセンス。
