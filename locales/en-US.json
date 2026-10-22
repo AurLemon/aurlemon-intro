@@ -28,7 +28,8 @@
 		"preference": "Preferences",
 		"about": "About",
 		"friends": "Links",
-		"currentPage": "Current Page"
+		"currentPage": "Current Page",
+		"meta": "Site Information"
 	},
 	"seo": {
 		"pages": {
@@ -61,6 +62,10 @@
 			},
 			"unconfigured": {
 				"title": "Current Page / AurLemon Intro"
+			},
+			"meta": {
+				"title": "Site Information / AurLemon Intro",
+				"description": "Content and code licenses, current commit, runtime, service status and visitor environment for AurLemon Intro."
 			}
 		}
 	},
@@ -267,6 +272,9 @@
 			},
 			"friends": {
 				"title": "My friends."
+			},
+			"meta": {
+				"title": "Site Information"
 			}
 		},
 		"contentMetadata": {
@@ -295,7 +303,8 @@
 		"aboutSite": "About",
 		"friendLink": "Links",
 		"githubProfile": "GitHub",
-		"miitRegistration": "ICP License"
+		"miitRegistration": "ICP License",
+		"meta": "Site Information"
 	},
 	"error": {
 		"pageTitle": "Error Page",
@@ -513,5 +522,60 @@
 			"siteUrlNotConfigured": "The public site URL is not configured, so this action is temporarily unavailable.",
 			"accountDisabled": "This account has been disabled."
 		}
+	},
+	"meta": {
+		"sections": {
+			"runtime": "Runtime",
+			"services": "Service status",
+			"client": "Your environment",
+			"license": "License"
+		},
+		"fields": {
+			"platform": "Platform",
+			"architecture": "Architecture",
+			"rendering": "Rendering",
+			"theme": "Current theme",
+			"fingerprint": "Browser fingerprint",
+			"like": "Like status",
+			"commit": "Current commit",
+			"technologies": "Technologies",
+			"serverTimezone": "Server timezone"
+		},
+		"states": {
+			"cached": "Cache valid",
+			"stale": "Cache expired",
+			"unknown": "No information",
+			"available": "Accessible",
+			"configured": "Configured",
+			"unconfigured": "Not configured",
+			"degraded": "Delivery failures recorded",
+			"unavailable": "Unavailable"
+		},
+		"services": {
+			"github": "GitHub contributions",
+			"bangumi": "Bangumi collections",
+			"githubOAuth": "GitHub sign-in",
+			"linuxdo": "Linux DO sign-in",
+			"database": "Database",
+			"email": "Email delivery"
+		},
+		"licenseNotice": "This is AurLemon’s personal introduction website. The project code permits noncommercial use, including self-hosting, modification and reuse. Redistribution must retain the original attribution and license notices. Any commercial use, including use of derivative works created through modification, extraction or AI transformation, requires prior written permission from AurLemon.",
+		"liked": "Liked",
+		"notLiked": "Not liked",
+		"lastSync": "Last synced:",
+		"fingerprintNote": "Reuses the site’s masked like fingerprint, sent to the server with like-status requests to identify existing likes and prevent duplicates",
+		"loadFailed": "Site information is temporarily unavailable. Please try again.",
+		"retry": "Retry",
+		"openLicense": "Read the license on GitHub",
+		"fingerprintInfo": "About the browser fingerprint",
+		"serviceInfo": "About {service}",
+		"commitTime": "Commit time: {time} (your local timezone)",
+		"serviceNotes": {
+			"email": "Failure comes from the mail queue, configured does not guarantee delivery"
+		},
+		"servicesInfo": "About service status",
+		"servicesNote": "Status may lag by 30 seconds, configured does not mean connected, times use your local timezone",
+		"contentLicenseNotice": "Original articles and explanatory illustrations on this site are licensed under {license}, permitting noncommercial republication and adaptation with attribution. Publicly shared adaptations must use the same license. Commercial use also requires written permission. Third-party content, personal photographs, avatars and branding are excluded from this permission.",
+		"contentLicenseLabel": "Original site content license: CC BY-NC-SA 4.0"
 	}
 }

@@ -134,6 +134,15 @@ const getCallbackUrl = (provider: OAuthProvider): string => {
 		: ''
 }
 
+export const isOAuthProviderConfigured = (provider: OAuthProvider): boolean => {
+	const prefix = provider === OAuthProvider.GITHUB ? 'GITHUB' : 'LINUX_DO'
+	return Boolean(
+		process.env[`${prefix}_CLIENT_ID`] &&
+		process.env[`${prefix}_CLIENT_SECRET`] &&
+		getCallbackUrl(provider),
+	)
+}
+
 const githubAdapter: OAuthProviderAdapter = {
 	provider: OAuthProvider.GITHUB,
 	createAuthorizationUrl: ({ state, codeChallenge }) => {

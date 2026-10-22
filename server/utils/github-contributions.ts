@@ -2,6 +2,7 @@ import type { GithubContributionCalendar } from '~/shared/types/github-contribut
 import {
 	isPersistedDataSnapshotFresh,
 	readPersistedDataSnapshot,
+	readDataSnapshotStatus,
 	runDeduplicatedDataSnapshotRefresh,
 	writePersistedDataSnapshot,
 } from '~/server/utils/persisted-data-snapshot'
@@ -21,6 +22,13 @@ type ContributionLevel = NonNullable<
 
 const DEFAULT_DAYS = 365
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000
+
+export const getGithubContributionStatus = () =>
+	readDataSnapshotStatus(
+		'github',
+		buildCacheKey(resolveUsername(), DEFAULT_DAYS, 'recent-year'),
+		CACHE_TTL_MS,
+	)
 const GITHUB_COLORS = ['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39']
 const GITHUB_CONTRIBUTIONS_URL = 'https://github.com/users'
 

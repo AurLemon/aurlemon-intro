@@ -13,6 +13,7 @@ import {
 import {
 	isPersistedDataSnapshotFresh,
 	readPersistedDataSnapshot,
+	readDataSnapshotStatus,
 	runDeduplicatedDataSnapshotRefresh,
 	writePersistedDataSnapshot,
 } from '~/server/utils/persisted-data-snapshot'
@@ -28,6 +29,13 @@ const BANGUMI_PROFILE_BASE = 'https://bgm.tv/user'
 const BANGUMI_USER_AGENT =
 	'AurLemon/aurlemon-intro (https://github.com/AurLemon/aurlemon-intro)'
 const BANGUMI_CACHE_TTL_MS = 48 * 60 * 60 * 1000
+
+export const getBangumiStatus = () =>
+	readDataSnapshotStatus(
+		'bangumi',
+		buildBangumiSnapshotCacheKey(resolveBangumiUsername()),
+		BANGUMI_CACHE_TTL_MS,
+	)
 const COLLECTION_PAGE_LIMIT = 100
 const MAX_COLLECTION_PAGES = 30
 

@@ -1,4 +1,25 @@
 import prisma from '~/lib/prisma'
+import type { SiteServiceStatus } from '~/shared/types/site-meta'
+
+export const readDataSnapshotStatus = async (
+	id: SiteServiceStatus['id'],
+	cacheKey: string,
+	ttlMs: number,
+): Promise<SiteServiceStatus> => {
+	const snapshot = await prisma.externalDataSnapshot.findUnique({
+		where: { cacheKey },
+		select: { updatedAt: true },
+	})
+	return {
+		id,
+		state: snapshot
+			? isPersistedDataSnapshotFresh(snapshot.updatedAt, ttlMs)
+				? 'cached'
+				: 'stale'
+			: 'unknown',
+		...(snapshot ? { updatedAt: snapshot.updatedAt.toISOString() } : {}),
+	}
+}
 
 interface PersistedDataSnapshot<T> {
 	data: T
