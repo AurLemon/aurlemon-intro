@@ -84,6 +84,11 @@ export default defineNuxtConfig({
 		disallow: ['/api/**'],
 	},
 	routeRules: {
+		'/**': {
+			headers: {
+				Link: '</llms.txt>; rel="describedby"; type="text/plain"',
+			},
+		},
 		'/journey': {
 			robots: 'noindex, follow',
 		},
@@ -249,6 +254,10 @@ export default defineNuxtConfig({
 			title: 'AurLemon Intro',
 			link: [
 				{
+					rel: 'help',
+					href: '/hello-agent.md',
+				},
+				{
 					rel: 'preconnect',
 					href: 'https://fonts.gstatic.cn',
 					crossorigin: '',
@@ -267,6 +276,7 @@ export default defineNuxtConfig({
 			meta: [
 				{ charset: 'utf-8' },
 				{ name: 'viewport', content: 'width=device-width, initial-scale=1' },
+				{ name: 'llms', content: '/llms.txt' },
 			],
 			titleTemplate: '%s',
 		},
