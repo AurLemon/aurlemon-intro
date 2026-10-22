@@ -26,6 +26,7 @@ const supportedPages = new Set([
 	'journey',
 	'preference',
 	'about',
+	'meta',
 ])
 const page = computed(() =>
 	route.path

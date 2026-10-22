@@ -1,19 +1,97 @@
-Copyright (c) 2025 AurLemon. All rights reserved.
+Copyright (c) 2025 AurLemon. All rights reserved except as granted below.
 
-This software and its source code are the exclusive property of AurLemon.
-Unauthorized copying, modification, distribution, or use of this software,
-in whole or in part, is strictly prohibited unless explicit written permission
-is granted by the copyright holder.
+1. Scope
 
-By accessing, viewing, or using this repository, you acknowledge that:
+This license covers the original software, source code, components, and styles
+in this project for which AurLemon holds the copyright (the "Software").
+Third-party dependencies and materials remain subject to their own licenses.
+Website content is licensed separately as described in section 7. Personal
+photographs, avatars, and branding are not licensed for reuse by this license.
+No right to impersonate AurLemon or to suggest endorsement is granted.
 
-1. This project is proprietary and confidential.
-2. No rights or licenses are granted implicitly or otherwise.
-3. Any attempt to redistribute, modify, or commercialize the code
-   without written consent from the copyright holder
-   will be considered a violation of applicable copyright law.
+2. Permission for noncommercial use
 
-Limited permission may be granted to selected collaborators for private use only.
+Subject to the conditions below, you may use, copy, study, modify, adapt,
+self-host, extract and reuse components from, and redistribute the Software
+and your modifications, in source or compiled form, for noncommercial purposes
+without requesting separate permission.
 
-For licensing or collaboration inquiries, please contact:
+Permitted examples include personal learning and experimentation, school
+teaching and academic research, personal noncommercial deployments, component
+reuse in noncommercial projects, and sharing noncommercial modifications.
+Ordinary educational tuition or research funding alone does not make teaching
+or academic research commercial use, but commercial products, paid services,
+and commissioned commercial deliverables remain subject to section 3.
+
+3. Commercial use requires prior written permission
+
+You must obtain express written permission from AurLemon before any commercial
+use of the Software or of modifications or other derivative works based on it.
+Commercial use means use directed toward commercial advantage or
+monetary compensation, including:
+
+- Selling or commercially licensing original or modified copies, extracted
+  components, templates, or other derivative works.
+- Using the Software in a commercial product, business website, paid hosting
+  service, subscription service, or paid client deliverable.
+- Distributing or deploying the Software as part of a monetized offering.
+
+Providing attribution, making minor changes, or offering a copy free of charge
+does not by itself authorize commercial use. Commercial permission applies
+only to the scope expressly agreed in writing.
+
+For commercial licensing or other permissions, contact:
 AurLemon <aurlemoncn@gmail.com> | <2115386831@qq.com>
+
+4. Modifications, extraction, and AI transformations
+
+Renaming, refactoring, porting, extracting components, or processing the
+Software through AI-assisted rewriting or distillation does not remove these
+conditions from resulting material that incorporates or is a derivative of
+the Software. Such material may not be sold or otherwise used commercially
+without the prior written permission required by section 3.
+
+You may not remove the required attribution or present the Software or its
+covered portions as entirely your own original work. This license does not
+claim exclusive rights over general ideas, methods, or independently created
+implementations that do not reproduce protected expression from the Software.
+
+5. Notices and redistribution
+
+Retain the copyright notice and this license with copies or substantial
+portions of the Software, including reused components. When distributing
+modified versions, identify that you have made changes and do not imply that
+AurLemon authored or endorses your modifications.
+
+Redistribution of the Software and its covered modifications must preserve
+these license conditions. They apply to the covered material and do not
+require unrelated, independently created parts of a larger project to adopt
+this license or require you to publish your source code.
+
+6. Reserved rights and disclaimer
+
+Rights not expressly granted are reserved. Nothing in this license limits
+rights you already have under applicable law, including statutory exceptions.
+This license grants no trademark rights.
+
+The Software is provided as is, without warranties of any kind. To the extent
+permitted by applicable law, AurLemon is not liable for claims, damages, or
+other liability arising from the Software or its use.
+
+7. Website content
+
+Unless otherwise noted, original writing and explanatory illustrations by
+AurLemon published on https://aurlemon.top/ and in this repository's content/
+directory are licensed under Creative Commons Attribution-NonCommercial-
+ShareAlike 4.0 International (CC BY-NC-SA 4.0):
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+That license permits noncommercial sharing and adaptation with attribution,
+a license link, an indication of changes, and ShareAlike licensing of shared
+adaptations. It does not cover the Software, third-party materials, personal
+photographs, avatars, or branding. Privacy, personality, and trademark rights
+are not granted. The software-specific conditions above do not impose
+additional restrictions on content licensed under CC BY-NC-SA 4.0.
+
+For commercial use of this content, request separate prior written permission
+from AurLemon using the contact details in section 3.

@@ -5,6 +5,11 @@ export interface RouteSeoDefinition {
 }
 
 const ROUTE_SEO_DEFINITIONS: Record<string, RouteSeoDefinition> = {
+	'/meta': {
+		descriptionKey: 'seo.pages.meta.description',
+		indexable: true,
+		titleKey: 'seo.pages.meta.title',
+	},
 	'/': {
 		descriptionKey: 'seo.pages.home.description',
 		indexable: true,

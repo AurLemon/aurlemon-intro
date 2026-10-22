@@ -42,7 +42,10 @@ const emit = defineEmits<{
 
 const loading = ref(false)
 const ready = ref(false)
-const summary = ref<SiteLikeSummary | null>(null)
+const summary = useState<SiteLikeSummary | null>(
+	'site-like-summary',
+	() => null,
+)
 
 const EMPTY_SITE_LIKE_SUMMARY: SiteLikeSummary = {
 	totalCount: 0,

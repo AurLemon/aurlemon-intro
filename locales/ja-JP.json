@@ -28,7 +28,8 @@
 		"preference": "好み",
 		"about": "サイトについて",
 		"friends": "リンク集",
-		"currentPage": "現在のページ"
+		"currentPage": "現在のページ",
+		"meta": "サイト情報"
 	},
 	"seo": {
 		"pages": {
@@ -61,6 +62,10 @@
 			},
 			"unconfigured": {
 				"title": "現在のページ / AurLemon Intro"
+			},
+			"meta": {
+				"title": "サイト情報 / AurLemon Intro",
+				"description": "AurLemon Intro のコンテンツとコードのライセンス、現在のコミット、実行環境、サービス状況と閲覧環境。"
 			}
 		}
 	},
@@ -267,6 +272,9 @@
 			},
 			"friends": {
 				"title": "私の友達。"
+			},
+			"meta": {
+				"title": "サイト情報"
 			}
 		},
 		"contentMetadata": {
@@ -295,7 +303,8 @@
 		"aboutSite": "サイトについて",
 		"friendLink": "リンク集",
 		"githubProfile": "GitHub",
-		"miitRegistration": "闽ICP備2023007345号-3"
+		"miitRegistration": "闽ICP備2023007345号-3",
+		"meta": "サイト情報"
 	},
 	"error": {
 		"pageTitle": "エラーページ",
@@ -513,5 +522,60 @@
 			"siteUrlNotConfigured": "公開サイト URL が未設定のため、この操作は一時的に利用できません。",
 			"accountDisabled": "このアカウントは無効化されています。"
 		}
+	},
+	"meta": {
+		"sections": {
+			"runtime": "実行環境",
+			"services": "サービス状況",
+			"client": "閲覧環境",
+			"license": "ライセンス"
+		},
+		"fields": {
+			"platform": "プラットフォーム",
+			"architecture": "アーキテクチャ",
+			"rendering": "レンダリング",
+			"theme": "現在のテーマ",
+			"fingerprint": "ブラウザー指紋",
+			"like": "いいねの状態",
+			"commit": "現在のコミット",
+			"technologies": "技術スタック",
+			"serverTimezone": "サーバーのタイムゾーン"
+		},
+		"states": {
+			"cached": "キャッシュ有効",
+			"stale": "キャッシュ期限切れ",
+			"unknown": "情報なし",
+			"available": "アクセス可能",
+			"configured": "設定済み",
+			"unconfigured": "未設定",
+			"degraded": "送信失敗あり",
+			"unavailable": "利用不可"
+		},
+		"services": {
+			"github": "GitHub コントリビューション",
+			"bangumi": "Bangumi コレクション",
+			"githubOAuth": "GitHub ログイン",
+			"linuxdo": "Linux DO ログイン",
+			"database": "データベース",
+			"email": "メール送信"
+		},
+		"licenseNotice": "本サイトは AurLemon の個人紹介サイトです。プロジェクトのコードは非商用で利用でき、自分での運用、改変、再利用が可能です。再配布する際は、元の著作権表示とライセンスの記載を保持してください。改変、抽出、AI 変換による派生物の利用を含め、あらゆる商用利用には AurLemon の事前の書面による許可が必要です。",
+		"liked": "いいね済み",
+		"notLiked": "未いいね",
+		"lastSync": "最終同期：",
+		"fingerprintNote": "既存のいいね機能のブラウザー指紋を一部伏せて表示し、いいね状態の照会時にサーバーへ送信して、いいね済みの判定と重複防止に使用",
+		"loadFailed": "サイト情報を取得できません。後でもう一度お試しください。",
+		"retry": "再試行",
+		"openLicense": "GitHub でライセンスを読む",
+		"fingerprintInfo": "ブラウザー指紋の説明",
+		"serviceInfo": "{service}の説明",
+		"commitTime": "コミット日時：{time}（閲覧端末のタイムゾーン）",
+		"serviceNotes": {
+			"email": "失敗はメールキューの記録に基づき、設定済みでも配信は保証されません"
+		},
+		"servicesInfo": "サービス状況の説明",
+		"servicesNote": "状態は最大 30 秒遅延、設定済みは接続確認を意味せず、時刻は閲覧端末基準",
+		"contentLicenseNotice": "本サイトのオリジナル記事と解説用の図版には {license} を適用し、出典を明記した非商用の転載と改変を認めます。改変物を公開して共有する際は、同じライセンスを適用してください。商用利用には同様に書面による許可が必要です。第三者のコンテンツ、個人の写真、アバター、ブランドの標識は許諾の対象外です。",
+		"contentLicenseLabel": "サイトのオリジナルコンテンツのライセンス：CC BY-NC-SA 4.0"
 	}
 }

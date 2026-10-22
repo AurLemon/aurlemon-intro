@@ -2,6 +2,7 @@ import tailwindcss from '@tailwindcss/vite'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
 import emojiFontOptions from './emoji.config'
+import { siteBuildInfo } from './build/site-meta'
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
@@ -19,6 +20,7 @@ export default defineNuxtConfig({
 	ssr: true,
 	devtools: { enabled: false },
 	runtimeConfig: {
+		siteBuild: siteBuildInfo,
 		public: {
 			baiduStatKey: '',
 			canonicalSiteUrl: siteUrl,
@@ -162,6 +164,13 @@ export default defineNuxtConfig({
 				'lucide:triangle-alert',
 				'lucide:user-round',
 				'lucide:users',
+				'lucide:info',
+				'lucide:circle-check',
+				'lucide:clock',
+				'lucide:circle-x',
+				'lucide:circle-minus',
+				'lucide:circle-help',
+				'lucide:external-link',
 			],
 		},
 		serverBundle: {

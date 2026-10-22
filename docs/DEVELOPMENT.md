@@ -54,6 +54,18 @@ ACG 与音乐条目额外保存 `title`、`author` 数组、`category`、`href`�
 - 仅在用户授权时提交或推送。提交信息使用 Conventional Commits：英文 `type(scope)`，冒号后的说明使用简体中文，例如 `fix(ui): 修复导航焦点处理`。
 - 提交前检查改动范围与 `git diff --check`，注意行尾换行和 Linux / Windows 跨平台使用，不包含无关文件。
 
+## 站点信息元数据
+
+- 站点信息页统一使用 `/meta`，英文与日文保留对应 locale 前缀，页面标题、页脚、菜单当前页与 SEO 同步维护。
+- `/meta` 的版本标识来自 `build/site-meta.ts`：配置加载时读取当前源码 `git rev-parse HEAD` 和该提交的 committer 时间（`git show -s --format=%cI <SHA>`），经 `runtimeConfig.siteBuild` 随产物保存，生产服务器无需 `.git`。无 Git 的源码归档可在构建前设置完整的 `SITE_COMMIT_SHA`；无法确定时显示暂无信息，不使用运行时仓库 HEAD 或手写 hash。提交日期缺失时不显示日期 Badge，不以构建时间代替提交时间。技术栈版本读取实际安装包，不用 package.json 的范围冒充安装版本。
+- `/api/site-meta` 仅返回 commit、所选技术栈版本、服务器实际 Node.js/V8/系统平台/架构/生效时区，以及白名单服务状态，不返回环境变量、数据库地址或内部错误。HTTP 响应不缓存，内部服务状态最多缓存 30 秒；GitHub / Bangumi 只读既有快照和有效期，不主动请求上游。OAuth / SMTP 仅表示是否已配置，数据库执行只读检查，邮件失败状态只读 Outbox。无数据、过期、读取失败分别展示，禁止推断为服务在线。
+
+## 项目许可
+
+- 项目原创代码采用根目录 [LICENSE](../LICENSE) 中的自定义非商业许可，非商业学习、学校研究、个人部署、修改、组件复用与分享可依条款直接进行，商业使用须事先取得 AurLemon 的书面许可。修改、提取或 AI 转换不免除所涉代码的许可条件，第三方素材及个人内容的边界以 LICENSE 为准。
+- `/meta` 的三语言许可摘要与 LICENSE 保持一致，摘要不能代替完整条款。此许可包含非商业限制，不标注为 MIT 或其他允许自由商用的开源许可。
+- 除另有声明外，站内原创文章与说明性图文采用 [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)，不覆盖代码、第三方素材、个人照片、头像与品牌标识。站点信息页三语言摘要与 LICENSE 的内容许可范围保持一致，商用可另行向 AurLemon 申请书面许可。
+
 ## 文档维护
 
 - `AGENTS.md` 负责规则入口与按需阅读索引；专题规则和实现说明存放在 `docs/`。

@@ -64,6 +64,13 @@
 					{{ $t('footer.githubProfile') }}
 				</NuxtLink>
 				<NuxtLink
+					:to="localePath('/meta')"
+					:class="linkClass(4)"
+					@mouseenter="hoveredLink = 4"
+				>
+					{{ $t('footer.meta') }}
+				</NuxtLink>
+				<NuxtLink
 					to="https://beian.miit.gov.cn"
 					target="_blank"
 					rel="noopener noreferrer"

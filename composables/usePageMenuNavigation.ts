@@ -59,6 +59,7 @@ export const usePageMenuNavigation = () => {
 			'/preference': 'menu.preference',
 			'/about': 'menu.about',
 			'/friends': 'menu.friends',
+			'/meta': 'menu.meta',
 		}
 
 		const normalizedPath = normalizePath(route.path)

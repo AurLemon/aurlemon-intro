@@ -5,6 +5,7 @@
 		class="py-12 pb-8 sm:pt-6"
 	>
 		<div
+			v-if="showEmoji"
 			aria-hidden="true"
 			class="mb-4 text-6xl leading-none sm:mb-5 sm:text-7xl select-none"
 		>
@@ -32,9 +33,10 @@ interface Props {
 	page: string
 	title: string
 	doc?: ContentDocumentMeta | null
+	showEmoji?: boolean
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), { showEmoji: true, doc: null })
 const { locale } = useI18n({ useScope: 'global' })
 const isCjk = computed(() => /^(zh|ja)/.test(locale.value))
 const emojis: Record<string, string> = {

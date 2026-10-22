@@ -28,7 +28,8 @@
 		"preference": "偏好",
 		"about": "关于本站",
 		"friends": "友情链接",
-		"currentPage": "当前页"
+		"currentPage": "当前页",
+		"meta": "站点信息"
 	},
 	"seo": {
 		"pages": {
@@ -61,6 +62,10 @@
 			},
 			"unconfigured": {
 				"title": "当前页 / AurLemon Intro"
+			},
+			"meta": {
+				"title": "站点信息 / AurLemon Intro",
+				"description": "AurLemon Intro 的内容与代码许可、当前提交、运行环境、服务状态和访客环境。"
 			}
 		}
 	},
@@ -267,6 +272,9 @@
 			},
 			"friends": {
 				"title": "我的朋友们。"
+			},
+			"meta": {
+				"title": "站点信息"
 			}
 		},
 		"contentMetadata": {
@@ -295,7 +303,8 @@
 		"aboutSite": "关于本站",
 		"friendLink": "友情链接",
 		"githubProfile": "GitHub",
-		"miitRegistration": "闽ICP备2023007345号-3"
+		"miitRegistration": "闽ICP备2023007345号-3",
+		"meta": "站点信息"
 	},
 	"error": {
 		"pageTitle": "错误页面",
@@ -513,5 +522,60 @@
 			"siteUrlNotConfigured": "站点公开地址尚未配置，暂时无法完成此操作。",
 			"accountDisabled": "该账户已被停用。"
 		}
+	},
+	"meta": {
+		"sections": {
+			"runtime": "运行环境",
+			"services": "服务状态",
+			"client": "访客环境",
+			"license": "许可协议"
+		},
+		"fields": {
+			"platform": "系统平台",
+			"architecture": "处理器架构",
+			"rendering": "渲染方式",
+			"theme": "当前主题",
+			"fingerprint": "浏览器指纹",
+			"like": "点赞状态",
+			"commit": "当前提交",
+			"technologies": "技术栈",
+			"serverTimezone": "服务器时区"
+		},
+		"states": {
+			"cached": "缓存有效",
+			"stale": "缓存已过期",
+			"unknown": "暂无信息",
+			"available": "可访问",
+			"configured": "已配置",
+			"unconfigured": "未配置",
+			"degraded": "存在投递失败",
+			"unavailable": "暂不可用"
+		},
+		"services": {
+			"github": "GitHub 贡献数据",
+			"bangumi": "Bangumi 收藏数据",
+			"githubOAuth": "GitHub 登录",
+			"linuxdo": "Linux DO 登录",
+			"database": "数据库",
+			"email": "邮件投递"
+		},
+		"licenseNotice": "本站是 AurLemon 的个人介绍网站。项目代码允许非商业使用，可以自行部署、修改或复用，重新分发时须保留原有署名及许可声明。任何商业使用，包括修改、提取或经 AI 转换后的衍生作品，均须事先取得 AurLemon 的书面许可。",
+		"liked": "已点赞",
+		"notLiked": "未点赞",
+		"lastSync": "上次同步：",
+		"fingerprintNote": "复用本站点赞功能的浏览器指纹并脱敏显示，随点赞查询发送至服务器，用于判断点赞状态与防止重复点赞",
+		"loadFailed": "站点信息暂时无法加载，稍后可重试。",
+		"retry": "重试",
+		"openLicense": "在 GitHub 查看许可协议",
+		"fingerprintInfo": "浏览器指纹说明",
+		"serviceInfo": "{service}说明",
+		"commitTime": "提交时间：{time}（本机时区）",
+		"serviceNotes": {
+			"email": "失败状态取自邮件队列，已配置不保证送达"
+		},
+		"servicesInfo": "服务状态说明",
+		"servicesNote": "状态最多延迟 30 秒，已配置不代表连通，时间按本机时区显示",
+		"contentLicenseNotice": "本站原创文章与说明性图文采用 {license} 许可，允许署名后的非商业转载与改编，公开分享改编作品时须沿用相同许可。商业使用同样需要书面许可，第三方内容、个人照片、头像及品牌标识不在授权范围内。",
+		"contentLicenseLabel": "站内原创内容许可：CC BY-NC-SA 4.0"
 	}
 }
