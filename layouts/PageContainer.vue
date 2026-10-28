@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 import {
 	resetPageEnter,
 	resolvePageEnter,
 	type PageScrollPosition,
 } from '~/utils/page-scroll'
 
+const pageContainer = ref<HTMLElement | null>(null)
 const pageContainerReady = ref(false)
+const initialEnterDuration = 560
+let initialEnterAnimation: Animation | undefined
+let initialEnterFrame = 0
 const pageEnterAnimations = new WeakMap<Element, Animation>()
 const pageEnterFrames = new WeakMap<Element, number>()
 const pageScrollCleanups = new WeakMap<Element, () => void>()
@@ -31,6 +35,12 @@ const restoreScrollWithEnter = (
 
 	// Keep the browser's smooth scroll; let its real progress drive the fade.
 	animation.pause()
+	if (animation.effect instanceof KeyframeEffect) {
+		animation.effect.setKeyframes([
+			{ opacity: 0, transform: 'translateY(6px)' },
+			{ opacity: 1, transform: 'translateY(0)' },
+		])
+	}
 	animation.effect?.updateTiming({ easing: 'linear' })
 	animation.currentTime = 0
 	let lastX = startX
@@ -50,7 +60,8 @@ const restoreScrollWithEnter = (
 		lastX = x
 		lastY = y
 		progress = Math.max(progress, Math.min(1, 1 - remaining / distance))
-		animation.currentTime = progress * 220
+		animation.currentTime =
+			progress * Number(animation.effect?.getTiming().duration ?? 220)
 		if (remaining < 1) {
 			cleanup()
 			animation.finish()
@@ -81,13 +92,17 @@ const handlePageEnter = (element: Element, done: () => void): void => {
 			return
 		}
 
+		const isHome = /^\/(?:\w{2}-\w{2}\/?)*$/.test(path ?? '')
+		// Give a stationary home entry the same full reveal as a fresh load.
+		const duration = isHome ? initialEnterDuration : 220
+		const offset = isHome ? 18 : 6
 		// Start the clock after mounting, so page setup cannot consume the fade.
 		const animation = element.animate(
 			[
-				{ opacity: 0, transform: 'translateY(6px)' },
+				{ opacity: 0, transform: `translateY(${offset}px)` },
 				{ opacity: 1, transform: 'translateY(0)' },
 			],
-			{ duration: 220, easing: 'ease', fill: 'both' },
+			{ duration, easing: 'ease', fill: 'both' },
 		)
 		pageEnterAnimations.set(element, animation)
 		animation.onfinish = () => {
@@ -123,6 +138,22 @@ const cancelPageEnter = (element: Element): void => {
 
 onMounted(() => {
 	const revealContainer = () => {
+		const element = pageContainer.value
+		if (!element) return
+		if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			// An explicit animation cannot be replaced by the theme's CSS transition.
+			initialEnterAnimation = element.animate(
+				[
+					{ opacity: 0, transform: 'translateY(18px)' },
+					{ opacity: 1, transform: 'translateY(0)' },
+				],
+				{ duration: initialEnterDuration, easing: 'ease', fill: 'both' },
+			)
+			initialEnterAnimation.onfinish = () => {
+				initialEnterAnimation?.cancel()
+				initialEnterAnimation = undefined
+			}
+		}
 		pageContainerReady.value = true
 	}
 
@@ -131,15 +162,21 @@ onMounted(() => {
 		return
 	}
 
-	requestAnimationFrame(() => {
-		requestAnimationFrame(revealContainer)
+	initialEnterFrame = requestAnimationFrame(() => {
+		initialEnterFrame = requestAnimationFrame(revealContainer)
 	})
+})
+
+onBeforeUnmount(() => {
+	cancelAnimationFrame(initialEnterFrame)
+	initialEnterAnimation?.cancel()
 })
 </script>
 
 <template>
 	<main
 		id="page-container"
+		ref="pageContainer"
 		class="mx-auto max-w-4xl w-full h-full flex-1 flex flex-col px-6 pb-28 lg:pb-16"
 		:class="{
 			'page-container-shell': true,
@@ -176,9 +213,6 @@ onMounted(() => {
 .page-container-shell {
 	opacity: 0;
 	transform: translate3d(0, 18px, 0);
-	transition:
-		opacity 560ms cubic-bezier(0.22, 1, 0.36, 1),
-		transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .page-container-shell--ready {
