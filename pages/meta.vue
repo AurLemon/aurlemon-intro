@@ -77,7 +77,7 @@ const technologyNames: Record<string, string> = {
 }
 const tooltipUi = {
 	content: 'h-auto max-w-[min(22rem,calc(100vw-2rem))] px-3 py-2',
-	text: 'whitespace-normal text-base text-pretty leading-relaxed',
+	text: 'whitespace-normal text-pretty leading-relaxed',
 }
 const runtimeRows = computed<InformationRow[]>(() => [
 	{
