@@ -36,6 +36,7 @@ const ERROR_KEY_MAP: Record<string, string> = {
 	INVALID_FRIEND_LINK_NAME: 'social.errors.invalidFriendLinkName',
 	INVALID_FRIEND_LINK_URL: 'social.errors.invalidFriendLinkUrl',
 	INVALID_FRIEND_LINK_DESC: 'social.errors.invalidFriendLinkDesc',
+	INVALID_FRIEND_LINK_NOTE: 'social.errors.invalidFriendLinkNote',
 	INVALID_IMAGE_BASE64: 'social.errors.invalidImageBase64',
 	IMAGE_TOO_LARGE: 'social.errors.imageTooLarge',
 	INVALID_FINGERPRINT: 'social.errors.invalidFingerprint',

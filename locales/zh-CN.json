@@ -340,7 +340,7 @@
 			"applyFriendLink": "申请友链",
 			"submitApplication": "提交申请",
 			"approve": "审批通过",
-			"createFriendLink": "直接新建友链",
+			"createFriendLink": "创建友链",
 			"openSiteLikeList": "站点点赞列表",
 			"prevPage": "上一页",
 			"nextPage": "下一页",
@@ -463,6 +463,10 @@
 				},
 				"updatedAt": "更新于"
 			},
+			"siteInfo": {
+				"title": "下面是本站的信息哦！",
+				"description": "柠檬の个人介绍站！"
+			},
 			"loginRequiredTitle": "申请友链需要登录",
 			"loginRequiredDesc": "登录后才能提交友链申请。",
 			"adminTitle": "友链管理",
@@ -476,16 +480,31 @@
 			"directCreateTitle": "直接新建友链",
 			"editTitle": "编辑友链",
 			"status": {
-				"pending": "待审批"
+				"pending": "待审批",
+				"active": "友链"
 			},
 			"fields": {
 				"name": "站点名称",
 				"url": "站点地址",
 				"desc": "站点简介",
+				"note": "申请备注（仅管理员可见）",
+				"notePlaceholder": "给柠檬带的话，不会显示到外面的哦！",
 				"image": "站点图片",
 				"chooseImage": "选择图片文件",
 				"noFileSelected": "未选择文件",
 				"keepCurrentImage": "使用当前图片"
+			},
+			"createTitle": "新建友链",
+			"add": "新建",
+			"editApplicationTitle": "编辑申请",
+			"applicationInfo": "申请信息",
+			"submittedAt": "申请时间",
+			"approvedAt": "通过时间",
+			"loading": "加载中",
+			"origins": {
+				"manual": "手动添加",
+				"application": "用户申请",
+				"unknown": "来源未记录"
 			}
 		},
 		"errors": {
@@ -518,6 +537,7 @@
 			"invalidFriendLinkName": "友链名称不合法。",
 			"invalidFriendLinkUrl": "友链地址必须是合法的 http 或 https 链接。",
 			"invalidFriendLinkDesc": "友链简介不合法。",
+			"invalidFriendLinkNote": "申请备注须为不超过 2000 字的文字。",
 			"invalidImageBase64": "图片上传失败，或图片格式不正确。",
 			"imageTooLarge": "图片过大，请上传 3MB 以内的文件。",
 			"invalidFingerprint": "浏览器指纹无效，请刷新后重试。",

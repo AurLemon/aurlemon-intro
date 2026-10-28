@@ -14,6 +14,8 @@ import type {
 	AdminFriendLinkListItem,
 	AuthUser,
 	FriendLinkApplicationItem,
+	FriendLinkApplicant,
+	OAuthProviderName,
 	FriendLinkItem,
 } from '~/shared/types/social'
 
@@ -64,6 +66,7 @@ const mapApplication = (item: {
 	name: string
 	url: string
 	desc: string
+	note: string | null
 	imageBase64: string
 	applicantGithubLogin: string
 	status: FriendLinkApplicationStatus
@@ -78,6 +81,7 @@ const mapApplication = (item: {
 	name: item.name,
 	url: item.url,
 	desc: item.desc,
+	note: item.note,
 	imageBase64: resolveFriendLinkImage(item.name, item.imageBase64),
 	applicantUsername: item.applicant?.username ?? item.applicantGithubLogin,
 	status: item.status,
@@ -179,6 +183,7 @@ export const submitFriendLinkApplication = async (
 		name: string
 		url: string
 		desc: string
+		note?: string | null
 		imageBase64?: string | null
 	},
 ): Promise<void> => {
@@ -226,6 +231,7 @@ export const submitFriendLinkApplication = async (
 					name: payload.name,
 					url: payload.url,
 					desc: payload.desc,
+					note: payload.note?.trim() || null,
 					imageBase64: resolveFriendLinkImage(
 						payload.name,
 						payload.imageBase64,
@@ -290,57 +296,95 @@ export const listPendingFriendLinkApplications = async (): Promise<
 	return items.map(mapApplication)
 }
 
+const applicantSelect = {
+	username: true,
+	displayName: true,
+	identities: { select: { provider: true } },
+} satisfies Prisma.UserSelect
+
+interface ApplicantSource {
+	username: string
+	displayName: string
+	identities: { provider: OAuthProviderName }[]
+}
+
+const mapApplicant = (
+	user: ApplicantSource | null,
+	legacyUsername: string,
+): FriendLinkApplicant => ({
+	username: user?.username ?? legacyUsername,
+	displayName: user?.displayName ?? legacyUsername,
+	providers: user?.identities.map(({ provider }) => provider) ?? [],
+})
+
 export const listAdminFriendLinkItems = async (): Promise<
 	AdminFriendLinkListItem[]
 > => {
 	await cleanupExpiredFriendLinkApplications()
-
+	const applicationInclude = {
+		applicant: { select: applicantSelect },
+		approvedBy: { select: { username: true } },
+	} satisfies Prisma.FriendLinkApplicationInclude
 	const [activeLinks, pendingApplications] = await Promise.all([
 		prisma.friendLink.findMany({
-			where: {
-				isActive: true,
-			},
-			orderBy: {
-				createdAt: 'desc',
+			where: { isActive: true },
+			orderBy: { createdAt: 'desc' },
+			include: {
+				sourceApplication: { include: applicationInclude },
+				createdBy: { select: applicantSelect },
 			},
 		}),
 		prisma.friendLinkApplication.findMany({
-			where: {
-				status: FriendLinkApplicationStatus.pending,
-			},
-			orderBy: {
-				createdAt: 'desc',
-			},
-			include: { applicant: true, approvedBy: true },
+			where: { status: FriendLinkApplicationStatus.pending },
+			orderBy: { createdAt: 'desc' },
+			include: applicationInclude,
 		}),
 	])
-
 	const items: AdminFriendLinkListItem[] = [
-		...pendingApplications.map((item) => ({
+		...pendingApplications.map((item): AdminFriendLinkListItem => ({
 			id: item.id,
-			type: 'pending-application' as const,
+			type: 'pending-application',
+			origin: 'application',
 			name: item.name,
 			url: item.url,
 			desc: item.desc,
 			imageBase64: resolveFriendLinkImage(item.name, item.imageBase64),
 			createdAt: item.createdAt.toISOString(),
 			applicantUsername: item.applicant?.username ?? item.applicantGithubLogin,
+			applicant: mapApplicant(item.applicant, item.applicantGithubLogin),
+			application: mapApplication(item),
 		})),
-		...activeLinks.map((item) => ({
+		...activeLinks.map((item): AdminFriendLinkListItem => ({
 			id: item.id,
-			type: 'friend-link' as const,
+			type: 'friend-link',
+			origin:
+				item.origin === 'APPLICATION'
+					? 'application'
+					: item.origin === 'MANUAL'
+						? 'manual'
+						: 'unknown',
 			name: item.name,
 			url: item.url,
 			desc: item.desc,
 			imageBase64: resolveFriendLinkImage(item.name, item.imageBase64),
 			createdAt: item.createdAt.toISOString(),
-			applicantUsername: null,
+			applicantUsername:
+				item.origin === 'APPLICATION'
+					? (item.createdBy?.username ?? item.createdByGithubLogin)
+					: null,
+			applicant:
+				item.origin === 'APPLICATION'
+					? mapApplicant(
+							item.sourceApplication?.applicant ?? item.createdBy,
+							item.createdByGithubLogin,
+						)
+					: null,
+			application: item.sourceApplication
+				? mapApplication(item.sourceApplication)
+				: null,
 		})),
 	]
-
-	return items.sort(
-		(a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-	)
+	return items.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
 }
 
 export const approveFriendLinkApplication = async (
@@ -406,7 +450,6 @@ export const approveFriendLinkApplication = async (
 				status: FriendLinkApplicationStatus.pending,
 			},
 			data: {
-				...next,
 				status: FriendLinkApplicationStatus.approved,
 				approvedAt,
 				approvedByGithubLogin: legacyLogin,
@@ -422,6 +465,8 @@ export const approveFriendLinkApplication = async (
 		await tx.friendLink.create({
 			data: {
 				...next,
+				origin: 'APPLICATION',
+				sourceApplicationId: pending.id,
 				createdByGithubLogin: pending.applicantGithubLogin,
 				approvedByGithubLogin: legacyLogin,
 				createdByUserId: pending.applicantUserId,
@@ -505,6 +550,7 @@ export const createFriendLinkDirectly = async (
 	const friendLink = await prisma.$transaction(async (tx) => {
 		const created = await tx.friendLink.create({
 			data: {
+				origin: 'MANUAL',
 				name: payload.name,
 				url: payload.url,
 				desc: payload.desc,

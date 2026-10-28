@@ -340,7 +340,7 @@
 			"applyFriendLink": "Apply Link Exchange",
 			"submitApplication": "Submit",
 			"approve": "Approve",
-			"createFriendLink": "Create Link",
+			"createFriendLink": "Create link",
 			"openSiteLikeList": "Site Like List",
 			"prevPage": "Previous",
 			"nextPage": "Next",
@@ -463,6 +463,10 @@
 				},
 				"updatedAt": "Updated"
 			},
+			"siteInfo": {
+				"title": "Here are this site's details!",
+				"description": "Lemon’s personal introduction site!"
+			},
 			"loginRequiredTitle": "Sign-in required",
 			"loginRequiredDesc": "You need to sign in before submitting a link exchange request.",
 			"adminTitle": "Friend Link Admin",
@@ -476,16 +480,31 @@
 			"directCreateTitle": "Create Friend Link Directly",
 			"editTitle": "Edit Friend Link",
 			"status": {
-				"pending": "Pending"
+				"pending": "Pending",
+				"active": "Friend link"
 			},
 			"fields": {
 				"name": "Site name",
 				"url": "Site URL",
 				"desc": "Description",
+				"note": "Application note (admin only)",
+				"notePlaceholder": "Leave a note for Lemon. Only admins can see it.",
 				"image": "Site image",
 				"chooseImage": "Choose image file",
 				"noFileSelected": "No file selected",
 				"keepCurrentImage": "Use current image"
+			},
+			"createTitle": "Add friend link",
+			"add": "Add",
+			"editApplicationTitle": "Edit application",
+			"applicationInfo": "Application details",
+			"submittedAt": "Submitted",
+			"approvedAt": "Approved",
+			"loading": "Loading",
+			"origins": {
+				"manual": "Added manually",
+				"application": "User application",
+				"unknown": "Source unknown"
 			}
 		},
 		"errors": {
@@ -518,6 +537,7 @@
 			"invalidFriendLinkName": "The friend link name is invalid.",
 			"invalidFriendLinkUrl": "The friend link URL must be a valid http or https URL.",
 			"invalidFriendLinkDesc": "The friend link description is invalid.",
+			"invalidFriendLinkNote": "The application note must be text of at most 2,000 characters.",
 			"invalidImageBase64": "The image upload failed or the image format is invalid.",
 			"imageTooLarge": "Image is too large. Please upload a file under 3MB.",
 			"invalidFingerprint": "The browser fingerprint is invalid. Refresh and try again.",

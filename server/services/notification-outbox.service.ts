@@ -196,6 +196,7 @@ const projectFriendLinkApproved = async (
 		include: {
 			applicant: { include: { emails: true } },
 			approvedBy: true,
+			approvedLink: { select: { name: true } },
 		},
 	})
 	const applicant = application?.applicant
@@ -216,7 +217,7 @@ const projectFriendLinkApproved = async (
 				application.approvedBy?.displayName ??
 				application.approvedByGithubLogin ??
 				'',
-			siteName: application.name,
+			siteName: application.approvedLink?.name ?? application.name,
 			url: localizedPath(applicant.preferredLocale, '/friends'),
 		},
 		dedupeKey: `${eventId}:friend-link-approved:${applicant.id}`,
