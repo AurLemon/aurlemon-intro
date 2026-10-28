@@ -7,6 +7,8 @@ export default withNuxt({
 		'node_modules/**',
 		'generated/prisma/**',
 		'.scripts-dist/**',
+		'.playwright/**',
+		'deploy-artifact/**',
 	],
 	rules: {
 		'@typescript-eslint/no-explicit-any': 'off',

@@ -6,3 +6,6 @@ coverage
 dist
 generated/prisma
 .scripts-dist
+
+.playwright
+deploy-artifact
