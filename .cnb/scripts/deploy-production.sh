@@ -39,6 +39,8 @@ case "${RUN_USER_IDENTITY_MIGRATION:-false}" in
     ;;
 esac
 
+test -f deploy-artifact/.playwright/browser.json
+test -f deploy-artifact/scripts/check-friend-link-browser.mjs
 test -f deploy-artifact/.output/server/index.mjs
 test -f deploy-artifact/prisma/schema.prisma
 test -f deploy-artifact/prisma/migrations/migration_lock.toml
@@ -116,6 +118,12 @@ load_dotenv() {
 mkdir -p "$REMOTE_DEPLOY_PATH"
 if [ -f "$REMOTE_DEPLOY_PATH/.env" ]; then
   load_dotenv "$REMOTE_DEPLOY_PATH/.env"
+fi
+
+# Verify the staged browser before stopping the live app or touching its database.
+if ! node "$REMOTE_TEMP_DIR/scripts/check-friend-link-browser.mjs" --install-deps; then
+  rm -rf -- "$REMOTE_TEMP_DIR"
+  exit 1
 fi
 
 if [ -z "${DATABASE_URL:-}" ] || [[ "$DATABASE_URL" != file:* ]]; then

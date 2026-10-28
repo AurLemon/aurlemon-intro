@@ -36,3 +36,7 @@ logs
 
 # Agent files
 .codex
+
+# Chromium is downloaded into the deployment artifact, never committed.
+.playwright/
+/deploy-artifact/

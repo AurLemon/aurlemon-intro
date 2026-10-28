@@ -9,6 +9,8 @@ allow_branches:
 
 BACKEND_DEPLOY_HOST: your-server.example.com
 BACKEND_DEPLOY_SSH_PORT: '233'
+# Use the same non-root service user as PM2. If Chromium system libraries
+# are missing, automatic installation requires non-interactive sudo.
 BACKEND_DEPLOY_USER: deploy
 BACKEND_DEPLOY_SSH_PRIVATE_KEY: |-
   -----BEGIN OPENSSH PRIVATE KEY-----

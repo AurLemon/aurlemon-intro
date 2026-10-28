@@ -37,14 +37,19 @@ main:
             cp -R prisma/migrations deploy-artifact/prisma/
             cp prisma7.config.ts deploy-artifact/
             mkdir -p deploy-artifact/lib
-            cp lib/database-url.ts deploy-artifact/lib/
+            cp lib/database-url.ts lib/friend-link-browser.ts deploy-artifact/lib/
+            mkdir -p deploy-artifact/scripts
+            cp scripts/check-friend-link-browser.mjs deploy-artifact/scripts/
             if [ "${RUN_USER_IDENTITY_MIGRATION:-false}" = 'true' ]; then
               cp -R .scripts-dist deploy-artifact/
             fi
             cp -R data/ip2region deploy-artifact/data/
             pnpm install --prod --frozen-lockfile --dir deploy-artifact
             pnpm --dir deploy-artifact exec prisma generate --schema prisma/schema.prisma
+            node .cnb/scripts/prepare-browser.mjs deploy-artifact
 
+            test -f deploy-artifact/.playwright/browser.json
+            test -f deploy-artifact/scripts/check-friend-link-browser.mjs
             test -f deploy-artifact/.output/server/index.mjs
             test -f deploy-artifact/prisma/schema.prisma
             test -f deploy-artifact/prisma/migrations/migration_lock.toml
