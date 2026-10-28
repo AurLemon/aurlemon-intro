@@ -439,6 +439,30 @@
 			"applyTitle": "Apply for Link Exchange",
 			"adminEntry": "Admin",
 			"applyReminder": "Your application will notify the administrators. Once it is approved, they will email you back. Without a verified primary email, you will not receive the update, so it is best to add one.",
+			"covers": {
+				"desktop": "Desktop capture",
+				"mobile": "Mobile capture",
+				"title": "Site covers",
+				"refreshAll": "Refresh all",
+				"refresh": "Refresh cover",
+				"schedule": "Automatic refresh",
+				"browserMissing": "Screenshot browser unavailable",
+				"hint": "Desktop and mobile pages are captured in the background. Failed captures retain their previous image; the site image is used when no capture is available.",
+				"intervals": {
+					"0": "Off",
+					"7": "Every 7 days",
+					"30": "Every 30 days",
+					"90": "Every 90 days"
+				},
+				"states": {
+					"ready": "Captured",
+					"partial": "Incomplete capture",
+					"fallback": "No capture",
+					"failed": "Capture failed",
+					"queued": "Capturing"
+				},
+				"updatedAt": "Updated"
+			},
 			"loginRequiredTitle": "Sign-in required",
 			"loginRequiredDesc": "You need to sign in before submitting a link exchange request.",
 			"adminTitle": "Friend Link Admin",
@@ -477,6 +501,8 @@
 			"commentParentNotFound": "The reply target does not exist.",
 			"commentPinOnlyRoot": "Only top-level messages can be pinned.",
 			"invalidCommentPinnedState": "The pinned state is invalid.",
+			"friendLinkBrowserUnavailable": "Screenshot browser unavailable",
+			"invalidFriendLinkCoverInterval": "Please select a valid cover refresh interval.",
 			"friendLinkAlreadyExists": "This friend link already exists.",
 			"friendLinkNotFound": "The friend link does not exist or was removed.",
 			"friendLinkApplicationPending": "There is already a pending request for this site.",

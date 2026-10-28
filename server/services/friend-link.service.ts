@@ -1,3 +1,4 @@
+import { getFriendLinkCoverSummaries } from '~/server/services/friend-link-cover.service'
 import { FriendLinkApplicationStatus, Prisma } from '~/generated/prisma/client'
 import prisma from '~/lib/prisma'
 import {
@@ -158,12 +159,16 @@ export const listActiveFriendLinks = async (): Promise<FriendLinkItem[]> => {
 		},
 	})
 
+	const covers = await getFriendLinkCoverSummaries(items)
+
 	return items.map((item) => ({
 		id: item.id,
 		name: item.name,
 		url: item.url,
 		desc: item.desc,
 		icon: resolveFriendLinkImage(item.name, item.imageBase64),
+		coverUrl: covers.get(item.id)?.url ?? null,
+		mobileCoverUrl: covers.get(item.id)?.mobileUrl ?? null,
 		source: 'database',
 	}))
 }
@@ -547,6 +552,7 @@ export const updateFriendLinkByAdmin = async (
 		},
 		select: {
 			id: true,
+			url: true,
 			name: true,
 			imageBase64: true,
 		},
@@ -566,6 +572,14 @@ export const updateFriendLinkByAdmin = async (
 				name: payload.name,
 				url: payload.url,
 				desc: payload.desc,
+				...(payload.url !== current.url
+					? {
+							desktopCoverImage: null,
+							mobileCoverImage: null,
+							desktopCoverAt: null,
+							mobileCoverAt: null,
+						}
+					: {}),
 				imageBase64: resolveFriendLinkImage(
 					payload.name,
 					payload.imageBase64 ?? current.imageBase64,
@@ -615,6 +629,9 @@ export const deleteFriendLinkByAdmin = async (
 
 	await prisma.$transaction(async (tx) => {
 		await tx.friendLink.delete({ where: { id: friendLinkId } })
+		await tx.externalDataSnapshot.deleteMany({
+			where: { cacheKey: `friend-link-cover:${friendLinkId}` },
+		})
 		await insertDomainEvent(
 			tx,
 			DOMAIN_EVENT_NAMES.FRIEND_LINK_DELETED,
