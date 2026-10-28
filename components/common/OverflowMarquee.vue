@@ -1,14 +1,21 @@
 <template>
-	<div ref="viewport" class="min-w-0 overflow-hidden" :title="text">
+	<component
+		:is="as"
+		ref="viewport"
+		class="block min-w-0 overflow-hidden"
+		:title="showTitle ? text : undefined"
+	>
 		<span ref="track" class="block w-max whitespace-nowrap">{{ text }}</span>
-	</div>
+	</component>
 </template>
 
 <script setup lang="ts">
 interface Props {
 	text: string
+	as?: 'div' | 'h2'
+	showTitle?: boolean
 }
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), { as: 'div', showTitle: true })
 const viewport = ref<HTMLElement | null>(null)
 const track = ref<HTMLElement | null>(null)
 let animation: Animation | undefined

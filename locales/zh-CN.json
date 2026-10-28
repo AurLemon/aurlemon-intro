@@ -439,6 +439,30 @@
 			"applyTitle": "申请友链",
 			"adminEntry": "管理员管理",
 			"applyReminder": "链接申请后会通知管理员，管理员通过友链后会给你回信哦！但如果没有绑定邮箱的话，就收不到信息了，最好绑一下。",
+			"covers": {
+				"desktop": "PC 端截图",
+				"mobile": "移动端截图",
+				"title": "站点封面",
+				"refreshAll": "刷新全部",
+				"refresh": "刷新封面",
+				"schedule": "自动刷新",
+				"browserMissing": "截图浏览器不可用",
+				"hint": "后台依次抓取 PC 端与移动端页面，失败时分别保留旧封面，无封面时使用站点图片。",
+				"intervals": {
+					"0": "关闭",
+					"7": "每 7 天",
+					"30": "每 30 天",
+					"90": "每 90 天"
+				},
+				"states": {
+					"ready": "截图完成",
+					"partial": "截图不完整",
+					"fallback": "暂无截图",
+					"failed": "截图失败",
+					"queued": "正在截图"
+				},
+				"updatedAt": "更新于"
+			},
 			"loginRequiredTitle": "申请友链需要登录",
 			"loginRequiredDesc": "登录后才能提交友链申请。",
 			"adminTitle": "友链管理",
@@ -477,6 +501,8 @@
 			"commentParentNotFound": "回复目标不存在。",
 			"commentPinOnlyRoot": "只有主楼留言可以置顶。",
 			"invalidCommentPinnedState": "置顶状态参数不合法。",
+			"friendLinkBrowserUnavailable": "截图浏览器不可用",
+			"invalidFriendLinkCoverInterval": "请选择有效的封面刷新周期。",
 			"friendLinkAlreadyExists": "这个友链已经存在。",
 			"friendLinkNotFound": "友链不存在或已删除。",
 			"friendLinkApplicationPending": "这个站点已经有待审批申请。",

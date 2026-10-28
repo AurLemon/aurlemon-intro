@@ -11,41 +11,12 @@
 			</div>
 		</div>
 
-		<div v-else class="grid gap-5 grid-cols-1 lg:grid-cols-2 mt-6">
-			<NuxtLink
+		<div v-else class="grid gap-5 grid-cols-1 lg:grid-cols-3 mt-6">
+			<FriendLinkCard
 				v-for="friend in friends"
 				:key="friend.id"
-				:to="friend.url"
-				target="_blank"
-				rel="noopener noreferrer"
-				class="group relative rounded-xl border-6 border-slate-200 p-3 dark:border-slate-800"
-			>
-				<div
-					class="pointer-events-none absolute inset-[-6px] rounded-xl border-6 border-slate-400/60 opacity-0 transition-opacity duration-120 group-hover:opacity-100 dark:border-slate-700/80"
-					aria-hidden="true"
-				/>
-				<div class="flex items-center gap-4">
-					<img
-						:src="friend.icon"
-						:alt="friend.name"
-						class="h-14 w-14 rounded object-cover"
-					/>
-					<div class="min-h-14 min-w-0 flex-1 flex flex-col justify-center">
-						<UTooltip :text="friend.name" :delay-duration="50">
-							<h2
-								class="truncate text-lg font-medium text-slate-900 dark:text-slate-100"
-							>
-								{{ friend.name }}
-							</h2>
-						</UTooltip>
-						<UTooltip :text="friend.desc" :delay-duration="50">
-							<div class="truncate text-sm text-slate-600 dark:text-slate-300">
-								{{ friend.desc }}
-							</div>
-						</UTooltip>
-					</div>
-				</div>
-			</NuxtLink>
+				:friend="friend"
+			/>
 		</div>
 
 		<div class="flex flex-wrap items-center justify-center gap-3 pt-6 mt-auto">
@@ -67,6 +38,7 @@
 </template>
 
 <script setup lang="ts">
+import FriendLinkCard from '~/components/friends/FriendLinkCard.vue'
 import ContentHeader from '~/components/content/ContentHeader.vue'
 import AccountStatusBar from '~/components/common/AccountStatusBar.vue'
 import FriendLinkAdminModal from '~/components/friends/FriendLinkAdminModal.vue'

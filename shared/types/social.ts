@@ -274,6 +274,8 @@ export interface FriendLinkItem {
 	url: string
 	desc: string
 	icon: string
+	coverUrl: string | null
+	mobileCoverUrl: string | null
 	source: 'database'
 }
 

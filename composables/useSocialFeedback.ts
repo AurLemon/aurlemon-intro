@@ -9,6 +9,10 @@ const ERROR_KEY_MAP: Record<string, string> = {
 	COMMENT_PARENT_NOT_FOUND: 'social.errors.commentParentNotFound',
 	COMMENT_PIN_ONLY_ROOT: 'social.errors.commentPinOnlyRoot',
 	INVALID_COMMENT_PINNED_STATE: 'social.errors.invalidCommentPinnedState',
+	FRIEND_LINK_BROWSER_UNAVAILABLE: 'social.errors.friendLinkBrowserUnavailable',
+	INVALID_FRIEND_LINK_COVER_INTERVAL:
+		'social.errors.invalidFriendLinkCoverInterval',
+	FRIEND_LINK_COVER_NOT_FOUND: 'social.errors.friendLinkNotFound',
 	FRIEND_LINK_ALREADY_EXISTS: 'social.errors.friendLinkAlreadyExists',
 	FRIEND_LINK_NOT_FOUND: 'social.errors.friendLinkNotFound',
 	FRIEND_LINK_APPLICATION_PENDING: 'social.errors.friendLinkApplicationPending',

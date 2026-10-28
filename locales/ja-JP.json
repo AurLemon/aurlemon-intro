@@ -439,6 +439,30 @@
 			"applyTitle": "相互リンク申請",
 			"adminEntry": "管理",
 			"applyReminder": "申請すると管理者に通知され、相互リンクが承認されるとメールでお知らせします。確認済みのメインメールアドレスがないと受信できないため、追加することをおすすめします。",
+			"covers": {
+				"desktop": "PC 版の画像",
+				"mobile": "モバイル版の画像",
+				"title": "サイトのカバー",
+				"refreshAll": "すべて更新",
+				"refresh": "カバーを更新",
+				"schedule": "自動更新",
+				"browserMissing": "撮影ブラウザーを利用できません",
+				"hint": "PC 版とモバイル版を順番に撮影します。失敗した場合はそれぞれ以前の画像を保持し、画像がない場合はサイト画像を使用します。",
+				"intervals": {
+					"0": "無効",
+					"7": "7 日ごと",
+					"30": "30 日ごと",
+					"90": "90 日ごと"
+				},
+				"states": {
+					"ready": "撮影完了",
+					"partial": "一部未撮影",
+					"fallback": "画像なし",
+					"failed": "撮影失敗",
+					"queued": "撮影中"
+				},
+				"updatedAt": "更新日"
+			},
 			"loginRequiredTitle": "ログインが必要です",
 			"loginRequiredDesc": "相互リンク申請にはログインが必要です。",
 			"adminTitle": "相互リンク管理",
@@ -477,6 +501,8 @@
 			"commentParentNotFound": "返信先が見つかりません。",
 			"commentPinOnlyRoot": "固定できるのは親コメントのみです。",
 			"invalidCommentPinnedState": "固定状態の指定が不正です。",
+			"friendLinkBrowserUnavailable": "撮影ブラウザーを利用できません",
+			"invalidFriendLinkCoverInterval": "有効なカバー更新間隔を選択してください。",
 			"friendLinkAlreadyExists": "この相互リンクはすでに存在します。",
 			"friendLinkNotFound": "相互リンクが存在しないか削除されています。",
 			"friendLinkApplicationPending": "このサイトにはすでに承認待ち申請があります。",
