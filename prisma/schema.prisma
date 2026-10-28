@@ -273,21 +273,34 @@ model MessageCommentLike {
   @@index([userId])
 }
 
+enum FriendLinkOrigin {
+  MANUAL
+  APPLICATION
+  UNKNOWN
+}
+
 model FriendLink {
-  id                    String   @id @default(cuid())
+  id                    String                 @id @default(cuid())
   name                  String
-  url                   String   @unique
+  url                   String                 @unique
   desc                  String
   imageBase64           String
+  desktopCoverImage     Bytes?
+  mobileCoverImage      Bytes?
+  desktopCoverAt        DateTime?
+  mobileCoverAt         DateTime?
   createdByGithubLogin  String
   approvedByGithubLogin String?
   createdByUserId       String?
   approvedByUserId      String?
-  isActive              Boolean  @default(true)
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
-  createdBy             User?    @relation("FriendLinkCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
-  approvedBy            User?    @relation("FriendLinkApprover", fields: [approvedByUserId], references: [id], onDelete: SetNull)
+  isActive              Boolean                @default(true)
+  origin                FriendLinkOrigin       @default(MANUAL)
+  sourceApplicationId   String?                @unique
+  sourceApplication     FriendLinkApplication? @relation(fields: [sourceApplicationId], references: [id], onDelete: SetNull)
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  createdBy             User?                  @relation("FriendLinkCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  approvedBy            User?                  @relation("FriendLinkApprover", fields: [approvedByUserId], references: [id], onDelete: SetNull)
 
   @@index([isActive, createdAt])
   @@index([createdByUserId])
@@ -295,10 +308,12 @@ model FriendLink {
 }
 
 model FriendLinkApplication {
+  approvedLink          FriendLink?
   id                    String                      @id @default(cuid())
   name                  String
   url                   String
   desc                  String
+  note                  String?
   imageBase64           String
   applicantGithubLogin  String
   status                FriendLinkApplicationStatus @default(pending)

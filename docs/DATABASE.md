@@ -22,3 +22,11 @@
 ## 升级验证
 
 先对真实数据库创建 SQLite 快照，在副本上检查旧日期读取、毫秒整数写入、事务回滚、关联查询、外键以及 Schema diff。再验证脚本编译、类型检查、Lint、Build 和隔离的生产依赖安装；不要将本地通过视为已上线或已完成 Windows 验收。
+
+## 友链来源与申请记录
+
+- FriendLink.origin 区分 MANUAL / APPLICATION / UNKNOWN，sourceApplicationId 为可选唯一关联，指向保留的 FriendLinkApplication。新建手动友链明确写 MANUAL，审批在事务内写 APPLICATION 并关联原申请；不能靠当前名称或 URL 在运行时猜来源。
+- 来源迁移只补元数据：旧申请需 URL、申请人和审批时间同时吻合且唯一才建立关联，已核实的历史手动条目单独回填，其余保留 UNKNOWN。迁移前备份真实 SQLite，在副本核对条目数量和 foreign_key_check；不重置数据库或改写既有申请正文。
+- 审批只更新申请的状态、审批时间与审批人，不把管理员修订后的名称、URL、简介、图片写回申请；修订值写到正式友链。后续编辑友链不影响保留的申请，审批通知从关联友链读取已发布名称。历史已被覆盖的申请字段无法据现值还原。
+- 双端友链截图使用 `FriendLink` 的 SQLite BLOB 字段，抓取时间单独存储；历史 `ExternalDataSnapshot` 图片在服务读取时迁入 BLOB 并移除 Base64，仅保留任务元数据。SQLite 在线备份自然包含截图。
+- `FriendLinkApplication.note` 保存申请人给管理员的私密备注，允许为空；它只在管理员申请详情返回，不进入公开友链、审批通知或正式 `FriendLink`。审批状态更新保留该字段。
