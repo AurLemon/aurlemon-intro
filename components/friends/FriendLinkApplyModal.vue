@@ -31,12 +31,40 @@
 						:description="t('social.friendLinks.loginRequiredDesc')"
 						:show-login-button="false"
 					/>
-					<div v-else class="space-y-4">
-						<p
-							class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-100"
-						>
-							{{ t('social.friendLinks.applyReminder') }}
-						</p>
+					<p
+						v-if="currentUser"
+						class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-100"
+					>
+						{{ t('social.friendLinks.applyReminder') }}
+					</p>
+					<UAlert
+						:title="t('social.friendLinks.siteInfo.title')"
+						color="warning"
+						variant="soft"
+						class="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-100"
+						:ui="{
+							title: 'text-xs leading-5 font-medium',
+							description: 'mt-1 text-xs leading-5 text-inherit',
+						}"
+					>
+						<template #description>
+							<dl
+								class="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 select-text"
+							>
+								<dt>{{ t('social.friendLinks.fields.name') }}</dt>
+								<dd class="[overflow-wrap:anywhere]">AurLemon Intro</dd>
+								<dt>{{ t('social.friendLinks.fields.desc') }}</dt>
+								<dd class="[overflow-wrap:anywhere]">
+									{{ t('social.friendLinks.siteInfo.description') }}
+								</dd>
+								<dt>ICON</dt>
+								<dd class="[overflow-wrap:anywhere]">
+									https://aurlemon.top/favicon.ico
+								</dd>
+							</dl>
+						</template>
+					</UAlert>
+					<div v-if="currentUser" class="space-y-4">
 						<div class="space-y-2">
 							<label class="text-sm text-slate-700 dark:text-slate-300">
 								{{ t('social.friendLinks.fields.name') }}
@@ -70,6 +98,18 @@
 						</div>
 						<div class="space-y-2">
 							<label class="text-sm text-slate-700 dark:text-slate-300">
+								{{ t('social.friendLinks.fields.note') }}
+							</label>
+							<UTextarea
+								v-model="form.note"
+								class="w-full"
+								:rows="3"
+								maxlength="2000"
+								:placeholder="t('social.friendLinks.fields.notePlaceholder')"
+							/>
+						</div>
+						<div class="space-y-2">
+							<label class="block text-sm text-slate-700 dark:text-slate-300">
 								{{ t('social.friendLinks.fields.image') }}
 							</label>
 							<input
@@ -79,21 +119,31 @@
 								class="hidden"
 								@change="handleFileChange"
 							/>
-							<UButton
-								size="xs"
-								color="neutral"
-								class="m-0"
-								variant="link"
-								@click="openFilePicker"
-							>
-								{{ t('social.friendLinks.fields.chooseImage') }}
-							</UButton>
-							<p class="text-sm text-slate-500 dark:text-slate-400">
-								{{
-									selectedImageName ||
-									t('social.friendLinks.fields.noFileSelected')
-								}}
-							</p>
+							<div class="flex min-w-0 items-center gap-3">
+								<UButton
+									size="sm"
+									color="neutral"
+									variant="soft"
+									icon="i-lucide-image-plus"
+									class="shrink-0"
+									@click="openFilePicker"
+								>
+									{{ t('social.friendLinks.fields.chooseImage') }}
+								</UButton>
+								<p
+									class="min-w-0 text-xs leading-5 [overflow-wrap:anywhere]"
+									:class="
+										selectedImageName
+											? 'text-slate-500 dark:text-slate-400'
+											: 'text-slate-400 dark:text-slate-500'
+									"
+								>
+									{{
+										selectedImageName ||
+										t('social.friendLinks.fields.noFileSelected')
+									}}
+								</p>
+							</div>
 							<img
 								v-if="form.imageBase64"
 								:src="form.imageBase64"
@@ -148,6 +198,7 @@ const form = reactive({
 	name: '',
 	url: '',
 	desc: '',
+	note: '',
 	imageBase64: '',
 })
 
@@ -155,6 +206,7 @@ const resetForm = () => {
 	form.name = ''
 	form.url = ''
 	form.desc = ''
+	form.note = ''
 	form.imageBase64 = ''
 	selectedImageName.value = ''
 }
@@ -194,6 +246,7 @@ const submit = async () => {
 				name: form.name,
 				url: form.url,
 				desc: form.desc,
+				note: form.note.trim() || null,
 				imageBase64:
 					typeof form.imageBase64 === 'string' &&
 					form.imageBase64.startsWith('data:image/')

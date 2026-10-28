@@ -284,6 +284,7 @@ export interface FriendLinkApplicationItem {
 	name: string
 	url: string
 	desc: string
+	note: string | null
 	imageBase64: string
 	applicantUsername: string
 	status: 'pending' | 'approved' | 'rejected' | 'expired'
@@ -298,9 +299,18 @@ export interface FriendLinksResponse {
 	currentUser: AuthUser | null
 }
 
+export interface FriendLinkApplicant {
+	username: string
+	displayName: string
+	providers: OAuthProviderName[]
+}
+
 export interface AdminFriendLinkListItem {
 	id: string
 	type: 'friend-link' | 'pending-application'
+	origin: 'manual' | 'application' | 'unknown'
+	applicant: FriendLinkApplicant | null
+	application: FriendLinkApplicationItem | null
 	name: string
 	url: string
 	desc: string

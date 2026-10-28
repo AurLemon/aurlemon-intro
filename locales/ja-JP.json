@@ -340,7 +340,7 @@
 			"applyFriendLink": "相互リンク申請",
 			"submitApplication": "申請を送信",
 			"approve": "承認する",
-			"createFriendLink": "直接追加",
+			"createFriendLink": "リンクを作成",
 			"openSiteLikeList": "サイトいいね一覧",
 			"prevPage": "前へ",
 			"nextPage": "次へ",
@@ -463,6 +463,10 @@
 				},
 				"updatedAt": "更新日"
 			},
+			"siteInfo": {
+				"title": "当サイトの情報はこちらです！",
+				"description": "柠檬の自己紹介サイト！"
+			},
 			"loginRequiredTitle": "ログインが必要です",
 			"loginRequiredDesc": "相互リンク申請にはログインが必要です。",
 			"adminTitle": "相互リンク管理",
@@ -476,16 +480,31 @@
 			"directCreateTitle": "相互リンクを直接追加",
 			"editTitle": "相互リンクを編集",
 			"status": {
-				"pending": "承認待ち"
+				"pending": "承認待ち",
+				"active": "リンク"
 			},
 			"fields": {
 				"name": "サイト名",
 				"url": "サイト URL",
 				"desc": "紹介文",
+				"note": "申請メモ（管理者のみ）",
+				"notePlaceholder": "Lemonへのメッセージをどうぞ。管理者だけに表示されます。",
 				"image": "サイト画像",
 				"chooseImage": "画像ファイルを選択",
 				"noFileSelected": "未選択",
 				"keepCurrentImage": "現在の画像を使用"
+			},
+			"createTitle": "リンクを追加",
+			"add": "追加",
+			"editApplicationTitle": "申請を編集",
+			"applicationInfo": "申請内容",
+			"submittedAt": "申請日時",
+			"approvedAt": "承認日時",
+			"loading": "読み込み中",
+			"origins": {
+				"manual": "手動追加",
+				"application": "ユーザー申請",
+				"unknown": "登録元不明"
 			}
 		},
 		"errors": {
@@ -518,6 +537,7 @@
 			"invalidFriendLinkName": "相互リンク名が不正です。",
 			"invalidFriendLinkUrl": "相互リンク URL は有効な http または https である必要があります。",
 			"invalidFriendLinkDesc": "相互リンク紹介文が不正です。",
+			"invalidFriendLinkNote": "申請メモは2000文字以内で入力してください。",
 			"invalidImageBase64": "画像アップロードに失敗したか、画像形式が不正です。",
 			"imageTooLarge": "画像サイズが大きすぎます。3MB 以下の画像をアップロードしてください。",
 			"invalidFingerprint": "ブラウザ識別子が無効です。更新して再試行してください。",
