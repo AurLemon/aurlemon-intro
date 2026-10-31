@@ -20,7 +20,11 @@ export default defineNuxtModule({
 				const source = await this.resolve(id.slice(0, -11), importer, {
 					skipSelf: true,
 				})
-				if (!source || !source.id.startsWith(assets + sep))
+				if (
+					!source ||
+					source.external ||
+					!resolve(source.id).startsWith(assets + sep)
+				)
 					throw new Error(
 						`Card appearance analysis only supports local assets: ${id}`,
 					)
