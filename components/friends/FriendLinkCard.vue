@@ -17,7 +17,7 @@
 					alt=""
 					loading="lazy"
 					decoding="async"
-					class="h-full w-full object-cover object-top"
+					class="h-full w-full object-cover object-top brightness-100 transition-[filter] duration-200 group-hover:brightness-95 group-focus-visible:brightness-95 motion-reduce:transition-none"
 					:class="
 						useCover
 							? 'saturate-75'
@@ -43,12 +43,7 @@
 				decoding="async"
 				class="mb-2 size-11 rounded-lg object-cover"
 			/>
-			<OverflowMarquee
-				as="h2"
-				:text="friend.name"
-				:show-title="false"
-				class="w-full text-xl leading-7 font-medium text-slate-900 dark:text-slate-100"
-			/>
+			<FriendLinkTitle :text="friend.name" />
 			<p
 				class="text-sm leading-5 text-slate-600 line-clamp-3 [overflow-wrap:anywhere] dark:text-slate-300"
 			>
@@ -59,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import OverflowMarquee from '~/components/common/OverflowMarquee.vue'
+import FriendLinkTitle from './FriendLinkTitle.vue'
 import type { FriendLinkItem } from '~/shared/types/social'
 interface Props {
 	friend: FriendLinkItem
