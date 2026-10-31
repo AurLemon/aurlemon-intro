@@ -2,6 +2,8 @@ import { lookup } from 'node:dns/promises'
 import { BlockList, isIP } from 'node:net'
 import { chromium } from 'playwright-core'
 import sharp from 'sharp'
+import { applyFriendLinkCaptureFonts } from './friend-link-fonts'
+import { observeFriendLinkCaptureReadiness } from './friend-link-readiness'
 import type { FriendLinkCoverVariant } from '~/shared/types/friend-link-cover'
 import { getFriendLinkBrowserPath } from '~/lib/friend-link-browser'
 export { getFriendLinkBrowserPath } from '~/lib/friend-link-browser'
@@ -78,24 +80,34 @@ export const captureFriendLinkCover = async (
 			? { proxy: { server: process.env.FRIEND_LINK_SCREENSHOT_PROXY } }
 			: {}),
 	})
-	const deadline = setTimeout(() => void browser.close(), 45_000)
+	const startedAt = Date.now()
+	const deadline = setTimeout(() => void browser.close(), 60_000)
 	try {
+		const userAgent =
+			variant === 'mobile'
+				? 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.6 Mobile/15E148 Safari/604.1'
+				: `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${browser.version()} Safari/537.36`
 		const context = await browser.newContext({
+			// Desktop cards use the mobile cover: 390 × (408 / 257) × 1.1 ≈ 680.
 			viewport:
 				variant === 'mobile'
-					? { width: 390, height: 844 }
+					? { width: 390, height: 680 }
 					: { width: 1440, height: 900 },
 			...(variant === 'mobile'
 				? {
 						isMobile: true,
 						hasTouch: true,
-						userAgent: `Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${browser.version()} Mobile Safari/537.36`,
 					}
 				: {}),
 			deviceScaleFactor: 1,
+			locale: 'zh-CN',
+			timezoneId: 'Asia/Shanghai',
+			userAgent,
 			colorScheme: 'light',
 			reducedMotion: 'reduce',
 			serviceWorkers: 'block',
+			// Allow our default font stylesheet on destinations with restrictive CSP.
+			bypassCSP: true,
 			acceptDownloads: false,
 		})
 		const allowed = new Map<string, Promise<void>>()
@@ -115,8 +127,39 @@ export const captureFriendLinkCover = async (
 		})
 		await context.routeWebSocket('**/*', (socket) => socket.close())
 		const page = await context.newPage()
+		const readiness = observeFriendLinkCaptureReadiness(page)
+		const identity = await context.newCDPSession(page)
+		await identity.send('Emulation.setUserAgentOverride', {
+			userAgent,
+			platform: variant === 'mobile' ? 'iPhone' : 'MacIntel',
+			acceptLanguage: 'zh-CN,zh',
+			...(variant === 'desktop'
+				? {
+						userAgentMetadata: {
+							brands: [
+								{
+									brand: 'Chromium',
+									version: browser.version().split('.')[0]!,
+								},
+								{
+									brand: 'Google Chrome',
+									version: browser.version().split('.')[0]!,
+								},
+							],
+							platform: 'macOS',
+							platformVersion: '10.15.7',
+							architecture: 'x86',
+							model: '',
+							mobile: false,
+						},
+					}
+				: {}),
+		})
+		// Keep the override session until browser.close(); detach restores Linux
+		// platform information and Chromium client hints on the iPhone profile.
 		page.setDefaultTimeout(8_000)
 		const response = await page.goto(url, {
+			referer: 'https://aurlemon.top/',
 			waitUntil: 'domcontentloaded',
 			timeout: 25_000,
 		})
@@ -124,6 +167,7 @@ export const captureFriendLinkCover = async (
 			throw new Error(
 				`Screenshot navigation failed: ${response?.status() ?? 'no response'}.`,
 			)
+		await applyFriendLinkCaptureFonts(page)
 		// A zero-height body can still contain visible floated/positioned content.
 		await page.waitForFunction(() => {
 			if (!document.body) return false
@@ -154,43 +198,16 @@ export const captureFriendLinkCover = async (
 				new Promise((resolve) => setTimeout(resolve, 2500)),
 			]),
 		)
-		await page.waitForTimeout(2200)
-		// A visible navigation bar alone does not make a usable cover. In
-		// particular, some sites leave their hero at near-zero opacity on errors.
-		await page.waitForFunction(
-			() => {
-				const headings = [...document.querySelectorAll('h1')].filter(
-					(element) => {
-						const rect = element.getBoundingClientRect()
-						return (
-							rect.width > 20 &&
-							rect.height > 10 &&
-							rect.top < innerHeight &&
-							rect.bottom > 0
-						)
-					},
-				)
-				return (
-					!headings.length ||
-					headings.some((element) => {
-						let opacity = 1
-						for (
-							let parent: Element | null = element;
-							parent;
-							parent = parent.parentElement
-						) {
-							opacity *= Number(getComputedStyle(parent).opacity)
-						}
-						return (
-							opacity >= 0.1 &&
-							element.checkVisibility({ visibilityProperty: true })
-						)
-					})
-				)
-			},
-			undefined,
-			{ timeout: 4_000 },
-		)
+
+		try {
+			// Reserve time for the screenshot and WebP encoding within the overall
+			// deadline. Optional resources are best effort after the bounded wait.
+			await readiness.wait(
+				Math.min(12_000, 60_000 - (Date.now() - startedAt) - 10_000),
+			)
+		} finally {
+			readiness.dispose()
+		}
 		const title = await page.title()
 		const text = await page.locator('body').innerText()
 		if (
@@ -205,6 +222,7 @@ export const captureFriendLinkCover = async (
 		) {
 			throw new Error('Screenshot page is empty or requires verification.')
 		}
+
 		let bytes: Buffer
 		try {
 			bytes = await page.screenshot({

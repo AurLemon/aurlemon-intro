@@ -30,3 +30,7 @@
 - 审批只更新申请的状态、审批时间与审批人，不把管理员修订后的名称、URL、简介、图片写回申请；修订值写到正式友链。后续编辑友链不影响保留的申请，审批通知从关联友链读取已发布名称。历史已被覆盖的申请字段无法据现值还原。
 - 双端友链截图使用 `FriendLink` 的 SQLite BLOB 字段，抓取时间单独存储；历史 `ExternalDataSnapshot` 图片在服务读取时迁入 BLOB 并移除 Base64，仅保留任务元数据。SQLite 在线备份自然包含截图。
 - `FriendLinkApplication.note` 保存申请人给管理员的私密备注，允许为空；它只在管理员申请详情返回，不进入公开友链、审批通知或正式 `FriendLink`。审批状态更新保留该字段。
+
+- 友链及申请的 `imageBase64` 保持 string：新提交未提供图片时存空串，由 UI `UAvatar` 兜底；项目历史生成的字母 SVG 在读取映射时视为缺图，不修改其他既有上传。无需为头像兜底调整 Schema 或重写数据库。
+
+- `FriendLink.iconRounded` 默认 true，管理端编辑可按站点关闭图标圆角。`ownerUserId` 为可空的 `User` 外键并建索引，删除用户时置空；`ownerGithubLogin` 保存可空的 GitHub 用户名，两者默认均为 null。

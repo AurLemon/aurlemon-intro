@@ -9,11 +9,15 @@
 			class="pointer-events-none absolute inset-0 overflow-hidden rounded-md"
 			aria-hidden="true"
 		>
-			<picture v-if="!backgroundFailed" class="block h-full w-full">
+			<picture
+				v-if="!backgroundFailed && (backgroundUrl || mobileBackgroundUrl)"
+				class="block h-full w-full"
+				:class="{ 'lg:hidden': !mobileBackgroundUrl }"
+			>
 				<source media="(min-width: 64rem)" :srcset="mobileBackgroundUrl" />
 				<img
 					:key="backgroundUrl"
-					:src="backgroundUrl"
+					:src="backgroundUrl || undefined"
 					alt=""
 					loading="lazy"
 					decoding="async"
@@ -36,12 +40,19 @@
 			aria-hidden="true"
 		/>
 		<div class="relative mt-auto flex min-w-0 flex-col items-start gap-1 p-5">
-			<img
-				:src="friend.icon"
+			<UAvatar
+				:src="friend.icon || undefined"
 				:alt="friend.name"
 				loading="lazy"
 				decoding="async"
-				class="mb-2 size-11 rounded-lg object-cover"
+				class="mb-2 size-11"
+				:class="friend.iconRounded ? 'rounded-lg' : 'rounded-none'"
+				:ui="{
+					root: 'bg-transparent',
+					image: friend.iconRounded
+						? 'rounded-lg object-cover'
+						: 'rounded-none object-cover',
+				}"
 			/>
 			<FriendLinkTitle :text="friend.name" />
 			<p

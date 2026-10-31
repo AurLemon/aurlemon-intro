@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
 						'INVALID_FRIEND_LINK_DESC',
 						300,
 					),
-					imageBase64: ensureOptionalImageBase64(body.imageBase64),
+					imageBase64: await ensureOptionalImageBase64(body.imageBase64),
 				}
 			: undefined,
 	)

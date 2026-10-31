@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
 		name: ensureNonEmptyString(body?.name, 'INVALID_FRIEND_LINK_NAME', 120),
 		url: ensureValidUrl(body?.url, 'INVALID_FRIEND_LINK_URL'),
 		desc: ensureNonEmptyString(body?.desc, 'INVALID_FRIEND_LINK_DESC', 300),
-		imageBase64: ensureOptionalImageBase64(body?.imageBase64),
+		imageBase64: await ensureOptionalImageBase64(body?.imageBase64),
 		note:
 			typeof body?.note === 'string' && body.note.trim()
 				? body.note.trim()

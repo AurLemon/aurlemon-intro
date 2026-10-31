@@ -33,10 +33,14 @@ const ERROR_KEY_MAP: Record<string, string> = {
 	'GitHub OAuth user payload is invalid.':
 		'social.errors.githubOauthUserPayloadInvalid',
 	INVALID_COMMENT_CONTENT: 'social.errors.invalidCommentContent',
+	INVALID_FRIEND_LINK_ICON_ROUNDED:
+		'social.errors.invalidFriendLinkIconRounded',
 	INVALID_FRIEND_LINK_NAME: 'social.errors.invalidFriendLinkName',
 	INVALID_FRIEND_LINK_URL: 'social.errors.invalidFriendLinkUrl',
 	INVALID_FRIEND_LINK_DESC: 'social.errors.invalidFriendLinkDesc',
 	INVALID_FRIEND_LINK_NOTE: 'social.errors.invalidFriendLinkNote',
+	UNSUPPORTED_FRIEND_LINK_IMAGE_FORMAT:
+		'social.errors.unsupportedFriendLinkImageFormat',
 	INVALID_IMAGE_BASE64: 'social.errors.invalidImageBase64',
 	IMAGE_TOO_LARGE: 'social.errors.imageTooLarge',
 	INVALID_FINGERPRINT: 'social.errors.invalidFingerprint',

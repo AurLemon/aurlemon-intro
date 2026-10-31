@@ -492,7 +492,9 @@
 				"image": "Site image",
 				"chooseImage": "Choose image file",
 				"noFileSelected": "No file selected",
-				"keepCurrentImage": "Use current image"
+				"keepCurrentImage": "Use current image",
+				"imageHint": "WebP, AVIF, PNG or JPEG/JPG, up to 3MB. Leave empty to use the default site avatar.",
+				"disableIconRounded": "Disable icon rounded corners"
 			},
 			"createTitle": "Add friend link",
 			"add": "Add",
@@ -505,6 +507,10 @@
 				"manual": "Added manually",
 				"application": "User application",
 				"unknown": "Source unknown"
+			},
+			"validation": {
+				"required": "{field} is required.",
+				"tooLong": "{field} must be {max} characters or fewer."
 			}
 		},
 		"errors": {
@@ -565,7 +571,9 @@
 			"mergeProviderConflict": "Both accounts have different identities for the same provider, so they cannot be merged automatically.",
 			"invalidOauthProvider": "That sign-in provider is not supported.",
 			"siteUrlNotConfigured": "The public site URL is not configured, so this action is temporarily unavailable.",
-			"accountDisabled": "This account has been disabled."
+			"accountDisabled": "This account has been disabled.",
+			"unsupportedFriendLinkImageFormat": "Only WebP, AVIF, PNG and JPEG/JPG images are accepted. GIF, SVG and other files are not supported.",
+			"invalidFriendLinkIconRounded": "The icon corner setting is invalid."
 		}
 	},
 	"meta": {

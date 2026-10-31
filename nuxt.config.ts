@@ -19,6 +19,12 @@ export default defineNuxtConfig({
 	compatibilityDate: '2024-04-03',
 	ssr: true,
 	devtools: { enabled: false },
+	nitro: {
+		serverAssets: [
+			{ baseName: 'capture-fonts', dir: './assets/fonts' },
+			{ baseName: 'capture-styles', dir: './assets/styles' },
+		],
+	},
 	runtimeConfig: {
 		siteBuild: siteBuildInfo,
 		public: {

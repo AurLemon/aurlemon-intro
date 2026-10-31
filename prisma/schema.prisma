@@ -64,6 +64,7 @@ model User {
   authoredComments          MessageComment[]            @relation("CommentAuthor")
   commentLikes              MessageCommentLike[]        @relation("CommentLikeUser")
   createdFriendLinks        FriendLink[]                @relation("FriendLinkCreator")
+  ownedFriendLinks          FriendLink[]                @relation("FriendLinkOwner")
   approvedFriendLinks       FriendLink[]                @relation("FriendLinkApprover")
   friendLinkApplications    FriendLinkApplication[]     @relation("FriendLinkApplicant")
   approvedApplications      FriendLinkApplication[]     @relation("FriendLinkApplicationApprover")
@@ -285,6 +286,10 @@ model FriendLink {
   url                   String                 @unique
   desc                  String
   imageBase64           String
+  iconRounded           Boolean                @default(true)
+  ownerUserId           String?
+  ownerGithubLogin      String?
+  owner                 User?                  @relation("FriendLinkOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
   desktopCoverImage     Bytes?
   mobileCoverImage      Bytes?
   desktopCoverAt        DateTime?
@@ -302,6 +307,7 @@ model FriendLink {
   createdBy             User?                  @relation("FriendLinkCreator", fields: [createdByUserId], references: [id], onDelete: SetNull)
   approvedBy            User?                  @relation("FriendLinkApprover", fields: [approvedByUserId], references: [id], onDelete: SetNull)
 
+  @@index([ownerUserId])
   @@index([isActive, createdAt])
   @@index([createdByUserId])
   @@index([approvedByUserId])

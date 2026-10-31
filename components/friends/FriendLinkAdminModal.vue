@@ -82,10 +82,20 @@
 						:class="isFocused(item) ? 'ring-2 ring-primary-400' : ''"
 					>
 						<div class="flex items-start gap-3">
-							<img
-								:src="item.imageBase64"
+							<UAvatar
+								:src="item.imageBase64 || undefined"
 								:alt="item.name"
-								class="size-10 shrink-0 rounded-lg object-cover sm:size-11"
+								class="size-10 shrink-0 sm:size-11"
+								:class="
+									item.iconRounded === false ? 'rounded-none' : 'rounded-lg'
+								"
+								:ui="{
+									root: 'bg-transparent',
+									image:
+										item.iconRounded === false
+											? 'rounded-none object-cover'
+											: 'rounded-lg object-cover',
+								}"
 							/>
 							<div class="min-w-0 flex-1">
 								<h3
@@ -177,7 +187,7 @@
 								>
 									<UIcon
 										:name="coverStateIcons[coversById.get(item.id)!.status]"
-										class="size-3.5 shrink-0 motion-reduce:animate-none"
+										class="size-3.5 -translate-y-px shrink-0 motion-reduce:animate-none"
 										:class="{
 											'animate-spin':
 												coversById.get(item.id)?.status === 'queued',
@@ -275,7 +285,7 @@
 		:ui="{ overlay: 'z-[42100]', content: 'z-[42110]' }"
 	>
 		<template #body
-			><AnimatedModalBody
+			><AnimatedModalBody :animate-content="false"
 				><div class="space-y-4">
 					<div class="space-y-2">
 						<label class="text-sm text-slate-700 dark:text-slate-300">
@@ -308,14 +318,15 @@
 							:placeholder="t('social.friendLinks.fields.desc')"
 						/>
 					</div>
-					<div class="space-y-2">
-						<label class="block text-sm text-slate-700 dark:text-slate-300">
-							{{ t('social.friendLinks.fields.image') }}
-						</label>
+					<UFormField
+						:label="t('social.friendLinks.fields.image')"
+						:help="t('social.friendLinks.fields.imageHint')"
+						:error="imageErrorKey ? t(imageErrorKey) : undefined"
+					>
 						<input
 							ref="fileInputRef"
 							type="file"
-							accept="image/*"
+							:accept="FRIEND_LINK_IMAGE_ACCEPT"
 							class="hidden"
 							@change="handleFileChange"
 						/>
@@ -326,6 +337,7 @@
 								variant="soft"
 								icon="i-lucide-image-plus"
 								class="shrink-0"
+								:loading="processingImage"
 								@click="openFilePicker"
 							>
 								{{ t('social.friendLinks.fields.chooseImage') }}
@@ -348,22 +360,35 @@
 							v-if="form.imageBase64"
 							:src="form.imageBase64"
 							alt="preview"
-							class="h-20 w-20 rounded-xl object-cover"
+							class="mt-3 h-20 w-20 object-cover"
+							:class="form.iconRounded ? 'rounded-xl' : 'rounded-none'"
 						/>
-					</div></div></AnimatedModalBody
+					</UFormField>
+					<USwitch
+						v-if="editingLinkId"
+						:model-value="!form.iconRounded"
+						:label="t('social.friendLinks.fields.disableIconRounded')"
+						@update:model-value="form.iconRounded = !$event"
+					/></div></AnimatedModalBody
 		></template>
 		<template #footer>
 			<div class="flex w-full justify-end gap-2">
 				<UButton color="neutral" variant="ghost" @click="cancelEdit">{{
 					t('social.actions.close')
 				}}</UButton>
-				<UButton :loading="saving" color="primary" @click="save">{{
-					editingApplicationId
-						? t('social.actions.approve')
-						: editingLinkId
-							? t('social.actions.saveEdit')
-							: t('social.actions.createFriendLink')
-				}}</UButton>
+				<UButton
+					:loading="saving"
+					:disabled="processingImage"
+					color="primary"
+					@click="save"
+					>{{
+						editingApplicationId
+							? t('social.actions.approve')
+							: editingLinkId
+								? t('social.actions.saveEdit')
+								: t('social.actions.createFriendLink')
+					}}</UButton
+				>
 			</div>
 		</template>
 	</UModal>
@@ -457,6 +482,7 @@
 </template>
 
 <script setup lang="ts">
+import { FRIEND_LINK_IMAGE_ACCEPT } from '~/shared/utils/friend-link-image'
 import type {
 	FriendLinkCoverAdminResponse,
 	FriendLinkCoverState,
@@ -489,6 +515,8 @@ let itemLoadGeneration = 0
 let focusTimer: ReturnType<typeof setTimeout> | undefined
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const selectedImageName = ref('')
+const imageErrorKey = ref('')
+const processingImage = ref(false)
 const editingLinkId = ref<string | null>(null)
 const editingApplicationId = ref<string | null>(null)
 const currentUser = computed(() => auth.user.value)
@@ -498,13 +526,16 @@ const form = reactive({
 	url: '',
 	desc: '',
 	imageBase64: '',
+	iconRounded: true,
 })
 
 const resetForm = () => {
+	imageErrorKey.value = ''
 	form.name = ''
 	form.url = ''
 	form.desc = ''
 	form.imageBase64 = ''
+	form.iconRounded = true
 	selectedImageName.value = ''
 }
 
@@ -630,11 +661,18 @@ const handleFileChange = async (event: Event) => {
 		return
 	}
 
+	imageErrorKey.value = ''
+	processingImage.value = true
 	try {
-		selectedImageName.value = file.name
 		form.imageBase64 = await normalizeImage(file)
+		selectedImageName.value = file.name
 	} catch (error) {
-		showError(error)
+		input.value = ''
+		imageErrorKey.value = resolveSocialErrorKey(
+			error instanceof Error ? { statusMessage: error.message } : error,
+		)
+	} finally {
+		processingImage.value = false
 	}
 }
 
@@ -662,6 +700,7 @@ const approve = async (applicationId: string) => {
 }
 
 const startEdit = (item: AdminFriendLinkListItem) => {
+	imageErrorKey.value = ''
 	formOpen.value = true
 	editingLinkId.value = item.type === 'friend-link' ? item.id : null
 	editingApplicationId.value =
@@ -670,6 +709,7 @@ const startEdit = (item: AdminFriendLinkListItem) => {
 	form.url = item.url
 	form.desc = item.desc
 	form.imageBase64 = item.imageBase64
+	form.iconRounded = item.iconRounded ?? true
 	selectedImageName.value = t('social.friendLinks.fields.keepCurrentImage')
 }
 
@@ -741,6 +781,7 @@ const save = async () => {
 			await $fetch(`/api/friend-links/admin/links/${editingLinkId.value}`, {
 				method: 'PATCH',
 				body: {
+					iconRounded: form.iconRounded,
 					name: form.name,
 					url: form.url,
 					desc: form.desc,
@@ -771,7 +812,16 @@ const save = async () => {
 		await loadItems()
 		emit('updated')
 	} catch (error) {
-		showError(error)
+		const key = resolveSocialErrorKey(error)
+		if (
+			[
+				'social.errors.unsupportedFriendLinkImageFormat',
+				'social.errors.invalidImageBase64',
+				'social.errors.imageTooLarge',
+			].includes(key)
+		)
+			imageErrorKey.value = key
+		else showError(error)
 	} finally {
 		saving.value = false
 	}

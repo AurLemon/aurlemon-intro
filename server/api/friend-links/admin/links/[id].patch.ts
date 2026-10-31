@@ -18,11 +18,18 @@ export default defineEventHandler(async (event) => {
 		})
 	}
 
+	if (body?.iconRounded !== undefined && typeof body.iconRounded !== 'boolean')
+		throw createError({
+			statusCode: 400,
+			statusMessage: 'INVALID_FRIEND_LINK_ICON_ROUNDED',
+		})
+
 	await updateFriendLinkByAdmin(friendLinkId, currentUser, {
+		iconRounded: body?.iconRounded,
 		name: ensureNonEmptyString(body?.name, 'INVALID_FRIEND_LINK_NAME', 120),
 		url: ensureValidUrl(body?.url, 'INVALID_FRIEND_LINK_URL'),
 		desc: ensureNonEmptyString(body?.desc, 'INVALID_FRIEND_LINK_DESC', 300),
-		imageBase64: ensureOptionalImageBase64(body?.imageBase64),
+		imageBase64: await ensureOptionalImageBase64(body?.imageBase64),
 	})
 
 	return {

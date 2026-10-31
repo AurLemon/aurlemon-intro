@@ -492,7 +492,9 @@
 				"image": "サイト画像",
 				"chooseImage": "画像ファイルを選択",
 				"noFileSelected": "未選択",
-				"keepCurrentImage": "現在の画像を使用"
+				"keepCurrentImage": "現在の画像を使用",
+				"imageHint": "WebP・AVIF・PNG・JPEG/JPG、最大3MB。未選択の場合は既定のサイトアバターを表示します。",
+				"disableIconRounded": "アイコンの角丸を無効にする"
 			},
 			"createTitle": "リンクを追加",
 			"add": "追加",
@@ -505,6 +507,10 @@
 				"manual": "手動追加",
 				"application": "ユーザー申請",
 				"unknown": "登録元不明"
+			},
+			"validation": {
+				"required": "{field}を入力してください。",
+				"tooLong": "{field}は{max}文字以内で入力してください。"
 			}
 		},
 		"errors": {
@@ -565,7 +571,9 @@
 			"mergeProviderConflict": "両方のアカウントに同じサービスの異なるログイン情報があるため、自動統合できません。",
 			"invalidOauthProvider": "このログインサービスはサポートされていません。",
 			"siteUrlNotConfigured": "公開サイト URL が未設定のため、この操作は一時的に利用できません。",
-			"accountDisabled": "このアカウントは無効化されています。"
+			"accountDisabled": "このアカウントは無効化されています。",
+			"unsupportedFriendLinkImageFormat": "WebP・AVIF・PNG・JPEG/JPG画像のみ対応しています。GIF・SVGやその他のファイルは選択できません。",
+			"invalidFriendLinkIconRounded": "アイコンの角丸設定が不正です。"
 		}
 	},
 	"meta": {

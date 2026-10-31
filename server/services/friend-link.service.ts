@@ -19,15 +19,6 @@ import type {
 	FriendLinkItem,
 } from '~/shared/types/social'
 
-const FALLBACK_COLORS = [
-	'#0ea5e9',
-	'#10b981',
-	'#f59e0b',
-	'#ef4444',
-	'#8b5cf6',
-	'#06b6d4',
-]
-
 let cleanupExpiredFriendLinkApplicationsInFlight: Promise<void> | null = null
 const FRIEND_LINK_APPLICATION_EXPIRES_IN_DAYS = 30
 
@@ -42,23 +33,25 @@ const isUniqueConstraintError = (error: unknown): boolean =>
 	error instanceof Prisma.PrismaClientKnownRequestError &&
 	error.code === 'P2002'
 
-const getFallbackFriendLinkImage = (name: string): string => {
-	const seed = [...name].reduce((total, char) => total + char.charCodeAt(0), 0)
-	const color = FALLBACK_COLORS[seed % FALLBACK_COLORS.length]
-	const initial = (name.trim().charAt(0) || '?').toUpperCase()
-	const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label="${initial}"><rect width="96" height="96" rx="20" fill="${color}"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-size="44" font-family="Arial, sans-serif" font-weight="700">${initial}</text></svg>`
-	return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`
-}
-
-const resolveFriendLinkImage = (
-	name: string,
-	imageBase64?: string | null,
-): string => {
-	if (typeof imageBase64 === 'string' && imageBase64.trim()) {
-		return imageBase64.trim()
+const resolveFriendLinkImage = (imageBase64?: string | null): string => {
+	const value = imageBase64?.trim() || ''
+	// Previous versions stored generated letter tiles. Let UAvatar render those
+	// missing-image cases without rewriting stored uploads or the database.
+	if (value.startsWith('data:image/svg+xml;utf8,')) {
+		try {
+			if (
+				decodeURIComponent(
+					value.slice('data:image/svg+xml;utf8,'.length),
+				).startsWith(
+					'<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-label=',
+				)
+			)
+				return ''
+		} catch {
+			/* Preserve unrelated legacy image values. */
+		}
 	}
-
-	return getFallbackFriendLinkImage(name)
+	return value
 }
 
 const mapApplication = (item: {
@@ -82,7 +75,7 @@ const mapApplication = (item: {
 	url: item.url,
 	desc: item.desc,
 	note: item.note,
-	imageBase64: resolveFriendLinkImage(item.name, item.imageBase64),
+	imageBase64: resolveFriendLinkImage(item.imageBase64),
 	applicantUsername: item.applicant?.username ?? item.applicantGithubLogin,
 	status: item.status,
 	expiresAt: item.expiresAt.toISOString(),
@@ -170,7 +163,8 @@ export const listActiveFriendLinks = async (): Promise<FriendLinkItem[]> => {
 		name: item.name,
 		url: item.url,
 		desc: item.desc,
-		icon: resolveFriendLinkImage(item.name, item.imageBase64),
+		icon: resolveFriendLinkImage(item.imageBase64),
+		iconRounded: item.iconRounded,
 		coverUrl: covers.get(item.id)?.url ?? null,
 		mobileCoverUrl: covers.get(item.id)?.mobileUrl ?? null,
 		source: 'database',
@@ -232,10 +226,7 @@ export const submitFriendLinkApplication = async (
 					url: payload.url,
 					desc: payload.desc,
 					note: payload.note?.trim() || null,
-					imageBase64: resolveFriendLinkImage(
-						payload.name,
-						payload.imageBase64,
-					),
+					imageBase64: resolveFriendLinkImage(payload.imageBase64),
 					applicantGithubLogin: legacyLogin,
 					applicantUserId: currentUser.id,
 					expiresAt: new Date(
@@ -348,7 +339,7 @@ export const listAdminFriendLinkItems = async (): Promise<
 			name: item.name,
 			url: item.url,
 			desc: item.desc,
-			imageBase64: resolveFriendLinkImage(item.name, item.imageBase64),
+			imageBase64: resolveFriendLinkImage(item.imageBase64),
 			createdAt: item.createdAt.toISOString(),
 			applicantUsername: item.applicant?.username ?? item.applicantGithubLogin,
 			applicant: mapApplicant(item.applicant, item.applicantGithubLogin),
@@ -366,7 +357,8 @@ export const listAdminFriendLinkItems = async (): Promise<
 			name: item.name,
 			url: item.url,
 			desc: item.desc,
-			imageBase64: resolveFriendLinkImage(item.name, item.imageBase64),
+			imageBase64: resolveFriendLinkImage(item.imageBase64),
+			iconRounded: item.iconRounded,
 			createdAt: item.createdAt.toISOString(),
 			applicantUsername:
 				item.origin === 'APPLICATION'
@@ -414,7 +406,6 @@ export const approveFriendLinkApplication = async (
 			url: payload?.url ?? pending.url,
 			desc: payload?.desc ?? pending.desc,
 			imageBase64: resolveFriendLinkImage(
-				payload?.name ?? pending.name,
 				payload?.imageBase64 ?? pending.imageBase64,
 			),
 		}
@@ -554,7 +545,7 @@ export const createFriendLinkDirectly = async (
 				name: payload.name,
 				url: payload.url,
 				desc: payload.desc,
-				imageBase64: resolveFriendLinkImage(payload.name, payload.imageBase64),
+				imageBase64: resolveFriendLinkImage(payload.imageBase64),
 				createdByGithubLogin: legacyLogin,
 				approvedByGithubLogin: legacyLogin,
 				createdByUserId: currentUser.id,
@@ -590,6 +581,7 @@ export const updateFriendLinkByAdmin = async (
 		url: string
 		desc: string
 		imageBase64?: string | null
+		iconRounded?: boolean
 	},
 ): Promise<void> => {
 	const current = await prisma.friendLink.findUnique({
@@ -615,6 +607,7 @@ export const updateFriendLinkByAdmin = async (
 		const result = await tx.friendLink.update({
 			where: { id: friendLinkId },
 			data: {
+				iconRounded: payload.iconRounded,
 				name: payload.name,
 				url: payload.url,
 				desc: payload.desc,
@@ -627,7 +620,6 @@ export const updateFriendLinkByAdmin = async (
 						}
 					: {}),
 				imageBase64: resolveFriendLinkImage(
-					payload.name,
 					payload.imageBase64 ?? current.imageBase64,
 				),
 			},

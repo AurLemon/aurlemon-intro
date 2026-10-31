@@ -1,15 +1,17 @@
 <template>
 	<h2
-		class="flex w-full min-w-0 items-center gap-1.5 text-xl leading-7 font-medium text-slate-900 dark:text-slate-100"
+		class="w-full min-w-0 text-xl leading-7 font-medium text-slate-900 dark:text-slate-100"
 	>
-		<span ref="viewport" class="friend-title block min-w-0 overflow-hidden">
-			<span ref="track" class="block w-max whitespace-pre">{{ text }}</span>
+		<span class="relative block w-fit min-w-0 max-w-[calc(100%_-_0.875rem)]">
+			<span ref="viewport" class="friend-title block min-w-0 overflow-hidden">
+				<span ref="track" class="block w-max whitespace-pre">{{ text }}</span>
+			</span>
+			<UIcon
+				name="i-lucide-arrow-up-right"
+				class="absolute top-1/2 left-[calc(100%_+_0.375rem)] m-0 size-4 -translate-y-1/2 p-0 text-slate-700 dark:text-slate-300"
+				aria-hidden="true"
+			/>
 		</span>
-		<UIcon
-			name="i-lucide-arrow-up-right"
-			class="size-4 shrink-0 text-slate-700 dark:text-slate-300"
-			aria-hidden="true"
-		/>
 	</h2>
 </template>
 

@@ -23,7 +23,7 @@
 		</template>
 
 		<template #body>
-			<AnimatedModalBody>
+			<AnimatedModalBody :animate-content="false">
 				<div class="space-y-4">
 					<AuthActionGuard
 						v-if="!currentUser"
@@ -64,42 +64,73 @@
 							</dl>
 						</template>
 					</UAlert>
-					<div v-if="currentUser" class="space-y-4">
-						<div class="space-y-2">
-							<label class="text-sm text-slate-700 dark:text-slate-300">
-								{{ t('social.friendLinks.fields.name') }}
-							</label>
+					<UForm
+						v-if="currentUser"
+						:id="formId"
+						ref="applicationForm"
+						:state="form"
+						:validate="validate"
+						class="space-y-4"
+						novalidate
+						@submit="submit"
+						@error="focusFirstError"
+					>
+						<p
+							v-if="formErrorKey"
+							ref="formErrorAlert"
+							tabindex="-1"
+							role="alert"
+							class="friend-form-error text-sm text-error"
+						>
+							{{ t(formErrorKey) }}
+						</p>
+						<UFormField
+							name="name"
+							:ui="{ error: 'friend-form-error' }"
+							:label="t('social.friendLinks.fields.name')"
+							required
+						>
 							<UInput
 								v-model="form.name"
+								required
 								class="w-full"
 								:placeholder="t('social.friendLinks.fields.name')"
 							/>
-						</div>
-						<div class="space-y-2">
-							<label class="text-sm text-slate-700 dark:text-slate-300">
-								{{ t('social.friendLinks.fields.url') }}
-							</label>
+						</UFormField>
+						<UFormField
+							name="url"
+							:ui="{ error: 'friend-form-error' }"
+							:label="t('social.friendLinks.fields.url')"
+							required
+						>
 							<UInput
 								v-model="form.url"
+								required
+								type="url"
+								autocomplete="url"
 								class="w-full"
 								:placeholder="t('social.friendLinks.fields.url')"
 							/>
-						</div>
-						<div class="space-y-2">
-							<label class="text-sm text-slate-700 dark:text-slate-300">
-								{{ t('social.friendLinks.fields.desc') }}
-							</label>
+						</UFormField>
+						<UFormField
+							name="desc"
+							:ui="{ error: 'friend-form-error' }"
+							:label="t('social.friendLinks.fields.desc')"
+							required
+						>
 							<UTextarea
 								v-model="form.desc"
+								required
 								class="w-full"
 								:rows="4"
 								:placeholder="t('social.friendLinks.fields.desc')"
 							/>
-						</div>
-						<div class="space-y-2">
-							<label class="text-sm text-slate-700 dark:text-slate-300">
-								{{ t('social.friendLinks.fields.note') }}
-							</label>
+						</UFormField>
+						<UFormField
+							name="note"
+							:ui="{ error: 'friend-form-error' }"
+							:label="t('social.friendLinks.fields.note')"
+						>
 							<UTextarea
 								v-model="form.note"
 								class="w-full"
@@ -107,15 +138,19 @@
 								maxlength="2000"
 								:placeholder="t('social.friendLinks.fields.notePlaceholder')"
 							/>
-						</div>
-						<div class="space-y-2">
-							<label class="block text-sm text-slate-700 dark:text-slate-300">
-								{{ t('social.friendLinks.fields.image') }}
-							</label>
+						</UFormField>
+						<UFormField
+							v-slot="{ error }"
+							name="imageBase64"
+							:help="t('social.friendLinks.fields.imageHint')"
+							:ui="{ error: 'friend-form-error' }"
+							:label="t('social.friendLinks.fields.image')"
+							:error="imageErrorKey ? t(imageErrorKey) : undefined"
+						>
 							<input
 								ref="fileInputRef"
 								type="file"
-								accept="image/*"
+								:accept="FRIEND_LINK_IMAGE_ACCEPT"
 								class="hidden"
 								@change="handleFileChange"
 							/>
@@ -126,10 +161,22 @@
 									variant="soft"
 									icon="i-lucide-image-plus"
 									class="shrink-0"
+									data-image-picker
+									:aria-invalid="Boolean(error)"
+									:loading="processingImage"
 									@click="openFilePicker"
 								>
 									{{ t('social.friendLinks.fields.chooseImage') }}
 								</UButton>
+								<UButton
+									v-if="form.imageBase64 || imageErrorKey"
+									color="neutral"
+									variant="ghost"
+									icon="i-lucide-x"
+									:aria-label="t('social.actions.delete')"
+									:disabled="processingImage"
+									@click="clearImage"
+								/>
 								<p
 									class="min-w-0 text-xs leading-5 [overflow-wrap:anywhere]"
 									:class="
@@ -148,10 +195,10 @@
 								v-if="form.imageBase64"
 								:src="form.imageBase64"
 								alt="preview"
-								class="h-20 w-20 rounded-xl object-cover"
+								class="mt-3 h-20 w-20 rounded-xl object-cover"
 							/>
-						</div>
-					</div>
+						</UFormField>
+					</UForm>
 				</div>
 			</AnimatedModalBody>
 		</template>
@@ -164,9 +211,10 @@
 				</UButton>
 				<UButton
 					:loading="submitting"
-					:disabled="!currentUser"
+					:disabled="!currentUser || processingImage"
 					color="primary"
-					@click="submit"
+					type="submit"
+					:form="formId"
 				>
 					{{ t('social.actions.submitApplication') }}
 				</UButton>
@@ -176,6 +224,8 @@
 </template>
 
 <script setup lang="ts">
+import type { FormError } from '@nuxt/ui'
+import { FRIEND_LINK_IMAGE_ACCEPT } from '~/shared/utils/friend-link-image'
 import AuthActionGuard from '~/components/common/AuthActionGuard.vue'
 import AccountStatusBar from '~/components/common/AccountStatusBar.vue'
 
@@ -187,14 +237,26 @@ const emit = defineEmits<{
 }>()
 const { t } = useI18n({ useScope: 'global' })
 const auth = useAuth()
-const { showAuthRequired, showError } = useSocialFeedback()
 const { normalizeImage } = useFriendLinkImage()
 
+interface ApplicationFormState {
+	name: string
+	url: string
+	desc: string
+	note: string
+	imageBase64: string
+}
+const formId = useId()
+const applicationForm = useTemplateRef('applicationForm')
+const formErrorAlert = useTemplateRef('formErrorAlert')
+const formErrorKey = ref('')
+const imageErrorKey = ref('')
+const processingImage = ref(false)
 const submitting = ref(false)
 const fileInputRef = ref<HTMLInputElement | null>(null)
 const selectedImageName = ref('')
 const currentUser = computed(() => auth.user.value)
-const form = reactive({
+const form = reactive<ApplicationFormState>({
 	name: '',
 	url: '',
 	desc: '',
@@ -202,13 +264,89 @@ const form = reactive({
 	imageBase64: '',
 })
 
+const validate = (state: ApplicationFormState): FormError[] => {
+	const errors: FormError[] = []
+	for (const [name, max] of [
+		['name', 120],
+		['desc', 300],
+	] as const) {
+		const field = t(`social.friendLinks.fields.${name}`)
+		if (!state[name].trim())
+			errors.push({
+				name,
+				message: t('social.friendLinks.validation.required', { field }),
+			})
+		else if (state[name].trim().length > max)
+			errors.push({
+				name,
+				message: t('social.friendLinks.validation.tooLong', { field, max }),
+			})
+	}
+	let validUrl = false
+	try {
+		const url = new URL(state.url.trim())
+		validUrl =
+			['http:', 'https:'].includes(url.protocol) &&
+			state.url.trim().length <= 500
+	} catch {
+		/* Invalid URLs are reported under the URL field. */
+	}
+	if (!validUrl)
+		errors.push({
+			name: 'url',
+			message: state.url.trim()
+				? t('social.errors.invalidFriendLinkUrl')
+				: t('social.friendLinks.validation.required', {
+						field: t('social.friendLinks.fields.url'),
+					}),
+		})
+	if (state.note.trim().length > 2000)
+		errors.push({
+			name: 'note',
+			message: t('social.errors.invalidFriendLinkNote'),
+		})
+	if (imageErrorKey.value)
+		errors.push({ name: 'imageBase64', message: t(imageErrorKey.value) })
+	return errors
+}
+
+const focusFirstError = async () => {
+	await nextTick()
+	document
+		.getElementById(formId)
+		?.querySelector<HTMLElement>(
+			'input[aria-invalid="true"]:not([type="file"]), textarea[aria-invalid="true"], button[aria-invalid="true"]',
+		)
+		?.focus()
+}
+
+const clearImage = () => {
+	form.imageBase64 = ''
+	selectedImageName.value = ''
+	imageErrorKey.value = ''
+	if (fileInputRef.value) fileInputRef.value.value = ''
+	applicationForm.value?.clear('imageBase64')
+}
+
+const errorFields: Record<string, keyof ApplicationFormState> = {
+	'social.errors.invalidFriendLinkName': 'name',
+	'social.errors.invalidFriendLinkUrl': 'url',
+	'social.errors.friendLinkAlreadyExists': 'url',
+	'social.errors.invalidFriendLinkDesc': 'desc',
+	'social.errors.invalidFriendLinkNote': 'note',
+	'social.errors.unsupportedFriendLinkImageFormat': 'imageBase64',
+	'social.errors.invalidImageBase64': 'imageBase64',
+	'social.errors.imageTooLarge': 'imageBase64',
+}
+
 const resetForm = () => {
+	applicationForm.value?.clear()
+	formErrorKey.value = ''
+	clearImage()
 	form.name = ''
 	form.url = ''
 	form.desc = ''
 	form.note = ''
-	form.imageBase64 = ''
-	selectedImageName.value = ''
 }
 
 const handleFileChange = async (event: Event) => {
@@ -219,11 +357,19 @@ const handleFileChange = async (event: Event) => {
 		return
 	}
 
+	processingImage.value = true
+	imageErrorKey.value = ''
+	applicationForm.value?.clear('imageBase64')
 	try {
-		selectedImageName.value = file.name
 		form.imageBase64 = await normalizeImage(file)
+		selectedImageName.value = file.name
 	} catch (error) {
-		showError(error)
+		clearImage()
+		imageErrorKey.value = resolveSocialErrorKey(
+			error instanceof Error ? { statusMessage: error.message } : error,
+		)
+	} finally {
+		processingImage.value = false
 	}
 }
 
@@ -233,10 +379,12 @@ const openFilePicker = () => {
 
 const submit = async () => {
 	if (!auth.isLoggedIn.value) {
-		showAuthRequired()
+		formErrorKey.value = 'social.errors.authRequired'
 		return
 	}
 
+	if (submitting.value || processingImage.value) return
+	formErrorKey.value = ''
 	submitting.value = true
 
 	try {
@@ -258,11 +406,25 @@ const submit = async () => {
 		emit('submitted')
 		open.value = false
 	} catch (error) {
-		showError(error)
+		const key = resolveSocialErrorKey(error)
+		const field = errorFields[key]
+		if (field) {
+			applicationForm.value?.setErrors(
+				[{ name: field, message: t(key) }],
+				field,
+			)
+			await focusFirstError()
+		} else formErrorKey.value = key
 	} finally {
 		submitting.value = false
 	}
 }
+
+watch(formErrorKey, async (key) => {
+	if (!key) return
+	await nextTick()
+	formErrorAlert.value?.focus()
+})
 
 watch(open, (value) => {
 	if (value) {
@@ -270,3 +432,26 @@ watch(open, (value) => {
 	}
 })
 </script>
+
+<style scoped>
+:deep(.friend-form-error) {
+	animation: friend-form-error-enter 160ms ease-out;
+}
+
+@keyframes friend-form-error-enter {
+	from {
+		opacity: 0;
+		transform: translateY(-2px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:deep(.friend-form-error) {
+		animation: none;
+	}
+}
+</style>

@@ -1,4 +1,7 @@
-const MAX_FRIEND_LINK_IMAGE_SIZE = 3 * 1024 * 1024
+import {
+	FRIEND_LINK_IMAGE_MAX_BYTES,
+	getFriendLinkImageMime,
+} from '~/shared/utils/friend-link-image'
 const TARGET_MIN_EDGE = 256
 
 const loadImageElement = (file: File): Promise<HTMLImageElement> => {
@@ -35,9 +38,17 @@ const canvasToDataUrl = (canvas: HTMLCanvasElement): Promise<string> => {
 
 export const useFriendLinkImage = () => {
 	const normalizeImage = async (file: File): Promise<string> => {
-		if (file.size > MAX_FRIEND_LINK_IMAGE_SIZE) {
+		if (file.size > FRIEND_LINK_IMAGE_MAX_BYTES) {
 			throw { statusMessage: 'IMAGE_TOO_LARGE' }
 		}
+		const mime = getFriendLinkImageMime(
+			new Uint8Array(await file.slice(0, 256).arrayBuffer()),
+		)
+		const declaredMime = file.type
+			.toLowerCase()
+			.replace('image/jpg', 'image/jpeg')
+		if (!mime || (declaredMime && declaredMime !== mime))
+			throw { statusMessage: 'UNSUPPORTED_FRIEND_LINK_IMAGE_FORMAT' }
 
 		const image = await loadImageElement(file)
 		const width = image.naturalWidth
@@ -68,6 +79,6 @@ export const useFriendLinkImage = () => {
 
 	return {
 		normalizeImage,
-		maxSizeBytes: MAX_FRIEND_LINK_IMAGE_SIZE,
+		maxSizeBytes: FRIEND_LINK_IMAGE_MAX_BYTES,
 	}
 }

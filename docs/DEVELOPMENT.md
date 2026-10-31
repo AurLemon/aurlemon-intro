@@ -85,6 +85,12 @@ ACG 与音乐条目额外保存 `title`、`author` 数组、`category`、`href`�
 - 提交前自己 review 版式、阴影裁切、边框、固定标题、前景动画、长文字首尾停留与阅读完成后换图；不等用户逐项反馈。动画必须抓取真实中间帧与结束状态，静态截图和 Build 不能证明没有硬切。浏览器工作尽量在后台执行，只关闭自己创建的预览和服务器。
 - 用户反馈卡顿时优先记录生产构建 Performance trace，覆盖滚动、hover、连续换图、窄屏及语言变化；区分脚本、布局、绘制、图像解码与 DevTools 启动采样开销。不因平均耗时低就宣称没有掉帧，也不把 Dev 首次编译算成产品动画。先保持效果、常驻 DOM 与逐张资源准备，再据证据优化；报告本机样本范围与未测情况。
 
+## 友链图片上传
+
+- `shared/utils/friend-link-image.ts` 统一允许的格式、文件选择器 `accept`、3 MiB 大小上限和内容签名识别；申请与管理共用 `useFriendLinkImage`，只允许 WebP、AVIF、PNG、JPEG/JPG。前端同时检查实际文件头与声明 MIME，拒绝 GIF、SVG、非图片及伪装类型，再沿用 Canvas 转静态 WebP 的流程。
+- 服务端 `ensureOptionalImageBase64` / `ensureImageBase64` 为异步校验，所有调用必须 `await`。没有图片返回 null；提供非空但不合法的图片必须报错，不能静默当成未上传。服务端检查 Data URL、Base64、解码后的大小和真实图片签名，并用 sharp 完整解码、处理方向、按原有短边 256px 规则输出静态 WebP，不依赖浏览器校验或 MIME 前缀。格式、内容和大小错误分别沿用英语错误 code，并映射到图片字段。
+- 未上传时由前端 Nuxt UI `UAvatar` 按站名默认兜底，不生成新的 SVG 字母占位图。存储字段保持原有 string，缺图存空串，不做 Schema 迁移；读取历史由项目生成的字母 SVG 时按缺图展示，不批量改写既有图片数据。
+
 ## 友链截图封面
 
 - `FriendLinkCard` 优先使用首页首屏截图；桌面与移动 WebP 截图以及抓取时间直接保存在 `FriendLink` SQLite BLOB 字段，经 `/api/friend-links/:id/cover` 和同一路径的 `?variant=mobile` 按需返回，不提交图片素材到 Git，也不将图片 Base64 放进公开友链列表。旧 `ExternalDataSnapshot` 中的图片会在读取友链封面时迁入 BLOB 字段并移除 Base64，仅保留队列、刷新和错误状态元数据。
@@ -94,4 +100,7 @@ ACG 与音乐条目额外保存 `title`、`author` 数组、`category`、`href`�
 - `lib/friend-link-browser.ts` 统一解析运行路径：优先尊重 `FRIEND_LINK_BROWSER_PATH` 显式配置，其次读取部署目录内匹配当前平台和架构的 `.playwright/browser.json`，开发环境再回退系统 Chrome / Chromium 或 Playwright 缓存。保留相对路径，部署包从临时目录移动到正式目录后仍可使用，不把 CNB 构建目录写进运行配置。
 - CNB 部署在停旧应用、备份和修改数据库之前执行 `scripts/check-friend-link-browser.mjs --install-deps`，检查浏览器包平台 / 架构 / Playwright 版本、系统动态库、中文字体、sandbox 启动、截图和 WebP 编码。部署和 PM2 应用使用同一非 root 用户；不关闭生产 Chromium sandbox。系统库或中文字体缺失时，由具备免密 sudo 权限的部署用户自动调用随包的 Playwright CLI 安装 Chromium 系统依赖；没有权限或环境不兼容时提前中止部署，保留旧应用运行。脚本不会静默降级成关闭 sandbox，也不会替换 PM2 运行用户。
 - 生产服务器仍需支持该 Linux 浏览器及其 sandbox；普通浏览器打包不能跨 CPU 架构、替代内核能力或任意 Linux 发行版运行库。缺少浏览器时后台明确提示且不能发起截图，已保存封面与图片兜底照常可用。本地开发可以自行安装系统浏览器，或执行 `pnpm exec playwright-core install --with-deps chromium`。当前轮询按项目已有单进程方式实现，多实例部署前需增加跨实例任务锁。
-- 截图使用独立无登录浏览器上下文，分别抓取 1440 × 900 PC 浅色首屏和 390 × 844 移动端浅色首屏；移动端同时启用移动 viewport、触摸和移动 UA，检查 HTTP 状态、空页面、首屏主标题是否被入场状态持续隐藏及常见验证页；每端总时限 45 秒，失败不会把错误页当成新封面。字体等待有上限；页面内容有效但字体持续加载时，通过 CDP 捕获浏览器当前可见的字体回退画面，仍保留 HTTP / 验证页检查与总时限。拒绝非 HTTP(S)、非标准端口和解析到本机、内网等保留地址的目标，重定向与子资源也检查，禁用 Service Worker、WebSocket 和媒体下载。生产截图进程应使用受限制的网络出口，不能把应用层 DNS 校验当成完整网络隔离。`FRIEND_LINK_SCREENSHOT_PROXY` 可指定截图专用代理，不继承业务 API 的 Intro Proxy 协议。
+- 截图访问信息固定为 `zh-CN`、`Asia/Shanghai` 和 `https://aurlemon.top/` 导航 Referer；桌面使用 macOS Chrome UA / `MacIntel` 平台，移动端使用 iPhone Safari UA / `iPhone` 平台，实际渲染引擎仍为 Chromium。语言、时区和 UA 不改变服务器或代理出口的 IP 归属地。
+- `server/utils/friend-link-fonts.ts` 读取随 Nitro `serverAssets` 打包的站内 `--font-sans`、MiSans / Rubik / Noto Sans CSS，将本地字体嵌入截图页面，远程字体继续使用站内 CDN。`--font-sans` 默认值采用零 specificity，仅在 `html` / `body` 设置默认字体，保留目标站点组件的字体与已有 `--font-sans`；远程 CSS 单独加载，避免阻塞本地默认字体。截图上下文允许绕过 CSP 以加载默认字体，仅用于独立、无登录的封面截图；字体仍受现有有界等待和总时限约束，CDN 不可达时回退本地及系统字体。
+- `server/utils/friend-link-readiness.ts` 在导航前监听页面请求；准备阶段最少观察 2.2 秒、最多等待 12 秒，优先等待文档、脚本、样式及 Fetch / XHR 请求连续 1.5 秒没有活动，并确认首屏主标题可见、图片来源稳定。首屏 `<img>` 与可见元素及伪元素的 CSS 背景图通过 `complete`、`naturalWidth > 0` 和 `decode()` 检查；只唤醒首屏原生 lazy 图片，不滚动整页、不改写自定义懒加载 URL。CSS 背景图用页面内临时缓存解码，避免轮询时重复创建请求。画布地图等持续纹理请求、屏外图片、媒体、WebSocket、EventSource 和 ping 不阻塞截图；字体保留独立的有界等待。达到准备时限后，若页面有效且主标题可见，记录 `FRIEND_LINK_COVER_RESOURCES_PENDING` 并截取当前画面，不因可选资源或轮询未结束就判定整次失败；空白页、验证页、主标题持续隐藏及整个流程超时仍失败并保留旧图。有限观察窗口无法预知稍后才由定时器触发的任意请求。逐站失败必须记录 `FRIEND_LINK_COVER_CAPTURE_FAILED`，包含友链 id、公开 URL、桌面 / 移动端和异常信息，不再仅吞掉异常保存布尔标记。
+- 截图使用独立无登录浏览器上下文，分别抓取 1440 × 900 PC 浅色首屏和 390 × 680 移动端浅色首屏；移动端同时启用移动 viewport、触摸和移动 UA，检查 HTTP 状态、空页面、首屏主标题是否被入场状态持续隐藏及常见验证页；每端总时限 60 秒，失败不会把错误页当成新封面。字体等待有上限；页面内容有效但字体持续加载时，通过 CDP 捕获浏览器当前可见的字体回退画面，仍保留 HTTP / 验证页检查与总时限。拒绝非 HTTP(S)、非标准端口和解析到本机、内网等保留地址的目标，重定向与子资源也检查，禁用 Service Worker、WebSocket 和媒体下载。生产截图进程应使用受限制的网络出口，不能把应用层 DNS 校验当成完整网络隔离。`FRIEND_LINK_SCREENSHOT_PROXY` 可指定截图专用代理，不继承业务 API 的 Intro Proxy 协议。

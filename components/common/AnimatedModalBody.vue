@@ -13,6 +13,12 @@
 </template>
 
 <script setup lang="ts">
+interface AnimatedModalBodyProps {
+	animateContent?: boolean
+}
+const props = withDefaults(defineProps<AnimatedModalBodyProps>(), {
+	animateContent: true,
+})
 const contentRef = ref<HTMLElement | null>(null)
 const height = ref<number | null>(null)
 const contentTransitioning = ref(false)
@@ -29,7 +35,7 @@ const syncHeight = (nextHeight: number): void => {
 		return
 	}
 
-	const shouldAnimateContent = height.value !== null
+	const shouldAnimateContent = props.animateContent && height.value !== null
 	height.value = nextHeight
 	if (!shouldAnimateContent) return
 

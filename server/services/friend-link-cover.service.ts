@@ -345,8 +345,14 @@ const refreshCovers = async () => {
 					data.desktopCoverImage = Uint8Array.from(bytes)
 					data.desktopCoverAt = new Date(capturedAt)
 				}
-			} catch {
+			} catch (error) {
 				next.failed = true
+				console.warn('FRIEND_LINK_COVER_CAPTURE_FAILED', {
+					id: link.id,
+					url: link.url,
+					variant,
+					error: error instanceof Error ? error.message : String(error),
+				})
 			}
 		}
 		// URL changes and deletion invalidate captures still in flight.

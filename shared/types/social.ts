@@ -277,6 +277,7 @@ export interface FriendLinkItem {
 	coverUrl: string | null
 	mobileCoverUrl: string | null
 	source: 'database'
+	iconRounded: boolean
 }
 
 export interface FriendLinkApplicationItem {
@@ -317,4 +318,5 @@ export interface AdminFriendLinkListItem {
 	imageBase64: string
 	createdAt: string
 	applicantUsername: string | null
+	iconRounded?: boolean
 }

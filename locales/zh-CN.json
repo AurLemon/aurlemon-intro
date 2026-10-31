@@ -492,7 +492,9 @@
 				"image": "站点图片",
 				"chooseImage": "选择图片文件",
 				"noFileSelected": "未选择文件",
-				"keepCurrentImage": "使用当前图片"
+				"keepCurrentImage": "使用当前图片",
+				"imageHint": "支持 WebP、AVIF、PNG、JPEG/JPG，最大 3MB；不上传时使用默认站点头像。",
+				"disableIconRounded": "关闭图标圆角"
 			},
 			"createTitle": "新建友链",
 			"add": "新建",
@@ -505,6 +507,10 @@
 				"manual": "手动添加",
 				"application": "用户申请",
 				"unknown": "来源未记录"
+			},
+			"validation": {
+				"required": "请填写{field}。",
+				"tooLong": "{field}最多填写 {max} 个字。"
 			}
 		},
 		"errors": {
@@ -565,7 +571,9 @@
 			"mergeProviderConflict": "两个账户在同一平台绑定了不同身份，无法自动合并。",
 			"invalidOauthProvider": "不支持该登录平台。",
 			"siteUrlNotConfigured": "站点公开地址尚未配置，暂时无法完成此操作。",
-			"accountDisabled": "该账户已被停用。"
+			"accountDisabled": "该账户已被停用。",
+			"unsupportedFriendLinkImageFormat": "只接受 WebP、AVIF、PNG、JPEG/JPG 图片，不支持 GIF、SVG 或其他文件。",
+			"invalidFriendLinkIconRounded": "图标圆角设置不合法。"
 		}
 	},
 	"meta": {
