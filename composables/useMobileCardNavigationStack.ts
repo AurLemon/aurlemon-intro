@@ -110,7 +110,7 @@ export const useMobileCardNavigationStack = (
 			stopHideTimer()
 		}
 		const candidates =
-			current?.hint && !collapsed && !fastScrolling.value
+			current?.hint && !collapsed
 				? cards
 						.filter((card) => {
 							if (!card.hint || !visibleCards.has(card.element)) return false
@@ -172,7 +172,7 @@ export const useMobileCardNavigationStack = (
 		if (scrollSample) {
 			const elapsed = Math.max(8, Math.min(64, sample.time - scrollSample.time))
 			const speed = Math.abs(sample.position - scrollSample.position) / elapsed
-			// Latch until scrolling settles so decelerating momentum cannot flash hints.
+			// 快滚只缩短退场，不清空仍有效的候选，避免停滚后整栈重新入场。
 			if (speed > 1.8) fastScrolling.value = true
 		}
 		scrollSample = sample

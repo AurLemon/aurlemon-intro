@@ -67,26 +67,25 @@
 					:href="work.href"
 					target="_blank"
 					rel="noopener noreferrer"
-					class="flex items-center gap-1 rounded-sm text-base leading-5 font-semibold text-slate-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 dark:text-slate-200"
+					class="block rounded-sm text-base leading-5 font-semibold break-words text-slate-800 underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 dark:text-slate-200"
 				>
-					<span class="min-w-0 break-words">{{ work.title }}</span>
+					<span>{{ work.title }}</span>
 					<UIcon
 						name="i-lucide-external-link"
 						mode="svg"
-						class="size-3.5 shrink-0 text-slate-500 dark:text-slate-400"
+						class="ml-1 inline-block size-3.5 -translate-y-0.5 align-[-0.125em] text-slate-500 dark:text-slate-400"
 					/>
 				</a>
-				<time
-					v-if="work.releaseDate"
-					:datetime="work.releaseDate"
-					class="block text-xs leading-4 tabular-nums text-slate-500 dark:text-slate-400"
-				>
-					{{ work.releaseDate }}
-				</time>
 				<p
-					class="break-words text-xs leading-4 text-slate-500 dark:text-slate-400"
+					class="overflow-x-auto whitespace-nowrap text-xs leading-4 text-slate-500 dark:text-slate-400"
 				>
 					{{ work.author.join(' / ') }}
+					<time
+						v-if="work.releaseDate"
+						:datetime="work.releaseDate"
+						class="tabular-nums"
+						>({{ releaseDateLabel }})</time
+					>
 				</p>
 			</div>
 		</template>
@@ -114,6 +113,9 @@ const props = withDefaults(defineProps<Props>(), {
 	pixelsPerSecond: 56,
 	paused: false,
 })
+const releaseDateLabel = computed(() =>
+	props.work.releaseDate?.split('-').map(Number).join('/'),
+)
 const { isMobileMotion } = useDisplayMode()
 const open = defineModel<boolean>('open', { default: false })
 const emit = defineEmits<{ readWindow: [duration: number] }>()
