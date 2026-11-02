@@ -82,10 +82,15 @@ const projectCommentCreated = async (
 	})
 	if (!comment) return
 	const actorName = comment.author?.displayName ?? comment.githubLogin
+	const actorUserId = comment.authorUserId ?? payload.authorUserId
 	const recipients = new Set<string>()
 	const replyUser = comment.parent?.author
 
-	if (replyUser && replyUser.notificationPreference?.replyEmailEnabled) {
+	if (
+		replyUser &&
+		replyUser.id !== actorUserId &&
+		replyUser.notificationPreference?.replyEmailEnabled
+	) {
 		const email = replyUser.emails.find(
 			(item) => item.isPrimary && Boolean(item.verifiedAt),
 		)
@@ -112,6 +117,7 @@ const projectCommentCreated = async (
 
 	const admins = await tx.user.findMany({
 		where: {
+			id: { not: actorUserId },
 			role: UserRole.ADMIN,
 			status: UserStatus.ACTIVE,
 			notificationPreference: { adminCommentEmailEnabled: true },
