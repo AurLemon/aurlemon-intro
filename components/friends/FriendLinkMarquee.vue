@@ -1,6 +1,6 @@
 <template>
 	<span ref="viewport" class="friend-title block min-w-0 overflow-hidden">
-		<span ref="track" class="block w-max whitespace-pre">{{ text }}</span>
+		<span ref="track" class="block w-max whitespace-pre pr-3">{{ text }}</span>
 	</span>
 </template>
 
@@ -22,32 +22,32 @@ let visible = false
 let disposed = false
 const hold = 1500
 const speed = 56
+const returnDuration = 420
 const render = (position: number) => {
 	if (!viewport.value || !track.value) return
 	track.value.style.transform = `translateX(-${position}px)`
-	// 渐隐只占用当前被裁切的一侧，首尾不预留 padding 或空隙。
 	viewport.value.style.setProperty(
 		'--title-fade-left',
-		`${Math.min(12, position)}px`,
+		`${position > 0.5 ? 12 : 0}px`,
 	)
 	viewport.value.style.setProperty(
 		'--title-fade-right',
-		`${Math.min(12, Math.max(0, distance - position))}px`,
+		`${distance - position > 0.5 ? 12 : 0}px`,
 	)
 }
 const tick = (time: number) => {
 	if (previousTime) elapsed += time - previousTime
 	previousTime = time
 	const travel = (distance / speed) * 1000
-	const phase = elapsed % (hold * 2 + travel * 2)
+	const phase = elapsed % (hold * 2 + travel + returnDuration)
 	const position =
 		phase < hold
 			? 0
-			: phase < hold + travel
-				? ((phase - hold) / travel) * distance
-				: phase < hold * 2 + travel
+			: phase < hold + returnDuration
+				? ((phase - hold) / returnDuration) * distance
+				: phase < hold * 2 + returnDuration
 					? distance
-					: distance * (1 - (phase - hold * 2 - travel) / travel)
+					: distance * (1 - ((phase - hold * 2 - returnDuration) / travel) ** 2)
 	render(position)
 	frame = requestAnimationFrame(tick)
 }
@@ -112,12 +112,41 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .friend-title {
+	--title-fade-left: 0px;
+	--title-fade-right: 0px;
 	mask-image: linear-gradient(
 		to right,
-		transparent,
-		black var(--title-fade-left, 0px),
-		black calc(100% - var(--title-fade-right, 0px)),
-		transparent
+		transparent 0,
+		black var(--title-fade-left),
+		black calc(100% - var(--title-fade-right)),
+		transparent 100%
 	);
+	-webkit-mask-image: linear-gradient(
+		to right,
+		transparent 0,
+		black var(--title-fade-left),
+		black calc(100% - var(--title-fade-right)),
+		transparent 100%
+	);
+	transition:
+		--title-fade-left 100ms ease-out,
+		--title-fade-right 100ms ease-out;
+}
+
+@property --title-fade-left {
+	syntax: '<length>';
+	inherits: false;
+	initial-value: 0px;
+}
+@property --title-fade-right {
+	syntax: '<length>';
+	inherits: false;
+	initial-value: 0px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.friend-title {
+		transition: none;
+	}
 }
 </style>

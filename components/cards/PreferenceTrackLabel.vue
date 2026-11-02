@@ -17,8 +17,8 @@
 			:aria-label="label"
 		>
 			<span
-				class="relative block overflow-hidden"
-				:class="{ 'preference-track-edge-mask': hasOverflow && !reducedMotion }"
+				class="preference-track-mask relative block overflow-hidden"
+				:class="{ 'is-overflowing': hasOverflow && !reducedMotion }"
 			>
 				<span
 					ref="measure"
@@ -292,13 +292,31 @@ button[data-mobile-motion='true'] {
 	}
 }
 
-.preference-track-edge-mask {
+.preference-track-mask {
+	--preference-edge-fade: 0px;
 	mask-image: linear-gradient(
 		to right,
 		transparent,
-		black 12px,
-		black calc(100% - 12px),
+		black var(--preference-edge-fade),
+		black calc(100% - var(--preference-edge-fade)),
 		transparent
 	);
+	transition: --preference-edge-fade 220ms ease-in-out;
+}
+
+.preference-track-mask.is-overflowing {
+	--preference-edge-fade: 12px;
+}
+
+@property --preference-edge-fade {
+	syntax: '<length>';
+	inherits: false;
+	initial-value: 0px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.preference-track-mask {
+		transition: none;
+	}
 }
 </style>

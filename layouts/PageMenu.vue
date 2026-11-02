@@ -10,6 +10,7 @@ import { usePageMenuScrollMotion } from '~/composables/usePageMenuScrollMotion'
 import { usePageMenuMotion } from '~/composables/usePageMenuMotion'
 import { usePageMenuSizing } from '~/composables/usePageMenuSizing'
 import { usePageMenuActiveItem } from '~/composables/usePageMenuActiveItem'
+import FriendLinkMarquee from '~/components/friends/FriendLinkMarquee.vue'
 
 const {
 	route,
@@ -397,7 +398,7 @@ const onFallbackTransitionEnd = (event: TransitionEvent) => {
 								/>
 							</button>
 							<template #content>
-								<nav class="flex flex-col gap-1 p-2">
+								<nav class="flex flex-col gap-1 overflow-hidden p-2">
 									<NuxtLink
 										v-for="item in displayNavItems"
 										:key="item.key"
@@ -405,7 +406,7 @@ const onFallbackTransitionEnd = (event: TransitionEvent) => {
 										:aria-current="
 											isMobileItemSelected(item) ? 'page' : undefined
 										"
-										class="flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-base transition-colors duration-200 motion-reduce:transition-none hover:bg-slate-100 focus-visible:bg-slate-100 dark:hover:bg-slate-800 dark:focus-visible:bg-slate-800 focus-visible:outline-none"
+										class="flex min-w-0 items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-base transition-colors duration-200 motion-reduce:transition-none hover:bg-slate-100 focus-visible:bg-slate-100 dark:hover:bg-slate-800 dark:focus-visible:bg-slate-800 focus-visible:outline-none"
 										:class="
 											isMobileItemSelected(item)
 												? 'bg-slate-100 font-semibold text-slate-800 dark:bg-slate-800 dark:text-white'
@@ -413,7 +414,7 @@ const onFallbackTransitionEnd = (event: TransitionEvent) => {
 										"
 										@click="mobileMenuOpen = false"
 									>
-										<span class="flex min-w-0 items-center gap-3">
+										<span class="flex min-w-0 flex-1 items-center gap-3">
 											<UIcon
 												mode="svg"
 												:name="
@@ -421,7 +422,7 @@ const onFallbackTransitionEnd = (event: TransitionEvent) => {
 												"
 												class="size-5 shrink-0"
 											/>
-											<span>{{ item.label }}</span>
+											<FriendLinkMarquee :text="item.label" class="flex-1" />
 										</span>
 										<UIcon
 											v-if="isMobileItemSelected(item)"
