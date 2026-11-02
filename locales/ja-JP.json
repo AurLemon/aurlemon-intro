@@ -573,7 +573,9 @@
 			"siteUrlNotConfigured": "公開サイト URL が未設定のため、この操作は一時的に利用できません。",
 			"accountDisabled": "このアカウントは無効化されています。",
 			"unsupportedFriendLinkImageFormat": "WebP・AVIF・PNG・JPEG/JPG画像のみ対応しています。GIF・SVGやその他のファイルは選択できません。",
-			"invalidFriendLinkIconRounded": "アイコンの角丸設定が不正です。"
+			"invalidFriendLinkIconRounded": "アイコンの角丸設定が不正です。",
+			"invalidImageProxyUrl": "画像の URL が無効です。",
+			"imageProxyFailed": "画像を読み込めませんでした。"
 		}
 	},
 	"meta": {

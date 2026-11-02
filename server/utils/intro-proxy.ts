@@ -200,22 +200,10 @@ export const proxyIntroRequest = async (
 	return normalizeEnvelope(response)
 }
 
-export const resolveBangumiImageProxyUrl = (imageUrl: string): string => {
-	const trimmedImageUrl = imageUrl.trim()
-	const proxyUrl = resolveProxyUrl()
-
-	if (!trimmedImageUrl || !proxyUrl) {
-		return trimmedImageUrl
-	}
-
-	try {
-		const proxiedUrl = new URL('/bangumi/image', proxyUrl)
-		proxiedUrl.searchParams.set('url', trimmedImageUrl)
-		return proxiedUrl.toString()
-	} catch {
-		return trimmedImageUrl
-	}
-}
+export const resolveBangumiImageProxyUrl = (imageUrl: string): string =>
+	imageUrl.trim()
+		? `/api/bangumi/image?url=${encodeURIComponent(imageUrl.trim())}`
+		: ''
 
 export const isIntroProxyTransportError = (
 	envelope: IntroProxyEnvelope,

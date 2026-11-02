@@ -24,7 +24,7 @@
 						>
 							<SkeletonImage
 								v-if="item.avatarUrl"
-								:src="item.avatarUrl"
+								:src="socialAvatar(item.avatarUrl)"
 								:alt="item.displayUsername"
 								class="h-8 w-8 shrink-0 overflow-hidden rounded-full border border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-800"
 								:image-class="
@@ -132,6 +132,7 @@ import type {
 	LoginUserListResponse,
 	OAuthProviderName,
 } from '~/shared/types/social'
+const socialAvatar = useSocialAvatar()
 
 const open = defineModel<boolean>('open', { default: false })
 const emit = defineEmits<{ 'refresh-summary': [] }>()

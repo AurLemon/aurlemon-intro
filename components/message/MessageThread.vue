@@ -11,7 +11,7 @@
 		<div class="flex items-start gap-3">
 			<div class="relative h-10 w-10 flex-shrink-0">
 				<SkeletonImage
-					:src="item.avatarUrl"
+					:src="socialAvatar(item.avatarUrl)"
 					:alt="item.displayName"
 					class="block h-10 w-10"
 					image-class="block h-10 w-10 rounded-full object-cover shadow-[0_1px_3px_rgba(15,23,42,0.16)]"
@@ -374,6 +374,7 @@
 import dayjs from 'dayjs'
 import LinuxDoIcon from '~/assets/icons/linux-do.svg'
 import type { MessageCommentItem } from '~/shared/types/social'
+const socialAvatar = useSocialAvatar()
 
 const props = defineProps<{
 	item: MessageCommentItem

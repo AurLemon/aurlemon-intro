@@ -81,7 +81,7 @@
 		>
 			<span class="flex min-w-0 items-center gap-1.5">
 				<SkeletonImage
-					:src="currentUser.avatarUrl"
+					:src="socialAvatar(currentUser.avatarUrl)"
 					:alt="currentUser.displayName"
 					class="h-5.5 w-5.5 shrink-0"
 					image-class="h-full w-full rounded-full object-cover"
@@ -141,6 +141,7 @@
 <script setup lang="ts">
 import LinuxDoIcon from '~/assets/icons/linux-do.svg'
 import type { OAuthProviderName } from '~/shared/types/social'
+const socialAvatar = useSocialAvatar()
 
 withDefaults(defineProps<{ compact?: boolean }>(), { compact: false })
 

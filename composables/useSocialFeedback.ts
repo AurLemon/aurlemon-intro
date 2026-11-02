@@ -35,6 +35,8 @@ const ERROR_KEY_MAP: Record<string, string> = {
 	INVALID_COMMENT_CONTENT: 'social.errors.invalidCommentContent',
 	INVALID_FRIEND_LINK_ICON_ROUNDED:
 		'social.errors.invalidFriendLinkIconRounded',
+	INVALID_IMAGE_PROXY_URL: 'social.errors.invalidImageProxyUrl',
+	IMAGE_PROXY_FAILED: 'social.errors.imageProxyFailed',
 	INVALID_FRIEND_LINK_NAME: 'social.errors.invalidFriendLinkName',
 	INVALID_FRIEND_LINK_URL: 'social.errors.invalidFriendLinkUrl',
 	INVALID_FRIEND_LINK_DESC: 'social.errors.invalidFriendLinkDesc',

@@ -124,7 +124,7 @@
 										@click="profile.preferredAvatarIdentityId = identity.id"
 									>
 										<SkeletonImage
-											:src="identity.avatarUrl"
+											:src="socialAvatar(identity.avatarUrl)"
 											:alt="identity.providerUsername"
 											class="block size-10"
 											image-class="block size-10 rounded-full object-cover"
@@ -277,6 +277,7 @@ import type {
 	AuthUser,
 	OAuthProviderName,
 } from '~/shared/types/social'
+const socialAvatar = useSocialAvatar()
 
 type AccountTab = 'profile' | 'email'
 

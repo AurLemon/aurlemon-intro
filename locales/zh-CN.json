@@ -573,7 +573,9 @@
 			"siteUrlNotConfigured": "站点公开地址尚未配置，暂时无法完成此操作。",
 			"accountDisabled": "该账户已被停用。",
 			"unsupportedFriendLinkImageFormat": "只接受 WebP、AVIF、PNG、JPEG/JPG 图片，不支持 GIF、SVG 或其他文件。",
-			"invalidFriendLinkIconRounded": "图标圆角设置不合法。"
+			"invalidFriendLinkIconRounded": "图标圆角设置不合法。",
+			"invalidImageProxyUrl": "图片地址不合法。",
+			"imageProxyFailed": "图片暂时无法加载。"
 		}
 	},
 	"meta": {

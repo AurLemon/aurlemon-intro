@@ -21,7 +21,7 @@
 						class="flex min-w-0 items-center gap-2 rounded-md px-1.5 py-1.5"
 					>
 						<UAvatar
-							:src="user.avatarUrl || undefined"
+							:src="socialAvatar(user.avatarUrl || undefined)"
 							:alt="user.displayName"
 							size="xs"
 							class="shrink-0"
@@ -47,6 +47,7 @@
 
 <script setup lang="ts">
 import type { MessageCommentLikeUser } from '~/shared/types/social'
+const socialAvatar = useSocialAvatar()
 interface Props {
 	users: MessageCommentLikeUser[]
 }

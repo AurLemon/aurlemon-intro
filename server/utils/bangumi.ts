@@ -487,7 +487,11 @@ const snapshotToSection = (
 		profileUrl: snapshot.profileUrl,
 		wishCount: group.wishCount,
 		doneCount: group.doneCount,
-		items: [...group.doing, ...group.wish, ...group.done],
+		items: [...group.doing, ...group.wish, ...group.done].map((item) => ({
+			...item,
+			// Persisted snapshots may contain legacy direct Worker URLs.
+			coverUrl: resolveCoverUrl(item.cover),
+		})),
 		isPlaceholder: snapshot.isPlaceholder,
 	}
 }

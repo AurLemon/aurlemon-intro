@@ -573,7 +573,9 @@
 			"siteUrlNotConfigured": "The public site URL is not configured, so this action is temporarily unavailable.",
 			"accountDisabled": "This account has been disabled.",
 			"unsupportedFriendLinkImageFormat": "Only WebP, AVIF, PNG and JPEG/JPG images are accepted. GIF, SVG and other files are not supported.",
-			"invalidFriendLinkIconRounded": "The icon corner setting is invalid."
+			"invalidFriendLinkIconRounded": "The icon corner setting is invalid.",
+			"invalidImageProxyUrl": "The image URL is invalid.",
+			"imageProxyFailed": "The image could not be loaded."
 		}
 	},
 	"meta": {
