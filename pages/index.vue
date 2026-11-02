@@ -131,7 +131,7 @@
 								v-model:open="isEducationMenuOpen"
 								:portal="false"
 								:popper="{ placement: 'bottom-end' }"
-								:ui="{ content: 'z-[40000]' }"
+								:ui="{ content: 'z-[90]' }"
 							>
 								<UButton
 									variant="link"

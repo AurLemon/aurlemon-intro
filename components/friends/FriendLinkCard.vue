@@ -1,34 +1,24 @@
 <template>
 	<article
-		class="group relative isolate flex min-w-0 min-h-60 lg:min-h-[420px] flex-col rounded-xl border-6 border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900"
+		class="group relative isolate flex min-w-0 min-h-60 lg:min-h-105 flex-col rounded-xl border-6 border-slate-200 bg-slate-100 dark:border-slate-800 dark:bg-slate-900"
 	>
 		<div
 			class="pointer-events-none absolute inset-0 overflow-hidden rounded-md"
 			aria-hidden="true"
 		>
-			<picture
+			<SkeletonImage
 				v-if="!backgroundFailed && (backgroundUrl || mobileBackgroundUrl)"
-				class="block h-full w-full"
+				:key="backgroundUrl"
+				:src="backgroundUrl || ''"
+				:sources="backgroundSources"
+				alt=""
+				class="h-full w-full"
 				:class="{ 'lg:hidden': !mobileBackgroundUrl }"
-			>
-				<source media="(min-width: 64rem)" :srcset="mobileBackgroundUrl" />
-				<img
-					:key="backgroundUrl"
-					:src="backgroundUrl || undefined"
-					alt=""
-					loading="lazy"
-					decoding="async"
-					class="h-full w-full object-cover object-top brightness-100 transition-[filter] duration-200 group-hover:brightness-95 group-focus-within:brightness-95 motion-reduce:transition-none"
-					:class="
-						useCover
-							? 'saturate-75'
-							: 'saturate-[.25] opacity-45 dark:opacity-35'
-					"
-					@error="onBackgroundError"
-				/>
-			</picture>
+				:image-class="`h-full w-full object-cover object-top brightness-100 transition-[filter,opacity] duration-200 group-hover:brightness-95 group-focus-within:brightness-95 motion-reduce:transition-none ${useCover ? 'saturate-75' : 'saturate-[.25] opacity-45 dark:opacity-35'}`"
+				@error="onBackgroundError"
+			/>
 			<div
-				class="absolute inset-x-0 top-1/3 bottom-0 backdrop-blur-[8px] dark:backdrop-blur-[12px] mask-[linear-gradient(to_top,black_0%,rgba(0,0,0,0.95)_18%,rgba(0,0,0,0.82)_32%,rgba(0,0,0,0.6)_46%,rgba(0,0,0,0.35)_60%,rgba(0,0,0,0.14)_72%,rgba(0,0,0,0.03)_84%,transparent_92%)]"
+				class="absolute inset-x-0 top-1/4 bottom-0 backdrop-blur-[8px] dark:backdrop-blur-[12px] mask-[linear-gradient(to_top,black_0%,rgba(0,0,0,0.95)_18%,rgba(0,0,0,0.82)_32%,rgba(0,0,0,0.6)_46%,rgba(0,0,0,0.35)_60%,rgba(0,0,0,0.14)_72%,rgba(0,0,0,0.03)_84%,transparent_92%)]"
 			/>
 			<div class="friend-cover-shade absolute inset-0" />
 		</div>
@@ -47,13 +37,15 @@
 		<div
 			class="pointer-events-none relative mt-auto flex min-w-0 flex-col items-start gap-1 p-5"
 		>
-			<div class="mb-2 flex w-full min-w-0 items-baseline gap-1.5">
+			<div class="flex w-full min-w-0 items-baseline gap-1.5">
 				<UAvatar
+					:as="{ img: SkeletonImage }"
+					image-class="size-full object-cover"
 					:src="friend.icon || undefined"
 					:alt="friend.name"
 					loading="lazy"
 					decoding="async"
-					class="size-12 shrink-0"
+					class="size-11 sm:size-12 shrink-0"
 					:class="
 						friend.iconRounded === false
 							? 'rounded-none'
@@ -61,17 +53,17 @@
 					"
 					:ui="{
 						root: 'overflow-hidden bg-transparent',
-						image: 'rounded-none object-cover',
+						image: 'size-full rounded-none',
 					}"
 				/>
 				<UPopover
 					v-if="friend.ownerAccount"
 					:content="{ side: 'top', align: 'start', sideOffset: 8 }"
-					:ui="{ content: 'z-[43120] pointer-events-auto shadow-sm' }"
+					:ui="{ content: 'z-[90] pointer-events-auto shadow-sm' }"
 				>
 					<button
 						type="button"
-						class="pointer-events-auto relative z-10 inline-flex max-w-full min-w-0 cursor-pointer items-center rounded-md text-xs text-slate-600 transition-colors hover:text-slate-500 focus-visible:outline-2 focus-visible:outline-slate-500 dark:text-slate-300 dark:hover:text-slate-400 sm:-translate-y-1"
+						class="pointer-events-auto relative z-10 inline-flex max-w-full min-w-0 cursor-pointer items-center rounded-md text-xs text-slate-600 transition-colors hover:text-slate-500 focus-visible:outline-2 focus-visible:outline-slate-500 dark:text-slate-300 dark:hover:text-slate-400 -translate-y-1"
 					>
 						<FriendLinkMarquee :text="`@${friend.ownerAccount.username}`" />
 					</button>
@@ -83,10 +75,15 @@
 							class="flex max-w-[min(18rem,calc(100vw-2rem))] items-center gap-2 rounded-[inherit] py-2 pr-3 pl-2 no-underline transition-opacity hover:no-underline hover:opacity-70 focus-visible:outline-2 focus-visible:outline-slate-500 motion-reduce:transition-none"
 						>
 							<UAvatar
+								:as="{ img: SkeletonImage }"
+								image-class="size-full object-cover"
 								:src="socialAvatar(friend.ownerAccount.avatarUrl) || undefined"
 								:alt="friend.ownerAccount.username"
 								class="size-8 shrink-0 rounded-full border border-slate-300/80 dark:border-slate-600/80"
-								:ui="{ root: 'bg-transparent', image: 'object-cover' }"
+								:ui="{
+									root: 'overflow-hidden bg-transparent',
+									image: 'size-full',
+								}"
 							/>
 							<div class="flex min-w-0 flex-col items-start">
 								<span
@@ -108,7 +105,7 @@
 			</div>
 			<FriendLinkTitle :text="friend.name" />
 			<p
-				class="text-sm leading-5 text-slate-600 line-clamp-3 [overflow-wrap:anywhere] dark:text-slate-300"
+				class="text-sm leading-5 text-slate-600 line-clamp-2 [word-break:normal] [overflow-wrap:anywhere] dark:text-slate-300"
 			>
 				{{ friend.desc }}
 			</p>
@@ -117,6 +114,7 @@
 </template>
 
 <script setup lang="ts">
+import SkeletonImage from '~/components/common/SkeletonImage.vue'
 import FriendLinkMarquee from './FriendLinkMarquee.vue'
 import FriendLinkTitle from './FriendLinkTitle.vue'
 import type { FriendLinkItem } from '~/shared/types/social'
@@ -139,6 +137,9 @@ const mobileBackgroundUrl = computed(() =>
 		? props.friend.mobileCoverUrl
 		: props.friend.icon,
 )
+const backgroundSources = computed(() => [
+	{ media: '(min-width: 64rem)', srcset: mobileBackgroundUrl.value },
+])
 const onBackgroundError = (event: Event) => {
 	const image = event.target as HTMLImageElement
 	if (

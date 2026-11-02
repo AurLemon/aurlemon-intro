@@ -3,7 +3,7 @@
 		v-model:open="open"
 		:portal="false"
 		:content="{ side: 'bottom', align: 'center' }"
-		:ui="{ content: 'z-[40000]' }"
+		:ui="{ content: 'z-[90]' }"
 	>
 		<button
 			type="button"

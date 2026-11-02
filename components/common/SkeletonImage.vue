@@ -6,7 +6,33 @@
 			:class="[skeletonClass, skeletonVisible ? 'opacity-100' : 'opacity-0']"
 			aria-hidden="true"
 		/>
+		<picture v-if="sources.length" class="contents">
+			<source
+				v-for="source in sources"
+				:key="source.media"
+				:media="source.media"
+				:srcset="source.srcset"
+			/>
+			<img
+				ref="imageRef"
+				:src="src"
+				:alt="alt"
+				:class="[
+					immediateReveal
+						? 'transition-none'
+						: 'transition-opacity duration-300',
+					imageClass,
+					imageVisible ? 'opacity-100' : 'opacity-0',
+				]"
+				:loading="loading"
+				:decoding="decoding"
+				:referrerpolicy="referrerpolicy"
+				@load="markImageReady"
+				@error="handleImageError"
+			/>
+		</picture>
 		<img
+			v-else
 			ref="imageRef"
 			:src="src"
 			:alt="alt"
@@ -36,7 +62,13 @@ type ImageReferrerPolicy =
 	| 'strict-origin-when-cross-origin'
 	| 'unsafe-url'
 
+interface SkeletonImageSource {
+	media: string
+	srcset: string
+}
+
 interface SkeletonImageProps {
+	sources?: SkeletonImageSource[]
 	src: string
 	alt: string
 	imageClass?: string
@@ -54,6 +86,7 @@ defineOptions({
 })
 
 const props = withDefaults(defineProps<SkeletonImageProps>(), {
+	sources: () => [],
 	imageClass: '',
 	skeletonClass: '',
 	showSkeleton: true,
@@ -188,13 +221,10 @@ const syncCachedImageState = async (): Promise<void> => {
 	}
 }
 
-watch(
-	() => props.src,
-	() => {
-		resetVisibility()
-		void syncCachedImageState()
-	},
-)
+watch([() => props.src, () => props.sources], () => {
+	resetVisibility()
+	void syncCachedImageState()
+})
 
 onMounted(() => {
 	void syncCachedImageState()

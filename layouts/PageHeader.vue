@@ -21,7 +21,7 @@
 					:popper="{ placement: 'bottom-end' }"
 					:ui="{
 						content:
-							'z-[40000] theme-controls-popover [view-transition-name:header-theme-menu]',
+							'z-100 theme-controls-popover [view-transition-name:header-theme-menu]',
 					}"
 				>
 					<UButton
@@ -69,7 +69,7 @@
 					:popper="{ placement: 'bottom-end' }"
 					:ui="{
 						content:
-							'z-[40000] theme-controls-popover [view-transition-name:header-language-menu]',
+							'z-100 theme-controls-popover [view-transition-name:header-language-menu]',
 					}"
 				>
 					<UButton

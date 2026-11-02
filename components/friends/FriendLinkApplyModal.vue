@@ -191,11 +191,12 @@
 									}}
 								</p>
 							</div>
-							<img
+							<SkeletonImage
 								v-if="form.imageBase64"
 								:src="form.imageBase64"
 								alt="preview"
-								class="mt-3 h-20 w-20 rounded-xl object-cover"
+								class="mt-3 h-20 w-20 overflow-hidden rounded-xl"
+								image-class="size-full object-cover"
 							/>
 						</UFormField>
 					</UForm>
@@ -225,6 +226,7 @@
 
 <script setup lang="ts">
 import type { FormError } from '@nuxt/ui'
+import SkeletonImage from '~/components/common/SkeletonImage.vue'
 import { FRIEND_LINK_IMAGE_ACCEPT } from '~/shared/utils/friend-link-image'
 import AuthActionGuard from '~/components/common/AuthActionGuard.vue'
 import AccountStatusBar from '~/components/common/AccountStatusBar.vue'

@@ -85,6 +85,8 @@
 					>
 						<div class="flex items-start gap-3">
 							<UAvatar
+								:as="{ img: SkeletonImage }"
+								image-class="size-full object-cover"
 								:src="item.imageBase64 || undefined"
 								:alt="item.name"
 								class="size-10 shrink-0 sm:size-11"
@@ -95,7 +97,7 @@
 								"
 								:ui="{
 									root: 'overflow-hidden bg-transparent',
-									image: 'rounded-none object-cover',
+									image: 'size-full rounded-none',
 								}"
 							/>
 							<div class="min-w-0 flex-1">
@@ -118,8 +120,9 @@
 										}}</UBadge
 									>
 									<FriendLinkAccountLabel
-										v-if="item.applicant"
-										:applicant="item.applicant"
+										v-for="account in ownerAccounts(item)"
+										:key="account.providers[0]"
+										:applicant="account"
 									/>
 								</div>
 								<p
@@ -151,11 +154,12 @@
 									v-if="coversById.get(item.id)?.coverUrl"
 									class="min-w-0"
 								>
-									<img
-										:src="coversById.get(item.id)?.coverUrl ?? undefined"
+									<SkeletonImage
+										:src="coversById.get(item.id)?.coverUrl ?? ''"
 										alt=""
 										loading="lazy"
-										class="h-20 w-auto rounded-md border border-slate-200/60 object-contain dark:border-slate-700/60"
+										class="aspect-[1440/900] h-20 overflow-hidden rounded-md border border-slate-200/60 dark:border-slate-700/60"
+										:image-class="'h-full w-full object-contain'"
 									/>
 									<figcaption
 										class="mt-1 whitespace-nowrap text-left text-[11px] leading-4 text-slate-500 dark:text-slate-400"
@@ -167,11 +171,12 @@
 									v-if="coversById.get(item.id)?.mobileCoverUrl"
 									class="min-w-0"
 								>
-									<img
-										:src="coversById.get(item.id)?.mobileCoverUrl ?? undefined"
+									<SkeletonImage
+										:src="coversById.get(item.id)?.mobileCoverUrl ?? ''"
 										alt=""
 										loading="lazy"
-										class="h-20 w-auto rounded-md border border-slate-200/60 object-contain dark:border-slate-700/60"
+										class="aspect-[390/680] h-20 overflow-hidden rounded-md border border-slate-200/60 dark:border-slate-700/60"
+										:image-class="'h-full w-full object-contain'"
 									/>
 									<figcaption
 										class="mt-1 whitespace-nowrap text-left text-[11px] leading-4 text-slate-500 dark:text-slate-400"
@@ -399,11 +404,12 @@
 								}}
 							</p>
 						</div>
-						<img
+						<SkeletonImage
 							v-if="form.imageBase64"
 							:src="form.imageBase64"
 							alt="preview"
-							class="mt-3 h-20 w-20 object-cover"
+							class="mt-3 h-20 w-20 overflow-hidden"
+							image-class="size-full object-cover"
 							:class="
 								form.iconRounded
 									? 'rounded-xl border border-slate-300/80 dark:border-slate-600/80'
@@ -458,10 +464,16 @@
 			<AnimatedModalBody v-if="applicationItem?.application">
 				<div class="space-y-4">
 					<div class="flex items-center gap-3">
-						<img
-							:src="applicationItem.application.imageBase64"
+						<UAvatar
+							:as="{ img: SkeletonImage }"
+							image-class="size-full object-cover"
+							:ui="{
+								root: 'overflow-hidden bg-transparent',
+								image: 'size-full rounded-none',
+							}"
+							:src="applicationItem.application.imageBase64 || undefined"
 							:alt="applicationItem.application.name"
-							class="size-12 rounded-lg object-cover"
+							class="size-12 shrink-0 rounded-lg"
 						/>
 						<div class="min-w-0">
 							<p class="text-sm font-semibold [overflow-wrap:anywhere]">
@@ -497,8 +509,13 @@
 								{{ applicationItem.application.desc }}
 							</dd>
 						</div>
-						<div v-if="applicationItem.application.note">
-							<dt class="mb-1 text-xs text-slate-500 dark:text-slate-400">
+						<div
+							v-if="applicationItem.application.note"
+							class="rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-900/60"
+						>
+							<dt
+								class="mb-1 text-xs font-medium text-slate-500 dark:text-slate-400"
+							>
 								{{ t('social.friendLinks.fields.note') }}
 							</dt>
 							<dd class="whitespace-pre-wrap [overflow-wrap:anywhere]">
@@ -539,10 +556,14 @@ import type {
 	FriendLinkCoverAdminResponse,
 	FriendLinkCoverState,
 } from '~/shared/types/friend-link-cover'
+import SkeletonImage from '~/components/common/SkeletonImage.vue'
 import FriendLinkOwnerInput from './FriendLinkOwnerInput.vue'
 import FriendLinkAccountLabel from './FriendLinkAccountLabel.vue'
 import AuthActionGuard from '~/components/common/AuthActionGuard.vue'
-import type { AdminFriendLinkListItem } from '~/shared/types/social'
+import type {
+	AdminFriendLinkListItem,
+	FriendLinkApplicant,
+} from '~/shared/types/social'
 
 const open = defineModel<boolean>('open', { default: false })
 const managementBody = useTemplateRef('managementBody')
@@ -558,6 +579,25 @@ const route = useRoute()
 const router = useRouter()
 const { showError } = useSocialFeedback()
 const { normalizeImage } = useFriendLinkImage()
+
+const ownerAccounts = (
+	item: AdminFriendLinkListItem,
+): FriendLinkApplicant[] => {
+	const accounts: FriendLinkApplicant[] = []
+	if (item.ownerGithubLogin)
+		accounts.push({
+			username: item.ownerGithubLogin,
+			displayName: item.ownerGithubLogin,
+			providers: ['GITHUB'],
+		})
+	if (item.ownerLinuxDoUsername)
+		accounts.push({
+			username: item.ownerLinuxDoUsername,
+			displayName: item.ownerLinuxDoUsername,
+			providers: ['LINUX_DO'],
+		})
+	return accounts
+}
 
 const items = ref<AdminFriendLinkListItem[]>([])
 const approvingId = ref<string | null>(null)

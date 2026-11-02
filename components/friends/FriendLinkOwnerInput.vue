@@ -24,6 +24,9 @@
 			<template #leading>
 				<UAvatar
 					v-if="account?.avatarUrl"
+					:as="{ img: SkeletonImage }"
+					image-class="size-full object-cover"
+					:ui="{ root: 'overflow-hidden', image: 'size-full' }"
 					:src="socialAvatar(account.avatarUrl)"
 					:alt="account.username"
 					class="size-5"
@@ -41,6 +44,7 @@
 </template>
 
 <script setup lang="ts">
+import SkeletonImage from '~/components/common/SkeletonImage.vue'
 import LinuxDoIcon from '~/assets/icons/linux-do.svg'
 import type {
 	FriendLinkOwnerAccount,

@@ -436,6 +436,7 @@ if (import.meta.client) {
 
 <template>
 	<UApp
+		portal="#__nuxt"
 		:toaster="{
 			position: 'top-right',
 			ui: {

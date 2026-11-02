@@ -32,7 +32,7 @@
 							>
 								<UIcon
 									name="i-lucide-heart"
-									class="h-4 w-4 shrink-0 text-red-500"
+									class="hidden h-4 w-4 shrink-0 text-red-500 sm:block"
 								/>
 								<div
 									class="min-w-0 flex-1 flex flex-col gap-0.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
