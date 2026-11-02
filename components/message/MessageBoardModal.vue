@@ -570,6 +570,8 @@ const goNextPage = () => {
 
 watch(open, async (value) => {
 	if (!value) {
+		replyTarget.value = null
+		editingTarget.value = null
 		return
 	}
 
@@ -584,6 +586,7 @@ watch(open, async (value) => {
 .message-board-scroll {
 	-ms-overflow-style: none;
 	scrollbar-width: none;
+	overflow-anchor: none;
 }
 
 .message-board-scroll::-webkit-scrollbar {

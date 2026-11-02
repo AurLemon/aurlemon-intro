@@ -18,7 +18,7 @@
 					skeleton-class="rounded-full"
 				/>
 			</div>
-			<div class="min-w-0 flex-1 space-y-2.5">
+			<div class="message-thread-content min-w-0 flex-1">
 				<div class="flex flex-wrap items-center gap-x-2 gap-y-0.5">
 					<span
 						class="text-sm font-semibold text-slate-900 dark:text-slate-100"
@@ -246,38 +246,21 @@
 						</UPopover>
 					</div>
 				</div>
-				<div
-					v-if="replyingToId === item.id && depth > 0"
-					ref="replyComposerRef"
-				>
-					<MessageComposer
-						:loading="replyLoading"
-						:disabled="!canInteract"
-						:replying-to="item.username"
-						:replying-to-floor="item.floor"
-						@cancel="$emit('cancel-reply')"
-						@submit="$emit('submit-reply', item.id, $event)"
-					/>
-				</div>
+				<MessageReplyComposer
+					:open="replyingToId === item.id"
+					:loading="replyLoading"
+					:disabled="!canInteract"
+					:replying-to="item.username"
+					:replying-to-floor="item.floor"
+					@cancel="$emit('cancel-reply')"
+					@submit="$emit('submit-reply', item.id, $event)"
+				/>
 				<div
 					v-if="showReplyArea"
 					:style="replyAreaStyle"
-					class="overflow-hidden transition-[height,opacity] duration-300 ease-out"
+					class="message-replies -mx-1 overflow-hidden transition-[height,opacity] duration-300 ease-out motion-reduce:transition-none"
 				>
-					<div ref="replyAreaRef" class="space-y-3 pt-1">
-						<div
-							v-if="replyingToId === item.id && depth === 0"
-							ref="replyComposerRef"
-						>
-							<MessageComposer
-								:loading="replyLoading"
-								:disabled="!canInteract"
-								:replying-to="item.username"
-								:replying-to-floor="item.floor"
-								@cancel="$emit('cancel-reply')"
-								@submit="$emit('submit-reply', item.id, $event)"
-							/>
-						</div>
+					<div ref="replyAreaRef" class="space-y-3 p-1">
 						<div v-if="visibleReplies.length" class="space-y-3">
 							<MessageThread
 								v-for="reply in visibleReplies"
@@ -403,7 +386,6 @@ const NESTED_REPLY_INLINE_MIN_WIDTH = 300
 const replyExpanded = ref(false)
 const replyPage = ref(1)
 const replyAreaRef = ref<HTMLElement | null>(null)
-const replyComposerRef = ref<HTMLElement | null>(null)
 const replyAreaHeight = ref('0px')
 const actionRowRef = ref<HTMLElement | null>(null)
 const actionRowWidth = ref(0)
@@ -418,10 +400,7 @@ const hiddenReplyCount = computed(() =>
 
 const showReplyArea = computed(
 	() =>
-		props.depth === 0 &&
-		(props.item.replies.length > 0 ||
-			replyExpanded.value ||
-			props.item.id === props.replyingToId),
+		props.depth === 0 && (props.item.replies.length > 0 || replyExpanded.value),
 )
 
 const visibleReplies = computed(() => {
@@ -564,18 +543,6 @@ const handleMenuTogglePin = (item: MessageCommentItem, close: () => void) => {
 	handleTogglePin(item)
 }
 
-const scrollReplyComposerIntoView = async () => {
-	if (!import.meta.client || !replyComposerRef.value) {
-		return
-	}
-
-	await nextTick()
-	replyComposerRef.value.scrollIntoView({
-		behavior: 'smooth',
-		block: 'center',
-	})
-}
-
 const expandReplies = () => {
 	replyExpanded.value = true
 	replyPage.value = 1
@@ -638,18 +605,6 @@ watch(
 )
 
 watch(
-	() => props.replyingToId === props.item.id,
-	(isReplying) => {
-		if (!isReplying) {
-			return
-		}
-
-		void scrollReplyComposerIntoView()
-	},
-	{ flush: 'post' },
-)
-
-watch(
 	() => replyAreaRef.value,
 	(element) => {
 		replyAreaObserver?.disconnect()
@@ -697,3 +652,15 @@ onBeforeUnmount(() => {
 	actionRowObserver = null
 })
 </script>
+
+<style scoped>
+.message-thread-content > :not(:first-child):not(.message-reply-collapse) {
+	margin-top: 0.625rem;
+}
+
+/* Let nested composers drive layout directly instead of animating height twice. */
+.message-replies:has(.message-reply-collapse) {
+	height: auto !important;
+	transition: none;
+}
+</style>
