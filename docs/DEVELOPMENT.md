@@ -63,11 +63,17 @@ ACG 与音乐条目额外保存 `title`、`author` 数组、`category`、`href`�
 ## GitHub OAuth 与 Intro Proxy 诊断
 
 - GitHub 回调生成随机 `traceId`，贯穿 `GITHUB_OAUTH_CALLBACK_*`、`GITHUB_OAUTH_STAGE_*`、`GITHUB_OAUTH_DIRECT_ATTEMPT_*`、`GITHUB_OAUTH_PROXY_ATTEMPT_*` 和代理请求。阶段为 `token`、`user`、`emails`；直连 GitHub 的网络失败最多重试两次。`emails` 当前仍直连 GitHub，每次最多 5 秒、最多重试两次，失败降级为空列表，同时记录 `GITHUB_EMAIL_FETCH_FAILED`，阶段完成只表示包含降级在内的操作结束。不得把它误读为邮箱读取成功。
-- GitHub OAuth 回调先进入本地化处理中页面，再由浏览器提交一次性 flow ID；服务端轮询状态只返回枚举阶段与重试次数，不返回 OAuth code、state 或 token。服务端通过实际的 state 校验、token / user / email 阶段和账号保存步骤更新进度；代理 GET 最多重试两次，token POST 仅在收到没有 Worker 请求 ID 的临时 5xx 边缘响应时重试，不能在授权码可能已被 GitHub 消费后重放。按钮切换页前也展示登录准备提示。进度记录暂存于 Node 进程内存、5 分钟后过期，当前部署按单个 PM2 进程运行；启用多实例或集群时须改用共享存储。
+- GitHub 与 Linux DO 的 OAuth 回调先进入本地化 `/api/oauth/callback` 处理中页面，再由浏览器提交一次性 flow ID；服务端轮询状态只返回枚举阶段与重试次数，不返回 OAuth code、state 或 token。服务端通过实际的 state 校验、token / user / email 阶段和账号保存步骤更新进度；代理 GET 最多重试两次，token POST 仅在收到没有 Worker 请求 ID 的临时 5xx 边缘响应时重试，不能在授权码可能已被 GitHub 消费后重放。登录入口保留按钮 loading，不额外显示准备或跳转说明。处理中页面总等待 180 秒，进度请求单次最多 5 秒，覆盖直连 token 与 user 两阶段约 123 秒的重试预算。flow 通过独立的 HttpOnly Cookie 绑定发起浏览器，重复 POST 在完成后补发原会话 Cookie，恢复丢失的响应，不重新兑换授权码。进度记录和恢复所需的 Cookie 仅暂存于 Node 进程内存、5 分钟后过期，当前部署按单个 PM2 进程运行；启用多实例或集群时须改用共享存储。
 - Intro Proxy 每次请求另生成 `requestId`，通过 `x-intro-proxy-request-id` 传至 Worker，OAuth `traceId` 通过 `x-intro-proxy-trace-id` 传递。`INTRO_PROXY_REQUEST_COMPLETED` / `FAILED` 记录总耗时、外层状态、响应类型 / 字节数、EO-ID、CF-Ray、Worker ID / 耗时和内层状态。`outsideWorkerMs` 是总耗时减 Worker 耗时的近似差值，包含往返网络、EO、排队及响应传输等，不能单独当作 EO 耗时，也不要求跨机时钟同步。
 - 代理失败和超过一秒的请求总会记录。项目设置 `INTRO_PROXY_DIAGNOSTICS=true` 后还记录请求开始及快速成功请求。Worker 同名变量控制接收 / 上游开始及快速完成日志，生产排障时两端一起开启，并确保 Worker Logs 已启用且采样率为 1。即使如此，日志丢失或未到 Worker 的失败仍可能没有 Worker 记录，缺失记录只能缩小范围，不能单凭它归因 EO。
 - Worker `INTRO_PROXY_WORKER_COMPLETED` 记录 CF 节点、接收至上游开始耗时、上游响应头等待 / 正文读取耗时、GitHub request ID 和剩余配额。项目日志中的 `requestId` 对应 Worker 的 `clientRequestId`，项目 `workerRequestId` 对应 Worker 的 `requestId`。重试由网站服务端控制，Worker 不做重放，也不改变其认证行为。
 - 日志不记录请求 / 响应正文、Authorization、Cookie、握手密钥、OAuth code / state、token、邮箱或用户资料。代理只记上游主机，Worker 只记固定操作名，不记公开账号查询路径与查询串。诊断日志属于长期运维功能，不是临时 Debug 代码。当前日志不包含 EO 实际回源 IP，525 的具体回源节点仍需结合 EO 侧记录定位。
+
+### OAuth 处理中页面调试
+
+- 视觉模板位于 `components/common/OAuthProgressView.vue`，登录提交、轮询与跳转逻辑位于 `pages/api/oauth/callback.vue`，两种平台的回调、处理与进度 API 通过 `server/utils/oauth-flow.ts` 共用同一流程，并校验 flow 的平台和浏览器绑定。
+- Dev 下打开 `/api/oauth/callback?preview=1` 可停留在处理中页面，不需要登录、不提交 flow、不轮询、不自动跳转，保留加载图标动画。可用 `&stage=profileStarted`、`&stage=retrying` 等现有 `social.oauthProgress` 文案 key 查看不同状态，默认显示 `tokenStarted`。添加 `&provider=linuxdo` 可预览 Linux DO，默认预览 GitHub。英文与日文可添加对应 locale 路径前缀。
+- 预览仅在 `import.meta.dev` 下生效，复用现有状态文案，不创建模拟账户、授权数据或会话。生产环境仍执行正常的 flow 校验和跳转。
 
 ## 面向 Agent 的静态导览
 

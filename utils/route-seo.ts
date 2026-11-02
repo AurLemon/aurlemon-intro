@@ -5,6 +5,10 @@ export interface RouteSeoDefinition {
 }
 
 const ROUTE_SEO_DEFINITIONS: Record<string, RouteSeoDefinition> = {
+	'/api/oauth/callback': {
+		indexable: false,
+		titleKey: 'seo.pages.oauth.title',
+	},
 	'/meta': {
 		descriptionKey: 'seo.pages.meta.description',
 		indexable: true,

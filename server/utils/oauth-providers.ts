@@ -277,7 +277,7 @@ const linuxDoAdapter: OAuthProviderAdapter = {
 		url.searchParams.set('state', state)
 		return url.toString()
 	},
-	exchangeCode: async ({ code }) => {
+	exchangeCode: async ({ code, onProgress }) => {
 		const clientId = process.env.LINUX_DO_CLIENT_ID
 		const clientSecret = process.env.LINUX_DO_CLIENT_SECRET
 		const callbackUrl = getCallbackUrl(OAuthProvider.LINUX_DO)
@@ -288,6 +288,7 @@ const linuxDoAdapter: OAuthProviderAdapter = {
 			})
 		}
 
+		onProgress?.({ key: 'tokenStarted' })
 		const tokenResponse = await fetchLinuxDoJson<LinuxDoTokenResponse>({
 			url: getLinuxDoTokenUrl(),
 			method: 'POST',
@@ -311,6 +312,8 @@ const linuxDoAdapter: OAuthProviderAdapter = {
 			})
 		}
 
+		onProgress?.({ key: 'tokenCompleted' })
+		onProgress?.({ key: 'profileStarted' })
 		const user = await fetchLinuxDoJson<LinuxDoUserResponse>({
 			url: getLinuxDoUserUrl(),
 			method: 'GET',
@@ -327,6 +330,7 @@ const linuxDoAdapter: OAuthProviderAdapter = {
 			})
 		}
 
+		onProgress?.({ key: 'profileCompleted' })
 		return {
 			provider: OAuthProvider.LINUX_DO,
 			providerUserId: String(user.id),

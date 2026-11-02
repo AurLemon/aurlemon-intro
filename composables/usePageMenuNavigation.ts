@@ -60,6 +60,7 @@ export const usePageMenuNavigation = () => {
 			'/about': 'menu.about',
 			'/friends': 'menu.friends',
 			'/meta': 'menu.meta',
+			'/api/oauth/callback': 'menu.oauth',
 		}
 
 		const normalizedPath = normalizePath(route.path)

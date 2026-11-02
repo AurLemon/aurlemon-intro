@@ -29,7 +29,8 @@
 		"about": "About",
 		"friends": "Links",
 		"currentPage": "Current Page",
-		"meta": "Site Information"
+		"meta": "Site Information",
+		"oauth": "Authorization"
 	},
 	"seo": {
 		"pages": {
@@ -66,6 +67,9 @@
 			"meta": {
 				"title": "Site Information / AurLemon Intro",
 				"description": "Content and code licenses, current commit, runtime, service status and visitor environment for AurLemon Intro."
+			},
+			"oauth": {
+				"title": "Authorization / AurLemon Intro"
 			}
 		}
 	},
@@ -316,7 +320,6 @@
 			"close": "Close",
 			"loginWithGithub": "Sign in with GitHub",
 			"loginWithLinuxDo": "Sign in with Linux DO",
-			"loginStarting": "Preparing {provider} sign-in. Redirecting shortly…",
 			"loginWithProviderPrefix": "Sign in with",
 			"loginWithProviderOr": "or",
 			"loginWithProviderSuffix": "",
@@ -375,21 +378,21 @@
 			"loggedInAs": "Signed in as {login}"
 		},
 		"oauthProgress": {
-			"title": "Completing GitHub authorization",
-			"received": "GitHub returned to this page. Connecting to the site server…",
-			"validating": "The site server is checking the sign-in state…",
-			"stateVerified": "The sign-in state is valid. Confirming authorization with GitHub…",
-			"tokenStarted": "Waiting for GitHub to return an authorization token…",
-			"tokenCompleted": "Authorization received. Loading your GitHub account…",
-			"profileStarted": "The site server is loading your GitHub account…",
-			"profileCompleted": "Account details received. Processing account email…",
-			"emailsStarted": "The site server is loading your GitHub email…",
-			"emailsCompleted": "GitHub account details received. Saving your site session…",
-			"retrying": "A request failed temporarily. The server is making attempt {attempt} of {totalAttempts}…",
-			"accountStarted": "Saving your sign-in session on this site…",
-			"accountCompleted": "Sign-in details saved. Returning to the previous page…",
-			"redirecting": "Sign-in is complete. Returning to the previous page…",
-			"failed": "Sign-in did not complete. Returning to show the error…"
+			"title": "Completing {provider} authorization",
+			"received": "Connecting to the site",
+			"validating": "Verifying sign-in state",
+			"stateVerified": "Sign-in state verified",
+			"tokenStarted": "Waiting for {provider} authorization",
+			"tokenCompleted": "Authorization received",
+			"profileStarted": "Loading your {provider} account",
+			"profileCompleted": "Account details loaded",
+			"emailsStarted": "Loading your account email",
+			"emailsCompleted": "Email processing complete",
+			"retrying": "Making attempt {attempt} of {totalAttempts}",
+			"accountStarted": "Saving your session",
+			"accountCompleted": "Session saved",
+			"redirecting": "Returning to the previous page",
+			"failed": "Authorization incomplete"
 		},
 		"siteLike": {
 			"count": "{count}",

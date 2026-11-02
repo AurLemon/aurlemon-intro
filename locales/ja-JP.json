@@ -29,7 +29,8 @@
 		"about": "サイトについて",
 		"friends": "リンク集",
 		"currentPage": "現在のページ",
-		"meta": "サイト情報"
+		"meta": "サイト情報",
+		"oauth": "アカウント認証"
 	},
 	"seo": {
 		"pages": {
@@ -66,6 +67,9 @@
 			"meta": {
 				"title": "サイト情報 / AurLemon Intro",
 				"description": "AurLemon Intro のコンテンツとコードのライセンス、現在のコミット、実行環境、サービス状況と閲覧環境。"
+			},
+			"oauth": {
+				"title": "アカウント認証 / AurLemon Intro"
 			}
 		}
 	},
@@ -316,7 +320,6 @@
 			"close": "閉じる",
 			"loginWithGithub": "GitHub でログイン",
 			"loginWithLinuxDo": "Linux DO でログイン",
-			"loginStarting": "{provider} ログインを準備しています。まもなく移動します…",
 			"loginWithProviderPrefix": "",
 			"loginWithProviderOr": "または",
 			"loginWithProviderSuffix": "でログイン",
@@ -375,21 +378,21 @@
 			"loggedInAs": "ログイン中: {login}"
 		},
 		"oauthProgress": {
-			"title": "GitHub 認証を完了しています",
-			"received": "GitHub から戻りました。サイトサーバーに接続しています…",
-			"validating": "サイトサーバーがログイン状態を確認しています…",
-			"stateVerified": "ログイン状態を確認しました。GitHub に認証を確認しています…",
-			"tokenStarted": "GitHub から認証トークンが返るのを待っています…",
-			"tokenCompleted": "認証情報を受け取りました。GitHub アカウントを読み込んでいます…",
-			"profileStarted": "サイトサーバーが GitHub アカウント情報を読み込んでいます…",
-			"profileCompleted": "アカウント情報を受け取りました。メール情報を処理しています…",
-			"emailsStarted": "サイトサーバーが GitHub のメール情報を読み込んでいます…",
-			"emailsCompleted": "GitHub アカウント情報を受け取りました。サイトのログイン状態を保存しています…",
-			"retrying": "一時的な失敗が発生しました。サーバーが {totalAttempts} 回中 {attempt} 回目の試行を行っています…",
-			"accountStarted": "サイトのログイン状態を保存しています…",
-			"accountCompleted": "ログイン情報を保存しました。元のページに戻っています…",
-			"redirecting": "ログイン処理が完了しました。元のページに戻っています…",
-			"failed": "ログインを完了できませんでした。エラーを表示するためページに戻っています…"
+			"title": "{provider} の認証を完了しています",
+			"received": "サイトに接続しています",
+			"validating": "ログイン状態を確認しています",
+			"stateVerified": "ログイン状態を確認しました",
+			"tokenStarted": "{provider} の認証情報を待っています",
+			"tokenCompleted": "認証情報を取得しました",
+			"profileStarted": "{provider} のアカウント情報を取得しています",
+			"profileCompleted": "アカウント情報を取得しました",
+			"emailsStarted": "メール情報を取得しています",
+			"emailsCompleted": "メール情報の処理が完了しました",
+			"retrying": "{totalAttempts} 回中 {attempt} 回目の接続を試みています",
+			"accountStarted": "ログイン状態を保存しています",
+			"accountCompleted": "ログイン状態を保存しました",
+			"redirecting": "元のページに戻っています",
+			"failed": "認証が完了しませんでした"
 		},
 		"siteLike": {
 			"count": "{count}",

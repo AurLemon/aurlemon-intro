@@ -1,3 +1,5 @@
+import type { OAuthProviderName } from '~/shared/types/social'
+
 export type OAuthProgressKey =
 	| 'received'
 	| 'validating'
@@ -27,13 +29,20 @@ export interface OAuthProgressSnapshot {
 	errorCode?: string
 }
 
-interface OAuthProgressRecord extends OAuthProgressSnapshot {
+interface OAuthProgressResult {
+	redirectPath?: string
+	sessionCookies?: string[]
+}
+
+interface OAuthProgressRecord
+	extends OAuthProgressSnapshot, OAuthProgressResult {
 	updatedAt: number
 	code: string
 	state: string
 	localePrefix: string
 	processing: boolean
-	redirectPath?: string
+	browserSecretHash: string
+	provider: OAuthProviderName
 }
 
 const PROGRESS_TTL_MS = 5 * 60 * 1000
@@ -58,6 +67,8 @@ export const startOAuthProgress = (
 	code: string,
 	state: string,
 	localePrefix: string,
+	browserSecretHash: string,
+	provider: OAuthProviderName,
 ): void => {
 	const now = Date.now()
 	pruneExpiredRecords(now)
@@ -69,6 +80,8 @@ export const startOAuthProgress = (
 		code,
 		state,
 		localePrefix,
+		browserSecretHash,
+		provider,
 		processing: false,
 	})
 }
@@ -112,16 +125,8 @@ export const updateOAuthProgress = (
 ): void => {
 	const now = Date.now()
 	pruneExpiredRecords(now)
-	const record = progressRecords.get(traceId) ?? {
-		updates: [],
-		completed: false,
-		status: 'processing' as const,
-		updatedAt: now,
-		code: '',
-		state: '',
-		localePrefix: '',
-		processing: true,
-	}
+	const record = progressRecords.get(traceId)
+	if (!record) return
 	record.updates.push(update)
 	record.updatedAt = now
 	progressRecords.set(traceId, record)
@@ -130,16 +135,8 @@ export const updateOAuthProgress = (
 export const completeOAuthProgress = (traceId: string): void => {
 	const now = Date.now()
 	pruneExpiredRecords(now)
-	const record = progressRecords.get(traceId) ?? {
-		updates: [],
-		completed: false,
-		status: 'processing' as const,
-		updatedAt: now,
-		code: '',
-		state: '',
-		localePrefix: '',
-		processing: true,
-	}
+	const record = progressRecords.get(traceId)
+	if (!record) return
 	record.completed = true
 	record.status = 'completed'
 	record.processing = false
@@ -160,19 +157,41 @@ export const failOAuthProgress = (traceId: string, errorCode: string): void => {
 export const finishOAuthProgress = (
 	traceId: string,
 	redirectPath: string,
+	sessionCookies?: string[],
 ): void => {
 	const record = progressRecords.get(traceId)
 	if (!record) return
 	record.redirectPath = redirectPath
+	record.sessionCookies = sessionCookies
 	record.updatedAt = Date.now()
 	progressRecords.set(traceId, record)
 }
 
-export const getOAuthProgressRedirectPath = (
+export const getOAuthProgressResult = (
 	traceId: string,
-): string | undefined => {
+): OAuthProgressResult => {
 	pruneExpiredRecords(Date.now())
-	return progressRecords.get(traceId)?.redirectPath
+	const record = progressRecords.get(traceId)
+	return {
+		redirectPath: record?.redirectPath,
+		sessionCookies: record?.sessionCookies,
+	}
+}
+
+export const getOAuthFlowCookieName = (traceId: string): string =>
+	`aurlemon_oauth_${traceId}`
+
+export const verifyOAuthProgressBrowser = (
+	traceId: string,
+	browserSecretHash: string,
+	provider: OAuthProviderName,
+): boolean => {
+	pruneExpiredRecords(Date.now())
+	return Boolean(
+		browserSecretHash &&
+		progressRecords.get(traceId)?.browserSecretHash === browserSecretHash &&
+		progressRecords.get(traceId)?.provider === provider,
+	)
 }
 
 export const getOAuthProgress = (traceId: string): OAuthProgressSnapshot => {
