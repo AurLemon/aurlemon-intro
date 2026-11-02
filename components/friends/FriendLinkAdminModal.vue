@@ -92,7 +92,7 @@
 								class="size-10 shrink-0 sm:size-11"
 								:class="
 									item.iconRounded === false
-										? 'rounded-none'
+										? 'rounded-none border border-transparent'
 										: 'rounded-lg border border-slate-300/80 dark:border-slate-600/80'
 								"
 								:ui="{
@@ -413,7 +413,7 @@
 							:class="
 								form.iconRounded
 									? 'rounded-xl border border-slate-300/80 dark:border-slate-600/80'
-									: 'rounded-none'
+									: 'rounded-none border border-transparent'
 							"
 						/>
 					</UFormField>

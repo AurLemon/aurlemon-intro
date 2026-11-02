@@ -37,7 +37,7 @@
 		<div
 			class="pointer-events-none relative mt-auto flex min-w-0 flex-col items-start gap-1 p-5"
 		>
-			<div class="flex w-full min-w-0 items-baseline gap-1.5">
+			<div class="mb-1 flex w-full min-w-0 items-end gap-1.5">
 				<UAvatar
 					:as="{ img: SkeletonImage }"
 					image-class="size-full object-cover"
@@ -48,7 +48,7 @@
 					class="size-11 sm:size-12 shrink-0"
 					:class="
 						friend.iconRounded === false
-							? 'rounded-none'
+							? 'rounded-none border border-transparent'
 							: 'rounded-lg border border-slate-300/80 dark:border-slate-600/80'
 					"
 					:ui="{
@@ -63,7 +63,7 @@
 				>
 					<button
 						type="button"
-						class="pointer-events-auto relative z-10 inline-flex max-w-full min-w-0 cursor-pointer items-center rounded-md text-xs text-slate-600 transition-colors hover:text-slate-500 focus-visible:outline-2 focus-visible:outline-slate-500 dark:text-slate-300 dark:hover:text-slate-400 -translate-y-1"
+						class="pointer-events-auto relative z-10 inline-flex max-w-full min-w-0 cursor-pointer items-center rounded-md text-xs text-slate-600 transition-colors hover:text-slate-500 focus-visible:outline-2 focus-visible:outline-slate-500 dark:text-slate-300 dark:hover:text-slate-400 -translate-y-px"
 					>
 						<FriendLinkMarquee :text="`@${friend.ownerAccount.username}`" />
 					</button>

@@ -1,14 +1,20 @@
 <template>
 	<span ref="viewport" class="friend-title block min-w-0 overflow-hidden">
-		<span ref="track" class="block w-max whitespace-pre pr-3">{{ text }}</span>
+		<span
+			ref="track"
+			class="block w-max whitespace-pre"
+			:class="{ 'pr-3': endPadding }"
+			>{{ text }}</span
+		>
 	</span>
 </template>
 
 <script setup lang="ts">
 interface Props {
 	text: string
+	endPadding?: boolean
 }
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), { endPadding: true })
 const viewport = ref<HTMLElement | null>(null)
 const track = ref<HTMLElement | null>(null)
 let resizeObserver: ResizeObserver | undefined
