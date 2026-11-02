@@ -7,6 +7,7 @@
 - 用户可见文案、异常抛出、错误、i18n 与 `locales/`：[文案、i18n 与错误](docs/I18N_ERRORS.md)
 - 文案禁止使用 `·` 分隔信息，优先使用括号，其次使用斜杠。
 - 中文文案非必要严禁使用分号，优先用逗号、句号自然衔接。
+- 文案非必要不使用省略号（`...` 或 `…`）。
 - `content/` 下的多语言 Markdown、MDC 与 frontmatter：[内容与 Frontmatter](docs/CONTENT.md)
 - 数据库、Prisma、迁移与数据库部署：[数据库规范](docs/DATABASE.md)
 - Emoji 字体、扫描范围、缓存与字体构建：[Emoji 字体构建](docs/EMOJI_FONTS.md)
