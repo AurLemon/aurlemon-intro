@@ -66,7 +66,7 @@ export const useCardPatternDrift = ({
 		}
 		startup = animate(0, 1, {
 			duration: CARD_PATTERN_DRIFT_START_MS / 1000,
-			ease: 'easeInOut',
+			ease: 'easeOut',
 			onUpdate: (speed) => {
 				if (!mounted || !active.value || currentGeneration !== generation)
 					return

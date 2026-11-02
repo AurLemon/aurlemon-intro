@@ -3,7 +3,7 @@ import type {
 	CardAppearanceSample,
 } from '~/shared/types/card-appearance'
 
-export const CARD_PATTERN_DRIFT_START_MS = 480
+export const CARD_PATTERN_DRIFT_START_MS = 1400
 
 export interface CardPatternTheme {
 	visibility: number

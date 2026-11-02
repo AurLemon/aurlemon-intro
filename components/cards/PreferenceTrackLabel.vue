@@ -77,13 +77,13 @@
 					/>
 				</a>
 				<p
-					class="overflow-x-auto whitespace-nowrap text-xs leading-4 text-slate-500 dark:text-slate-400"
+					class="text-xs leading-4 text-slate-500 [word-break:normal] [overflow-wrap:anywhere] dark:text-slate-400"
 				>
 					{{ work.author.join(' / ') }}
 					<time
 						v-if="work.releaseDate"
 						:datetime="work.releaseDate"
-						class="tabular-nums"
+						class="inline-block whitespace-nowrap tabular-nums"
 						>({{ releaseDateLabel }})</time
 					>
 				</p>
