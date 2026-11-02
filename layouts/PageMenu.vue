@@ -364,7 +364,7 @@ const onFallbackTransitionEnd = (event: TransitionEvent) => {
 						>
 							<button
 								type="button"
-								class="flex h-8.5 w-full items-center justify-between gap-2 rounded-full text-base leading-none font-semibold text-primary dark:text-sky-300 outline-none focus-visible:ring-2 focus-visible:ring-sky-300"
+								class="flex h-8.5 w-full items-center justify-between gap-2 rounded-full text-base leading-none font-semibold text-slate-800 dark:text-sky-300 outline-none focus-visible:ring-2 focus-visible:ring-slate-400 dark:focus-visible:ring-sky-300"
 							>
 								<svg
 									class="size-5 shrink-0"
@@ -408,7 +408,7 @@ const onFallbackTransitionEnd = (event: TransitionEvent) => {
 										class="flex items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-base transition-colors duration-200 motion-reduce:transition-none hover:bg-slate-100 focus-visible:bg-slate-100 dark:hover:bg-slate-800 dark:focus-visible:bg-slate-800 focus-visible:outline-none"
 										:class="
 											isMobileItemSelected(item)
-												? 'bg-menu-highlight/28 font-semibold text-slate-800 dark:bg-menu-highlight/16 dark:text-slate-300'
+												? 'bg-slate-100 font-semibold text-slate-800 dark:bg-menu-highlight/16 dark:text-slate-300'
 												: 'text-slate-800 dark:text-slate-300'
 										"
 										@click="mobileMenuOpen = false"
