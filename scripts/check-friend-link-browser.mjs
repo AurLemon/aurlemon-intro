@@ -30,24 +30,59 @@ if (!executablePath)
 		'DEPLOY_BROWSER_MISSING: Chromium is missing from the deployment bundle',
 	)
 
-const libraries = spawnSync('ldd', [executablePath], { encoding: 'utf8' })
-const fonts = spawnSync('fc-list', [':lang=zh'], { encoding: 'utf8' })
-if (
-	libraries.error ||
-	libraries.status !== 0 ||
-	libraries.stdout.includes('not found') ||
-	fonts.status !== 0 ||
-	!fonts.stdout.trim()
-) {
+function checkDependencies() {
+	const libraries = spawnSync('ldd', [executablePath], { encoding: 'utf8' })
+	const fonts = spawnSync('fc-list', [':lang=zh'], { encoding: 'utf8' })
+	const issues = []
+	if (libraries.error || libraries.status !== 0) {
+		issues.push(
+			`ldd failed: ${libraries.error?.message ?? libraries.stderr.trim()}`,
+		)
+	} else {
+		issues.push(
+			...libraries.stdout
+				.split('\n')
+				.filter((line) => line.includes('not found'))
+				.map((line) => line.trim()),
+		)
+	}
+	const fontsMissing = fonts.status !== 0 || !fonts.stdout?.trim()
+	if (fontsMissing) issues.push('fontconfig or Chinese fonts are unavailable')
+	return { issues, fontsMissing }
+}
+
+function installSystemPackages(args) {
+	const install = spawnSync(
+		'sudo',
+		['-n', 'env', 'DEBIAN_FRONTEND=noninteractive', ...args],
+		{
+			stdio: 'inherit',
+			env: { ...process.env, DEBIAN_FRONTEND: 'noninteractive' },
+		},
+	)
+	if (install.error || install.status !== 0) {
+		const version = require('playwright-core/package.json').version
+		console.error(
+			'DEPLOY_BROWSER_ADMIN_SETUP_REQUIRED: run these commands in a root shell with Node.js and pnpm, then retry deployment:',
+		)
+		console.error(`pnpm dlx playwright-core@${version} install-deps chromium`)
+		console.error(
+			'apt-get update && apt-get install -y --no-install-recommends fontconfig fonts-noto-cjk',
+		)
+		throw new Error(
+			`DEPLOY_BROWSER_DEPENDENCY_INSTALL_FAILED: ${install.error?.message ?? `installer exited with status ${install.status}`}; automatic installation requires non-interactive sudo for the installation commands`,
+		)
+	}
+}
+
+let dependencies = checkDependencies()
+if (dependencies.issues.length) {
+	console.error(
+		`DEPLOY_BROWSER_DEPENDENCIES_MISSING:\n${dependencies.issues.join('\n')}`,
+	)
 	if (!process.argv.includes('--install-deps')) {
 		throw new Error(
 			'DEPLOY_BROWSER_LIBRARIES_MISSING: Chromium system libraries or CJK fonts are unavailable',
-		)
-	}
-	const permission = spawnSync('sudo', ['-n', 'true'], { stdio: 'ignore' })
-	if (permission.status !== 0) {
-		throw new Error(
-			'DEPLOY_BROWSER_DEPENDENCY_PERMISSION_REQUIRED: missing system libraries or CJK fonts require non-interactive sudo for playwright-core install-deps chromium',
 		)
 	}
 	const cli = resolve(
@@ -55,25 +90,23 @@ if (
 		'..',
 		'cli.js',
 	)
-	const install = spawnSync(
-		'sudo',
-		[
-			'-n',
-			'env',
-			'DEBIAN_FRONTEND=noninteractive',
-			process.execPath,
-			cli,
-			'install-deps',
-			'chromium',
-		],
-		{
-			stdio: 'inherit',
-			env: { ...process.env, DEBIAN_FRONTEND: 'noninteractive' },
-		},
-	)
-	if (install.status !== 0)
+	installSystemPackages([process.execPath, cli, 'install-deps', 'chromium'])
+	dependencies = checkDependencies()
+	if (dependencies.fontsMissing) {
+		installSystemPackages(['apt-get', 'update'])
+		installSystemPackages([
+			'apt-get',
+			'install',
+			'-y',
+			'--no-install-recommends',
+			'fontconfig',
+			'fonts-noto-cjk',
+		])
+		dependencies = checkDependencies()
+	}
+	if (dependencies.issues.length)
 		throw new Error(
-			'DEPLOY_BROWSER_DEPENDENCY_INSTALL_FAILED: Chromium system dependencies could not be installed',
+			`DEPLOY_BROWSER_DEPENDENCIES_UNRESOLVED: ${dependencies.issues.join('; ')}`,
 		)
 }
 const { chromium } = require('playwright-core')
