@@ -1,4 +1,5 @@
 import { createError } from 'h3'
+import { randomUUID } from 'node:crypto'
 
 const TRUE_ENV_VALUES = new Set(['1', 'true', 'yes', 'on'])
 const DEFAULT_PROXY_TIMEOUT_MS = 14_000
@@ -19,6 +20,7 @@ export interface IntroProxyEnvelope {
 }
 
 interface IntroProxyRequestPayload {
+	traceId?: string
 	url: string
 	method?: string
 	headers?: Record<string, string>
@@ -181,23 +183,92 @@ export const proxyIntroRequest = async (
 		})
 	}
 
-	const response = await $fetch<unknown>(url, {
-		method: 'POST',
-		retry: 0,
-		ignoreResponseError: true,
-		timeout: normalizeProxyTimeout(payload.timeoutMs),
-		body: {
-			key: handshakeKey,
-			url: payload.url,
-			method: payload.method,
-			headers: payload.headers,
-			bodyType: payload.bodyType,
-			body: payload.body,
-			timeoutMs: payload.timeoutMs,
-		},
-	})
+	const requestId = randomUUID()
+	const startedAt = performance.now()
+	const meta: Record<string, unknown> = {
+		requestId,
+		traceId: payload.traceId,
+		proxyUrl: sanitizeProxyUrlForLog(url),
+		upstreamHost: new URL(payload.url).hostname,
+		method: payload.method ?? 'GET',
+		timeoutMs: normalizeProxyTimeout(payload.timeoutMs),
+	}
+	const verbose = parseBooleanEnv(process.env.INTRO_PROXY_DIAGNOSTICS)
+	if (verbose) console.info('INTRO_PROXY_REQUEST_STARTED', meta)
+	let phase = 'transport'
+	try {
+		const response = await $fetch.raw<string>(url, {
+			method: 'POST',
+			retry: 0,
+			ignoreResponseError: true,
+			responseType: 'text',
+			headers: {
+				'x-intro-proxy-request-id': requestId,
+				...(payload.traceId
+					? { 'x-intro-proxy-trace-id': payload.traceId }
+					: {}),
+			},
+			timeout: normalizeProxyTimeout(payload.timeoutMs),
+			body: {
+				key: handshakeKey,
+				url: payload.url,
+				method: payload.method,
+				headers: payload.headers,
+				bodyType: payload.bodyType,
+				body: payload.body,
+				timeoutMs: payload.timeoutMs,
+			},
+		})
 
-	return normalizeEnvelope(response)
+		phase = 'envelope'
+		const raw = response._data ?? ''
+		Object.assign(meta, {
+			outerStatus: response.status,
+			contentType: response.headers.get('content-type'),
+			responseBytes: Buffer.byteLength(raw),
+			eoId: response.headers.get('eo-log-uuid')?.slice(0, 128),
+			cfRay: response.headers.get('cf-ray')?.slice(0, 128),
+			workerRequestId: response.headers
+				.get('x-intro-proxy-worker-id')
+				?.slice(0, 128),
+		})
+		let parsed: unknown
+		try {
+			parsed = JSON.parse(raw)
+		} catch {
+			throw new Error('Intro proxy returned non-JSON response.')
+		}
+		const envelope = normalizeEnvelope(parsed)
+		const durationMs = Math.round(performance.now() - startedAt)
+		Object.assign(meta, {
+			durationMs,
+			workerRequestId: envelope.requestId,
+			workerDurationMs: envelope.durationMs,
+			outsideWorkerMs:
+				envelope.durationMs === undefined
+					? undefined
+					: Math.max(0, durationMs - envelope.durationMs),
+			upstreamStatus: envelope.status,
+		})
+		if (!response.ok || !envelope.ok || durationMs >= 1000) {
+			console.warn('INTRO_PROXY_REQUEST_COMPLETED', meta)
+		} else if (verbose) {
+			console.info('INTRO_PROXY_REQUEST_COMPLETED', meta)
+		}
+		return envelope
+	} catch (error) {
+		const cause =
+			isRecord(error) && isRecord(error.cause) ? error.cause : undefined
+		console.error('INTRO_PROXY_REQUEST_FAILED', {
+			...meta,
+			phase,
+			durationMs: Math.round(performance.now() - startedAt),
+			errorName: error instanceof Error ? error.name : undefined,
+			errorCode:
+				typeof cause?.code === 'string' ? cause.code.slice(0, 64) : undefined,
+		})
+		throw error
+	}
 }
 
 export const resolveBangumiImageProxyUrl = (imageUrl: string): string =>

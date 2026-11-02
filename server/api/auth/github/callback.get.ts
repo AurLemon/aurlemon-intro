@@ -1,5 +1,6 @@
 import { OAuthIntent, OAuthProvider } from '~/generated/prisma/client'
 import { completeOAuth } from '~/server/utils/user-auth'
+import { randomUUID } from 'node:crypto'
 
 const withResult = (
 	redirectPath: string,
@@ -36,8 +37,13 @@ const errorCode = (error: unknown): string => {
 }
 
 export default defineEventHandler(async (event) => {
+	const traceId = randomUUID()
+	const startedAt = performance.now()
+	let outcome = 'failed'
+	console.info('GITHUB_OAUTH_CALLBACK_STARTED', { traceId })
 	try {
-		const result = await completeOAuth(event, OAuthProvider.GITHUB)
+		const result = await completeOAuth(event, OAuthProvider.GITHUB, traceId)
+		outcome = result.mergeToken ? 'merge_required' : 'success'
 		return sendRedirect(
 			event,
 			result.mergeToken
@@ -46,8 +52,15 @@ export default defineEventHandler(async (event) => {
 		)
 	} catch (error) {
 		console.error('GITHUB_OAUTH_CALLBACK_FAILED', {
+			traceId,
 			errorCode: errorCode(error),
 		})
 		return sendRedirect(event, withResult('/', 'authError', errorCode(error)))
+	} finally {
+		console.info('GITHUB_OAUTH_CALLBACK_COMPLETED', {
+			traceId,
+			outcome,
+			durationMs: Math.round(performance.now() - startedAt),
+		})
 	}
 })

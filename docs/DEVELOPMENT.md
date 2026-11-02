@@ -60,6 +60,14 @@ ACG 与音乐条目额外保存 `title`、`author` 数组、`category`、`href`�
 - `/meta` 的版本标识来自 `build/site-meta.ts`：配置加载时读取当前源码 `git rev-parse HEAD` 和该提交的 committer 时间（`git show -s --format=%cI <SHA>`），经 `runtimeConfig.siteBuild` 随产物保存，生产服务器无需 `.git`。无 Git 的源码归档可在构建前设置完整的 `SITE_COMMIT_SHA`；无法确定时显示暂无信息，不使用运行时仓库 HEAD 或手写 hash。提交日期缺失时不显示日期 Badge，不以构建时间代替提交时间。技术栈版本读取实际安装包，不用 package.json 的范围冒充安装版本。
 - `/api/site-meta` 仅返回 commit、所选技术栈版本、服务器实际 Node.js/V8/系统平台/架构/生效时区，以及白名单服务状态，不返回环境变量、数据库地址或内部错误。HTTP 响应不缓存，内部服务状态最多缓存 30 秒；GitHub / Bangumi 只读既有快照和有效期，不主动请求上游。OAuth / SMTP 仅表示是否已配置，数据库执行只读检查，邮件失败状态只读 Outbox。无数据、过期、读取失败分别展示，禁止推断为服务在线。
 
+## GitHub OAuth 与 Intro Proxy 诊断
+
+- GitHub 回调生成随机 `traceId`，贯穿 `GITHUB_OAUTH_CALLBACK_*`、`GITHUB_OAUTH_STAGE_*`、`GITHUB_OAUTH_DIRECT_ATTEMPT_*` 和代理请求。阶段为 `token`、`user`、`emails`，回调日志另含总耗时和结果。`emails` 当前仍直连 GitHub，最多三次、每次 20 秒，失败降级为空列表，同时记录 `GITHUB_EMAIL_FETCH_FAILED`，阶段完成只表示包含降级在内的操作结束。不得把它误读为邮箱读取成功。
+- Intro Proxy 每次请求另生成 `requestId`，通过 `x-intro-proxy-request-id` 传至 Worker，OAuth `traceId` 通过 `x-intro-proxy-trace-id` 传递。`INTRO_PROXY_REQUEST_COMPLETED` / `FAILED` 记录总耗时、外层状态、响应类型 / 字节数、EO-ID、CF-Ray、Worker ID / 耗时和内层状态。`outsideWorkerMs` 是总耗时减 Worker 耗时的近似差值，包含往返网络、EO、排队及响应传输等，不能单独当作 EO 耗时，也不要求跨机时钟同步。
+- 代理失败和超过一秒的请求总会记录。项目设置 `INTRO_PROXY_DIAGNOSTICS=true` 后还记录请求开始及快速成功请求。Worker 同名变量控制接收 / 上游开始及快速完成日志，生产排障时两端一起开启，并确保 Worker Logs 已启用且采样率为 1。即使如此，日志丢失或未到 Worker 的失败仍可能没有 Worker 记录，缺失记录只能缩小范围，不能单凭它归因 EO。
+- Worker `INTRO_PROXY_WORKER_COMPLETED` 记录 CF 节点、接收至上游开始耗时、上游响应头等待 / 正文读取耗时、GitHub request ID 和剩余配额。项目日志中的 `requestId` 对应 Worker 的 `clientRequestId`，项目 `workerRequestId` 对应 Worker 的 `requestId`。两端按当前协议发布，不新增自动重试或更改认证行为。
+- 日志不记录请求 / 响应正文、Authorization、Cookie、握手密钥、OAuth code / state、token、邮箱或用户资料。代理只记上游主机，Worker 只记固定操作名，不记公开账号查询路径与查询串。诊断日志属于长期运维功能，不是临时 Debug 代码。当前日志不包含 EO 实际回源 IP，525 的具体回源节点仍需结合 EO 侧记录定位。
+
 ## 面向 Agent 的静态导览
 
 - `public/llms.txt` 是公开的网站导览，按 [llms.txt 提案](https://llmstxt.org/) 组织简介和三语言页面链接，来信链接放在页面导览之前。`nuxt.config.ts` 的 `routeRules` 配置 `Link: </llms.txt>; rel="describedby"; type="text/plain"` HTTP 响应头作为发现入口；当前 Head 类型未收录此关系，沿用提案支持的响应头方式。HTML 的 `<head>` 同时输出指向导览的自定义 `<meta name="llms">` 提示，以及直达 `/hello-agent.md` 的 `<link rel="help">`，来信再链接回导览。入口只放在响应头与 HTML 头部，不在页脚等可见正文中添加链接。自定义 meta 没有通用识别保证，这些入口也不保证所有 Agent 都会读取。

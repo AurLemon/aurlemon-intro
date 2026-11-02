@@ -3,7 +3,6 @@ import {
 	isGithubProxyEnabled,
 	isIntroProxyTransportError,
 	proxyIntroRequest,
-	resolveIntroProxyBodyText,
 	resolveIntroProxyJsonBody,
 } from '~/server/utils/intro-proxy'
 
@@ -271,21 +270,6 @@ const resolveFetchErrorStatus = (error: unknown): number | undefined => {
 	)
 }
 
-const resolveFetchErrorData = (error: unknown): unknown => {
-	if (!error || typeof error !== 'object') {
-		return undefined
-	}
-
-	const maybeError = error as {
-		data?: unknown
-		response?: {
-			_data?: unknown
-		}
-	}
-
-	return maybeError.response?._data ?? maybeError.data
-}
-
 const resolveFetchErrorStatusMessage = (error: unknown): string | undefined => {
 	if (!error || typeof error !== 'object') {
 		return undefined
@@ -314,11 +298,19 @@ const fetchWithRetry = async <T>(
 	url: string,
 	options: Parameters<typeof $fetch<T>>[1],
 	retries = GITHUB_FETCH_RETRIES,
+	traceId?: string,
 ): Promise<FetchWithRetryResult<T>> => {
 	let lastError: unknown
 	const startedAt = Date.now()
 
 	for (let attempt = 0; attempt <= retries; attempt++) {
+		const attemptStartedAt = performance.now()
+		const diagnostic = {
+			traceId,
+			stage: new URL(url).pathname,
+			attempt: attempt + 1,
+		}
+		if (traceId) console.info('GITHUB_OAUTH_DIRECT_ATTEMPT_STARTED', diagnostic)
 		try {
 			const data = (await $fetch<T>(url, {
 				...options,
@@ -326,12 +318,25 @@ const fetchWithRetry = async <T>(
 				retry: 0,
 			})) as T
 
+			if (traceId)
+				console.info('GITHUB_OAUTH_DIRECT_ATTEMPT_COMPLETED', {
+					...diagnostic,
+					durationMs: Math.round(performance.now() - attemptStartedAt),
+				})
 			return {
 				data,
 				requestMeta: buildGithubRequestMeta(attempt, startedAt),
 			}
 		} catch (error) {
 			lastError = error
+			if (traceId)
+				console.warn('GITHUB_OAUTH_DIRECT_ATTEMPT_FAILED', {
+					...diagnostic,
+					durationMs: Math.round(performance.now() - attemptStartedAt),
+					status: resolveFetchErrorStatus(error),
+					errorCode: getErrorCode(error),
+					retrying: attempt < retries && isRetryableGithubNetworkError(error),
+				})
 
 			if (attempt >= retries || !isRetryableGithubNetworkError(error)) {
 				throw error
@@ -353,6 +358,7 @@ const getGithubCallbackUrl = (): string =>
 export const exchangeGithubCode = async (
 	code: string,
 	codeVerifier?: string | null,
+	traceId?: string,
 ): Promise<GithubTokenExchangeResult> => {
 	const githubClientId = process.env.GITHUB_CLIENT_ID ?? ''
 	const githubClientSecret = process.env.GITHUB_CLIENT_SECRET ?? ''
@@ -378,6 +384,7 @@ export const exchangeGithubCode = async (
 	try {
 		if (useProxy) {
 			const proxyEnvelope = await proxyIntroRequest({
+				traceId,
 				url: 'https://github.com/login/oauth/access_token',
 				method: 'POST',
 				headers: {
@@ -395,6 +402,7 @@ export const exchangeGithubCode = async (
 
 				if (isIntroProxyTransportError(proxyEnvelope)) {
 					console.error('[auth/github] token exchange network error', {
+						traceId,
 						transport: 'proxy',
 						upstreamStatus: proxyEnvelope.status,
 						errorMessage: proxyEnvelope.error,
@@ -409,9 +417,9 @@ export const exchangeGithubCode = async (
 				}
 
 				console.error('[auth/github] token exchange provider error', {
+					traceId,
 					transport: 'proxy',
 					upstreamStatus: proxyEnvelope.status,
-					upstreamData: resolveIntroProxyBodyText(proxyEnvelope),
 					errorMessage: proxyEnvelope.error,
 					proxyRequestId: proxyEnvelope.requestId,
 					networkDiagnostic,
@@ -443,6 +451,8 @@ export const exchangeGithubCode = async (
 					},
 					body: tokenExchangeBody,
 				},
+				GITHUB_FETCH_RETRIES,
+				traceId,
 			)
 		}
 	} catch (error) {
@@ -460,11 +470,11 @@ export const exchangeGithubCode = async (
 		const errorName = getErrorName(error)
 		const errorMessage = getErrorMessage(error)
 		const upstreamStatus = resolveFetchErrorStatus(error)
-		const upstreamData = resolveFetchErrorData(error)
 		const networkDiagnostic = await resolveGithubNetworkDiagnostic()
 
 		if (isRetryableGithubNetworkError(error)) {
 			console.error('[auth/github] token exchange network error', {
+				traceId,
 				transport: useProxy ? 'proxy' : 'direct',
 				errorCode,
 				errorName,
@@ -480,12 +490,12 @@ export const exchangeGithubCode = async (
 		}
 
 		console.error('[auth/github] token exchange provider error', {
+			traceId,
 			transport: useProxy ? 'proxy' : 'direct',
 			errorCode,
 			errorName,
 			errorMessage,
 			upstreamStatus,
-			upstreamData,
 			networkDiagnostic,
 		})
 
@@ -512,6 +522,7 @@ export const exchangeGithubCode = async (
 
 export const fetchGithubUser = async (
 	accessToken: string,
+	traceId?: string,
 ): Promise<GithubUserFetchResult> => {
 	let githubUserResult: FetchWithRetryResult<GithubUserResponse>
 	const useProxy = isGithubProxyEnabled()
@@ -519,6 +530,7 @@ export const fetchGithubUser = async (
 	try {
 		if (useProxy) {
 			const proxyEnvelope = await proxyIntroRequest({
+				traceId,
 				url: 'https://api.github.com/user',
 				method: 'GET',
 				headers: {
@@ -535,6 +547,7 @@ export const fetchGithubUser = async (
 
 				if (isIntroProxyTransportError(proxyEnvelope)) {
 					console.error('[auth/github] user info network error', {
+						traceId,
 						transport: 'proxy',
 						upstreamStatus: proxyEnvelope.status,
 						errorMessage: proxyEnvelope.error,
@@ -549,9 +562,9 @@ export const fetchGithubUser = async (
 				}
 
 				console.error('[auth/github] user info provider error', {
+					traceId,
 					transport: 'proxy',
 					upstreamStatus: proxyEnvelope.status,
-					upstreamData: resolveIntroProxyBodyText(proxyEnvelope),
 					errorMessage: proxyEnvelope.error,
 					proxyRequestId: proxyEnvelope.requestId,
 					networkDiagnostic,
@@ -580,6 +593,8 @@ export const fetchGithubUser = async (
 						'user-agent': 'AurLemon-Intro',
 					},
 				},
+				GITHUB_FETCH_RETRIES,
+				traceId,
 			)
 		}
 	} catch (error) {
@@ -597,11 +612,11 @@ export const fetchGithubUser = async (
 		const errorName = getErrorName(error)
 		const errorMessage = getErrorMessage(error)
 		const upstreamStatus = resolveFetchErrorStatus(error)
-		const upstreamData = resolveFetchErrorData(error)
 		const networkDiagnostic = await resolveGithubNetworkDiagnostic()
 
 		if (isRetryableGithubNetworkError(error)) {
 			console.error('[auth/github] user info network error', {
+				traceId,
 				transport: useProxy ? 'proxy' : 'direct',
 				errorCode,
 				errorName,
@@ -617,12 +632,12 @@ export const fetchGithubUser = async (
 		}
 
 		console.error('[auth/github] user info provider error', {
+			traceId,
 			transport: useProxy ? 'proxy' : 'direct',
 			errorCode,
 			errorName,
 			errorMessage,
 			upstreamStatus,
-			upstreamData,
 			networkDiagnostic,
 		})
 
@@ -654,6 +669,7 @@ export const fetchGithubUser = async (
 
 export const fetchGithubEmails = async (
 	accessToken: string,
+	traceId?: string,
 ): Promise<GithubEmailResponse[]> => {
 	try {
 		const result = await fetchWithRetry<GithubEmailResponse[]>(
@@ -665,11 +681,14 @@ export const fetchGithubEmails = async (
 					'user-agent': 'AurLemon-Intro',
 				},
 			},
+			GITHUB_FETCH_RETRIES,
+			traceId,
 		)
 
 		return Array.isArray(result.data) ? result.data : []
 	} catch (error) {
 		console.warn('GITHUB_EMAIL_FETCH_FAILED', {
+			traceId,
 			status: resolveFetchErrorStatus(error),
 		})
 		return []

@@ -1,4 +1,5 @@
 import { OAuthProvider } from '~/generated/prisma/client'
+import { randomUUID } from 'node:crypto'
 import {
 	exchangeGithubCode,
 	fetchGithubEmails,
@@ -6,6 +7,7 @@ import {
 } from '~/server/utils/social-auth'
 import {
 	isLinuxDoProxyEnabled,
+	isGithubProxyEnabled,
 	proxyIntroRequest,
 	resolveIntroProxyJsonBody,
 } from '~/server/utils/intro-proxy'
@@ -28,6 +30,7 @@ export interface OAuthAuthorizationOptions {
 export interface OAuthCodeExchangeOptions {
 	code: string
 	codeVerifier: string | null
+	traceId?: string
 }
 
 export interface OAuthProviderAdapter {
@@ -143,6 +146,37 @@ export const isOAuthProviderConfigured = (provider: OAuthProvider): boolean => {
 	)
 }
 
+// Never log provider payloads, authorization codes, tokens or user identities.
+const measureGithubStage = async <T>(
+	traceId: string,
+	stage: 'token' | 'user' | 'emails',
+	operation: () => Promise<T>,
+): Promise<T> => {
+	const startedAt = performance.now()
+	const meta = {
+		traceId,
+		stage,
+		transport:
+			stage !== 'emails' && isGithubProxyEnabled() ? 'proxy' : 'direct',
+	}
+	console.info('GITHUB_OAUTH_STAGE_STARTED', meta)
+	try {
+		const result = await operation()
+		console.info('GITHUB_OAUTH_STAGE_COMPLETED', {
+			...meta,
+			durationMs: Math.round(performance.now() - startedAt),
+		})
+		return result
+	} catch (error) {
+		console.error('GITHUB_OAUTH_STAGE_FAILED', {
+			...meta,
+			durationMs: Math.round(performance.now() - startedAt),
+			statusCode: getErrorStatusCode(error),
+		})
+		throw error
+	}
+}
+
 const githubAdapter: OAuthProviderAdapter = {
 	provider: OAuthProvider.GITHUB,
 	createAuthorizationUrl: ({ state, codeChallenge }) => {
@@ -163,11 +197,17 @@ const githubAdapter: OAuthProviderAdapter = {
 		url.searchParams.set('code_challenge_method', 'S256')
 		return url.toString()
 	},
-	exchangeCode: async ({ code, codeVerifier }) => {
-		const token = await exchangeGithubCode(code, codeVerifier)
+	exchangeCode: async ({ code, codeVerifier, traceId = randomUUID() }) => {
+		const token = await measureGithubStage(traceId, 'token', () =>
+			exchangeGithubCode(code, codeVerifier, traceId),
+		)
 		const [userResult, emails] = await Promise.all([
-			fetchGithubUser(token.accessToken),
-			fetchGithubEmails(token.accessToken),
+			measureGithubStage(traceId, 'user', () =>
+				fetchGithubUser(token.accessToken, traceId),
+			),
+			measureGithubStage(traceId, 'emails', () =>
+				fetchGithubEmails(token.accessToken, traceId),
+			),
 		])
 		const user = userResult.user
 		const primaryEmail = emails.find((item) => item.primary && item.verified)

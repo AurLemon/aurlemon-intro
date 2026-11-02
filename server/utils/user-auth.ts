@@ -450,6 +450,7 @@ const createMergeTicket = async (
 export const completeOAuth = async (
 	event: H3Event,
 	provider: OAuthProvider,
+	traceId?: string,
 ): Promise<OAuthCompletionResult> => {
 	const query = getQuery(event)
 	const code = typeof query.code === 'string' ? query.code : ''
@@ -491,6 +492,7 @@ export const completeOAuth = async (
 	const identity = await getOAuthProviderAdapter(provider).exchangeCode({
 		code,
 		codeVerifier: transaction.codeVerifier,
+		traceId,
 	})
 	const existingIdentity = await prisma.oAuthIdentity.findUnique({
 		where: {
