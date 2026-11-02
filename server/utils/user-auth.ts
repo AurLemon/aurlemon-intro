@@ -18,6 +18,7 @@ import {
 	type NormalizedOAuthIdentity,
 } from '~/server/utils/oauth-providers'
 import type { AuthIdentity, AuthUser } from '~/shared/types/social'
+import type { OAuthProgressUpdate } from '~/server/utils/oauth-progress'
 
 const SESSION_COOKIE_NAME = 'aurlemon_session'
 const SESSION_IDLE_TTL_MS = 1000 * 60 * 60 * 24 * 7
@@ -451,10 +452,19 @@ export const completeOAuth = async (
 	event: H3Event,
 	provider: OAuthProvider,
 	traceId?: string,
+	options?: {
+		code?: string
+		state?: string
+		onProgress?: (update: OAuthProgressUpdate) => void
+	},
 ): Promise<OAuthCompletionResult> => {
+	const onProgress = options?.onProgress ?? (() => undefined)
 	const query = getQuery(event)
-	const code = typeof query.code === 'string' ? query.code : ''
-	const state = typeof query.state === 'string' ? query.state : ''
+	const code =
+		options?.code ?? (typeof query.code === 'string' ? query.code : '')
+	const state =
+		options?.state ?? (typeof query.state === 'string' ? query.state : '')
+	onProgress({ key: 'validating' })
 	if (!code || !state) {
 		throw createError({ statusCode: 401, statusMessage: 'INVALID_OAUTH_STATE' })
 	}
@@ -470,6 +480,7 @@ export const completeOAuth = async (
 	) {
 		throw createError({ statusCode: 401, statusMessage: 'INVALID_OAUTH_STATE' })
 	}
+	onProgress({ key: 'stateVerified' })
 	const consumed = await prisma.oAuthTransaction.updateMany({
 		where: { id: transaction.id, consumedAt: null },
 		data: { consumedAt: new Date() },
@@ -493,7 +504,9 @@ export const completeOAuth = async (
 		code,
 		codeVerifier: transaction.codeVerifier,
 		traceId,
+		onProgress,
 	})
+	onProgress({ key: 'accountStarted' })
 	const existingIdentity = await prisma.oAuthIdentity.findUnique({
 		where: {
 			provider_providerUserId: {
@@ -512,6 +525,7 @@ export const completeOAuth = async (
 				existingIdentity.userId,
 				identity,
 			)
+			onProgress({ key: 'accountCompleted' })
 			return {
 				redirectPath: transaction.redirectPath,
 				mergeToken,
@@ -567,6 +581,7 @@ export const completeOAuth = async (
 	if (provider === OAuthProvider.GITHUB) {
 		await upsertGithubEmail(userId, identity.verifiedPrimaryEmail)
 	}
+	onProgress({ key: 'accountCompleted' })
 
 	return {
 		redirectPath: transaction.redirectPath,

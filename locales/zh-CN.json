@@ -316,6 +316,7 @@
 			"close": "关闭",
 			"loginWithGithub": "使用 GitHub 登录",
 			"loginWithLinuxDo": "使用 Linux DO 登录",
+			"loginStarting": "正在准备 {provider} 登录，页面即将跳转…",
 			"loginWithProviderPrefix": "使用",
 			"loginWithProviderOr": "或",
 			"loginWithProviderSuffix": "登录",
@@ -372,6 +373,23 @@
 		"auth": {
 			"loggedIn": "已登录",
 			"loggedInAs": "已登录：{login}"
+		},
+		"oauthProgress": {
+			"title": "正在完成 GitHub 授权",
+			"received": "已收到 GitHub 回调页面，正在连接本站服务器…",
+			"validating": "本站服务器正在验证登录状态…",
+			"stateVerified": "登录状态已通过，正在向 GitHub 确认授权…",
+			"tokenStarted": "正在等待 GitHub 返回授权凭证…",
+			"tokenCompleted": "授权凭证已返回，正在读取 GitHub 账号资料…",
+			"profileStarted": "本站服务器正在读取 GitHub 账号资料…",
+			"profileCompleted": "账号资料已返回，正在处理账号邮箱…",
+			"emailsStarted": "本站服务器正在读取 GitHub 账号邮箱…",
+			"emailsCompleted": "GitHub 账号信息已返回，正在保存本站登录状态…",
+			"retrying": "请求暂时失败，服务器正在进行第 {attempt} 次尝试（共 {totalAttempts} 次）…",
+			"accountStarted": "正在保存本站登录状态…",
+			"accountCompleted": "登录信息已保存，正在返回原页面…",
+			"redirecting": "登录处理完成，正在返回原页面…",
+			"failed": "登录暂未完成，正在返回页面显示错误信息…"
 		},
 		"siteLike": {
 			"count": "{count}",

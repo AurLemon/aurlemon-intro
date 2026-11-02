@@ -316,6 +316,7 @@
 			"close": "閉じる",
 			"loginWithGithub": "GitHub でログイン",
 			"loginWithLinuxDo": "Linux DO でログイン",
+			"loginStarting": "{provider} ログインを準備しています。まもなく移動します…",
 			"loginWithProviderPrefix": "",
 			"loginWithProviderOr": "または",
 			"loginWithProviderSuffix": "でログイン",
@@ -372,6 +373,23 @@
 		"auth": {
 			"loggedIn": "ログイン済み",
 			"loggedInAs": "ログイン中: {login}"
+		},
+		"oauthProgress": {
+			"title": "GitHub 認証を完了しています",
+			"received": "GitHub から戻りました。サイトサーバーに接続しています…",
+			"validating": "サイトサーバーがログイン状態を確認しています…",
+			"stateVerified": "ログイン状態を確認しました。GitHub に認証を確認しています…",
+			"tokenStarted": "GitHub から認証トークンが返るのを待っています…",
+			"tokenCompleted": "認証情報を受け取りました。GitHub アカウントを読み込んでいます…",
+			"profileStarted": "サイトサーバーが GitHub アカウント情報を読み込んでいます…",
+			"profileCompleted": "アカウント情報を受け取りました。メール情報を処理しています…",
+			"emailsStarted": "サイトサーバーが GitHub のメール情報を読み込んでいます…",
+			"emailsCompleted": "GitHub アカウント情報を受け取りました。サイトのログイン状態を保存しています…",
+			"retrying": "一時的な失敗が発生しました。サーバーが {totalAttempts} 回中 {attempt} 回目の試行を行っています…",
+			"accountStarted": "サイトのログイン状態を保存しています…",
+			"accountCompleted": "ログイン情報を保存しました。元のページに戻っています…",
+			"redirecting": "ログイン処理が完了しました。元のページに戻っています…",
+			"failed": "ログインを完了できませんでした。エラーを表示するためページに戻っています…"
 		},
 		"siteLike": {
 			"count": "{count}",

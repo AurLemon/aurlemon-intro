@@ -11,6 +11,7 @@ import {
 	proxyIntroRequest,
 	resolveIntroProxyJsonBody,
 } from '~/server/utils/intro-proxy'
+import type { OAuthProgressUpdate } from '~/server/utils/oauth-progress'
 
 export interface NormalizedOAuthIdentity {
 	provider: OAuthProvider
@@ -31,6 +32,7 @@ export interface OAuthCodeExchangeOptions {
 	code: string
 	codeVerifier: string | null
 	traceId?: string
+	onProgress?: (update: OAuthProgressUpdate) => void
 }
 
 export interface OAuthProviderAdapter {
@@ -151,6 +153,7 @@ const measureGithubStage = async <T>(
 	traceId: string,
 	stage: 'token' | 'user' | 'emails',
 	operation: () => Promise<T>,
+	onProgress?: (update: OAuthProgressUpdate) => void,
 ): Promise<T> => {
 	const startedAt = performance.now()
 	const meta = {
@@ -160,11 +163,27 @@ const measureGithubStage = async <T>(
 			stage !== 'emails' && isGithubProxyEnabled() ? 'proxy' : 'direct',
 	}
 	console.info('GITHUB_OAUTH_STAGE_STARTED', meta)
+	onProgress?.({
+		key:
+			stage === 'token'
+				? 'tokenStarted'
+				: stage === 'user'
+					? 'profileStarted'
+					: 'emailsStarted',
+	})
 	try {
 		const result = await operation()
 		console.info('GITHUB_OAUTH_STAGE_COMPLETED', {
 			...meta,
 			durationMs: Math.round(performance.now() - startedAt),
+		})
+		onProgress?.({
+			key:
+				stage === 'token'
+					? 'tokenCompleted'
+					: stage === 'user'
+						? 'profileCompleted'
+						: 'emailsCompleted',
 		})
 		return result
 	} catch (error) {
@@ -197,16 +216,30 @@ const githubAdapter: OAuthProviderAdapter = {
 		url.searchParams.set('code_challenge_method', 'S256')
 		return url.toString()
 	},
-	exchangeCode: async ({ code, codeVerifier, traceId = randomUUID() }) => {
-		const token = await measureGithubStage(traceId, 'token', () =>
-			exchangeGithubCode(code, codeVerifier, traceId),
+	exchangeCode: async ({
+		code,
+		codeVerifier,
+		traceId = randomUUID(),
+		onProgress,
+	}) => {
+		const token = await measureGithubStage(
+			traceId,
+			'token',
+			() => exchangeGithubCode(code, codeVerifier, traceId, onProgress),
+			onProgress,
 		)
 		const [userResult, emails] = await Promise.all([
-			measureGithubStage(traceId, 'user', () =>
-				fetchGithubUser(token.accessToken, traceId),
+			measureGithubStage(
+				traceId,
+				'user',
+				() => fetchGithubUser(token.accessToken, traceId, onProgress),
+				onProgress,
 			),
-			measureGithubStage(traceId, 'emails', () =>
-				fetchGithubEmails(token.accessToken, traceId),
+			measureGithubStage(
+				traceId,
+				'emails',
+				() => fetchGithubEmails(token.accessToken, traceId, onProgress),
+				onProgress,
 			),
 		])
 		const user = userResult.user

@@ -5,6 +5,8 @@ import {
 	proxyIntroRequest,
 	resolveIntroProxyJsonBody,
 } from '~/server/utils/intro-proxy'
+import type { IntroProxyEnvelope } from '~/server/utils/intro-proxy'
+import type { OAuthProgressUpdate } from '~/server/utils/oauth-progress'
 
 interface GithubAccessTokenResponse {
 	access_token?: string
@@ -27,7 +29,9 @@ export interface GithubEmailResponse {
 const GITHUB_FETCH_TIMEOUT = 20_000
 const GITHUB_FETCH_RETRIES = 2
 const GITHUB_PROXY_FETCH_TIMEOUT = 9_000
+const GITHUB_EMAIL_FETCH_TIMEOUT = 5_000
 const GITHUB_RETRY_DELAYS = [400, 1000]
+const GITHUB_PROXY_RETRY_DELAYS = [400, 1000]
 const GITHUB_OAUTH_DIAG_HOSTS = ['github.com', 'api.github.com'] as const
 const RETRYABLE_GITHUB_NETWORK_ERROR_NAMES = new Set([
 	'AbortError',
@@ -270,6 +274,109 @@ const resolveFetchErrorStatus = (error: unknown): number | undefined => {
 	)
 }
 
+const isRetryableGithubProxyError = (error: unknown): boolean => {
+	const status = resolveFetchErrorStatus(error)
+	return (
+		isRetryableGithubNetworkError(error) ||
+		(status !== undefined && status >= 500 && status <= 599)
+	)
+}
+
+const isRetryablePreWorkerError = (error: unknown): boolean => {
+	if (!error || typeof error !== 'object' || !('preWorkerResponse' in error)) {
+		return false
+	}
+	const status = resolveFetchErrorStatus(error)
+	return (
+		error.preWorkerResponse === true &&
+		status !== undefined &&
+		status >= 500 &&
+		status <= 599
+	)
+}
+
+const isRetryableGithubProxyEnvelope = (
+	stage: 'token' | 'user',
+	envelope: IntroProxyEnvelope,
+): boolean => {
+	if (envelope.ok) return false
+	if (stage === 'token') {
+		return (
+			!envelope.workerRequestId &&
+			envelope.outerStatus !== undefined &&
+			envelope.outerStatus >= 500 &&
+			envelope.outerStatus <= 599
+		)
+	}
+	return (
+		envelope.status >= 500 ||
+		(!envelope.workerRequestId &&
+			envelope.outerStatus !== undefined &&
+			envelope.outerStatus >= 500 &&
+			envelope.outerStatus <= 599)
+	)
+}
+
+interface GithubProxyFetchResult {
+	envelope: IntroProxyEnvelope
+	attemptCount: number
+}
+
+const fetchGithubProxyWithRetry = async (
+	stage: 'token' | 'user',
+	traceId: string | undefined,
+	operation: () => Promise<IntroProxyEnvelope>,
+	onProgress?: (update: OAuthProgressUpdate) => void,
+): Promise<GithubProxyFetchResult> => {
+	for (let attempt = 0; attempt <= GITHUB_FETCH_RETRIES; attempt++) {
+		const startedAt = performance.now()
+		const meta = {
+			traceId,
+			stage,
+			attempt: attempt + 1,
+			totalAttempts: GITHUB_FETCH_RETRIES + 1,
+		}
+		try {
+			const envelope = await operation()
+			const retryable = isRetryableGithubProxyEnvelope(stage, envelope)
+			console.info('GITHUB_OAUTH_PROXY_ATTEMPT_COMPLETED', {
+				...meta,
+				durationMs: Math.round(performance.now() - startedAt),
+				status: envelope.status,
+				ok: envelope.ok,
+				retrying: retryable && attempt < GITHUB_FETCH_RETRIES,
+				proxyRequestId: envelope.requestId,
+			})
+			if (!retryable || attempt >= GITHUB_FETCH_RETRIES) {
+				return { envelope, attemptCount: attempt + 1 }
+			}
+		} catch (error) {
+			const retryable =
+				stage === 'token'
+					? isRetryablePreWorkerError(error)
+					: isRetryableGithubProxyError(error)
+			console.warn('GITHUB_OAUTH_PROXY_ATTEMPT_FAILED', {
+				...meta,
+				durationMs: Math.round(performance.now() - startedAt),
+				status: resolveFetchErrorStatus(error),
+				errorCode: getErrorCode(error),
+				retrying: retryable && attempt < GITHUB_FETCH_RETRIES,
+			})
+			if (!retryable || attempt >= GITHUB_FETCH_RETRIES) throw error
+		}
+
+		const nextAttempt = attempt + 2
+		onProgress?.({
+			key: 'retrying',
+			attempt: nextAttempt,
+			totalAttempts: GITHUB_FETCH_RETRIES + 1,
+		})
+		await retryDelay(GITHUB_PROXY_RETRY_DELAYS[attempt] ?? 1500)
+	}
+
+	throw new Error('GitHub proxy retry loop ended unexpectedly.')
+}
+
 const resolveFetchErrorStatusMessage = (error: unknown): string | undefined => {
 	if (!error || typeof error !== 'object') {
 		return undefined
@@ -299,6 +406,7 @@ const fetchWithRetry = async <T>(
 	options: Parameters<typeof $fetch<T>>[1],
 	retries = GITHUB_FETCH_RETRIES,
 	traceId?: string,
+	onProgress?: (update: OAuthProgressUpdate) => void,
 ): Promise<FetchWithRetryResult<T>> => {
 	let lastError: unknown
 	const startedAt = Date.now()
@@ -342,6 +450,11 @@ const fetchWithRetry = async <T>(
 				throw error
 			}
 
+			onProgress?.({
+				key: 'retrying',
+				attempt: attempt + 2,
+				totalAttempts: retries + 1,
+			})
 			await retryDelay(GITHUB_RETRY_DELAYS[attempt] ?? 1500)
 		}
 	}
@@ -359,6 +472,7 @@ export const exchangeGithubCode = async (
 	code: string,
 	codeVerifier?: string | null,
 	traceId?: string,
+	onProgress?: (update: OAuthProgressUpdate) => void,
 ): Promise<GithubTokenExchangeResult> => {
 	const githubClientId = process.env.GITHUB_CLIENT_ID ?? ''
 	const githubClientSecret = process.env.GITHUB_CLIENT_SECRET ?? ''
@@ -383,20 +497,28 @@ export const exchangeGithubCode = async (
 
 	try {
 		if (useProxy) {
-			const proxyEnvelope = await proxyIntroRequest({
+			const proxyStartedAt = performance.now()
+			const proxyResult = await fetchGithubProxyWithRetry(
+				'token',
 				traceId,
-				url: 'https://github.com/login/oauth/access_token',
-				method: 'POST',
-				headers: {
-					accept: 'application/json',
-					'content-type': 'application/x-www-form-urlencoded',
-				},
-				bodyType: 'raw',
-				body: tokenExchangeBody,
-				timeoutMs: GITHUB_PROXY_FETCH_TIMEOUT,
-				notConfiguredStatusMessage: GITHUB_OAUTH_ERROR_CODES.NOT_CONFIGURED,
-			})
+				() =>
+					proxyIntroRequest({
+						traceId,
+						url: 'https://github.com/login/oauth/access_token',
+						method: 'POST',
+						headers: {
+							accept: 'application/json',
+							'content-type': 'application/x-www-form-urlencoded',
+						},
+						bodyType: 'raw',
+						body: tokenExchangeBody,
+						timeoutMs: GITHUB_PROXY_FETCH_TIMEOUT,
+						notConfiguredStatusMessage: GITHUB_OAUTH_ERROR_CODES.NOT_CONFIGURED,
+					}),
+				onProgress,
+			)
 
+			const proxyEnvelope = proxyResult.envelope
 			if (!proxyEnvelope.ok) {
 				const networkDiagnostic = await resolveGithubNetworkDiagnostic()
 
@@ -435,10 +557,15 @@ export const exchangeGithubCode = async (
 				data: resolveIntroProxyJsonBody<GithubAccessTokenResponse>(
 					proxyEnvelope,
 				),
-				requestMeta: buildProxyRequestMeta(
-					proxyEnvelope.durationMs,
-					proxyEnvelope.requestId,
-				),
+				requestMeta: {
+					...buildProxyRequestMeta(
+						proxyEnvelope.durationMs,
+						proxyEnvelope.requestId,
+					),
+					attemptCount: proxyResult.attemptCount,
+					retryCount: proxyResult.attemptCount - 1,
+					durationMs: Math.round(performance.now() - proxyStartedAt),
+				},
 			}
 		} else {
 			tokenExchangeResult = await fetchWithRetry<GithubAccessTokenResponse>(
@@ -453,6 +580,7 @@ export const exchangeGithubCode = async (
 				},
 				GITHUB_FETCH_RETRIES,
 				traceId,
+				onProgress,
 			)
 		}
 	} catch (error) {
@@ -523,25 +651,34 @@ export const exchangeGithubCode = async (
 export const fetchGithubUser = async (
 	accessToken: string,
 	traceId?: string,
+	onProgress?: (update: OAuthProgressUpdate) => void,
 ): Promise<GithubUserFetchResult> => {
 	let githubUserResult: FetchWithRetryResult<GithubUserResponse>
 	const useProxy = isGithubProxyEnabled()
 
 	try {
 		if (useProxy) {
-			const proxyEnvelope = await proxyIntroRequest({
+			const proxyStartedAt = performance.now()
+			const proxyResult = await fetchGithubProxyWithRetry(
+				'user',
 				traceId,
-				url: 'https://api.github.com/user',
-				method: 'GET',
-				headers: {
-					authorization: `Bearer ${accessToken}`,
-					accept: 'application/vnd.github+json',
-					'user-agent': 'AurLemon-Intro',
-				},
-				timeoutMs: GITHUB_PROXY_FETCH_TIMEOUT,
-				notConfiguredStatusMessage: GITHUB_OAUTH_ERROR_CODES.NOT_CONFIGURED,
-			})
+				() =>
+					proxyIntroRequest({
+						traceId,
+						url: 'https://api.github.com/user',
+						method: 'GET',
+						headers: {
+							authorization: `Bearer ${accessToken}`,
+							accept: 'application/vnd.github+json',
+							'user-agent': 'AurLemon-Intro',
+						},
+						timeoutMs: GITHUB_PROXY_FETCH_TIMEOUT,
+						notConfiguredStatusMessage: GITHUB_OAUTH_ERROR_CODES.NOT_CONFIGURED,
+					}),
+				onProgress,
+			)
 
+			const proxyEnvelope = proxyResult.envelope
 			if (!proxyEnvelope.ok) {
 				const networkDiagnostic = await resolveGithubNetworkDiagnostic()
 
@@ -578,10 +715,15 @@ export const fetchGithubUser = async (
 
 			githubUserResult = {
 				data: resolveIntroProxyJsonBody<GithubUserResponse>(proxyEnvelope),
-				requestMeta: buildProxyRequestMeta(
-					proxyEnvelope.durationMs,
-					proxyEnvelope.requestId,
-				),
+				requestMeta: {
+					...buildProxyRequestMeta(
+						proxyEnvelope.durationMs,
+						proxyEnvelope.requestId,
+					),
+					attemptCount: proxyResult.attemptCount,
+					retryCount: proxyResult.attemptCount - 1,
+					durationMs: Math.round(performance.now() - proxyStartedAt),
+				},
 			}
 		} else {
 			githubUserResult = await fetchWithRetry<GithubUserResponse>(
@@ -595,6 +737,7 @@ export const fetchGithubUser = async (
 				},
 				GITHUB_FETCH_RETRIES,
 				traceId,
+				onProgress,
 			)
 		}
 	} catch (error) {
@@ -670,11 +813,13 @@ export const fetchGithubUser = async (
 export const fetchGithubEmails = async (
 	accessToken: string,
 	traceId?: string,
+	onProgress?: (update: OAuthProgressUpdate) => void,
 ): Promise<GithubEmailResponse[]> => {
 	try {
 		const result = await fetchWithRetry<GithubEmailResponse[]>(
 			'https://api.github.com/user/emails',
 			{
+				timeout: GITHUB_EMAIL_FETCH_TIMEOUT,
 				headers: {
 					authorization: `Bearer ${accessToken}`,
 					accept: 'application/vnd.github+json',
@@ -683,6 +828,7 @@ export const fetchGithubEmails = async (
 			},
 			GITHUB_FETCH_RETRIES,
 			traceId,
+			onProgress,
 		)
 
 		return Array.isArray(result.data) ? result.data : []

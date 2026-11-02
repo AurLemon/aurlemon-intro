@@ -40,6 +40,18 @@
 							<LinuxDoIcon class="h-4 w-4" />
 							{{ t('social.actions.loginWithLinuxDo') }}
 						</UButton>
+						<p
+							v-if="loginProvider"
+							class="px-3 pt-2 text-xs leading-5 text-slate-500 dark:text-slate-400"
+							role="status"
+							aria-live="polite"
+						>
+							{{
+								t('social.actions.loginStarting', {
+									provider: loginProvider === 'GITHUB' ? 'GitHub' : 'Linux DO',
+								})
+							}}
+						</p>
 					</div>
 				</template>
 			</UPopover>

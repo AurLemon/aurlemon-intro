@@ -62,10 +62,11 @@ ACG 与音乐条目额外保存 `title`、`author` 数组、`category`、`href`�
 
 ## GitHub OAuth 与 Intro Proxy 诊断
 
-- GitHub 回调生成随机 `traceId`，贯穿 `GITHUB_OAUTH_CALLBACK_*`、`GITHUB_OAUTH_STAGE_*`、`GITHUB_OAUTH_DIRECT_ATTEMPT_*` 和代理请求。阶段为 `token`、`user`、`emails`，回调日志另含总耗时和结果。`emails` 当前仍直连 GitHub，最多三次、每次 20 秒，失败降级为空列表，同时记录 `GITHUB_EMAIL_FETCH_FAILED`，阶段完成只表示包含降级在内的操作结束。不得把它误读为邮箱读取成功。
+- GitHub 回调生成随机 `traceId`，贯穿 `GITHUB_OAUTH_CALLBACK_*`、`GITHUB_OAUTH_STAGE_*`、`GITHUB_OAUTH_DIRECT_ATTEMPT_*`、`GITHUB_OAUTH_PROXY_ATTEMPT_*` 和代理请求。阶段为 `token`、`user`、`emails`；直连 GitHub 的网络失败最多重试两次。`emails` 当前仍直连 GitHub，每次最多 5 秒、最多重试两次，失败降级为空列表，同时记录 `GITHUB_EMAIL_FETCH_FAILED`，阶段完成只表示包含降级在内的操作结束。不得把它误读为邮箱读取成功。
+- GitHub OAuth 回调先进入本地化处理中页面，再由浏览器提交一次性 flow ID；服务端轮询状态只返回枚举阶段与重试次数，不返回 OAuth code、state 或 token。服务端通过实际的 state 校验、token / user / email 阶段和账号保存步骤更新进度；代理 GET 最多重试两次，token POST 仅在收到没有 Worker 请求 ID 的临时 5xx 边缘响应时重试，不能在授权码可能已被 GitHub 消费后重放。按钮切换页前也展示登录准备提示。进度记录暂存于 Node 进程内存、5 分钟后过期，当前部署按单个 PM2 进程运行；启用多实例或集群时须改用共享存储。
 - Intro Proxy 每次请求另生成 `requestId`，通过 `x-intro-proxy-request-id` 传至 Worker，OAuth `traceId` 通过 `x-intro-proxy-trace-id` 传递。`INTRO_PROXY_REQUEST_COMPLETED` / `FAILED` 记录总耗时、外层状态、响应类型 / 字节数、EO-ID、CF-Ray、Worker ID / 耗时和内层状态。`outsideWorkerMs` 是总耗时减 Worker 耗时的近似差值，包含往返网络、EO、排队及响应传输等，不能单独当作 EO 耗时，也不要求跨机时钟同步。
 - 代理失败和超过一秒的请求总会记录。项目设置 `INTRO_PROXY_DIAGNOSTICS=true` 后还记录请求开始及快速成功请求。Worker 同名变量控制接收 / 上游开始及快速完成日志，生产排障时两端一起开启，并确保 Worker Logs 已启用且采样率为 1。即使如此，日志丢失或未到 Worker 的失败仍可能没有 Worker 记录，缺失记录只能缩小范围，不能单凭它归因 EO。
-- Worker `INTRO_PROXY_WORKER_COMPLETED` 记录 CF 节点、接收至上游开始耗时、上游响应头等待 / 正文读取耗时、GitHub request ID 和剩余配额。项目日志中的 `requestId` 对应 Worker 的 `clientRequestId`，项目 `workerRequestId` 对应 Worker 的 `requestId`。两端按当前协议发布，不新增自动重试或更改认证行为。
+- Worker `INTRO_PROXY_WORKER_COMPLETED` 记录 CF 节点、接收至上游开始耗时、上游响应头等待 / 正文读取耗时、GitHub request ID 和剩余配额。项目日志中的 `requestId` 对应 Worker 的 `clientRequestId`，项目 `workerRequestId` 对应 Worker 的 `requestId`。重试由网站服务端控制，Worker 不做重放，也不改变其认证行为。
 - 日志不记录请求 / 响应正文、Authorization、Cookie、握手密钥、OAuth code / state、token、邮箱或用户资料。代理只记上游主机，Worker 只记固定操作名，不记公开账号查询路径与查询串。诊断日志属于长期运维功能，不是临时 Debug 代码。当前日志不包含 EO 实际回源 IP，525 的具体回源节点仍需结合 EO 侧记录定位。
 
 ## 面向 Agent 的静态导览

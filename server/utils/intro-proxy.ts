@@ -11,6 +11,8 @@ export type IntroProxyResponseBodyType = 'json' | 'text' | 'binary' | 'empty'
 export interface IntroProxyEnvelope {
 	ok: boolean
 	status: number
+	outerStatus?: number
+	workerRequestId?: string
 	headers?: Record<string, string>
 	bodyType: IntroProxyResponseBodyType
 	body: string | null
@@ -236,13 +238,24 @@ export const proxyIntroRequest = async (
 		try {
 			parsed = JSON.parse(raw)
 		} catch {
-			throw new Error('Intro proxy returned non-JSON response.')
+			const error = new Error(
+				'Intro proxy returned non-JSON response.',
+			) as Error & {
+				statusCode?: number
+				preWorkerResponse?: boolean
+			}
+			error.statusCode = response.status
+			error.preWorkerResponse = !response.headers.get('x-intro-proxy-worker-id')
+			throw error
 		}
 		const envelope = normalizeEnvelope(parsed)
+		envelope.outerStatus = response.status
+		envelope.workerRequestId =
+			response.headers.get('x-intro-proxy-worker-id') ?? envelope.requestId
 		const durationMs = Math.round(performance.now() - startedAt)
 		Object.assign(meta, {
 			durationMs,
-			workerRequestId: envelope.requestId,
+			workerRequestId: envelope.workerRequestId,
 			workerDurationMs: envelope.durationMs,
 			outsideWorkerMs:
 				envelope.durationMs === undefined

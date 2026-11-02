@@ -1,66 +1,31 @@
-import { OAuthIntent, OAuthProvider } from '~/generated/prisma/client'
-import { completeOAuth } from '~/server/utils/user-auth'
 import { randomUUID } from 'node:crypto'
+import prisma from '~/lib/prisma'
+import { hashSecret } from '~/server/utils/user-auth'
+import { startOAuthProgress } from '~/server/utils/oauth-progress'
 
-const withResult = (
-	redirectPath: string,
-	key: 'authError' | 'accountMerge' | 'authSuccess' | 'authProvider',
-	value: string,
-) => {
-	const url = new URL(redirectPath, 'http://localhost')
-	url.searchParams.set(key, value)
-	return `${url.pathname}${url.search}${url.hash}`
-}
-
-const withSuccess = (redirectPath: string, intent: OAuthIntent): string =>
-	withResult(
-		withResult(
-			redirectPath,
-			'authSuccess',
-			intent === OAuthIntent.CONNECT ? 'connect' : 'sign-in',
-		),
-		'authProvider',
-		'github',
-	)
-
-const errorCode = (error: unknown): string => {
-	if (!error || typeof error !== 'object') return 'GITHUB_OAUTH_CALLBACK_FAILED'
-	const value = error as {
-		statusMessage?: string
-		data?: { statusMessage?: string }
-	}
-	return (
-		value.data?.statusMessage ??
-		value.statusMessage ??
-		'GITHUB_OAUTH_CALLBACK_FAILED'
-	)
+const getLocalePrefix = (redirectPath: string | undefined): string => {
+	const match = redirectPath?.match(/^\/(en-US|ja-JP)(?:\/|$)/)
+	return match ? `/${match[1]}` : ''
 }
 
 export default defineEventHandler(async (event) => {
+	const query = getQuery(event)
+	const code = typeof query.code === 'string' ? query.code : ''
+	const state = typeof query.state === 'string' ? query.state : ''
+	const safeCode = code.length <= 2048 ? code : ''
+	const safeState = state.length <= 2048 ? state : ''
 	const traceId = randomUUID()
-	const startedAt = performance.now()
-	let outcome = 'failed'
-	console.info('GITHUB_OAUTH_CALLBACK_STARTED', { traceId })
-	try {
-		const result = await completeOAuth(event, OAuthProvider.GITHUB, traceId)
-		outcome = result.mergeToken ? 'merge_required' : 'success'
-		return sendRedirect(
-			event,
-			result.mergeToken
-				? withResult(result.redirectPath, 'accountMerge', result.mergeToken)
-				: withSuccess(result.redirectPath, result.intent),
-		)
-	} catch (error) {
-		console.error('GITHUB_OAUTH_CALLBACK_FAILED', {
-			traceId,
-			errorCode: errorCode(error),
-		})
-		return sendRedirect(event, withResult('/', 'authError', errorCode(error)))
-	} finally {
-		console.info('GITHUB_OAUTH_CALLBACK_COMPLETED', {
-			traceId,
-			outcome,
-			durationMs: Math.round(performance.now() - startedAt),
-		})
+	let localePrefix = ''
+
+	if (safeState) {
+		const transaction = await prisma.oAuthTransaction
+			.findUnique({ where: { stateHash: hashSecret(safeState) } })
+			.catch(() => null)
+		localePrefix = getLocalePrefix(transaction?.redirectPath)
 	}
+
+	startOAuthProgress(traceId, safeCode, safeState, localePrefix)
+	setResponseHeader(event, 'cache-control', 'no-store, private')
+	setResponseHeader(event, 'referrer-policy', 'no-referrer')
+	return sendRedirect(event, `${localePrefix}/oauth/callback?flow=${traceId}`)
 })
