@@ -1,10 +1,11 @@
 <template>
 	<div
-		class="overflow-hidden transition-[height] duration-300 ease-out motion-reduce:transition-none"
+		class="-m-1 overflow-hidden transition-[height] duration-300 ease-out motion-reduce:transition-none"
 		:style="wrapperStyle"
 	>
 		<div
 			ref="contentRef"
+			class="p-1"
 			:class="contentTransitioning ? 'modal-body-content-transition' : ''"
 		>
 			<slot />

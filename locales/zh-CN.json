@@ -511,7 +511,9 @@
 			"validation": {
 				"required": "请填写{field}。",
 				"tooLong": "{field}最多填写 {max} 个字。"
-			}
+			},
+			"ownerPlaceholder": "输入用户名，自动查询账号",
+			"ownerProfileUnavailable": "暂时无法读取 Linux DO 资料，将按 {'@'}{username} 关联，请确认用户名。"
 		},
 		"errors": {
 			"generic": "请求没有成功，请稍后再试。",
@@ -574,6 +576,9 @@
 			"accountDisabled": "该账户已被停用。",
 			"unsupportedFriendLinkImageFormat": "只接受 WebP、AVIF、PNG、JPEG/JPG 图片，不支持 GIF、SVG 或其他文件。",
 			"invalidFriendLinkIconRounded": "图标圆角设置不合法。",
+			"invalidFriendLinkOwner": "请输入有效的 GitHub 或 Linux DO 用户名。",
+			"friendLinkOwnerNotFound": "未找到此用户，请检查用户名。",
+			"friendLinkOwnerLookupFailed": "账号查询失败，请稍后重试。",
 			"invalidImageProxyUrl": "图片地址不合法。",
 			"imageProxyFailed": "图片暂时无法加载。"
 		}

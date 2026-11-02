@@ -268,7 +268,17 @@ export interface MessageBoardPagination {
 	hasNext: boolean
 }
 
+export interface FriendLinkOwnerAccount {
+	profileResolved?: boolean
+	provider: OAuthProviderName
+	username: string
+	displayName: string
+	avatarUrl: string
+	profileUrl: string
+}
+
 export interface FriendLinkItem {
+	ownerAccount: FriendLinkOwnerAccount | null
 	id: string
 	name: string
 	url: string
@@ -307,6 +317,8 @@ export interface FriendLinkApplicant {
 }
 
 export interface AdminFriendLinkListItem {
+	ownerGithubLogin: string | null
+	ownerLinuxDoUsername: string | null
 	id: string
 	type: 'friend-link' | 'pending-application'
 	origin: 'manual' | 'application' | 'unknown'

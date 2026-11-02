@@ -511,7 +511,9 @@
 			"validation": {
 				"required": "{field}を入力してください。",
 				"tooLong": "{field}は{max}文字以内で入力してください。"
-			}
+			},
+			"ownerPlaceholder": "ユーザー名を入力すると自動検索します",
+			"ownerProfileUnavailable": "Linux DO のプロフィールを取得できません。{'@'}{username} に連携します。ユーザー名を確認してください。"
 		},
 		"errors": {
 			"generic": "リクエストは完了しませんでした。あとでもう一度試してください。",
@@ -574,6 +576,9 @@
 			"accountDisabled": "このアカウントは無効化されています。",
 			"unsupportedFriendLinkImageFormat": "WebP・AVIF・PNG・JPEG/JPG画像のみ対応しています。GIF・SVGやその他のファイルは選択できません。",
 			"invalidFriendLinkIconRounded": "アイコンの角丸設定が不正です。",
+			"invalidFriendLinkOwner": "有効な GitHub または Linux DO のユーザー名を入力してください。",
+			"friendLinkOwnerNotFound": "ユーザーが見つかりません。ユーザー名を確認してください。",
+			"friendLinkOwnerLookupFailed": "アカウントを検索できませんでした。後ほど再試行してください。",
 			"invalidImageProxyUrl": "画像の URL が無効です。",
 			"imageProxyFailed": "画像を読み込めませんでした。"
 		}

@@ -511,7 +511,9 @@
 			"validation": {
 				"required": "{field} is required.",
 				"tooLong": "{field} must be {max} characters or fewer."
-			}
+			},
+			"ownerPlaceholder": "Enter a username to look up the account",
+			"ownerProfileUnavailable": "Linux DO profile details are unavailable. The site will link to {'@'}{username}; please verify the username."
 		},
 		"errors": {
 			"generic": "The request did not complete. Please try again later.",
@@ -574,6 +576,9 @@
 			"accountDisabled": "This account has been disabled.",
 			"unsupportedFriendLinkImageFormat": "Only WebP, AVIF, PNG and JPEG/JPG images are accepted. GIF, SVG and other files are not supported.",
 			"invalidFriendLinkIconRounded": "The icon corner setting is invalid.",
+			"invalidFriendLinkOwner": "Enter a valid GitHub or Linux DO username.",
+			"friendLinkOwnerNotFound": "User not found. Check the username.",
+			"friendLinkOwnerLookupFailed": "Could not look up the account. Please try again later.",
 			"invalidImageProxyUrl": "The image URL is invalid.",
 			"imageProxyFailed": "The image could not be loaded."
 		}

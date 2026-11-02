@@ -1,3 +1,10 @@
+import {
+	mapOwnerAccount,
+	ownerLogins,
+	ownerIdentitySelect,
+	resolveOwnerChanges,
+	type FriendLinkOwnerPayload,
+} from './friend-link-owner.service'
 import { getFriendLinkCoverSummaries } from '~/server/services/friend-link-cover.service'
 import { FriendLinkApplicationStatus, Prisma } from '~/generated/prisma/client'
 import prisma from '~/lib/prisma'
@@ -22,7 +29,7 @@ import type {
 let cleanupExpiredFriendLinkApplicationsInFlight: Promise<void> | null = null
 const FRIEND_LINK_APPLICATION_EXPIRES_IN_DAYS = 30
 
-interface FriendLinkPayload {
+interface FriendLinkPayload extends FriendLinkOwnerPayload {
 	name: string
 	url: string
 	desc: string
@@ -148,6 +155,7 @@ export const listActiveFriendLinks = async (): Promise<FriendLinkItem[]> => {
 	await cleanupExpiredFriendLinkApplications()
 
 	const items = await prisma.friendLink.findMany({
+		include: { owner: { select: ownerIdentitySelect } },
 		where: {
 			isActive: true,
 		},
@@ -165,6 +173,7 @@ export const listActiveFriendLinks = async (): Promise<FriendLinkItem[]> => {
 		desc: item.desc,
 		icon: resolveFriendLinkImage(item.imageBase64),
 		iconRounded: item.iconRounded,
+		ownerAccount: mapOwnerAccount(item),
 		coverUrl: covers.get(item.id)?.url ?? null,
 		mobileCoverUrl: covers.get(item.id)?.mobileUrl ?? null,
 		source: 'database',
@@ -290,7 +299,14 @@ export const listPendingFriendLinkApplications = async (): Promise<
 const applicantSelect = {
 	username: true,
 	displayName: true,
-	identities: { select: { provider: true } },
+	identities: {
+		select: {
+			provider: true,
+			providerUsername: true,
+			providerDisplayName: true,
+			avatarUrl: true,
+		},
+	},
 } satisfies Prisma.UserSelect
 
 interface ApplicantSource {
@@ -321,6 +337,7 @@ export const listAdminFriendLinkItems = async (): Promise<
 			where: { isActive: true },
 			orderBy: { createdAt: 'desc' },
 			include: {
+				owner: { select: ownerIdentitySelect },
 				sourceApplication: { include: applicationInclude },
 				createdBy: { select: applicantSelect },
 			},
@@ -335,6 +352,7 @@ export const listAdminFriendLinkItems = async (): Promise<
 		...pendingApplications.map((item): AdminFriendLinkListItem => ({
 			id: item.id,
 			type: 'pending-application',
+			...ownerLogins({ owner: item.applicant }),
 			origin: 'application',
 			name: item.name,
 			url: item.url,
@@ -348,6 +366,7 @@ export const listAdminFriendLinkItems = async (): Promise<
 		...activeLinks.map((item): AdminFriendLinkListItem => ({
 			id: item.id,
 			type: 'friend-link',
+			...ownerLogins(item),
 			origin:
 				item.origin === 'APPLICATION'
 					? 'application'
@@ -385,6 +404,13 @@ export const approveFriendLinkApplication = async (
 	payload?: FriendLinkPayload,
 ): Promise<void> => {
 	await cleanupExpiredFriendLinkApplications()
+	const ownerSource = await prisma.friendLinkApplication.findUnique({
+		where: { id: applicationId },
+		select: { applicant: { select: ownerIdentitySelect } },
+	})
+	const ownerChanges = await resolveOwnerChanges(payload ?? {}, {
+		owner: ownerSource?.applicant,
+	})
 	const approvedAt = new Date()
 	const legacyLogin = getLegacySnapshot(currentUser).legacyLogin
 	await prisma.$transaction(async (tx) => {
@@ -457,6 +483,8 @@ export const approveFriendLinkApplication = async (
 			data: {
 				...next,
 				origin: 'APPLICATION',
+				ownerUserId: pending.applicantUserId,
+				...ownerChanges,
 				sourceApplicationId: pending.id,
 				createdByGithubLogin: pending.applicantGithubLogin,
 				approvedByGithubLogin: legacyLogin,
@@ -514,12 +542,7 @@ export const rejectFriendLinkApplicationByAdmin = async (
 
 export const createFriendLinkDirectly = async (
 	currentUser: AuthUser,
-	payload: {
-		name: string
-		url: string
-		desc: string
-		imageBase64?: string | null
-	},
+	payload: FriendLinkPayload & { iconRounded?: boolean },
 ): Promise<void> => {
 	const existingLink = await prisma.friendLink.findUnique({
 		where: {
@@ -537,11 +560,13 @@ export const createFriendLinkDirectly = async (
 		})
 	}
 
+	const ownerChanges = await resolveOwnerChanges(payload)
 	const legacyLogin = getLegacySnapshot(currentUser).legacyLogin
 	const friendLink = await prisma.$transaction(async (tx) => {
 		const created = await tx.friendLink.create({
 			data: {
 				origin: 'MANUAL',
+				...ownerChanges,
 				name: payload.name,
 				url: payload.url,
 				desc: payload.desc,
@@ -576,13 +601,7 @@ export const createFriendLinkDirectly = async (
 export const updateFriendLinkByAdmin = async (
 	friendLinkId: string,
 	currentUser: AuthUser,
-	payload: {
-		name: string
-		url: string
-		desc: string
-		imageBase64?: string | null
-		iconRounded?: boolean
-	},
+	payload: FriendLinkPayload & { iconRounded?: boolean },
 ): Promise<void> => {
 	const current = await prisma.friendLink.findUnique({
 		where: {
@@ -593,6 +612,9 @@ export const updateFriendLinkByAdmin = async (
 			url: true,
 			name: true,
 			imageBase64: true,
+			ownerGithubLogin: true,
+			ownerLinuxDoUsername: true,
+			owner: { select: ownerIdentitySelect },
 		},
 	})
 
@@ -603,11 +625,13 @@ export const updateFriendLinkByAdmin = async (
 		})
 	}
 
+	const ownerChanges = await resolveOwnerChanges(payload, current)
 	const updated = await prisma.$transaction(async (tx) => {
 		const result = await tx.friendLink.update({
 			where: { id: friendLinkId },
 			data: {
 				iconRounded: payload.iconRounded,
+				...ownerChanges,
 				name: payload.name,
 				url: payload.url,
 				desc: payload.desc,

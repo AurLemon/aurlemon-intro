@@ -2,10 +2,12 @@
 	<UModal
 		v-model:open="open"
 		:title="t('social.friendLinks.adminTitle')"
+		@enter="modalHeight.start"
 		class="max-w-2xl"
 		:ui="{
 			overlay: 'z-[42000]',
-			content: 'z-[42010]',
+			content:
+				'z-[42010] transition-[height] duration-300 ease-out motion-reduce:transition-none',
 			header: 'gap-2 pr-14 sm:pr-14',
 			wrapper: 'min-w-0 flex-1',
 			body: 'p-4 sm:p-5',
@@ -49,7 +51,7 @@
 			</div>
 		</template>
 		<template #body>
-			<AnimatedModalBody>
+			<div ref="managementBody">
 				<AuthActionGuard
 					v-if="!currentUser?.isAdmin"
 					:title="t('social.friendLinks.adminRequiredTitle')"
@@ -87,14 +89,13 @@
 								:alt="item.name"
 								class="size-10 shrink-0 sm:size-11"
 								:class="
-									item.iconRounded === false ? 'rounded-none' : 'rounded-lg'
+									item.iconRounded === false
+										? 'rounded-none'
+										: 'rounded-lg border border-slate-300/80 dark:border-slate-600/80'
 								"
 								:ui="{
-									root: 'bg-transparent',
-									image:
-										item.iconRounded === false
-											? 'rounded-none object-cover'
-											: 'rounded-lg object-cover',
+									root: 'overflow-hidden bg-transparent',
+									image: 'rounded-none object-cover',
 								}"
 							/>
 							<div class="min-w-0 flex-1">
@@ -268,7 +269,7 @@
 						</div>
 					</article>
 				</div>
-			</AnimatedModalBody>
+			</div>
 		</template>
 	</UModal>
 	<UModal
@@ -286,39 +287,81 @@
 	>
 		<template #body
 			><AnimatedModalBody :animate-content="false"
-				><div class="space-y-4">
-					<div class="space-y-2">
-						<label class="text-sm text-slate-700 dark:text-slate-300">
-							{{ t('social.friendLinks.fields.name') }}
-						</label>
+				><UForm
+					:id="adminFormId"
+					ref="adminForm"
+					:state="form"
+					:validate="validate"
+					:loading-auto="false"
+					class="space-y-4"
+					novalidate
+					@submit="save"
+					@error="focusFirstError"
+				>
+					<p
+						v-if="formErrorKey"
+						ref="formErrorAlert"
+						tabindex="-1"
+						role="alert"
+						class="friend-form-error text-sm text-error"
+					>
+						{{ t(formErrorKey) }}
+					</p>
+					<UFormField
+						name="name"
+						:label="t('social.friendLinks.fields.name')"
+						required
+						:ui="{ error: 'friend-form-error' }"
+					>
 						<UInput
 							v-model="form.name"
+							required
+							:maxlength="120"
 							class="w-full"
 							:placeholder="t('social.friendLinks.fields.name')"
 						/>
-					</div>
-					<div class="space-y-2">
-						<label class="text-sm text-slate-700 dark:text-slate-300">
-							{{ t('social.friendLinks.fields.url') }}
-						</label>
+					</UFormField>
+					<UFormField
+						name="url"
+						:label="t('social.friendLinks.fields.url')"
+						required
+						:ui="{ error: 'friend-form-error' }"
+					>
 						<UInput
 							v-model="form.url"
+							required
+							:maxlength="500"
 							class="w-full"
 							:placeholder="t('social.friendLinks.fields.url')"
 						/>
-					</div>
-					<div class="space-y-2">
-						<label class="text-sm text-slate-700 dark:text-slate-300">
-							{{ t('social.friendLinks.fields.desc') }}
-						</label>
+					</UFormField>
+					<UFormField
+						name="desc"
+						:label="t('social.friendLinks.fields.desc')"
+						required
+						:ui="{ error: 'friend-form-error' }"
+					>
 						<UTextarea
 							v-model="form.desc"
+							required
+							:maxlength="300"
 							class="w-full"
 							:rows="4"
 							:placeholder="t('social.friendLinks.fields.desc')"
 						/>
-					</div>
+					</UFormField>
+					<FriendLinkOwnerInput
+						v-if="formOpen"
+						v-model="form.ownerGithubLogin"
+						provider="GITHUB"
+						@pending="ownerGithubPending = $event" />
+					<FriendLinkOwnerInput
+						v-if="formOpen"
+						v-model="form.ownerLinuxDoUsername"
+						provider="LINUX_DO"
+						@pending="ownerLinuxDoPending = $event" />
 					<UFormField
+						name="imageBase64"
 						:label="t('social.friendLinks.fields.image')"
 						:help="t('social.friendLinks.fields.imageHint')"
 						:error="imageErrorKey ? t(imageErrorKey) : undefined"
@@ -361,15 +404,20 @@
 							:src="form.imageBase64"
 							alt="preview"
 							class="mt-3 h-20 w-20 object-cover"
-							:class="form.iconRounded ? 'rounded-xl' : 'rounded-none'"
+							:class="
+								form.iconRounded
+									? 'rounded-xl border border-slate-300/80 dark:border-slate-600/80'
+									: 'rounded-none'
+							"
 						/>
 					</UFormField>
 					<USwitch
 						v-if="editingLinkId"
 						:model-value="!form.iconRounded"
 						:label="t('social.friendLinks.fields.disableIconRounded')"
-						@update:model-value="form.iconRounded = !$event"
-					/></div></AnimatedModalBody
+						@update:model-value="
+							form.iconRounded = !$event
+						" /></UForm></AnimatedModalBody
 		></template>
 		<template #footer>
 			<div class="flex w-full justify-end gap-2">
@@ -378,9 +426,12 @@
 				}}</UButton>
 				<UButton
 					:loading="saving"
-					:disabled="processingImage"
+					:disabled="
+						processingImage || ownerGithubPending || ownerLinuxDoPending
+					"
 					color="primary"
-					@click="save"
+					type="submit"
+					:form="adminFormId"
 					>{{
 						editingApplicationId
 							? t('social.actions.approve')
@@ -482,16 +533,20 @@
 </template>
 
 <script setup lang="ts">
+import type { FormError } from '@nuxt/ui'
 import { FRIEND_LINK_IMAGE_ACCEPT } from '~/shared/utils/friend-link-image'
 import type {
 	FriendLinkCoverAdminResponse,
 	FriendLinkCoverState,
 } from '~/shared/types/friend-link-cover'
+import FriendLinkOwnerInput from './FriendLinkOwnerInput.vue'
 import FriendLinkAccountLabel from './FriendLinkAccountLabel.vue'
 import AuthActionGuard from '~/components/common/AuthActionGuard.vue'
 import type { AdminFriendLinkListItem } from '~/shared/types/social'
 
 const open = defineModel<boolean>('open', { default: false })
+const managementBody = useTemplateRef('managementBody')
+const modalHeight = useModalHeightTransition(managementBody)
 
 const emit = defineEmits<{
 	updated: []
@@ -521,7 +576,24 @@ const editingLinkId = ref<string | null>(null)
 const editingApplicationId = ref<string | null>(null)
 const currentUser = computed(() => auth.user.value)
 const focusedApplicationId = ref<string | null>(null)
-const form = reactive({
+const ownerGithubPending = ref(false)
+const ownerLinuxDoPending = ref(false)
+interface AdminFriendLinkFormState {
+	ownerGithubLogin: string
+	ownerLinuxDoUsername: string
+	name: string
+	url: string
+	desc: string
+	imageBase64: string
+	iconRounded: boolean
+}
+const adminFormId = useId()
+const adminForm = useTemplateRef('adminForm')
+const formErrorAlert = useTemplateRef('formErrorAlert')
+const formErrorKey = ref('')
+const form = reactive<AdminFriendLinkFormState>({
+	ownerGithubLogin: '',
+	ownerLinuxDoUsername: '',
 	name: '',
 	url: '',
 	desc: '',
@@ -529,8 +601,73 @@ const form = reactive({
 	iconRounded: true,
 })
 
+const validate = (state: AdminFriendLinkFormState): FormError[] => {
+	const errors: FormError[] = []
+	for (const [name, max] of [
+		['name', 120],
+		['desc', 300],
+	] as const) {
+		const field = t(`social.friendLinks.fields.${name}`)
+		if (!state[name].trim())
+			errors.push({
+				name,
+				message: t('social.friendLinks.validation.required', { field }),
+			})
+		else if (state[name].trim().length > max)
+			errors.push({
+				name,
+				message: t('social.friendLinks.validation.tooLong', { field, max }),
+			})
+	}
+	let validUrl = false
+	try {
+		const url = new URL(state.url.trim())
+		validUrl =
+			['http:', 'https:'].includes(url.protocol) &&
+			state.url.trim().length <= 500
+	} catch {
+		/* Invalid URLs are reported under the URL field. */
+	}
+	if (!validUrl)
+		errors.push({
+			name: 'url',
+			message: state.url.trim()
+				? t('social.errors.invalidFriendLinkUrl')
+				: t('social.friendLinks.validation.required', {
+						field: t('social.friendLinks.fields.url'),
+					}),
+		})
+	if (imageErrorKey.value)
+		errors.push({ name: 'imageBase64', message: t(imageErrorKey.value) })
+	return errors
+}
+
+const focusFirstError = async () => {
+	await nextTick()
+	document
+		.getElementById(adminFormId)
+		?.querySelector<HTMLElement>(
+			'input[aria-invalid="true"]:not([type="file"]), textarea[aria-invalid="true"], button[aria-invalid="true"]',
+		)
+		?.focus()
+}
+
+const errorFields: Record<string, keyof AdminFriendLinkFormState> = {
+	'social.errors.invalidFriendLinkName': 'name',
+	'social.errors.invalidFriendLinkUrl': 'url',
+	'social.errors.friendLinkAlreadyExists': 'url',
+	'social.errors.invalidFriendLinkDesc': 'desc',
+	'social.errors.unsupportedFriendLinkImageFormat': 'imageBase64',
+	'social.errors.invalidImageBase64': 'imageBase64',
+	'social.errors.imageTooLarge': 'imageBase64',
+}
+
 const resetForm = () => {
+	adminForm.value?.clear()
+	formErrorKey.value = ''
 	imageErrorKey.value = ''
+	form.ownerGithubLogin = ''
+	form.ownerLinuxDoUsername = ''
 	form.name = ''
 	form.url = ''
 	form.desc = ''
@@ -662,6 +799,7 @@ const handleFileChange = async (event: Event) => {
 	}
 
 	imageErrorKey.value = ''
+	adminForm.value?.clear('imageBase64')
 	processingImage.value = true
 	try {
 		form.imageBase64 = await normalizeImage(file)
@@ -700,11 +838,15 @@ const approve = async (applicationId: string) => {
 }
 
 const startEdit = (item: AdminFriendLinkListItem) => {
+	adminForm.value?.clear()
+	formErrorKey.value = ''
 	imageErrorKey.value = ''
 	formOpen.value = true
 	editingLinkId.value = item.type === 'friend-link' ? item.id : null
 	editingApplicationId.value =
 		item.type === 'pending-application' ? item.id : null
+	form.ownerGithubLogin = item.ownerGithubLogin ?? ''
+	form.ownerLinuxDoUsername = item.ownerLinuxDoUsername ?? ''
 	form.name = item.name
 	form.url = item.url
 	form.desc = item.desc
@@ -752,11 +894,21 @@ const remove = async (friendLinkId: string) => {
 }
 
 const save = async () => {
+	if (
+		saving.value ||
+		processingImage.value ||
+		ownerGithubPending.value ||
+		ownerLinuxDoPending.value
+	)
+		return
 	if (!auth.user.value?.isAdmin) {
-		showError({ statusMessage: 'ADMIN_REQUIRED' })
+		formErrorKey.value = resolveSocialErrorKey({
+			statusMessage: 'ADMIN_REQUIRED',
+		})
 		return
 	}
 
+	formErrorKey.value = ''
 	saving.value = true
 
 	try {
@@ -766,6 +918,8 @@ const save = async () => {
 				{
 					method: 'POST',
 					body: {
+						ownerGithubLogin: form.ownerGithubLogin,
+						ownerLinuxDoUsername: form.ownerLinuxDoUsername,
 						name: form.name,
 						url: form.url,
 						desc: form.desc,
@@ -782,6 +936,8 @@ const save = async () => {
 				method: 'PATCH',
 				body: {
 					iconRounded: form.iconRounded,
+					ownerGithubLogin: form.ownerGithubLogin,
+					ownerLinuxDoUsername: form.ownerLinuxDoUsername,
 					name: form.name,
 					url: form.url,
 					desc: form.desc,
@@ -796,6 +952,8 @@ const save = async () => {
 			await $fetch('/api/friend-links/admin/create', {
 				method: 'POST',
 				body: {
+					ownerGithubLogin: form.ownerGithubLogin,
+					ownerLinuxDoUsername: form.ownerLinuxDoUsername,
 					name: form.name,
 					url: form.url,
 					desc: form.desc,
@@ -813,15 +971,16 @@ const save = async () => {
 		emit('updated')
 	} catch (error) {
 		const key = resolveSocialErrorKey(error)
-		if (
-			[
-				'social.errors.unsupportedFriendLinkImageFormat',
-				'social.errors.invalidImageBase64',
-				'social.errors.imageTooLarge',
-			].includes(key)
-		)
-			imageErrorKey.value = key
-		else showError(error)
+		const field = errorFields[key]
+		if (field) {
+			if (field === 'imageBase64') imageErrorKey.value = key
+			adminForm.value?.setErrors([{ name: field, message: t(key) }])
+			await focusFirstError()
+		} else {
+			formErrorKey.value = key
+			await nextTick()
+			formErrorAlert.value?.focus()
+		}
 	} finally {
 		saving.value = false
 	}
@@ -830,6 +989,7 @@ const save = async () => {
 watch([open, () => currentUser.value?.isAdmin], async ([isOpen, isAdmin]) => {
 	clearCoverPoll()
 	if (!isOpen) {
+		modalHeight.stop()
 		itemLoadGeneration++
 		loadingItems.value = false
 		clearTimeout(focusTimer)
@@ -846,3 +1006,26 @@ watch([open, () => currentUser.value?.isAdmin], async ([isOpen, isAdmin]) => {
 	await loadItems()
 })
 </script>
+
+<style scoped>
+:deep(.friend-form-error) {
+	animation: friend-form-error-enter 160ms ease-out;
+}
+
+@keyframes friend-form-error-enter {
+	from {
+		opacity: 0;
+		transform: translateY(-2px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	:deep(.friend-form-error) {
+		animation: none;
+	}
+}
+</style>

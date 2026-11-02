@@ -1,3 +1,4 @@
+import { normalizeOwnerUsername } from '~/server/services/friend-link-owner.service'
 import { approveFriendLinkApplication } from '~/server/services/friend-link.service'
 import { requireAdminUser } from '~/server/utils/user-auth'
 import {
@@ -36,6 +37,14 @@ export default defineEventHandler(async (event) => {
 						300,
 					),
 					imageBase64: await ensureOptionalImageBase64(body.imageBase64),
+					ownerGithubLogin:
+						body?.ownerGithubLogin === undefined
+							? undefined
+							: normalizeOwnerUsername(body.ownerGithubLogin, 'GITHUB'),
+					ownerLinuxDoUsername:
+						body?.ownerLinuxDoUsername === undefined
+							? undefined
+							: normalizeOwnerUsername(body.ownerLinuxDoUsername, 'LINUX_DO'),
 				}
 			: undefined,
 	)
