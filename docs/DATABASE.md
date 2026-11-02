@@ -33,4 +33,4 @@
 
 - 友链及申请的 `imageBase64` 保持 string：新提交未提供图片时存空串，由 UI `UAvatar` 兜底；项目历史生成的字母 SVG 在读取映射时视为缺图，不修改其他既有上传。无需为头像兜底调整 Schema 或重写数据库。
 
-- `FriendLink.iconRounded` 默认 true，管理端编辑可按站点关闭图标圆角。`ownerUserId` 为可空的 `User` 外键并建索引，删除用户时置空；`ownerGithubLogin` 保存可空的 GitHub 用户名，两者默认均为 null。
+- `FriendLink.iconRounded` 默认 true，管理端编辑可按站点关闭图标圆角。`ownerUserId` 为可空的 `User` 外键并建索引，删除用户时置空；`ownerGithubLogin` 与 `ownerLinuxDoUsername` 分别保存可空的外部平台用户名，每个平台每个站点至多一个，不要求外部账号在站内注册，也不限制同一账号拥有多个站点。申请审批默认关联申请人的 `ownerUserId`，从其 OAuth identities 读取真实平台用户名，双绑定优先 GitHub；管理员显式指定或清空账号时改为独立的外部账号关联，不影响原申请和来源。来源明确的历史申请通过迁移补齐 ownerUserId，不把手动友链的管理员创建人当成站主。

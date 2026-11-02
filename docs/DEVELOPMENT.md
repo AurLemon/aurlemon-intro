@@ -104,3 +104,12 @@ ACG 与音乐条目额外保存 `title`、`author` 数组、`category`、`href`�
 - `server/utils/friend-link-fonts.ts` 读取随 Nitro `serverAssets` 打包的站内 `--font-sans`、MiSans / Rubik / Noto Sans CSS，将本地字体嵌入截图页面，远程字体继续使用站内 CDN。`--font-sans` 默认值采用零 specificity，仅在 `html` / `body` 设置默认字体，保留目标站点组件的字体与已有 `--font-sans`；远程 CSS 单独加载，避免阻塞本地默认字体。截图上下文允许绕过 CSP 以加载默认字体，仅用于独立、无登录的封面截图；字体仍受现有有界等待和总时限约束，CDN 不可达时回退本地及系统字体。
 - `server/utils/friend-link-readiness.ts` 在导航前监听页面请求；准备阶段最少观察 2.2 秒、最多等待 12 秒，优先等待文档、脚本、样式及 Fetch / XHR 请求连续 1.5 秒没有活动，并确认首屏主标题可见、图片来源稳定。首屏 `<img>` 与可见元素及伪元素的 CSS 背景图通过 `complete`、`naturalWidth > 0` 和 `decode()` 检查；只唤醒首屏原生 lazy 图片，不滚动整页、不改写自定义懒加载 URL。CSS 背景图用页面内临时缓存解码，避免轮询时重复创建请求。画布地图等持续纹理请求、屏外图片、媒体、WebSocket、EventSource 和 ping 不阻塞截图；字体保留独立的有界等待。达到准备时限后，若页面有效且主标题可见，记录 `FRIEND_LINK_COVER_RESOURCES_PENDING` 并截取当前画面，不因可选资源或轮询未结束就判定整次失败；空白页、验证页、主标题持续隐藏及整个流程超时仍失败并保留旧图。有限观察窗口无法预知稍后才由定时器触发的任意请求。逐站失败必须记录 `FRIEND_LINK_COVER_CAPTURE_FAILED`，包含友链 id、公开 URL、桌面 / 移动端和异常信息，不再仅吞掉异常保存布尔标记。
 - 截图使用独立无登录浏览器上下文，分别抓取 1440 × 900 PC 浅色首屏和 390 × 680 移动端浅色首屏；移动端同时启用移动 viewport、触摸和移动 UA，检查 HTTP 状态、空页面、首屏主标题是否被入场状态持续隐藏及常见验证页；每端总时限 60 秒，失败不会把错误页当成新封面。字体等待有上限；页面内容有效但字体持续加载时，通过 CDP 捕获浏览器当前可见的字体回退画面，仍保留 HTTP / 验证页检查与总时限。拒绝非 HTTP(S)、非标准端口和解析到本机、内网等保留地址的目标，重定向与子资源也检查，禁用 Service Worker、WebSocket 和媒体下载。生产截图进程应使用受限制的网络出口，不能把应用层 DNS 校验当成完整网络隔离。`FRIEND_LINK_SCREENSHOT_PROXY` 可指定截图专用代理，不继承业务 API 的 Intro Proxy 协议。
+
+## 友链站主查询
+
+- 管理员用户名查询复用站内 OAuth identity，外部 GitHub 用户通过 `api.github.com/users/:username`、Linux DO 用户通过 `linux.do/u/:username.json` 解析真实名字与头像；只读查询使用 5 分钟、最多 200 项进程缓存，公开友链列表不触发第三方请求。GitHub 查询沿用 `GITHUB_TOKEN` / `GITHUB_PAT` 避免共享出口的匿名 API 限流，查询失败在字段内报错。Linux DO 未在站内绑定过的外部用户可能被论坛交互验证拦截，此时明确提示未读取资料，允许管理员按用户名手动关联；404 仍报告用户不存在，不把输入误标为已验证。
+- 查询沿用 `isGithubProxyEnabled` / `isLinuxDoProxyEnabled`，启用对应代理时需同步部署 `aurlemon-intro-proxy` 的精确 GET 白名单。账号关联只能由管理员写入；申请审批默认从申请用户的 OAuth identities 关联，客户端申请载荷不接受站主字段。
+
+- GitHub 头像统一通过 `useSocialAvatar` 转换为本站 `/api/social/avatar?url=...`，覆盖登录状态、账户设置、留言、点赞用户与友链账号查询；Linux DO 头像按当前要求保持直链，论坛公开资料请求遇到 CF 交互验证时不尝试绕过。数据库与 OAuth identity 保留原始头像 URL。
+- GitHub 头像与 Bangumi 封面均由本站服务端读取 Worker 图片并返回二进制响应，分别使用 `/api/social/avatar` 和 `/api/bangumi/image`；浏览器不请求 Worker、不接收其地址或重定向，不在 public runtimeConfig 暴露代理配置。`INTRO_PROXY_URL` 只在服务端读取，未配置时由本站服务端读取经白名单校验的原始图片。仅返回图片 Content-Type、缓存头和 ETag，失败不透传上游错误正文或 URL。
+- Bangumi 的历史持久化快照可能含旧 Worker 封面 URL，输出时始终从原始 `cover` 重新解析站内地址，避免旧缓存继续泄露代理地址。
