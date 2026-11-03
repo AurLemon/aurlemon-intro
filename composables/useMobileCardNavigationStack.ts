@@ -13,22 +13,15 @@ interface ReadingCard {
 	hint?: MobileNavigationHint
 }
 
-interface NavigationScrollSample {
-	position: number
-	time: number
-}
-
 export const useMobileCardNavigationStack = (
 	container: Ref<HTMLElement | null>,
 	enabled: Ref<boolean>,
 	definitions: readonly MobileNavigationHint[],
 ) => {
-	const hints = ref<MobileNavigationHint[]>([])
-	const fastScrolling = ref(false)
-	let scrollSample: NavigationScrollSample | undefined
+	const hint = shallowRef<MobileNavigationHint>()
+	const direction = ref(1)
+	let previousScrollTop = 0
 	let mounted = false
-	let scrolling = false
-	let collapsed = false
 	let activeCard: HTMLElement | undefined
 	let cards: ReadingCard[] = []
 	let viewportHeight = 0
@@ -36,39 +29,20 @@ export const useMobileCardNavigationStack = (
 	const bottomInset = 80
 	let layoutDirty = true
 	let frame: number | undefined
-	let hideTimer: ReturnType<typeof setTimeout> | undefined
-	let settleTimer: ReturnType<typeof setTimeout> | undefined
-	let observer: IntersectionObserver | undefined
 	let resizeObserver: ResizeObserver | undefined
-	const visibleCards = new Set<Element>()
 
-	const stopHideTimer = () => {
-		if (hideTimer !== undefined) clearTimeout(hideTimer)
-		hideTimer = undefined
-	}
-	const startHideTimer = () => {
-		if (
-			scrolling ||
-			collapsed ||
-			!hints.value.length ||
-			hideTimer !== undefined
-		)
-			return
-		hideTimer = setTimeout(() => {
-			hideTimer = undefined
-			collapsed = true
-			hints.value = []
-		}, 4000)
-	}
 	const update = () => {
 		frame = undefined
 		if (!enabled.value || !container.value || document.hidden) return
-		const scrollTop = window.scrollY
+		const scrollTop = Math.max(0, window.scrollY)
+		const delta = scrollTop - previousScrollTop
+		if (Math.abs(delta) >= 1) direction.value = delta > 0 ? 1 : -1
+		previousScrollTop = scrollTop
 		if (layoutDirty) {
 			layoutDirty = false
 			viewportHeight = window.innerHeight
 			const header = document.querySelector<HTMLElement>('[data-page-header]')
-			// 为 Header 下方的提示栈与底部浮动菜单留出阅读空间。
+			// 为 Header 下方的提示条与底部浮动菜单留出阅读空间。
 			topInset = (header?.offsetHeight ?? 64) + 48
 			cards = cards.map((card) => {
 				const rect = card.element.getBoundingClientRect()
@@ -93,7 +67,7 @@ export const useMobileCardNavigationStack = (
 			cards.length > 0 &&
 			readingPosition >= cards[0]!.top &&
 			readingPosition <= cards[cards.length - 1]!.bottom
-		const current = inCardArea
+		let current = inCardArea
 			? cards.reduce<ReadingCard | undefined>(
 					(nearest, card) =>
 						!nearest ||
@@ -104,61 +78,18 @@ export const useMobileCardNavigationStack = (
 					undefined,
 				)
 			: undefined
-		if (current?.element !== activeCard) {
-			activeCard = current?.element
-			collapsed = false
-			stopHideTimer()
+		// 跨过相邻中心的分界后再前进 24px，避免手指微动导致反复切换。
+		const previous = cards.find((card) => card.element === activeCard)
+		if (current && previous && current !== previous) {
+			const boundary = (current.center + previous.center) / 2
+			if (Math.abs(readingPosition - boundary) < 24) current = previous
 		}
-		const candidates =
-			current?.hint && !collapsed
-				? cards
-						.filter((card) => {
-							if (!card.hint || !visibleCards.has(card.element)) return false
-							const visibleHeight = Math.max(
-								0,
-								Math.min(card.bottom, viewportBottom) -
-									Math.max(card.top, viewportTop),
-							)
-							return (
-								visibleHeight >=
-									Math.min(
-										card.bottom - card.top,
-										Math.max(0, viewportBottom - viewportTop),
-									) *
-										0.5 && visibleHeight > 0
-							)
-						})
-						.sort((a, b) => {
-							// 仅当前阅读卡片提升前排；后层沿用既有顺序，避免随滚动反复换位。
-							if (a === current) return -1
-							if (b === current) return 1
-							const previousA = hints.value.findIndex(
-								(hint) => hint.id === a.hint?.id,
-							)
-							const previousB = hints.value.findIndex(
-								(hint) => hint.id === b.hint?.id,
-							)
-							if (previousA >= 0 || previousB >= 0) {
-								return (
-									(previousA < 0 ? Infinity : previousA) -
-									(previousB < 0 ? Infinity : previousB)
-								)
-							}
-							return (
-								Math.abs(a.center - readingPosition) -
-								Math.abs(b.center - readingPosition)
-							)
-						})
-						.slice(0, 3)
-						.map((card) => card.hint!)
-				: []
-		if (
-			candidates.map((hint) => hint.id).join() !==
-			hints.value.map((hint) => hint.id).join()
-		)
-			hints.value = candidates
-		if (!hints.value.length) stopHideTimer()
-		else startHideTimer()
+		activeCard = current?.element
+		const visibleHeight = current
+			? Math.min(current.bottom, viewportBottom) -
+				Math.max(current.top, viewportTop)
+			: 0
+		hint.value = visibleHeight > 0 ? current?.hint : undefined
 	}
 	const scheduleUpdate = () => {
 		if (frame === undefined) frame = requestAnimationFrame(update)
@@ -167,54 +98,23 @@ export const useMobileCardNavigationStack = (
 		layoutDirty = true
 		scheduleUpdate()
 	}
-	const onScroll = () => {
-		const sample = { position: window.scrollY, time: performance.now() }
-		if (scrollSample) {
-			const elapsed = Math.max(8, Math.min(64, sample.time - scrollSample.time))
-			const speed = Math.abs(sample.position - scrollSample.position) / elapsed
-			// 快滚只缩短退场，不清空仍有效的候选，避免停滚后整栈重新入场。
-			if (speed > 1.8) fastScrolling.value = true
-		}
-		scrollSample = sample
-		scrolling = true
-		stopHideTimer()
-		scheduleUpdate()
-		if (settleTimer !== undefined) clearTimeout(settleTimer)
-		settleTimer = setTimeout(() => {
-			settleTimer = undefined
-			scrolling = false
-			fastScrolling.value = false
-			scrollSample = { position: window.scrollY, time: performance.now() }
-			scheduleUpdate()
-		}, 180)
-	}
 	const clear = () => {
-		observer?.disconnect()
-		observer = undefined
 		resizeObserver?.disconnect()
 		resizeObserver = undefined
-		window.removeEventListener('scroll', onScroll)
+		window.removeEventListener('scroll', scheduleUpdate)
 		window.removeEventListener('resize', measure)
 		document.fonts.removeEventListener('loadingdone', measure)
 		if (frame !== undefined) cancelAnimationFrame(frame)
 		frame = undefined
-		if (settleTimer !== undefined) clearTimeout(settleTimer)
-		settleTimer = undefined
-		stopHideTimer()
-		visibleCards.clear()
 		cards = []
 		activeCard = undefined
-		collapsed = false
-		scrolling = false
-		fastScrolling.value = false
-		scrollSample = undefined
-		hints.value = []
+		hint.value = undefined
 	}
 	const observe = () => {
 		if (!mounted) return
 		clear()
 		if (!enabled.value || !container.value || document.hidden) return
-		scrollSample = { position: window.scrollY, time: performance.now() }
+		previousScrollTop = Math.max(0, window.scrollY)
 		cards = Array.from(
 			container.value.querySelectorAll<HTMLElement>('[data-reading-card]'),
 			(element) => ({
@@ -227,23 +127,15 @@ export const useMobileCardNavigationStack = (
 				),
 			}),
 		)
-		observer = new IntersectionObserver((entries) => {
-			for (const entry of entries) {
-				if (entry.isIntersecting) visibleCards.add(entry.target)
-				else visibleCards.delete(entry.target)
-			}
-			scheduleUpdate()
-		})
 		resizeObserver = new ResizeObserver(measure)
 		for (const card of cards) {
-			observer.observe(card.element)
 			resizeObserver.observe(card.element)
 		}
 		resizeObserver.observe(document.body)
 		resizeObserver.observe(container.value)
 		const header = document.querySelector('[data-page-header]')
 		if (header) resizeObserver.observe(header)
-		window.addEventListener('scroll', onScroll, { passive: true })
+		window.addEventListener('scroll', scheduleUpdate, { passive: true })
 		window.addEventListener('resize', measure)
 		document.fonts.addEventListener('loadingdone', measure)
 		measure()
@@ -259,5 +151,5 @@ export const useMobileCardNavigationStack = (
 		mounted = false
 		document.removeEventListener('visibilitychange', observe)
 	})
-	return { hints, fastScrolling }
+	return { hint, direction }
 }
