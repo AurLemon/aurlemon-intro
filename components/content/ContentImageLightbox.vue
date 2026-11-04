@@ -4,8 +4,8 @@
 		fullscreen
 		:close="false"
 		:ui="{
-			overlay: 'bg-white/78 backdrop-blur-md dark:bg-slate-950/86',
-			content: 'bg-transparent shadow-none ring-0',
+			overlay: 'z-[40500] bg-white/78 backdrop-blur-md dark:bg-slate-950/86',
+			content: 'z-[40510] bg-transparent shadow-none ring-0',
 			body: 'p-0',
 		}"
 		@update:open="handleOpenChange"
