@@ -123,14 +123,13 @@
 					<div
 						class="pointer-events-none absolute inset-x-0 -top-12 h-[calc(3rem+2px)] bg-default/90 backdrop-blur-md mask-[linear-gradient(to_bottom,transparent_0%,rgba(0,0,0,0.18)_20%,rgba(0,0,0,0.58)_60%,black_100%)]"
 					/>
-					<Transition name="message-scroll-cue">
-						<UIcon
-							v-if="canScrollDown"
-							name="i-lucide-chevrons-down"
-							class="message-scroll-cue pointer-events-none absolute left-1/2 -top-6 h-4 w-4 text-muted"
-							aria-hidden="true"
-						/>
-					</Transition>
+					<span
+						class="message-scroll-cue pointer-events-none absolute left-1/2 -top-6 h-4 w-4 text-muted"
+						:class="{ 'message-scroll-cue-visible': canScrollDown }"
+						aria-hidden="true"
+					>
+						<UIcon name="i-lucide-chevrons-down" class="block h-4 w-4" />
+					</span>
 					<div class="relative">
 						<MessageComposer
 							:loading="submitting"
@@ -280,8 +279,10 @@ const syncScrollCues = () => {
 		scrollArea.scrollHeight - scrollArea.clientHeight,
 	)
 	canScrollUp.value = scrollArea.scrollTop > 2
+	// Separate the show/hide edges so subpixel scrolling cannot toggle the cue.
+	const remainingScroll = maxScrollTop - scrollArea.scrollTop
 	canScrollDown.value =
-		maxScrollTop > 2 && scrollArea.scrollTop < maxScrollTop - 2
+		maxScrollTop > 2 && remainingScroll > (canScrollDown.value ? 2 : 6)
 }
 
 let composerAreaObserver: ResizeObserver | null = null
@@ -596,19 +597,21 @@ watch(open, async (value) => {
 }
 
 .message-scroll-cue {
-	transform: translateX(-50%);
-}
-
-.message-scroll-cue-enter-active,
-.message-scroll-cue-leave-active {
+	opacity: 0;
+	transform: translate(-50%, 4px);
 	transition:
 		opacity 180ms ease,
 		transform 180ms ease;
 }
 
-.message-scroll-cue-enter-from,
-.message-scroll-cue-leave-to {
-	opacity: 0;
-	transform: translate(-50%, 4px);
+.message-scroll-cue-visible {
+	opacity: 1;
+	transform: translateX(-50%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.message-scroll-cue {
+		transition: none;
+	}
 }
 </style>
