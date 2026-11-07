@@ -3,6 +3,7 @@
 开始任务前阅读 [开发规范](docs/DEVELOPMENT.md)，再按本次改动范围读取对应专题；当前任务的明确要求优先。
 
 - 新增或替换的本地位图须先压缩为 WebP，保留原始尺寸；SVG 与动画保留原格式，具体见 [开发规范](docs/DEVELOPMENT.md#本地图片缩略图)。
+- 页面媒体、`assets/media/`、Git LFS 与媒体同步：[页面媒体资源](docs/MEDIA.md)
 - 页面、组件、样式与交互：[UI 规范](docs/UI_GUIDELINES.md)
 - 用户可见文案、异常抛出、错误、i18n 与 `locales/`：[文案、i18n 与错误](docs/I18N_ERRORS.md)
 - 文案禁止使用 `·` 分隔信息，优先使用括号，其次使用斜杠。

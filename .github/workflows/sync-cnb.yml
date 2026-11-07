@@ -1,0 +1,29 @@
+name: Sync CNB
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cnb-main-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    name: Sync code and LFS to CNB
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CNB_REPOSITORY_SLUG: ${{ vars.CNB_REPOSITORY_SLUG }}
+      CNB_TOKEN: ${{ secrets.CNB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+          lfs: true
+
+      - name: Sync
+        run: bash .github/scripts/sync-cnb.sh

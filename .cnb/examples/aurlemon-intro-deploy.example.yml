@@ -4,6 +4,8 @@ allow_slugs:
 allow_events:
   - web_trigger_deploy
   - api_trigger_deploy
+  - web_trigger_media
+  - api_trigger_media
 allow_branches:
   - main
 
@@ -21,3 +23,11 @@ BACKEND_DEPLOY_SSH_PRIVATE_KEY: |-
   -----END OPENSSH PRIVATE KEY-----
 BACKEND_REMOTE_DEPLOY_PATH: /www/wwwroot/aurlemon-intro
 BACKEND_PM2_APP_NAME: aurlemon-intro
+
+# Static page media only, separate from Nuxt runtime user attachments.
+COS_MEDIA_SECRET_ID: <cos-secret-id>
+COS_MEDIA_SECRET_KEY: <cos-secret-key>
+COS_MEDIA_REGION: ap-shanghai
+COS_MEDIA_BUCKET: <media-bucket-with-appid>
+COS_MEDIA_PREFIX: intro
+NUXT_PUBLIC_SITE_MEDIA_BASE_URL: https://img.aurlemon.top/intro

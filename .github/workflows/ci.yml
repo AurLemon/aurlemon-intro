@@ -2,6 +2,11 @@ name: CI
 
 on:
   workflow_dispatch:
+    inputs:
+      sync_cnb:
+        description: Sync the main branch to CNB
+        default: false
+        type: boolean
   push:
     branches:
       - '**'
@@ -23,6 +28,8 @@ jobs:
       NUXT_PUBLIC_MS_CLARITY_ID: ''
     steps:
       - uses: actions/checkout@v6
+        with:
+          lfs: true
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -49,7 +56,7 @@ jobs:
 
   sync:
     name: Sync CNB
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || (github.event_name == 'workflow_dispatch' && inputs.sync_cnb)
     runs-on: ubuntu-latest
     concurrency:
       group: cnb-main-sync
@@ -60,7 +67,9 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          ref: main
           fetch-depth: 0
+          lfs: true
 
       - name: Validate CNB configuration
         run: |
@@ -74,16 +83,4 @@ jobs:
           }
 
       - name: Sync
-        run: |
-          docker run --rm \
-            -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" \
-            -w "$GITHUB_WORKSPACE" \
-            -e "PLUGIN_TARGET_URL=https://cnb.cool/$CNB_REPOSITORY_SLUG.git" \
-            -e 'PLUGIN_AUTH_TYPE=https' \
-            -e 'PLUGIN_USERNAME=cnb' \
-            -e "PLUGIN_PASSWORD=$CNB_TOKEN" \
-            -e 'PLUGIN_BRANCH=main' \
-            -e 'PLUGIN_GIT_USER=cnb' \
-            -e 'PLUGIN_GIT_EMAIL=cnb@cnb.cool' \
-            -e 'PLUGIN_FORCE=true' \
-            tencentcom/git-sync
+        run: bash .github/scripts/sync-cnb.sh

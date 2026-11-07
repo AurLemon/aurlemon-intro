@@ -4,6 +4,8 @@ main:
       name: 构建并部署生产环境
       docker:
         image: node:24-bookworm
+      git:
+        lfs: true
       imports:
         - https://cnb.cool/HydCraft/hydcraft-secrets/-/blob/main/aurlemon-intro-deploy.yml
       stages:
@@ -11,8 +13,12 @@ main:
           script: |
             set -eu
             apt-get update
-            apt-get install -y --no-install-recommends openssh-client rsync
+            apt-get install -y --no-install-recommends openssh-client rsync git-lfs
             rm -rf /var/lib/apt/lists/*
+
+            git lfs install --local
+            git lfs pull
+            git lfs fsck --objects HEAD
 
             export DATABASE_URL='file:./prisma/ci.db'
             export GITHUB_TOKEN='github_pat'
@@ -26,6 +32,7 @@ main:
             if [ "${RUN_USER_IDENTITY_MIGRATION:-false}" = 'true' ]; then
               pnpm db:users:build
             fi
+            pnpm media:upload --write
             pnpm build
 
             rm -rf deploy-artifact
@@ -66,3 +73,35 @@ main:
   api_trigger_deploy:
     - <<: *production_deploy
       name: API 构建并部署生产环境
+
+  web_trigger_media:
+    - &media_upload
+      name: 同步页面媒体到 COS
+      docker:
+        image: node:24-bookworm
+      git:
+        lfs: true
+      imports:
+        - https://cnb.cool/HydCraft/hydcraft-secrets/-/blob/main/aurlemon-intro-deploy.yml
+      stages:
+        - name: Upload media
+          script: |
+            set -eu
+            apt-get update
+            apt-get install -y --no-install-recommends git-lfs
+            rm -rf /var/lib/apt/lists/*
+            git lfs install --local
+            git lfs pull
+            git lfs fsck --objects HEAD
+            corepack enable
+            corepack prepare pnpm@12.10.1 --activate
+            pnpm install --frozen-lockfile --ignore-scripts
+            if [ -n "${MEDIA_UPLOAD_FILE:-}" ]; then
+              pnpm media:upload --write --file "$MEDIA_UPLOAD_FILE"
+            else
+              pnpm media:upload --write
+            fi
+
+  api_trigger_media:
+    - <<: *media_upload
+      name: API 同步页面媒体到 COS

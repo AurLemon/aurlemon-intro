@@ -3,6 +3,7 @@ import { dirname, extname, resolve, sep } from 'node:path'
 import { addVitePlugin, defineNuxtModule } from 'nuxt/kit'
 import { generateCardAtlas, MAX_CARD_ATLAS_IMAGES } from './generate'
 import sharp from 'sharp'
+import { getAtlasMediaPath, getDerivedMediaUrl } from '../media/derived'
 import type { CardCoverMetadata } from '../../shared/types/card-image-atlas'
 import {
 	analyzeCardMaterial,
@@ -189,6 +190,18 @@ export default defineNuxtModule({
 					region.profile = await analyzeCardMaterial(tile, palette, {
 						fit: manifest.fit === 'portrait' ? 'contain' : 'cover',
 					})
+				}
+				const mediaPath = getAtlasMediaPath(
+					nuxt.options.rootDir,
+					manifestPath,
+					files,
+				)
+				if (
+					!nuxt.options.dev &&
+					mediaPath &&
+					process.env.NUXT_PUBLIC_SITE_MEDIA_BASE_URL
+				) {
+					return `export default {url:${JSON.stringify(getDerivedMediaUrl(atlas.file, mediaPath))},width:${atlas.width},height:${atlas.height},regions:${JSON.stringify(atlas.regions)}}`
 				}
 				return `import url from ${JSON.stringify(atlas.file + '?url')}; export default {url,width:${atlas.width},height:${atlas.height},regions:${JSON.stringify(atlas.regions)}}`
 			},

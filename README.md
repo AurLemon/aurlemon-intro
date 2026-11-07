@@ -30,3 +30,7 @@ root
 - Nuxt UI + TailwindCSS + Motion-V
 - MiSans + Rubik / Source Han Serif + Literata
 - GitHub Actions + Tencent Cloud EdgeOne
+
+## Page media
+
+`assets/media/` uses Git LFS. After cloning, run `git lfs install --local` and `git lfs pull`. Production media is published under `https://img.aurlemon.top/intro`. CNB and GitHub Actions support code/LFS synchronization and standalone media uploads. See [media setup and deployment](docs/MEDIA.md) for environment variables and commands.

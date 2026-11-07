@@ -1,4 +1,7 @@
+* text=auto eol=lf
+
+# Page media sources use Git LFS.
+assets/media/** filter=lfs diff=lfs merge=lfs -text
 assets/resources/homepage/acg/*.webp filter=lfs diff=lfs merge=lfs -text
 assets/resources/homepage/music/*.webp filter=lfs diff=lfs merge=lfs -text
 assets/resources/content/*.webp filter=lfs diff=lfs merge=lfs -text
-assets/media/** filter=lfs diff=lfs merge=lfs -text

@@ -30,3 +30,7 @@ root
 - Nuxt UI + TailwindCSS + Motion-V
 - MiSans + Rubik / 思源宋体 + Literata
 - GitHub Actions + 腾讯云 EdgeOne
+
+## 页面媒体
+
+`assets/media/` 使用 Git LFS，克隆后执行 `git lfs install --local` 和 `git lfs pull`。生产媒体发布到 `https://img.aurlemon.top/intro`，CNB 与 GitHub Actions 支持代码 / LFS 同步及独立媒体上传。环境变量与发布流程见 [页面媒体资源](docs/MEDIA.md)。

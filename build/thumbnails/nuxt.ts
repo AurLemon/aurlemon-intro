@@ -1,69 +1,8 @@
 import { createHash } from 'node:crypto'
-import { mkdir, readFile, writeFile } from 'node:fs/promises'
-import { dirname, extname, resolve } from 'node:path'
+import { extname, resolve } from 'node:path'
 import { addVitePlugin, defineNuxtModule } from 'nuxt/kit'
-import sharp from 'sharp'
-
-interface Thumbnail {
-	source: string
-	output: string
-	width: number
-	height: number
-	quality: number
-}
-
-const pending = new Map<string, Promise<void>>()
-
-async function generate(image: Thumbnail) {
-	const running = pending.get(image.output)
-	if (running) return running
-	const task = (async () => {
-		const input = await readFile(image.source)
-		const fingerprint = createHash('sha256')
-			.update(input)
-			.update(
-				JSON.stringify({
-					width: image.width,
-					height: image.height,
-					quality: image.quality,
-					sharp: sharp.versions.sharp,
-				}),
-			)
-			.digest('hex')
-		try {
-			if ((await readFile(`${image.output}.hash`, 'utf8')) === fingerprint) {
-				await readFile(image.output)
-				return
-			}
-		} catch {
-			/* 缓存缺失时生成，原图保持不变。 */
-		}
-		const metadata = await sharp(input).metadata()
-		if ((metadata.pages ?? 1) > 1)
-			throw new Error(
-				'Thumbnails only support static images; reference animated assets directly',
-			)
-		const data = await sharp(input)
-			.autoOrient()
-			.resize({
-				width: image.width,
-				height: image.height,
-				fit: 'inside',
-				withoutEnlargement: true,
-			})
-			.webp({ quality: image.quality, alphaQuality: 100, effort: 6 })
-			.toBuffer()
-		await mkdir(dirname(image.output), { recursive: true })
-		await writeFile(image.output, data)
-		await writeFile(`${image.output}.hash`, fingerprint)
-	})()
-	pending.set(image.output, task)
-	try {
-		await task
-	} finally {
-		pending.delete(image.output)
-	}
-}
+import { generate, type Thumbnail } from './generate'
+import { getDerivedMediaUrl, getThumbnailMediaPath } from '../media/derived'
 
 function integer(
 	params: URLSearchParams,
@@ -87,6 +26,10 @@ export default defineNuxtModule({
 		addVitePlugin(() => ({
 			name: 'local-thumbnails',
 			enforce: 'pre',
+			load(id) {
+				if (id.startsWith('\0intro-media-url:'))
+					return `export default ${JSON.stringify(id.slice('\0intro-media-url:'.length))}`
+			},
 			async resolveId(id, importer) {
 				const index = id.indexOf('?')
 				if (index < 0) return null
@@ -126,6 +69,22 @@ export default defineNuxtModule({
 				images.set(image.output, image)
 				this.addWatchFile(source)
 				await generate(image)
+				const mediaPath = getThumbnailMediaPath(
+					nuxt.options.rootDir,
+					source,
+					width,
+					height,
+					quality,
+				)
+				if (
+					!nuxt.options.dev &&
+					mediaPath &&
+					process.env.NUXT_PUBLIC_SITE_MEDIA_BASE_URL
+				) {
+					return (
+						'\0intro-media-url:' + getDerivedMediaUrl(image.output, mediaPath)
+					)
+				}
 				return `${image.output}?url`
 			},
 		}))

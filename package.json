@@ -23,7 +23,8 @@
 		"lint": "eslint .",
 		"postinstall": "nuxt prepare && prisma generate",
 		"preview": "nuxt preview",
-		"start": "node .output/server/index.mjs"
+		"start": "node .output/server/index.mjs",
+		"media:upload": "tsx scripts/media-upload.ts"
 	},
 	"dependencies": {
 		"@microsoft/clarity": "^1.0.2",
@@ -64,10 +65,12 @@
 		"@nuxt/eslint": "1.17.0",
 		"@types/node": "^24.19.2",
 		"@web-alchemy/fonttools": "^1.4.0",
+		"cos-nodejs-sdk-v5": "2.15.4",
 		"emoji-regex": "^11.0.0",
 		"eslint": "10.12.0",
 		"fast-glob": "^3.3.3",
 		"prettier": "3.9.9",
+		"tsx": "4.23.15",
 		"typescript": "5.9.3",
 		"vue-tsc": "^3.3.12"
 	},

@@ -1,6 +1,20 @@
 branch:
   - reg: ^main$
     buttons:
+      - name: 同步页面媒体
+        description: 增量上传 assets/media 到 COS，不部署网站
+        event: web_trigger_media
+        groupName: 媒体发布
+        permissions:
+          roles:
+            - owner
+            - master
+        inputs:
+          MEDIA_UPLOAD_FILE:
+            name: 单个媒体路径（可选）
+            description: 留空同步全部，填写 assets/media 下的相对路径可先验证单个文件
+            type: input
+            default: ''
       - name: 部署生产环境
         description: 在 CNB 构建 main 并部署到生产服务器
         event: web_trigger_deploy

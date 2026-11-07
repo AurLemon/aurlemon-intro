@@ -1,3 +1,4 @@
+import { createMediaUrlPlugin } from './build/media/vite-plugin'
 import tailwindcss from '@tailwindcss/vite'
 import rehypeKatex from 'rehype-katex'
 import remarkMath from 'remark-math'
@@ -253,7 +254,13 @@ export default defineNuxtConfig({
 		'katex/dist/katex.min.css',
 	],
 	vite: {
-		plugins: [tailwindcss()],
+		plugins: [
+			createMediaUrlPlugin({
+				rootDir: process.cwd(),
+				publicBaseUrl: process.env.NUXT_PUBLIC_SITE_MEDIA_BASE_URL ?? '',
+			}),
+			tailwindcss(),
+		],
 	},
 	app: {
 		head: {

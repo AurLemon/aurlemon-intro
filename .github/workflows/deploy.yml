@@ -36,6 +36,7 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          lfs: true
 
       - name: Validate CNB configuration
         run: |
@@ -53,19 +54,7 @@ jobs:
           }
 
       - name: Sync CNB
-        run: |
-          docker run --rm \
-            -v "$GITHUB_WORKSPACE:$GITHUB_WORKSPACE" \
-            -w "$GITHUB_WORKSPACE" \
-            -e "PLUGIN_TARGET_URL=https://cnb.cool/$CNB_REPOSITORY_SLUG.git" \
-            -e 'PLUGIN_AUTH_TYPE=https' \
-            -e 'PLUGIN_USERNAME=cnb' \
-            -e "PLUGIN_PASSWORD=$CNB_TOKEN" \
-            -e 'PLUGIN_BRANCH=main' \
-            -e 'PLUGIN_GIT_USER=cnb' \
-            -e 'PLUGIN_GIT_EMAIL=cnb@cnb.cool' \
-            -e 'PLUGIN_FORCE=true' \
-            tencentcom/git-sync
+        run: bash .github/scripts/sync-cnb.sh
 
       - name: Trigger CNB pipeline
         run: |

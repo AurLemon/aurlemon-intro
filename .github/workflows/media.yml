@@ -1,0 +1,61 @@
+name: Sync media
+
+on:
+  workflow_dispatch:
+    inputs:
+      media_file:
+        description: 'Optional path relative to assets/media; empty uploads all media'
+        required: false
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cnb-main-sync
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    name: Sync code and trigger CNB media upload
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      CNB_REPOSITORY_SLUG: ${{ vars.CNB_REPOSITORY_SLUG }}
+      CNB_TOKEN: ${{ secrets.CNB_TOKEN }}
+      CNB_API_TOKEN: ${{ secrets.CNB_API_TOKEN }}
+      MEDIA_UPLOAD_FILE: ${{ inputs.media_file }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+          # This job only triggers CNB; avoid downloading media unnecessarily.
+          lfs: false
+
+      - name: Sync CNB
+        run: |
+          set -eu
+          : "${CNB_REPOSITORY_SLUG:?CNB_REPOSITORY_SLUG is required}"
+          target_ref="$(GIT_TERMINAL_PROMPT=0 git ls-remote \
+            "https://cnb.cool/${CNB_REPOSITORY_SLUG%.git}.git" refs/heads/main || true)"
+          target_sha="$(printf '%s' "$target_ref" | cut -f1)"
+          if [ "$target_sha" = "$(git rev-parse HEAD)" ]; then
+            echo 'CNB_ALREADY_UP_TO_DATE'
+          else
+            bash .github/scripts/sync-cnb.sh
+          fi
+
+      - name: Trigger media upload
+        run: |
+          set -eu
+          : "${CNB_API_TOKEN:?CNB_API_TOKEN is required}"
+          payload="$(jq -cn --arg file "$MEDIA_UPLOAD_FILE" \
+            '{event: "api_trigger_media", branch: "main", env: {MEDIA_UPLOAD_FILE: $file}}')"
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --url "https://api.cnb.cool/$CNB_REPOSITORY_SLUG/-/build/start" \
+            --header "Authorization: $CNB_API_TOKEN" \
+            --header 'Content-Type: application/json' \
+            --data "$payload" | jq .
