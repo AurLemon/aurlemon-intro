@@ -12,6 +12,8 @@ main:
         - name: Build
           script: |
             set -eu
+            export COS_MEDIA_PREFIX=intro
+            export NUXT_PUBLIC_SITE_MEDIA_BASE_URL=https://img.aurlemon.top/intro
             apt-get update
             apt-get install -y --no-install-recommends openssh-client rsync git-lfs
             rm -rf /var/lib/apt/lists/*
@@ -87,6 +89,8 @@ main:
         - name: Upload media
           script: |
             set -eu
+            export COS_MEDIA_PREFIX=intro
+            export NUXT_PUBLIC_SITE_MEDIA_BASE_URL=https://img.aurlemon.top/intro
             apt-get update
             apt-get install -y --no-install-recommends git-lfs
             rm -rf /var/lib/apt/lists/*

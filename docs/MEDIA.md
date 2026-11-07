@@ -39,9 +39,9 @@ NUXT_PUBLIC_SITE_MEDIA_BASE_URL=https://img.aurlemon.top/intro
 COS_MEDIA_PREFIX=intro
 ```
 
-`NUXT_PUBLIC_SITE_MEDIA_BASE_URL` 在构建时生效。CNB secrets 文件需要配置该地址，生产服务器的 `.env` 也可保持相同值。修改服务器 `.env` 后仍需重新构建才能更新媒体地址。本地 `.env.example` 留空，方便离线开发与本地媒体构建。
+`NUXT_PUBLIC_SITE_MEDIA_BASE_URL` 在构建时生效。CNB 的部署与独立媒体流水线显式设置上述地址和 `intro` 前缀，确保项目发布到自己的命名空间，密钥示例与生产服务器 `.env` 保持相同值。修改服务器 `.env` 后仍需重新构建才能更新媒体地址。本地 `.env.example` 留空，方便离线开发与本地媒体构建。
 
-COS 上传只在 CNB 执行，使用现有 `HydCraft/hydcraft-secrets` 的 `aurlemon-intro-deploy.yml`，所需变量为 `COS_MEDIA_SECRET_ID`、`COS_MEDIA_SECRET_KEY`、`COS_MEDIA_REGION`、`COS_MEDIA_BUCKET`、`COS_MEDIA_PREFIX` 及上述公共地址。示例见 `.cnb/examples/aurlemon-intro-deploy.example.yml`。公共地址的路径必须与上传前缀一致，脚本会校验。
+COS 上传只在 CNB 执行，使用现有 `HydCraft/hydcraft-secrets` 的 `aurlemon-intro-deploy.yml`，凭据变量为 `COS_MEDIA_SECRET_ID`、`COS_MEDIA_SECRET_KEY`、`COS_MEDIA_REGION` 和 `COS_MEDIA_BUCKET`，前缀及公共地址由本项目流水线显式设置。示例见 `.cnb/examples/aurlemon-intro-deploy.example.yml`。公共地址的路径必须与上传前缀一致，脚本会校验。
 
 LFS 使用 GitHub 与 CNB 各自的存储及 Git 认证，不需要 COS 密钥或自建 LFS 地址。GitHub Actions 沿用仓库变量 `CNB_REPOSITORY_SLUG` 与 Secrets `CNB_TOKEN`、`CNB_API_TOKEN`，COS 凭据只保存在 CNB secrets 中。
 
